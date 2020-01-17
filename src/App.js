@@ -32,7 +32,6 @@ class App extends Component {
     };
   }
   updateSettings = (data) => {
-    debugger
     this.setState({SETTINGS: data});
   }
   componentDidMount = () => {

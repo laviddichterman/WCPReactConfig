@@ -29,14 +29,13 @@ export default class BlockOffComp extends Component {
           lower_time: null,
           selected_date: null,
           parsed_date: "",
-          time_interval: 15,
           min_upper: "",
           service_selection: Array(props.SERVICES.length).fill(true),
           can_submit: false
       }
     }
 
-    onChangeServiceSelection = (e, i) => {
+    onChangeServiceSelection = (_, i) => {
       const new_service_selection = this.state.service_selection.slice();
       new_service_selection[i] = !new_service_selection[i];
       this.setState({service_selection: new_service_selection});
