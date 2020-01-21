@@ -90,6 +90,13 @@ export default class BlockOffComp extends Component {
     }
 
     render() {
+      const HasOptionsForDate = (date) => {
+        return WDateUtils.GetOptionsForDate(this.props.blocked_off,
+          this.props.SETTINGS.operating_hours,
+          this.state.service_selection,
+          moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT),
+          this.props.SETTINGS.time_step).filter(x => !x.disabled).length
+      }
       const services_checkboxes = this.props.SERVICES.map((x, i) => {
         return (
           <div key={i} className="form-check form-check-inline">
@@ -145,6 +152,8 @@ export default class BlockOffComp extends Component {
           <div className="row">
           <div className="col">
             <DatePicker
+              minDate={new Date()}
+              filterDate={HasOptionsForDate}
               selected={this.state.selected_date}
               onChange={date => this.setDate(date)}
               dateFormat="EEEE, MMMM dd, y"
