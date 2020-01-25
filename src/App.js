@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { Router, Route, Switch } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import socketIOClient from "socket.io-client";
 import BlockOffComp from "./components/blockoff.component";
 import LeadTimesComp from "./components/leadtimes.component";
 import SettingsComp from "./components/settings.component";
+import NavBar from "./components/navbar.component";
+import { useAuth0 } from "./react-auth0-spa";
+import Profile from "./components/profile.component";
+import history from "./utils/history";
+
 
 const WDateUtils = require("@wcp/wcpshared");
 
 const store = "Windy City Pie";
-const ENDPOINT = "http://localhost:4001";
+const ENDPOINT = "https://wario.windycitypie.com";
 
 const App = () => {
-  const [ socket, setSocket ] = useState(socketIOClient(ENDPOINT));
+  const { loading } = useAuth0();
+  const [ socket ] = useState(socketIOClient(ENDPOINT));
   const [ SERVICES, setSERVICES ] = useState(["Pick-up", "Dine-In", "Delivery"]);
   const [ BLOCKED_OFF, setBLOCKED_OFF ] = useState([]);
   const [ LEADTIME, setLEADTIME ] = useState([40, 40, 1440]);
@@ -25,7 +32,7 @@ const App = () => {
       [[], [], [], [], [], [], []],[[], [], [], [], [], [], []],[[], [], [], [], [], [], []]
     ]
   });
-  const [ canSubmit, setCanSubmit ] = useState(true);
+  const [ canSubmit ] = useState(true);
 
   useEffect(() => {
     socket.on("WCP_SERVICES", data => setSERVICES(data));
@@ -102,35 +109,47 @@ const App = () => {
     new_settings.operating_hours = new_operating_hours;
     setSETTINGS(new_settings);
   }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
   return (
-      <div className="ordercfg container-fluid">
-        <h2>{store} Order Configuration</h2>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <div className="collpase navbar-collapse">
-          </div>
-        </nav>
-        <br/>
-          <div className="row no-gutters">
-            <BlockOffComp
+      <div className="ordercfg container-fluid row no-gutters">
+        <Router history={history}>
+        <header>
+          <NavBar />
+        </header>
+        <Switch>
+          <Route path="/" exact />
+          <Route path="/blockoff" 
+            render={() => <BlockOffComp
               SERVICES={SERVICES}
               blocked_off={BLOCKED_OFF}
               onSubmit={addBlockedOffInterval}
               RemoveInterval={removeBlockedOffInterval}
               SETTINGS={SETTINGS}
-            />
-          </div>
-          <LeadTimesComp
-            leadtimes={LEADTIME}
-            SERVICES={SERVICES}
-            onChange={onChangeLeadTimes}/>
-          <SettingsComp
-            SERVICES={SERVICES}
-            settings={SETTINGS}
-            onChangeTimeStep={onChangeTimeStep}
-            onChangeAdditionalPizzaLeadTime={onChangeAdditionalPizzaLeadTime}
-            onAddOperatingHours={addOperatingHours}
-            onRemoveOperatingHours={removeOperatingHours}
+            />}
           />
+          <Route path="/leadtimes" 
+            render={() => <LeadTimesComp
+              leadtimes={LEADTIME}
+              SERVICES={SERVICES}
+              onChange={onChangeLeadTimes}
+            />}
+          />
+          <Route path="/settings" 
+            render={() => <SettingsComp
+              SERVICES={SERVICES}
+              settings={SETTINGS}
+              onChangeTimeStep={onChangeTimeStep}
+              onChangeAdditionalPizzaLeadTime={onChangeAdditionalPizzaLeadTime}
+              onAddOperatingHours={addOperatingHours}
+              onRemoveOperatingHours={removeOperatingHours}
+            />}
+          />                    
+        </Switch>
+      </Router>
           <button className="btn btn-dark" onClick={onSubmit} disabled={!canSubmit}>Update Settings</button>
         </div>
 

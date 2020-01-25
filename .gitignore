@@ -107,3 +107,4 @@ dist
 .idea/
 .vscode/
 lib/
+src/auth_config.json

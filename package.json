@@ -2,6 +2,7 @@
   "name": "@wcp/wcp-react-config",
   "version": "0.1.2",
   "dependencies": {
+    "@auth0/auth0-spa-js": "^1.6.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
@@ -13,6 +14,7 @@
     "react-datepicker": "^2.11.0",
     "react-dom": "^16.12.0",
     "react-moment": "^0.9.7",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
     "react-select": "^3.0.8",
     "socket.io-client": "^2.3.0"
@@ -30,12 +32,13 @@
   "bugs": {
     "url": "https://github.com/laviddichterman/WCPReactConfig/issues"
   },
-  "homepage": "https://github.com/laviddichterman/WCPReactConfig#readme",
+  "homepage": "https://wario.windycitypie.com",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy:prod": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.windycitypie.com/"
   },
   "eslintConfig": {
     "extends": "react-app"
