@@ -1,24 +1,69 @@
 import React, { useState, useEffect } from "react";
-import { Router, Route, Switch } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import socketIOClient from "socket.io-client";
 import BlockOffComp from "./components/blockoff.component";
 import LeadTimesComp from "./components/leadtimes.component";
 import SettingsComp from "./components/settings.component";
-import NavBar from "./components/navbar.component";
 import { useAuth0 } from "./react-auth0-spa";
-import Profile from "./components/profile.component";
-import history from "./utils/history";
 
+
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
+    </Typography>
+  );
+}
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.yellow,
+  },
+}));
 
 const WDateUtils = require("@wcp/wcpshared");
 
 const store = "Windy City Pie";
-const ENDPOINT = "https://wario.windycitypie.com";
+const ENDPOINT = "http://localhost:4001";
 
 const App = () => {
-  const { loading } = useAuth0();
-  const [ socket ] = useState(socketIOClient(ENDPOINT));
+  const classes = useStyles();
+  const [currentTab, setCurrentTab] = React.useState(0);
+  const { loading, getTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const [ socket ] = useState(socketIOClient(ENDPOINT, {autoConnect: false, secure: true}));
   const [ SERVICES, setSERVICES ] = useState(["Pick-up", "Dine-In", "Delivery"]);
   const [ BLOCKED_OFF, setBLOCKED_OFF ] = useState([]);
   const [ LEADTIME, setLEADTIME ] = useState([40, 40, 1440]);
@@ -32,22 +77,53 @@ const App = () => {
       [[], [], [], [], [], [], []],[[], [], [], [], [], [], []],[[], [], [], [], [], [], []]
     ]
   });
-  const [ canSubmit ] = useState(true);
 
   useEffect(() => {
-    socket.on("WCP_SERVICES", data => setSERVICES(data));
-    socket.on("WCP_BLOCKED_OFF", data => setBLOCKED_OFF(data));
-    socket.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
-    socket.on("WCP_SETTINGS", data => setSETTINGS(data));
-  });
+    let token;
+    const getToken = async () => {
+      token = await getTokenSilently();
+      socket.open();
+      socket.on("connect", () => { 
+        socket.emit("authenticate", { token: token })
+        .on("authenticated", () => {
+          socket.on("WCP_SERVICES", data => setSERVICES(data));
+          socket.on("WCP_BLOCKED_OFF", data => setBLOCKED_OFF(data));
+          socket.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
+          socket.on("WCP_SETTINGS", data => setSETTINGS(data));
+        })
+        .on("unauthorized", (msg) => {
+          console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
+          throw new Error(msg.data.type);
+        });
+      });
+    }
+    if (!loading && isAuthenticated) {
+      getToken();
+    }
+    if (!loading && !isAuthenticated) { 
+      //loginWithRedirect();      
+    }
+  }, [loading, getTokenSilently, socket, isAuthenticated, loginWithRedirect]);
 
-  const onSubmit = () => {
-    socket.emit("WCP_SERVICES", SERVICES);
+  // const onSubmitServices = () => {
+  //   socket.emit("WCP_SERVICES", SERVICES);
+  // }
+
+  const onSubmitBlockedOff = () => {
     socket.emit("WCP_BLOCKED_OFF", BLOCKED_OFF);
+  }
+
+  const onSubmitSettings = () => {
     socket.emit("WCP_SETTINGS", SETTINGS);
+  }
+
+  const onSubmitLeadTimes = () => {
     socket.emit("WCP_LEAD_TIMES", LEADTIME);
   }
 
+  const handleChangeTab = (event, newTab) => {
+    setCurrentTab(newTab);
+  };
 
   const onChangeLeadTimes = (i, e) => {
     const leadtimes = LEADTIME.slice();
@@ -115,46 +191,53 @@ const App = () => {
   }
   
   return (
-      <div className="ordercfg container-fluid row no-gutters">
-        <Router history={history}>
-        <header>
-          <NavBar />
-        </header>
-        <Switch>
-          <Route path="/" exact />
-          <Route path="/blockoff" 
-            render={() => <BlockOffComp
-              SERVICES={SERVICES}
-              blocked_off={BLOCKED_OFF}
-              onSubmit={addBlockedOffInterval}
-              RemoveInterval={removeBlockedOffInterval}
-              SETTINGS={SETTINGS}
-            />}
-          />
-          <Route path="/leadtimes" 
-            render={() => <LeadTimesComp
+      <div className={classes.root}>
+        <AppBar position="static">
+          {!isAuthenticated && <Button onClick={() => loginWithRedirect({})}>Log in</Button>}
+          {isAuthenticated &&
+            <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
+              <Tab label="Blocked-Off Times" {...a11yProps(0)} />
+              <Tab label="Lead Times" {...a11yProps(1)} />
+              <Tab label="Settings" {...a11yProps(2)} />
+              <Button color="secondary" onClick={() => logout()}>Log out</Button>
+            </Tabs>
+          }
+        </AppBar>
+        {isAuthenticated &&
+        <span>
+        <TabPanel value={currentTab} index={0}>
+          <BlockOffComp
+                SERVICES={SERVICES}
+                blocked_off={BLOCKED_OFF}
+                addBlockedOffInterval={addBlockedOffInterval}
+                RemoveInterval={removeBlockedOffInterval}
+                SETTINGS={SETTINGS}
+                onSubmit={onSubmitBlockedOff}
+              />
+        </TabPanel>
+        <TabPanel value={currentTab} index={1}>
+        <LeadTimesComp
               leadtimes={LEADTIME}
               SERVICES={SERVICES}
               onChange={onChangeLeadTimes}
-            />}
-          />
-          <Route path="/settings" 
-            render={() => <SettingsComp
+              onSubmit={onSubmitLeadTimes}
+            />
+        </TabPanel>
+        <TabPanel value={currentTab} index={2}>
+        <SettingsComp
               SERVICES={SERVICES}
               settings={SETTINGS}
               onChangeTimeStep={onChangeTimeStep}
               onChangeAdditionalPizzaLeadTime={onChangeAdditionalPizzaLeadTime}
               onAddOperatingHours={addOperatingHours}
               onRemoveOperatingHours={removeOperatingHours}
-            />}
-          />                    
-        </Switch>
-      </Router>
-          <button className="btn btn-dark" onClick={onSubmit} disabled={!canSubmit}>Update Settings</button>
+              onSubmit={onSubmitSettings}
+            />
+        </TabPanel>
+        </span>
+      }
         </div>
-
-
-  );
-}
+    );
+  }
 
 export default App;

@@ -1,183 +1,225 @@
-import React, { Component } from 'react';
-import DatePicker from "react-datepicker";
+import React, { useState } from "react";
 import TimeSelection from "./timepicker.component";
 import Moment from 'react-moment';
+
+
+import { makeStyles } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
+import IconButton from '@material-ui/core/IconButton';
+import DoneIcon from '@material-ui/icons/Done';
+import Button from '@material-ui/core/Button';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import moment from 'moment';
+import MomentUtils from "@date-io/moment";
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import { sizing } from '@material-ui/system';
+
+
+
 const WDateUtils = require("@wcp/wcpshared");
 
-class ServiceSelectionCheckbox extends Component {
-  render() {
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: theme.spacing(0.5),
+    },
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+}));
+
+const ServiceSelectionCheckbox = (props) => {
+  const { selected, onChange, service_name } = props;
+  return (
+    <Chip
+      label={service_name}
+      clickable
+      onDelete={(e) => onChange(e)}
+      onClick={(e) => onChange(e)}
+      color={selected ? "primary" : "default"}
+      deleteIcon={selected ? <DoneIcon /> : <HighlightOffIcon />}
+    />
+  )
+}
+
+const BlockOffComp = ({
+  SERVICES, 
+  addBlockedOffInterval,
+  blocked_off,
+  SETTINGS,
+  RemoveInterval
+}) => {
+  const classes = useStyles();
+  const [ upper_time, setUpperTime ] = useState(null);
+  const [ lower_time, setLowerTime ] = useState(null);
+  const [ selected_date, setSelectedDate ] = useState(null);
+  const [ parsed_date, setParsedDate ] = useState("");
+  const [ service_selection, setServiceSelection ] = useState(Array(SERVICES.length).fill(true));
+  const [ can_submit, setCanSubmit ] = useState(false);
+
+  const onChangeServiceSelection = (_, i) => {
+    const new_service_selection = service_selection.slice();
+    new_service_selection[i] = !new_service_selection[i];
+    setServiceSelection(new_service_selection);
+  }
+
+  const onChangeLowerBound = e => {
+    let new_upper;
+    if (upper_time) {
+      new_upper = upper_time < e.value ? e : upper_time;
+    }
+    else {
+      new_upper = e;
+    }
+    if (!e) {
+      new_upper = null;
+    }
+    setCanSubmit(e && new_upper && selected_date);
+    setLowerTime(e);
+    setUpperTime(new_upper);
+  }
+  const onChangeUpperBound = e => {
+    setCanSubmit(e && lower_time && selected_date);
+    setUpperTime(e);
+  }
+  const setDate = date => {
+    setSelectedDate(date);
+    setParsedDate(date ?
+        moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT) :
+        "");
+    setLowerTime(null);
+    setUpperTime(null);
+    setCanSubmit(false);
+  }
+
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (selected_date) {
+      const interval = [lower_time.value, upper_time.value];
+      addBlockedOffInterval(parsed_date, interval, service_selection);
+      setDate(null);
+    }
+  }
+
+  const HasOptionsForDate = (date) => {
+    return WDateUtils.GetOptionsForDate(blocked_off,
+      SETTINGS.operating_hours,
+      service_selection,
+      moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT),
+      SETTINGS.time_step).filter(x => !x.disabled).length
+  }
+  const services_checkboxes = SERVICES.map((x, i) => {
     return (
-      <label className="form-check-label">
-      {this.props.service_name}:
-      <input
-        className="form-check-input"
-        type="checkbox"
-        checked={this.props.selected}
-        onChange={(e) => this.props.onChange(e)}
-      />
-      </label>
-    )
-  }
-}
-
-export default class BlockOffComp extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-          upper_time: null,
-          lower_time: null,
-          selected_date: null,
-          parsed_date: "",
-          min_upper: "",
-          service_selection: Array(props.SERVICES.length).fill(true),
-          can_submit: false
-      }
-    }
-
-    onChangeServiceSelection = (_, i) => {
-      const new_service_selection = this.state.service_selection.slice();
-      new_service_selection[i] = !new_service_selection[i];
-      this.setState({service_selection: new_service_selection});
-    }
-
-    onChangeLowerBound = e => {
-      let new_upper;
-      if (this.state.upper_time) {
-        new_upper = this.state.upper_time < e.value ? e.value : this.state.upper_time;
-      }
-      else {
-        new_upper = e;
-      }
-      if (!e) {
-        new_upper = null;
-      }
-      const can_submit = (e && new_upper && this.state.selected_date);
-      this.setState({
-        lower_time: e,
-        upper_time: new_upper,
-        min_upper: e,
-        can_submit: can_submit
-      })
-    }
-    onChangeUpperBound = e => {
-      const can_submit = (e && this.state.lower_time && this.state.selected_date);
-      this.setState({
-        upper_time: e,
-        can_submit: can_submit
-      });
-    }
-    setDate = date => {
-      this.setState({
-        selected_date: date,
-        parsed_date: date ?
-          moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT) :
-          "",
-        lower_time:null,
-        upper_time:null,
-        can_submit:false
-      });
-    }
-
-
-    handleSubmit = e => {
-      e.preventDefault();
-      if (this.state.selected_date) {
-        const interval = [this.state.lower_time.value, this.state.upper_time.value];
-        this.props.onSubmit(this.state.parsed_date, interval, this.state.service_selection);
-        this.setDate(null);
-      }
-    }
-
-    render() {
-      const HasOptionsForDate = (date) => {
-        return WDateUtils.GetOptionsForDate(this.props.blocked_off,
-          this.props.SETTINGS.operating_hours,
-          this.state.service_selection,
-          moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT),
-          this.props.SETTINGS.time_step).filter(x => !x.disabled).length
-      }
-      const services_checkboxes = this.props.SERVICES.map((x, i) => {
+      <Grid item xs key={i}>
+        <ServiceSelectionCheckbox
+          service_name={x}
+          selected={service_selection[i]}
+          onChange={(e) => onChangeServiceSelection(e, i)}
+        />
+      </Grid>
+    );
+  });
+  const blocked_off_html = blocked_off.map((service, i) => {
+    const blocked_off_days_html = blocked_off[i].map((blocked_off_for_day, j) => {
+      const blocked_off_intervals_html = blocked_off[i][j][1].map((interval, k) => {
         return (
-          <div key={i} className="form-check form-check-inline">
-            <ServiceSelectionCheckbox
-              service_name={x}
-              selected={this.state.service_selection[i]}
-              onChange={(e) => this.onChangeServiceSelection(e, i)}
-            />
+          <div key={k}>
+            from&nbsp;
+            {WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][0])}
+              &nbsp;to&nbsp;
+            {WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][1])}
+            <IconButton size="small" aria-label="delete" onClick={() => RemoveInterval(i,j,k)}><HighlightOffIcon /></IconButton>
           </div>
         );
       })
-      const blocked_off_html = this.props.blocked_off.map((service, i) => {
-        const blocked_off_days_html = this.props.blocked_off[i].map((blocked_off_for_day, j) => {
-          const blocked_off_intervals_html = this.props.blocked_off[i][j][1].map((interval, k) => {
-            return (
-              <div key={k}>
-                from&nbsp;
-                {WDateUtils.MinutesToPrintTime(this.props.blocked_off[i][j][1][k][0])}
-                 &nbsp;to&nbsp;
-                {WDateUtils.MinutesToPrintTime(this.props.blocked_off[i][j][1][k][1])}
-                <button className="btn btn-light" type="button" onClick={() => this.props.RemoveInterval(i,j,k)}>x</button>
-              </div>
-            );
-          })
-          return (
-            <div key={j}>
-            <Moment format="dddd, MMMM DD, Y" parse={WDateUtils.DATE_STRING_INTERNAL_FORMAT}>{this.props.blocked_off[i][j][0]}</Moment>
-            {blocked_off_intervals_html}</div>
-          );
-        })
-        return (
-          <div key={i}>
-            <span>{this.props.SERVICES[i]}</span>
-            {blocked_off_days_html}
-          </div>
-        );
-      })
-      const start_options = this.state.selected_date ?
-        WDateUtils.GetOptionsForDate(this.props.blocked_off,
-          this.props.SETTINGS.operating_hours,
-          this.state.service_selection,
-          this.state.parsed_date,
-          this.props.SETTINGS.time_step) : [];
-      //TODO : change this to filter all values not in the current interval
-      const end_options = start_options.length && this.state.lower_time ?
-        start_options.filter(x => x.value >= this.state.lower_time.value) : [];
       return (
-        <div>
-        { blocked_off_html }
-        <br />
-          {services_checkboxes}
-          <br />
-          <div className="row">
-          <div className="col">
-            <DatePicker
-              minDate={new Date()}
-              filterDate={HasOptionsForDate}
-              selected={this.state.selected_date}
-              onChange={date => this.setDate(date)}
-              dateFormat="EEEE, MMMM dd, y"
-            />
-          </div>
-          <TimeSelection
-            onChange={e => this.onChangeLowerBound(e)}
-            value={this.state.lower_time}
-            optionCaption={"Start"}
-            options={start_options}
-            disabled={!this.state.selected_date}
-            className="col"
+        <Grid item xs={2} key={j}>
+        <Moment format="dddd, MMMM DD, Y" parse={WDateUtils.DATE_STRING_INTERNAL_FORMAT}>{blocked_off[i][j][0]}</Moment>
+        {blocked_off_intervals_html}</Grid>
+      );
+    })
+    return (
+      <div key={i}>
+        <span>{SERVICES[i]}</span>
+        {blocked_off_days_html}
+      </div>
+    );
+  })
+  const start_options = selected_date ?
+    WDateUtils.GetOptionsForDate(blocked_off,
+      SETTINGS.operating_hours,
+      service_selection,
+      parsed_date,
+      SETTINGS.time_step) : [];
+  //TODO : change this to filter all values not in the current interval
+  const end_options = start_options.length && lower_time ?
+    start_options.filter(x => x.value >= lower_time.value) : [];
+  return (
+    <div className={classes.root}>
+      <Paper className={classes.paper}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          Add blocked off time:
+        </Grid>
+        <Grid item xs={8}>
+          <Grid container>{services_checkboxes}</Grid>
+        </Grid>
+        <Grid item xs={4}>
+          <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
+          <DatePicker
+            fullWidth
+            variant="inline"
+            autoOk
+            placeholder={"Select Date"}
+            disableToolbar
+            disablePast
+            shouldDisableDate={e => !HasOptionsForDate(e)}
+            value={selected_date}
+            onChange={date => setDate(date)}
+            format="dddd, MMMM DD, Y"
           />
-          <TimeSelection
-            onChange={e => this.onChangeUpperBound(e)}
-            value={this.state.upper_time}
-            optionCaption={"End"}
-            options={end_options}
-            disabled={!(this.state.selected_date && this.state.lower_time)}
-            className="col"
-          />
-          <button className="btn btn-light" onClick={this.handleSubmit} disabled={!this.state.can_submit}>Add</button>
-          </div>
-        </div>
-      )
-  }
+          </MuiPickersUtilsProvider>
+        </Grid>
+        <Grid item xs={5}>
+        <TimeSelection
+        onChange={e => onChangeLowerBound(e)}
+        value={lower_time}
+        optionCaption={"Start"}
+        options={start_options}
+        disabled={!selected_date}
+        className="col"
+      />
+        </Grid>
+        <Grid item xs={5}>
+        <TimeSelection
+        onChange={e => onChangeUpperBound(e)}
+        value={upper_time}
+        optionCaption={"End"}
+        options={end_options}
+        disabled={!(selected_date && lower_time)}
+        className="col"
+      />
+        </Grid>
+        <Grid item xs={2}><Button className="btn btn-light" onClick={handleSubmit} disabled={!can_submit}>Add</Button></Grid>
+      </Grid>
+      </Paper>
+      <Grid container>
+        <Paper className={classes.paper}>
+          { blocked_off_html }
+        </Paper>
+      </Grid>
+    <br />
+    </div>
+  )
 }
+
+export default BlockOffComp;
