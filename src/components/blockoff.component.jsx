@@ -10,11 +10,20 @@ import DoneIcon from '@material-ui/icons/Done';
 import Button from '@material-ui/core/Button';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import Toolbar from '@material-ui/core/Toolbar';
 import moment from 'moment';
 import MomentUtils from "@date-io/moment";
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { sizing } from '@material-ui/system';
+import AppBar from '@material-ui/core/AppBar';
+import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Container from '@material-ui/core/Container';
+
+
+import App from "../App";
 
 
 
@@ -33,6 +42,16 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
+  },
+  title: {
+    flexGrow: 1,
+  },
+  listLevel0: {
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
+  listLevel1: {
+    paddingLeft: theme.spacing(4),
   },
 }));
 
@@ -132,26 +151,41 @@ const BlockOffComp = ({
     const blocked_off_days_html = blocked_off[i].map((blocked_off_for_day, j) => {
       const blocked_off_intervals_html = blocked_off[i][j][1].map((interval, k) => {
         return (
-          <div key={k}>
-            from&nbsp;
+          <ListItem key={k}>
+            from&nbsp; 
             {WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][0])}
               &nbsp;to&nbsp;
             {WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][1])}
-            <IconButton size="small" aria-label="delete" onClick={() => RemoveInterval(i,j,k)}><HighlightOffIcon /></IconButton>
-          </div>
+            <ListItemSecondaryAction>
+              <IconButton edge="end" size="small" aria-label="delete" onClick={() => RemoveInterval(i,j,k)}>
+                <HighlightOffIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
         );
       })
       return (
-        <Grid item xs={2} key={j}>
+        <Container><ListItem key={j}>
         <Moment format="dddd, MMMM DD, Y" parse={WDateUtils.DATE_STRING_INTERNAL_FORMAT}>{blocked_off[i][j][0]}</Moment>
-        {blocked_off_intervals_html}</Grid>
+        </ListItem>
+        <List component="div" className={classes.listLevel1}>
+          {blocked_off_intervals_html}
+        </List>
+        </Container>
       );
     })
     return (
-      <div key={i}>
-        <span>{SERVICES[i]}</span>
-        {blocked_off_days_html}
-      </div>
+      <Grid key={i} item xs={Math.floor(12/SERVICES.length)}>
+        <Paper className={classes.paper} >
+            <AppBar position="static">
+            <Toolbar><Typography variant="h8" className={classes.title}>
+            {SERVICES[i]}</Typography></Toolbar>
+            </AppBar>
+            <List component="nav" className={classes.listLevel0}>
+              {blocked_off_days_html}
+            </List>
+          </Paper>
+      </Grid>
     );
   })
   const start_options = selected_date ?
@@ -166,9 +200,15 @@ const BlockOffComp = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justify="center">
         <Grid item xs={12}>
-          Add blocked off time:
+        <AppBar position="static">
+          <Toolbar>
+        <Typography variant="h8" className={classes.title}>
+        Add blocked off time:
+          </Typography>
+          </Toolbar>
+          </AppBar>
         </Grid>
         <Grid item xs={8}>
           <Grid container>{services_checkboxes}</Grid>
@@ -212,10 +252,8 @@ const BlockOffComp = ({
         <Grid item xs={2}><Button className="btn btn-light" onClick={handleSubmit} disabled={!can_submit}>Add</Button></Grid>
       </Grid>
       </Paper>
-      <Grid container>
-        <Paper className={classes.paper}>
-          { blocked_off_html }
-        </Paper>
+      <Grid container justify="center" spacing={3}>
+      { blocked_off_html }
       </Grid>
     <br />
     </div>
