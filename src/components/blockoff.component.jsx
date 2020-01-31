@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import TimeSelection from "./timepicker.component";
 import Moment from 'react-moment';
 
-
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
@@ -21,9 +20,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Container from '@material-ui/core/Container';
-
-
-import App from "../App";
+import { ListItemText } from "@material-ui/core";
 
 
 
@@ -55,6 +52,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+
 const ServiceSelectionCheckbox = (props) => {
   const { selected, onChange, service_name } = props;
   return (
@@ -81,6 +79,7 @@ const BlockOffComp = ({
   const [ lower_time, setLowerTime ] = useState(null);
   const [ selected_date, setSelectedDate ] = useState(null);
   const [ parsed_date, setParsedDate ] = useState("");
+  console.log(SERVICES);
   const [ service_selection, setServiceSelection ] = useState(Array(SERVICES.length).fill(true));
   const [ can_submit, setCanSubmit ] = useState(false);
 
@@ -150,12 +149,10 @@ const BlockOffComp = ({
   const blocked_off_html = blocked_off.map((service, i) => {
     const blocked_off_days_html = blocked_off[i].map((blocked_off_for_day, j) => {
       const blocked_off_intervals_html = blocked_off[i][j][1].map((interval, k) => {
+        const from_to = `from ${WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][0])} to ${WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][1])}`;
         return (
           <ListItem key={k}>
-            from&nbsp; 
-            {WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][0])}
-              &nbsp;to&nbsp;
-            {WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][1])}
+            <ListItemText primary={from_to}></ListItemText>
             <ListItemSecondaryAction>
               <IconButton edge="end" size="small" aria-label="delete" onClick={() => RemoveInterval(i,j,k)}>
                 <HighlightOffIcon />
@@ -165,7 +162,7 @@ const BlockOffComp = ({
         );
       })
       return (
-        <Container><ListItem key={j}>
+        <Container key={j}><ListItem>
         <Moment format="dddd, MMMM DD, Y" parse={WDateUtils.DATE_STRING_INTERNAL_FORMAT}>{blocked_off[i][j][0]}</Moment>
         </ListItem>
         <List component="div" className={classes.listLevel1}>
@@ -178,7 +175,7 @@ const BlockOffComp = ({
       <Grid key={i} item xs={Math.floor(12/SERVICES.length)}>
         <Paper className={classes.paper} >
             <AppBar position="static">
-            <Toolbar><Typography variant="h8" className={classes.title}>
+            <Toolbar><Typography variant="subtitle1" className={classes.title}>
             {SERVICES[i]}</Typography></Toolbar>
             </AppBar>
             <List component="nav" className={classes.listLevel0}>
@@ -204,7 +201,7 @@ const BlockOffComp = ({
         <Grid item xs={12}>
         <AppBar position="static">
           <Toolbar>
-        <Typography variant="h8" className={classes.title}>
+        <Typography variant="subtitle1" className={classes.title}>
         Add blocked off time:
           </Typography>
           </Toolbar>

@@ -8,7 +8,7 @@ import { useAuth0 } from "./react-auth0-spa";
 
 
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -54,6 +54,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+
+const theme = createMuiTheme({
+  // palette: {
+  //   type: 'dark',
+  // },
+});
 const WDateUtils = require("@wcp/wcpshared");
 
 const store = "Windy City Pie";
@@ -65,7 +71,7 @@ const App = () => {
   const { loading, getTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [ socket ] = useState(socketIOClient(ENDPOINT, {autoConnect: false, secure: true}));
   const [ SERVICES, setSERVICES ] = useState(["Pick-up", "Dine-In", "Delivery"]);
-  const [ BLOCKED_OFF, setBLOCKED_OFF ] = useState([]);
+  const [ BLOCKED_OFF, setBLOCKED_OFF ] = useState(Array(3).fill([]));
   const [ LEADTIME, setLEADTIME ] = useState([40, 40, 1440]);
   const [ SETTINGS, setSETTINGS ] = useState({
     additional_pizza_lead_time: 5, //to deprecate
@@ -101,17 +107,13 @@ const App = () => {
       getToken();
     }
     if (!loading && !isAuthenticated) { 
-      //loginWithRedirect();      
+      loginWithRedirect();      
     }
   }, [loading, getTokenSilently, socket, isAuthenticated, loginWithRedirect]);
 
   // const onSubmitServices = () => {
   //   socket.emit("WCP_SERVICES", SERVICES);
   // }
-
-  const onSubmitBlockedOff = () => {
-    socket.emit("WCP_BLOCKED_OFF", BLOCKED_OFF);
-  }
 
   const onSubmitSettings = () => {
     socket.emit("WCP_SETTINGS", SETTINGS);
@@ -153,6 +155,7 @@ const App = () => {
         WDateUtils.AddIntervalToService(service_index, parsed_date, interval, new_blocked_off);
       }
     }
+    socket.emit("WCP_BLOCKED_OFF", new_blocked_off);
     setBLOCKED_OFF(new_blocked_off);
   }
 
@@ -163,6 +166,7 @@ const App = () => {
       interval_index,
       BLOCKED_OFF);
       setBLOCKED_OFF(new_blocked_off);
+      socket.emit("WCP_BLOCKED_OFF", new_blocked_off);
   }
 
   const addOperatingHours = (service_index, day_index, interval) => {
@@ -191,6 +195,7 @@ const App = () => {
   }
   
   return (
+    <ThemeProvider theme={theme}>
       <div className={classes.root}>
         <AppBar position="static">
           {!isAuthenticated && <Button onClick={() => loginWithRedirect({})}>Log in</Button>}
@@ -212,7 +217,6 @@ const App = () => {
                 addBlockedOffInterval={addBlockedOffInterval}
                 RemoveInterval={removeBlockedOffInterval}
                 SETTINGS={SETTINGS}
-                onSubmit={onSubmitBlockedOff}
               />
         </TabPanel>
         <TabPanel value={currentTab} index={1}>
@@ -237,6 +241,7 @@ const App = () => {
         </span>
       }
         </div>
+        </ThemeProvider>
     );
   }
 
