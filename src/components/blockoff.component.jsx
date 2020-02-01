@@ -77,16 +77,26 @@ const BlockOffComp = ({
   const classes = useStyles();
   const [ upper_time, setUpperTime ] = useState(null);
   const [ lower_time, setLowerTime ] = useState(null);
-  const [ selected_date, setSelectedDate ] = useState(null);
-  const [ parsed_date, setParsedDate ] = useState("");
-  console.log(SERVICES);
+  const [ selected_date, setSelectedDate ] = useState(new moment());
+  const [ parsed_date, setParsedDate ] = useState(moment().format(WDateUtils.DATE_STRING_INTERNAL_FORMAT));
   const [ service_selection, setServiceSelection ] = useState(Array(SERVICES.length).fill(true));
   const [ can_submit, setCanSubmit ] = useState(false);
+
+  const HasOptionsForDate = (date) => {
+    return WDateUtils.GetOptionsForDate(blocked_off,
+      SETTINGS.operating_hours,
+      service_selection,
+      moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT),
+      SETTINGS.time_step).filter(x => !x.disabled).length
+  }
 
   const onChangeServiceSelection = (_, i) => {
     const new_service_selection = service_selection.slice();
     new_service_selection[i] = !new_service_selection[i];
     setServiceSelection(new_service_selection);
+    if (selected_date && !HasOptionsForDate(selected_date)) {
+      setDate(null);
+    }
   }
 
   const onChangeLowerBound = e => {
@@ -124,17 +134,16 @@ const BlockOffComp = ({
     if (selected_date) {
       const interval = [lower_time.value, upper_time.value];
       addBlockedOffInterval(parsed_date, interval, service_selection);
-      setDate(null);
+      if (!HasOptionsForDate(selected_date)) {
+        setDate(null);
+      }
+      else {
+        setLowerTime(null);
+      }
     }
   }
 
-  const HasOptionsForDate = (date) => {
-    return WDateUtils.GetOptionsForDate(blocked_off,
-      SETTINGS.operating_hours,
-      service_selection,
-      moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT),
-      SETTINGS.time_step).filter(x => !x.disabled).length
-  }
+
   const services_checkboxes = SERVICES.map((x, i) => {
     return (
       <Grid item xs key={i}>
@@ -219,6 +228,7 @@ const BlockOffComp = ({
             placeholder={"Select Date"}
             disableToolbar
             disablePast
+            maxDate={moment().add(60, 'days')}
             shouldDisableDate={e => !HasOptionsForDate(e)}
             value={selected_date}
             onChange={date => setDate(date)}
