@@ -65,11 +65,13 @@ const WDateUtils = require("@wcp/wcpshared");
 const store = "Windy City Pie";
 const ENDPOINT = "http://localhost:4001";
 
+const IO_CLIENT = socketIOClient(ENDPOINT, {autoConnect: false, secure: true, cookie: false});
+
 const App = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = React.useState(0);
   const { loading, getTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const [ socket ] = useState(socketIOClient(ENDPOINT, {autoConnect: false, secure: true}));
+  const [ socket ] = useState(IO_CLIENT);
   const [ SERVICES, setSERVICES ] = useState(["Pick-up", "Dine-In", "Delivery"]);
   const [ BLOCKED_OFF, setBLOCKED_OFF ] = useState(Array(3).fill([]));
   const [ LEADTIME, setLEADTIME ] = useState([40, 40, 1440]);
@@ -193,23 +195,26 @@ const App = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
-  
+  if (!isAuthenticated) {
+    return (
+    <ThemeProvider theme={theme}>
+      <div className={classes.root}>
+        <AppBar position="static"><Button onClick={() => loginWithRedirect({})}>Log in</Button></AppBar>
+      </div>
+    </ThemeProvider> 
+    )
+  }
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.root}>
         <AppBar position="static">
-          {!isAuthenticated && <Button onClick={() => loginWithRedirect({})}>Log in</Button>}
-          {isAuthenticated &&
             <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
               <Tab label="Blocked-Off Times" {...a11yProps(0)} />
               <Tab label="Lead Times" {...a11yProps(1)} />
               <Tab label="Settings" {...a11yProps(2)} />
               <Button color="secondary" onClick={() => logout()}>Log out</Button>
             </Tabs>
-          }
         </AppBar>
-        {isAuthenticated &&
-        <span>
         <TabPanel value={currentTab} index={0}>
           <BlockOffComp
                 SERVICES={SERVICES}
@@ -238,7 +243,6 @@ const App = () => {
               onSubmit={onSubmitSettings}
             />
         </TabPanel>
-        </span>
       }
         </div>
         </ThemeProvider>
