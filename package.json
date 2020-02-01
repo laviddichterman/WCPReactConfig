@@ -10,7 +10,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
-    "@wcp/wcpshared": "^1.0.4",
+    "@wcp/wcpshared": "^1.0.5",
     "bootstrap": "^4.4.1",
     "memoize-one": "^5.1.1",
     "moment": "^2.24.0",
