@@ -138,6 +138,7 @@ const BlockOffComp = ({
       }
       else {
         setLowerTime(null);
+        setUpperTime(null);
       }
     }
   }

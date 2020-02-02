@@ -61,7 +61,8 @@ const theme = createMuiTheme({
 const WDateUtils = require("@wcp/wcpshared");
 
 const store = "Windy City Pie";
-const ENDPOINT = "http://localhost:4001";
+const ENDPOINT = "https://wario.windycitypie.com";
+//const ENDPOINT = "http://localhost:4001";
 
 const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, {autoConnect: false, secure: true, cookie: false});
 const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, {autoConnect: false, secure: true, cookie: false});
