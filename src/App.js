@@ -6,7 +6,6 @@ import LeadTimesComp from "./components/leadtimes.component";
 import SettingsComp from "./components/settings.component";
 import { useAuth0 } from "./react-auth0-spa";
 
-
 import PropTypes from 'prop-types';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,7 +14,6 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -65,13 +63,15 @@ const WDateUtils = require("@wcp/wcpshared");
 const store = "Windy City Pie";
 const ENDPOINT = "http://localhost:4001";
 
-const IO_CLIENT = socketIOClient(ENDPOINT, {autoConnect: false, secure: true, cookie: false});
+const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, {autoConnect: false, secure: true, cookie: false});
+const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, {autoConnect: false, secure: true, cookie: false});
 
 const App = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = React.useState(0);
   const { loading, getTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const [ socket ] = useState(IO_CLIENT);
+  const [ socketAuth ] = useState(IO_CLIENT_AUTH);
+  const [ socketRo ] = useState(IO_CLIENT_RO);
   const [ SERVICES, setSERVICES ] = useState(["Pick-up", "Dine-In", "Delivery"]);
   const [ BLOCKED_OFF, setBLOCKED_OFF ] = useState(Array(3).fill([]));
   const [ LEADTIME, setLEADTIME ] = useState([40, 40, 1440]);
@@ -90,14 +90,14 @@ const App = () => {
     let token;
     const getToken = async () => {
       token = await getTokenSilently();
-      socket.open();
-      socket.on("connect", () => { 
-        socket.emit("authenticate", { token: token })
+      socketAuth.open();
+      socketAuth.on("connect", () => { 
+        socketAuth.emit("authenticate", { token: token })
         .on("authenticated", () => {
-          socket.on("WCP_SERVICES", data => setSERVICES(data));
-          socket.on("WCP_BLOCKED_OFF", data => setBLOCKED_OFF(data));
-          socket.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
-          socket.on("WCP_SETTINGS", data => setSETTINGS(data));
+          // socketAuth.on("WCP_SERVICES", data => setSERVICES(data));
+          // socketAuth.on("WCP_BLOCKED_OFF", data => setBLOCKED_OFF(data));
+          // socketAuth.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
+          // socketAuth.on("WCP_SETTINGS", data => setSETTINGS(data));
         })
         .on("unauthorized", (msg) => {
           console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
@@ -105,24 +105,35 @@ const App = () => {
         });
       });
     }
+
     if (!loading && isAuthenticated) {
       getToken();
     }
     if (!loading && !isAuthenticated) { 
       loginWithRedirect();      
     }
-  }, [loading, getTokenSilently, socket, isAuthenticated, loginWithRedirect]);
+  }, [loading, getTokenSilently, socketAuth, isAuthenticated, loginWithRedirect]);
+
+  useEffect(() => {
+    socketRo.open();
+    socketRo.on("connect", () => {
+      socketRo.on("WCP_SERVICES", data => setSERVICES(data));
+      socketRo.on("WCP_BLOCKED_OFF", data => setBLOCKED_OFF(data));
+      socketRo.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
+      socketRo.on("WCP_SETTINGS", data => setSETTINGS(data));
+    });    
+  }, [socketRo]);
 
   // const onSubmitServices = () => {
   //   socket.emit("WCP_SERVICES", SERVICES);
   // }
 
   const onSubmitSettings = () => {
-    socket.emit("WCP_SETTINGS", SETTINGS);
+    socketAuth.emit("AUTH_SETTINGS", SETTINGS);
   }
 
   const onSubmitLeadTimes = () => {
-    socket.emit("WCP_LEAD_TIMES", LEADTIME);
+    socketAuth.emit("AUTH_LEAD_TIMES", LEADTIME);
   }
 
   const handleChangeTab = (event, newTab) => {
@@ -157,8 +168,8 @@ const App = () => {
         WDateUtils.AddIntervalToService(service_index, parsed_date, interval, new_blocked_off);
       }
     }
-    socket.emit("WCP_BLOCKED_OFF", new_blocked_off);
     setBLOCKED_OFF(new_blocked_off);
+    socketAuth.emit("AUTH_BLOCKED_OFF", new_blocked_off);
   }
 
   const removeBlockedOffInterval = (service_index, day_index, interval_index) => {
@@ -168,7 +179,7 @@ const App = () => {
       interval_index,
       BLOCKED_OFF);
       setBLOCKED_OFF(new_blocked_off);
-      socket.emit("WCP_BLOCKED_OFF", new_blocked_off);
+      socketAuth.emit("AUTH_BLOCKED_OFF", new_blocked_off);
   }
 
   const addOperatingHours = (service_index, day_index, interval) => {
@@ -212,7 +223,7 @@ const App = () => {
               <Tab label="Blocked-Off Times" {...a11yProps(0)} />
               <Tab label="Lead Times" {...a11yProps(1)} />
               <Tab label="Settings" {...a11yProps(2)} />
-              <Button color="secondary" onClick={() => logout()}>Log out</Button>
+              <Tab label="Log Out" component={Button} color="secondary" onClick={() => logout()} />
             </Tabs>
         </AppBar>
         <TabPanel value={currentTab} index={0}>
