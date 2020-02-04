@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, Component } from 'react';
 import Moment from 'react-moment';
 import memoizeOne from 'memoize-one';
 
@@ -7,8 +7,15 @@ import TimeSelection from "./timepicker.component";
 import CheckedInput from "./checked_input.component";
 const WDateUtils = require("@wcp/wcpshared");
 
-class OperatingHoursIntervalForm extends Component {
-  generateOptions = (earliest, latest, step) => {
+const OperatingHoursIntervalForm = ({
+  settings, 
+  interval, 
+  onChangeLowerBound, 
+  onChangeUpperBound,
+  disabled, 
+  onAddOperatingHours
+}) => {
+  const generateOptions = (earliest, latest, step) => {
     var retval = [];
     while (earliest <= latest) {
       retval.push({ value: earliest, label: WDateUtils.MinutesToPrintTime(earliest)});
@@ -16,41 +23,39 @@ class OperatingHoursIntervalForm extends Component {
     }
     return retval;
   }
-  render() {
-    const memoizedGenerateOptions = memoizeOne(this.generateOptions);
-    const start_options = memoizedGenerateOptions(0, 1440-this.props.settings.time_step, this.props.settings.time_step);
-    const end_options = this.props.interval.start ?
-      start_options.filter(x => x.value >= this.props.interval.start.value) : [];
-    return (
-      <div className="container row">
-          <TimeSelection
-            onChange={e => this.props.onChangeLowerBound(e)}
-            value={this.props.interval.start}
-            optionCaption={"Start"}
-            disabled={this.props.disabled}
-            className="col-2"
-            options={start_options}
-            isOptionDisabled={x => false}
-          />
-          <TimeSelection
-            onChange={e => this.props.onChangeUpperBound(e)}
-            value={this.props.interval.end}
-            optionCaption={"End"}
-            disabled={!this.props.interval.start || this.props.disabled}
-            className="col-2"
-            options={end_options}
-            isOptionDisabled={x => false}
-          />
-          <div className="col-1">
-            <button
-              className="btn btn-light"
-              type="button"
-              disabled={!this.props.interval.start || !this.props.interval.end || this.props.disabled}
-              onClick={this.props.onAddOperatingHours}>Add</button>
-          </div>
-      </div>
-    )
-  }
+  const memoizedGenerateOptions = memoizeOne(generateOptions);
+  const start_options = memoizedGenerateOptions(0, 1440-settings.time_step, settings.time_step);
+  const end_options = interval.start ?
+    start_options.filter(x => x.value >= interval.start.value) : [];
+  return (
+    <div className="container row">
+        <TimeSelection
+          onChange={e => onChangeLowerBound(e)}
+          value={interval.start}
+          optionCaption={"Start"}
+          disabled={disabled}
+          className="col-2"
+          options={start_options}
+          isOptionDisabled={x => false}
+        />
+        <TimeSelection
+          onChange={e => onChangeUpperBound(e)}
+          value={interval.end}
+          optionCaption={"End"}
+          disabled={!interval.start || disabled}
+          className="col-2"
+          options={end_options}
+          isOptionDisabled={x => false}
+        />
+        <div className="col-1">
+          <button
+            className="btn btn-light"
+            type="button"
+            disabled={!interval.start || !interval.end || disabled}
+            onClick={onAddOperatingHours}>Add</button>
+        </div>
+    </div>
+  )
 }
 
 export default class SettingsComponent extends Component {
