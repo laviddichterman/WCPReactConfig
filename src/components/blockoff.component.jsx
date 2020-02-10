@@ -89,7 +89,8 @@ const BlockOffComp = ({
       SETTINGS.time_step).filter(x => !x.disabled).length
   }
 
-  const onChangeServiceSelection = (_, i) => {
+  const onChangeServiceSelection = (e, i) => {
+    e.preventDefault();
     const new_service_selection = service_selection.slice();
     new_service_selection[i] = !new_service_selection[i];
     setServiceSelection(new_service_selection);

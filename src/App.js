@@ -133,7 +133,8 @@ const App = () => {
     socketAuth.emit("AUTH_SETTINGS", SETTINGS);
   }
 
-  const onSubmitLeadTimes = () => {
+  const onSubmitLeadTimes = (e) => {
+    e.preventDefault();
     socketAuth.emit("AUTH_LEAD_TIMES", LEADTIME);
   }
 
