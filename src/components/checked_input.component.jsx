@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import TextField from '@material-ui/core/TextField';
+
 
 export default class CheckedInput extends Component {
   static CheckForNumberGTZero(e) {
@@ -21,10 +23,12 @@ export default class CheckedInput extends Component {
 
   render() {
     return (
-      <input
+      <TextField
+        label={this.props.label}
         type={this.props.type}
         className={this.props.className}
         value={this.state.local_value}
+        size="small"
         onChange={(e) => this.setState({local_value:e.target.value})}
         onBlur={() => this.onFinishChanging()}
       />

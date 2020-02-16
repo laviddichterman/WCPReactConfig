@@ -102,7 +102,7 @@ const App = () => {
         })
         .on("unauthorized", (msg) => {
           console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
-          throw new Error(msg.data.type);
+          loginWithRedirect();
         });
       });
     }
@@ -113,7 +113,7 @@ const App = () => {
     if (!loading && !isAuthenticated) { 
       loginWithRedirect();      
     }
-  }, [loading, getTokenSilently, socketAuth, isAuthenticated, loginWithRedirect]);
+  }, [loading, getTokenSilently, socketAuth, isAuthenticated, loginWithRedirect, logout]);
 
   useEffect(() => {
     socketRo.open();
@@ -139,6 +139,7 @@ const App = () => {
   }
 
   const handleChangeTab = (event, newTab) => {
+    event.preventDefault();
     setCurrentTab(newTab);
   };
 
@@ -222,13 +223,18 @@ const App = () => {
       <div className={classes.root}>
         <AppBar position="static">
             <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
-              <Tab label="Blocked-Off Times" {...a11yProps(0)} />
-              <Tab label="Lead Times" {...a11yProps(1)} />
+              <Tab label="Timing Configuration" {...a11yProps(0)} />
               <Tab label="Settings" {...a11yProps(2)} />
               <Tab label="Log Out" component={Button} color="secondary" onClick={() => logout()} />
             </Tabs>
         </AppBar>
         <TabPanel value={currentTab} index={0}>
+          <LeadTimesComp
+              leadtimes={LEADTIME}
+              SERVICES={SERVICES}
+              onChange={onChangeLeadTimes}
+              onSubmit={onSubmitLeadTimes}
+            />
           <BlockOffComp
                 SERVICES={SERVICES}
                 blocked_off={BLOCKED_OFF}
@@ -238,14 +244,6 @@ const App = () => {
               />
         </TabPanel>
         <TabPanel value={currentTab} index={1}>
-        <LeadTimesComp
-              leadtimes={LEADTIME}
-              SERVICES={SERVICES}
-              onChange={onChangeLeadTimes}
-              onSubmit={onSubmitLeadTimes}
-            />
-        </TabPanel>
-        <TabPanel value={currentTab} index={2}>
         <SettingsComp
               SERVICES={SERVICES}
               settings={SETTINGS}

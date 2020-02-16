@@ -25,6 +25,12 @@ import { ListItemText } from "@material-ui/core";
 
 const WDateUtils = require("@wcp/wcpshared");
 
+
+const TrimOptionsBeforeDisabled = (opts) => {
+  const idx = opts.findIndex((elt) => elt.disabled);
+  return idx === -1 ? opts : opts.slice(0, idx);
+}
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -102,7 +108,7 @@ const BlockOffComp = ({
   const onChangeLowerBound = e => {
     let new_upper;
     if (upper_time) {
-      new_upper = upper_time < e.value ? e : upper_time;
+      new_upper = upper_time.value < e.value ? e : upper_time;
     }
     else {
       new_upper = e;
@@ -143,7 +149,6 @@ const BlockOffComp = ({
       }
     }
   }
-
 
   const services_checkboxes = SERVICES.map((x, i) => {
     return (
@@ -203,18 +208,18 @@ const BlockOffComp = ({
       SETTINGS.time_step) : [];
   //TODO : change this to filter all values not in the current interval
   const end_options = start_options.length && lower_time ?
-    start_options.filter(x => x.value >= lower_time.value) : [];
+    TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
       <Grid container spacing={3} justify="center">
         <Grid item xs={12}>
-        <AppBar position="static">
-          <Toolbar>
-        <Typography variant="subtitle1" className={classes.title}>
-        Add blocked off time:
-          </Typography>
-          </Toolbar>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="subtitle1" className={classes.title}>
+                Add blocked off time:
+              </Typography>
+            </Toolbar>
           </AppBar>
         </Grid>
         <Grid item xs={8}>
@@ -242,7 +247,7 @@ const BlockOffComp = ({
         onChange={e => onChangeLowerBound(e)}
         value={lower_time}
         optionCaption={"Start"}
-        options={start_options}
+        options={start_options.filter((elt) => !elt.disabled)}
         disabled={!selected_date}
         className="col"
       />
