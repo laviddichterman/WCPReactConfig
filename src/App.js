@@ -102,7 +102,7 @@ const App = () => {
         })
         .on("unauthorized", (msg) => {
           console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
-          loginWithRedirect();
+          logout();
         });
       });
     }
