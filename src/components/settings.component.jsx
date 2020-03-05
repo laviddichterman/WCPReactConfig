@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Moment from 'react-moment';
 import memoizeOne from 'memoize-one';
 
-import "react-datepicker/dist/react-datepicker.css";
 import TimeSelection from "./timepicker.component";
 import CheckedInputComponent from "./checked_input.component";
 const WDateUtils = require("@wcp/wcpshared");
@@ -12,7 +11,7 @@ const OperatingHoursIntervalForm = ({
   interval, 
   onChangeLowerBound, 
   onChangeUpperBound,
-  disabled, 
+  disabled,
   onAddOperatingHours
 }) => {
   const generateOptions = (earliest, latest, step) => {
