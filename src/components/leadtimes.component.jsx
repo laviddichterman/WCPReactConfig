@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CheckedInput from "./checked_input.component";
+import CheckedInputComponent from "./checked_input.component";
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -41,11 +41,11 @@ const LeadTimesComp = ({
   const leadtime_html = leadtimes.map((x, i) => {
     return (
       <Grid item xs={4} key={i}>
-        <CheckedInput
+        <CheckedInputComponent
           label={SERVICES[i]}
           className="form-control"
           type="number"
-          InputCheckFunction={CheckedInput.CheckForNumberGTZero}
+          //InputCheckFunction={CheckedInputComponent.CheckForNumberGTZero}
           value={x}
           onFinishChanging={(e) => onChange(i, e)}
           />

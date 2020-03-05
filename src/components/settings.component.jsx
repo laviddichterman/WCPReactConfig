@@ -4,7 +4,7 @@ import memoizeOne from 'memoize-one';
 
 import "react-datepicker/dist/react-datepicker.css";
 import TimeSelection from "./timepicker.component";
-import CheckedInput from "./checked_input.component";
+import CheckedInputComponent from "./checked_input.component";
 const WDateUtils = require("@wcp/wcpshared");
 
 const OperatingHoursIntervalForm = ({
@@ -146,20 +146,20 @@ export default class SettingsComponent extends Component {
       <span>
         <div className="row no-gutters form-inline">
           <label>Additional lead time per pizza beyond the first: </label>
-          <CheckedInput
+          <CheckedInputComponent
             type="number"
             className="form-control"
-            InputCheckFunction={CheckedInput.CheckForNumberGTZero}
+            //InputCheckFunction={CheckedInput.CheckForNumberGTZero}
             value={this.props.settings.additional_pizza_lead_time}
             onFinishChanging={this.props.onChangeAdditionalPizzaLeadTime}
           />
         </div>
         <div className="row no-gutters form-inline">
           <label>Time Step: </label>
-          <CheckedInput
+          <CheckedInputComponent
             type="number"
             className="form-control"
-            InputCheckFunction={CheckedInput.CheckForNumberGTZero}
+            //InputCheckFunction={CheckedInput.CheckForNumberGTZero}
             value={this.props.settings.time_step}
             onFinishChanging={this.props.onChangeTimeStep}
           />

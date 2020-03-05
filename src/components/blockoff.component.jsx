@@ -31,6 +31,13 @@ const TrimOptionsBeforeDisabled = (opts) => {
   return idx === -1 ? opts : opts.slice(0, idx);
 }
 
+const TrimOptionsBeforeCurrentDayAndTime = (opts, selected_date) => {
+  const now = new moment();
+  const now_minutes = now.minute() + (now.hour() * 60);
+  return selected_date.isSame(now, "day") ? 
+    opts.filter(x => x.value > now_minutes) : opts;
+}
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -88,11 +95,11 @@ const BlockOffComp = ({
   const [ can_submit, setCanSubmit ] = useState(false);
 
   const HasOptionsForDate = (date) => {
-    return WDateUtils.GetOptionsForDate(blocked_off,
+    return TrimOptionsBeforeCurrentDayAndTime(WDateUtils.GetOptionsForDate(blocked_off,
       SETTINGS.operating_hours,
       service_selection,
       moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT),
-      SETTINGS.time_step).filter(x => !x.disabled).length
+      SETTINGS.time_step), moment(date)).filter(x => !x.disabled).length
   }
 
   const onChangeServiceSelection = (e, i) => {
@@ -201,12 +208,13 @@ const BlockOffComp = ({
     );
   })
   const start_options = selected_date ?
-    WDateUtils.GetOptionsForDate(blocked_off,
-      SETTINGS.operating_hours,
-      service_selection,
-      parsed_date,
-      SETTINGS.time_step) : [];
-  //TODO : change this to filter all values not in the current interval
+    TrimOptionsBeforeCurrentDayAndTime(
+      WDateUtils.GetOptionsForDate(blocked_off,
+        SETTINGS.operating_hours,
+        service_selection,
+        parsed_date,
+        SETTINGS.time_step),
+      selected_date) : [];
   const end_options = start_options.length && lower_time ?
     TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
   return (
