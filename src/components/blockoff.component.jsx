@@ -251,24 +251,24 @@ const BlockOffComp = ({
           </MuiPickersUtilsProvider>
         </Grid>
         <Grid item xs={5}>
-        <TimeSelection
-        onChange={e => onChangeLowerBound(e)}
-        value={lower_time}
-        optionCaption={"Start"}
-        options={start_options.filter((elt) => !elt.disabled)}
-        disabled={!selected_date}
-        className="col"
-      />
+          <TimeSelection
+          onChange={e => onChangeLowerBound(e)}
+          value={lower_time}
+          optionCaption={"Start"}
+          options={start_options.filter((elt) => !elt.disabled)}
+          disabled={!selected_date}
+          className="col"
+          />
         </Grid>
         <Grid item xs={5}>
-        <TimeSelection
-        onChange={e => onChangeUpperBound(e)}
-        value={upper_time}
-        optionCaption={"End"}
-        options={end_options}
-        disabled={!(selected_date && lower_time)}
-        className="col"
-      />
+          <TimeSelection
+          onChange={e => onChangeUpperBound(e)}
+          value={upper_time}
+          optionCaption={"End"}
+          options={end_options}
+          disabled={!(selected_date && lower_time)}
+          className="col"
+          />
         </Grid>
         <Grid item xs={2}><Button className="btn btn-light" onClick={handleSubmit} disabled={!can_submit}>Add</Button></Grid>
       </Grid>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { } from 'react';
 import CheckedInputComponent from "./checked_input.component";
 
 import { makeStyles } from '@material-ui/core/styles';
