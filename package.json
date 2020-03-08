@@ -8,9 +8,9 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.4.1",
+    "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "@wcp/wcpshared": "^1.0.5",
+    "@wcp/wcpshared": "^1.1.0",
     "bootstrap": "^4.4.1",
     "memoize-one": "^5.1.1",
     "moment": "^2.24.0",
@@ -43,7 +43,6 @@
     "eject": "react-scripts eject",
     "deploy:prodbtp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.breezytownpizza.com/",
     "deploy:prodwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.windycitypie.com/"
-
   },
   "eslintConfig": {
     "extends": "react-app"

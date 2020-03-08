@@ -55,23 +55,23 @@ const LeadTimesComp = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-      <Grid container spacing={3} justify="center">
-        <Grid item xs={12}>
-          <AppBar position="static">
-            <Toolbar>
-              <Typography variant="subtitle1" className={classes.title}>
-                Single pizza lead time:
-              </Typography>
-            </Toolbar>
-          </AppBar>
+        <Grid container spacing={3} justify="center">
+          <Grid item xs={12}>
+            <AppBar position="static">
+              <Toolbar>
+                <Typography variant="subtitle1" className={classes.title}>
+                  Single pizza lead time:
+                </Typography>
+              </Toolbar>
+            </AppBar>
+          </Grid>
+          <Grid item xs={10}>
+            <Grid container spacing={3} >{leadtime_html}</Grid>
+          </Grid>
+          <Grid item xs={2}>
+            <Button onClick={onSubmit}>Push Changes</Button>
+          </Grid>
         </Grid>
-        <Grid item xs={10}>
-          <Grid container spacing={3} >{leadtime_html}</Grid>
-        </Grid>
-        <Grid item xs={2}>
-          <Button onClick={onSubmit}>Push Changes</Button>
-        </Grid>
-      </Grid>
       </Paper>
     </div>
     )
