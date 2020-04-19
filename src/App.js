@@ -62,7 +62,6 @@ const theme = createMuiTheme({
 });
 const WDateUtils = require("@wcp/wcpshared");
 
-const store = "Windy City Pie";
 //const ENDPOINT = "https://wario.windycitypie.com";
 //const ENDPOINT = "https://wario.breezytownpizza.com";
 const ENDPOINT = "http://localhost:4001";
@@ -127,6 +126,9 @@ const App = () => {
       socketRo.on("WCP_SETTINGS", data => setSETTINGS(data));
       socketRo.on("WCP_DELIVERY_AREA", data => setDELIVERY_AREA(data));
     });
+    return function() {
+      socketRo.disconnect();
+    };
   }, [socketRo]);
 
   // const onSubmitServices = () => {
