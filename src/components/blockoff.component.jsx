@@ -25,6 +25,19 @@ import { ListItemText } from "@material-ui/core";
 
 const WDateUtils = require("@wcp/wcpshared");
 
+
+const TrimOptionsBeforeDisabled = (opts) => {
+  const idx = opts.findIndex((elt) => elt.disabled);
+  return idx === -1 ? opts : opts.slice(0, idx);
+}
+
+const TrimOptionsBeforeCurrentDayAndTime = (opts, selected_date) => {
+  const now = new moment();
+  const now_minutes = now.minute() + (now.hour() * 60);
+  return selected_date.isSame(now, "day") ? 
+    opts.filter(x => x.value > now_minutes) : opts;
+}
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -82,14 +95,15 @@ const BlockOffComp = ({
   const [ can_submit, setCanSubmit ] = useState(false);
 
   const HasOptionsForDate = (date) => {
-    return WDateUtils.GetOptionsForDate(blocked_off,
+    return TrimOptionsBeforeCurrentDayAndTime(WDateUtils.GetOptionsForDate(blocked_off,
       SETTINGS.operating_hours,
       service_selection,
       moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT),
-      SETTINGS.time_step).filter(x => !x.disabled).length
+      SETTINGS.time_step), moment(date)).filter(x => !x.disabled).length
   }
 
-  const onChangeServiceSelection = (_, i) => {
+  const onChangeServiceSelection = (e, i) => {
+    e.preventDefault();
     const new_service_selection = service_selection.slice();
     new_service_selection[i] = !new_service_selection[i];
     setServiceSelection(new_service_selection);
@@ -101,7 +115,7 @@ const BlockOffComp = ({
   const onChangeLowerBound = e => {
     let new_upper;
     if (upper_time) {
-      new_upper = upper_time < e.value ? e : upper_time;
+      new_upper = upper_time.value < e.value ? e : upper_time;
     }
     else {
       new_upper = e;
@@ -142,7 +156,6 @@ const BlockOffComp = ({
       }
     }
   }
-
 
   const services_checkboxes = SERVICES.map((x, i) => {
     return (
@@ -195,25 +208,26 @@ const BlockOffComp = ({
     );
   })
   const start_options = selected_date ?
-    WDateUtils.GetOptionsForDate(blocked_off,
-      SETTINGS.operating_hours,
-      service_selection,
-      parsed_date,
-      SETTINGS.time_step) : [];
-  //TODO : change this to filter all values not in the current interval
+    TrimOptionsBeforeCurrentDayAndTime(
+      WDateUtils.GetOptionsForDate(blocked_off,
+        SETTINGS.operating_hours,
+        service_selection,
+        parsed_date,
+        SETTINGS.time_step),
+      selected_date) : [];
   const end_options = start_options.length && lower_time ?
-    start_options.filter(x => x.value >= lower_time.value) : [];
+    TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
       <Grid container spacing={3} justify="center">
         <Grid item xs={12}>
-        <AppBar position="static">
-          <Toolbar>
-        <Typography variant="subtitle1" className={classes.title}>
-        Add blocked off time:
-          </Typography>
-          </Toolbar>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="subtitle1" className={classes.title}>
+                Add blocked off time:
+              </Typography>
+            </Toolbar>
           </AppBar>
         </Grid>
         <Grid item xs={8}>
@@ -237,24 +251,24 @@ const BlockOffComp = ({
           </MuiPickersUtilsProvider>
         </Grid>
         <Grid item xs={5}>
-        <TimeSelection
-        onChange={e => onChangeLowerBound(e)}
-        value={lower_time}
-        optionCaption={"Start"}
-        options={start_options}
-        disabled={!selected_date}
-        className="col"
-      />
+          <TimeSelection
+          onChange={e => onChangeLowerBound(e)}
+          value={lower_time}
+          optionCaption={"Start"}
+          options={start_options.filter((elt) => !elt.disabled)}
+          disabled={!selected_date}
+          className="col"
+          />
         </Grid>
         <Grid item xs={5}>
-        <TimeSelection
-        onChange={e => onChangeUpperBound(e)}
-        value={upper_time}
-        optionCaption={"End"}
-        options={end_options}
-        disabled={!(selected_date && lower_time)}
-        className="col"
-      />
+          <TimeSelection
+          onChange={e => onChangeUpperBound(e)}
+          value={upper_time}
+          optionCaption={"End"}
+          options={end_options}
+          disabled={!(selected_date && lower_time)}
+          className="col"
+          />
         </Grid>
         <Grid item xs={2}><Button className="btn btn-light" onClick={handleSubmit} disabled={!can_submit}>Add</Button></Grid>
       </Grid>

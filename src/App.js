@@ -5,6 +5,8 @@ import BlockOffComp from "./components/blockoff.component";
 import LeadTimesComp from "./components/leadtimes.component";
 import MenuComponent from "./components/menu/menu_builder.component";
 import SettingsComp from "./components/settings.component";
+import DeliveryAreaComp from "./components/deliveryarea.component";
+import KeyValuesComponent from "./components/keyvalues.component";
 import { useAuth0 } from "./react-auth0-spa";
 
 import PropTypes from 'prop-types';
@@ -61,60 +63,60 @@ const theme = createMuiTheme({
 });
 const WDateUtils = require("@wcp/wcpshared");
 
-const store = "Windy City Pie";
-const ENDPOINT = "https://wario.windycitypie.com";
-//const ENDPOINT = "http://localhost:4001";
+//const ENDPOINT = "https://wario.windycitypie.com";
+//const ENDPOINT = "https://wario.breezytownpizza.com";
+const ENDPOINT = "http://localhost:4001";
 
-const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, {autoConnect: false, secure: true, cookie: false});
-const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, {autoConnect: false, secure: true, cookie: false});
+const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, { autoConnect: false, secure: true, cookie: false });
+const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false });
 
 const App = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = React.useState(0);
   const { loading, getTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const [ socketAuth ] = useState(IO_CLIENT_AUTH);
-  const [ socketRo ] = useState(IO_CLIENT_RO);
-  const [ SERVICES, setSERVICES ] = useState(["Pick-up", "Dine-In", "Delivery"]);
-  const [ BLOCKED_OFF, setBLOCKED_OFF ] = useState(Array(3).fill([]));
-  const [ LEADTIME, setLEADTIME ] = useState([40, 40, 1440]);
-  const [ SETTINGS, setSETTINGS ] = useState({
+  const [socketAuth] = useState(IO_CLIENT_AUTH);
+  const [socketRo] = useState(IO_CLIENT_RO);
+  const [SERVICES, setSERVICES] = useState(["Pick-up", "Dine-In", "Delivery"]);
+  const [BLOCKED_OFF, setBLOCKED_OFF] = useState(Array(3).fill([]));
+  const [LEADTIME, setLEADTIME] = useState([40, 40, 1440]);
+  const [SETTINGS, setSETTINGS] = useState({
     additional_pizza_lead_time: 5, //to deprecate
     time_step: 15,
     pipeline_info: {
-      baking_pipeline: [{slots:3, time:3}, {slots: 12, time:11}, {slots:10, time:12.5}],
-      transfer_padding: .5},
+      baking_pipeline: [{ slots: 3, time: 3 }, { slots: 12, time: 11 }, { slots: 10, time: 12.5 }],
+      transfer_padding: .5
+    },
     operating_hours: [
-      [[], [], [], [], [], [], []],[[], [], [], [], [], [], []],[[], [], [], [], [], [], []]
+      [[], [], [], [], [], [], []], [[], [], [], [], [], [], []], [[], [], [], [], [], [], []]
     ]
   });
+  const [DELIVERY_AREA, setDELIVERY_AREA] = useState({});
+  const [KEYVALUES, setKEYVALUES] = useState({});
 
   useEffect(() => {
     let token;
     const getToken = async () => {
       token = await getTokenSilently();
       socketAuth.open();
-      socketAuth.on("connect", () => { 
+      socketAuth.on("connect", () => {
         socketAuth.emit("authenticate", { token: token })
-        .on("authenticated", () => {
-          // socketAuth.on("WCP_SERVICES", data => setSERVICES(data));
-          // socketAuth.on("WCP_BLOCKED_OFF", data => setBLOCKED_OFF(data));
-          // socketAuth.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
-          // socketAuth.on("WCP_SETTINGS", data => setSETTINGS(data));
-        })
-        .on("unauthorized", (msg) => {
-          console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
-          throw new Error(msg.data.type);
-        });
+          .on("authenticated", () => {
+            socketAuth.on("AUTH_KEYVALUES", data => setKEYVALUES(data));
+          })
+          .on("unauthorized", (msg) => {
+            console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
+            logout();
+          });
       });
     }
 
     if (!loading && isAuthenticated) {
       getToken();
     }
-    if (!loading && !isAuthenticated) { 
-      loginWithRedirect();      
+    if (!loading && !isAuthenticated) {
+      loginWithRedirect();
     }
-  }, [loading, getTokenSilently, socketAuth, isAuthenticated, loginWithRedirect]);
+  }, [loading, getTokenSilently, socketAuth, isAuthenticated, loginWithRedirect, logout]);
 
   useEffect(() => {
     socketRo.open();
@@ -123,7 +125,11 @@ const App = () => {
       socketRo.on("WCP_BLOCKED_OFF", data => setBLOCKED_OFF(data));
       socketRo.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
       socketRo.on("WCP_SETTINGS", data => setSETTINGS(data));
-    });    
+      socketRo.on("WCP_DELIVERY_AREA", data => setDELIVERY_AREA(data));
+    });
+    return function() {
+      socketRo.disconnect();
+    };
   }, [socketRo]);
 
   // const onSubmitServices = () => {
@@ -134,11 +140,21 @@ const App = () => {
     socketAuth.emit("AUTH_SETTINGS", SETTINGS);
   }
 
-  const onSubmitLeadTimes = () => {
+  const onSubmitDeliveryArea = () => {
+    socketAuth.emit("AUTH_DELIVERY_AREA", DELIVERY_AREA);
+  }
+
+  const onSubmitKeyValues = () => {
+    socketAuth.emit("AUTH_KEYVALUES", KEYVALUES);
+  }
+
+  const onSubmitLeadTimes = (e) => {
+    e.preventDefault();
     socketAuth.emit("AUTH_LEAD_TIMES", LEADTIME);
   }
 
   const handleChangeTab = (event, newTab) => {
+    event.preventDefault();
     setCurrentTab(newTab);
   };
 
@@ -180,8 +196,8 @@ const App = () => {
       day_index,
       interval_index,
       BLOCKED_OFF);
-      setBLOCKED_OFF(new_blocked_off);
-      socketAuth.emit("AUTH_BLOCKED_OFF", new_blocked_off);
+    setBLOCKED_OFF(new_blocked_off);
+    socketAuth.emit("AUTH_BLOCKED_OFF", new_blocked_off);
   }
 
   const addOperatingHours = (service_index, day_index, interval) => {
@@ -205,67 +221,79 @@ const App = () => {
     setSETTINGS(new_settings);
   }
 
+  const removeKeyValuePair = (key) => {
+    const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
+    delete new_dict[key];
+    setKEYVALUES(new_dict);
+  }
+  const addNewKeyValuePair = (key, value) => {
+    const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
+    new_dict[key] = value;
+    setKEYVALUES(new_dict);
+  }
+
   if (loading) {
     return <div>Loading...</div>;
   }
   if (!isAuthenticated) {
     return (
-    <ThemeProvider theme={theme}>
-      <div className={classes.root}>
-        <AppBar position="static"><Button onClick={() => loginWithRedirect({})}>Log in</Button></AppBar>
-      </div>
-    </ThemeProvider> 
+      <ThemeProvider theme={theme}>
+        <div className={classes.root}>
+          <AppBar position="static"><Button onClick={() => loginWithRedirect({})}>Log in</Button></AppBar>
+        </div>
+      </ThemeProvider>
     )
   }
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.root}>
         <AppBar position="static">
-            <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
-              <Tab label="Blocked-Off Times" {...a11yProps(0)} />
-              <Tab label="Lead Times" {...a11yProps(1)} />
-              <Tab label="Menu" {...a11yProps(2)} />
-              <Tab label="Settings" {...a11yProps(3)} />
-              <Tab label="Log Out" component={Button} color="secondary" onClick={() => logout()} />
-            </Tabs>
+          <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
+            <Tab label="Timing Configuration" {...a11yProps(0)} />
+            <Tab label="Settings" {...a11yProps(2)} />
+            <Tab label="Log Out" component={Button} color="secondary" onClick={() => logout()} />
+          </Tabs>
         </AppBar>
         <TabPanel value={currentTab} index={0}>
+          <LeadTimesComp
+            leadtimes={LEADTIME}
+            SERVICES={SERVICES}
+            onChange={onChangeLeadTimes}
+            onSubmit={onSubmitLeadTimes}
+          />
           <BlockOffComp
-                SERVICES={SERVICES}
-                blocked_off={BLOCKED_OFF}
-                addBlockedOffInterval={addBlockedOffInterval}
-                RemoveInterval={removeBlockedOffInterval}
-                SETTINGS={SETTINGS}
-              />
+            SERVICES={SERVICES}
+            blocked_off={BLOCKED_OFF}
+            addBlockedOffInterval={addBlockedOffInterval}
+            RemoveInterval={removeBlockedOffInterval}
+            SETTINGS={SETTINGS}
+          />
         </TabPanel>
         <TabPanel value={currentTab} index={1}>
-        <LeadTimesComp
-              leadtimes={LEADTIME}
-              SERVICES={SERVICES}
-              onChange={onChangeLeadTimes}
-              onSubmit={onSubmitLeadTimes}
-            />
+          <SettingsComp
+            SERVICES={SERVICES}
+            settings={SETTINGS}
+            onChangeTimeStep={onChangeTimeStep}
+            onChangeAdditionalPizzaLeadTime={onChangeAdditionalPizzaLeadTime}
+            onAddOperatingHours={addOperatingHours}
+            onRemoveOperatingHours={removeOperatingHours}
+            onSubmit={onSubmitSettings}
+          />
+          <DeliveryAreaComp
+            DELIVERY_AREA={DELIVERY_AREA}
+            onChange={e => setDELIVERY_AREA(e)}
+            onSubmit={onSubmitDeliveryArea}
+          />
+          <KeyValuesComponent
+            KEYVALUES={KEYVALUES}
+            onRemoveKeyValuePair={removeKeyValuePair}
+            onAddNewKeyValuePair={addNewKeyValuePair}
+            onSubmit={onSubmitKeyValues}
+          />
         </TabPanel>
-        <TabPanel value={currentTab} index={2}>
-        <MenuComponent
-              
-            />
-        </TabPanel>
-        <TabPanel value={currentTab} index={3}>
-        <SettingsComp
-              SERVICES={SERVICES}
-              settings={SETTINGS}
-              onChangeTimeStep={onChangeTimeStep}
-              onChangeAdditionalPizzaLeadTime={onChangeAdditionalPizzaLeadTime}
-              onAddOperatingHours={addOperatingHours}
-              onRemoveOperatingHours={removeOperatingHours}
-              onSubmit={onSubmitSettings}
-            />
-        </TabPanel>
-      }
-        </div>
-        </ThemeProvider>
-    );
-  }
+      </div>
+    </ThemeProvider>
+  );
+}
 
 export default App;

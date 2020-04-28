@@ -15,11 +15,10 @@
     "memoize-one": "^5.1.1",
     "moment": "^2.24.0",
     "react": "^16.13.1",
-    "react-datepicker": "^2.14.1",
     "react-dom": "^16.13.1",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^3.4.1",
     "react-select": "^3.1.0",
     "socket.io-client": "^2.3.0"
   },
@@ -36,13 +35,14 @@
   "bugs": {
     "url": "https://github.com/laviddichterman/WCPReactConfig/issues"
   },
-  "homepage": "https://wario.windycitypie.com",
+  "homepage": ".",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy:prod": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.windycitypie.com/"
+    "deploy:prodbtp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.breezytownpizza.com/",
+    "deploy:prodwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.windycitypie.com/"
   },
   "eslintConfig": {
     "extends": "react-app"
