@@ -3,7 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import socketIOClient from "socket.io-client";
 import BlockOffComp from "./components/blockoff.component";
 import LeadTimesComp from "./components/leadtimes.component";
-import MenuComponent from "./components/menu/menu_builder.component";
+import MenuBuilderComponent from "./components/menu/menu_builder.component";
+import StoreCreditComponent from "./components/store_credit.component";
 import SettingsComp from "./components/settings.component";
 import DeliveryAreaComp from "./components/deliveryarea.component";
 import KeyValuesComponent from "./components/keyvalues.component";
@@ -19,7 +20,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 
 function TabPanel(props) {
-  const { children, value, in   dex, ...other } = props;
+  const { children, value, index, ...other } = props;
 
   return (
     <Typography
@@ -64,8 +65,8 @@ const theme = createMuiTheme({
 const WDateUtils = require("@wcp/wcpshared");
 
 //const ENDPOINT = "https://wario.windycitypie.com";
-//const ENDPOINT = "https://wario.breezytownpizza.com";
-const ENDPOINT = "http://localhost:4001";
+const ENDPOINT = "https://wario.breezytownpizza.com";
+//const ENDPOINT = "http://localhost:4001";
 
 const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, { autoConnect: false, secure: true, cookie: false });
 const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false });
@@ -250,7 +251,9 @@ const App = () => {
         <AppBar position="static">
           <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
             <Tab label="Timing Configuration" {...a11yProps(0)} />
-            <Tab label="Settings" {...a11yProps(2)} />
+            <Tab label="Store Credit" {...a11yProps(1)} />
+            <Tab label="Menu" {...a11yProps(2)} />
+            <Tab label="Settings" {...a11yProps(3)} />
             <Tab label="Log Out" component={Button} color="secondary" onClick={() => logout()} />
           </Tabs>
         </AppBar>
@@ -270,6 +273,20 @@ const App = () => {
           />
         </TabPanel>
         <TabPanel value={currentTab} index={1}>
+          <StoreCreditComponent
+            ENDPOINT={ENDPOINT}
+          />
+        </TabPanel>
+        <TabPanel value={currentTab} index={2}>
+          <MenuBuilderComponent
+            SERVICES={SERVICES}
+            blocked_off={BLOCKED_OFF}
+            addBlockedOffInterval={addBlockedOffInterval}
+            RemoveInterval={removeBlockedOffInterval}
+            SETTINGS={SETTINGS}
+          />
+        </TabPanel>
+        <TabPanel value={currentTab} index={3}>
           <SettingsComp
             SERVICES={SERVICES}
             settings={SETTINGS}

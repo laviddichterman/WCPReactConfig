@@ -51,15 +51,48 @@ const useStyles = makeStyles(theme => ({
 
 
 
-const MenuBuilder = ({
+const MenuBuilderComponent = ({
 }) => {
   const classes = useStyles();
   const [ can_submit, setCanSubmit ] = useState(false);
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  }
 
+    // if (!isProcessing) {
+    //   setIsProcessing(true);
+    //   try {
+    //     const token = await getTokenSilently();
+    //     const response = await fetch(`${ENDPOINT}/api/v1/payments/storecredit/discount`, {
+    //       method: "POST",
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         'Content-Type': 'application/json'
+    //       },
+    //       body: JSON.stringify({ 
+    //         amount: amount,
+    //         recipient_name_first: firstName,
+    //         recipient_name_last: lastName,
+    //         recipient_email: recipientEmail,
+    //         added_by: addedBy,
+    //         reason: reason,
+    //         expiration: expiration && expiration.isValid() ? expiration.format(WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
+    //       })
+    //     });  
+    //     console.log(JSON.stringify(response));
+    //     setAddedBy("");
+    //     setReason("");
+    //     setFirstName("");
+    //     setLastName("");
+    //     setRecipientEmail("");
+    //     setRecipientEmailError(false);
+    //     setIsProcessing(false);
+    //   } catch (error) {
+    //     console.error(error);
+    //     setIsProcessing(false);
+    //   }
+    //}
+  }
 
   return (
     <div className={classes.root}>
@@ -96,4 +129,4 @@ const MenuBuilder = ({
   )
 }
 
-export default MenuBuilder;
+export default MenuBuilderComponent;
