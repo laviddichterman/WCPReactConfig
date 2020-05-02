@@ -65,8 +65,8 @@ const theme = createMuiTheme({
 const WDateUtils = require("@wcp/wcpshared");
 
 //const ENDPOINT = "https://wario.windycitypie.com";
-const ENDPOINT = "https://wario.breezytownpizza.com";
-//const ENDPOINT = "http://localhost:4001";
+//const ENDPOINT = "https://wario.breezytownpizza.com";
+const ENDPOINT = "http://localhost:4001";
 
 const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, { autoConnect: false, secure: true, cookie: false });
 const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false });
@@ -93,6 +93,7 @@ const App = () => {
   });
   const [DELIVERY_AREA, setDELIVERY_AREA] = useState({});
   const [KEYVALUES, setKEYVALUES] = useState({});
+  const [CATALOG_CATEGORIES, setCATALOG_CATEGORIES] = useState([]);
 
   useEffect(() => {
     let token;
@@ -127,6 +128,7 @@ const App = () => {
       socketRo.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
       socketRo.on("WCP_SETTINGS", data => setSETTINGS(data));
       socketRo.on("WCP_DELIVERY_AREA", data => setDELIVERY_AREA(data));
+      socketRo.on("WCP_CATALOG_CATEGORIES", data => setCATALOG_CATEGORIES(data));
     });
     return function() {
       socketRo.disconnect();
@@ -279,11 +281,7 @@ const App = () => {
         </TabPanel>
         <TabPanel value={currentTab} index={2}>
           <MenuBuilderComponent
-            SERVICES={SERVICES}
-            blocked_off={BLOCKED_OFF}
-            addBlockedOffInterval={addBlockedOffInterval}
-            RemoveInterval={removeBlockedOffInterval}
-            SETTINGS={SETTINGS}
+            categories={CATALOG_CATEGORIES}
           />
         </TabPanel>
         <TabPanel value={currentTab} index={3}>
