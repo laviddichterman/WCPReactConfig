@@ -1,27 +1,21 @@
 import React, { useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Chip from "@material-ui/core/Chip";
-import IconButton from "@material-ui/core/IconButton";
-import DoneIcon from "@material-ui/icons/Done";
 import Button from "@material-ui/core/Button";
-import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Toolbar from "@material-ui/core/Toolbar";
-import moment from "moment";
-import MomentUtils from "@date-io/moment";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+
 import Container from "@material-ui/core/Container";
-import { ListItemText } from "@material-ui/core";
+
 import TextField from "@material-ui/core/TextField";
 
 import { useAuth0 } from "../../react-auth0-spa";
+import CategoryComponent from "./category.component";
 
 
 
@@ -53,54 +47,19 @@ const useStyles = makeStyles((theme) => ({
 
 const MenuBuilderComponent = ({ENDPOINT, categories}) => {
   const classes = useStyles();
-  const [description, setDescription] = useState("");
-  const [name, setName] = useState("");
-  const [parentId, setParentId] = useState("");
-  const [isProcessingAddCategory, setIsProcessingAddCategory] = useState(false);
-  const { getTokenSilently } = useAuth0();
-
-
-  const addCategory = async (e) => {
-    e.preventDefault();
-
-    if (!isProcessingAddCategory) {
-      setIsProcessingAddCategory(true);
-      try {
-        const token = await getTokenSilently();
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/category`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            description: description,
-            name: name,
-            parent_id: parentId
-          })
-        });
-        console.log(JSON.stringify(response));
-        setDescription("");
-        setName("");
-        setParentId("");
-        setIsProcessingAddCategory(false);
-      } catch (error) {
-        console.error(error);
-        setIsProcessingAddCategory(false);
-      }
-    }
-  };
+  //const { getTokenSilently } = useAuth0();
   const categories_html = categories.map((category, i) => {
-      return (
-        <Container key={i}><ListItem>
-        {category.name}
-        </ListItem>
-        <List component="div" className={classes.listLevel1}>
-          {category.description}
-        </List>
-        </Container>
-      );
-  })
+    return (
+      <Container key={i}><ListItem>
+      {category.name}
+      </ListItem>
+      <List component="div" className={classes.listLevel1}>
+        {category.description}
+      </List>
+      </Container>
+    );
+})
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -109,43 +68,13 @@ const MenuBuilderComponent = ({ENDPOINT, categories}) => {
             <AppBar position="static">
               <Toolbar>
                 <Typography variant="subtitle1" className={classes.title}>
-                  SOmething menuy:
+                  Menu builder:
                 </Typography>
               </Toolbar>
             </AppBar>
           </Grid>
-          <Grid item xs={8}>
-            <Grid container></Grid>
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Category Name"
-              type="text"
-              inputProps={{ size: 30 }}
-              value={name}
-              size="small"
-              onChange={(e) => setName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={5}>
-            <TextField
-              label="Category Description"
-              type="text"
-              inputProps={{ size: 40 }}
-              value={description}
-              size="small"
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={5}></Grid>
-          <Grid item xs={2}>
-            <Button
-              className="btn btn-light"
-              onClick={addCategory}
-              disabled={name.length === 0 || description.length === 0}
-            >
-              Add
-            </Button>
+          <Grid item xs={12}>
+            <CategoryComponent ENDPOINT={ENDPOINT} categories={categories} />
           </Grid>
         </Grid>
       </Paper>
@@ -153,11 +82,29 @@ const MenuBuilderComponent = ({ENDPOINT, categories}) => {
       <Paper className={classes.paper} >
             <AppBar position="static">
             <Toolbar><Typography variant="subtitle1" className={classes.title}>
-            Categories</Typography></Toolbar>
+            Catalog Tree View</Typography></Toolbar>
             </AppBar>
-            <List component="nav" className={classes.listLevel0}>
-              {categories_html}
-            </List>
+            {/* <TreeView
+              className={classes.root}
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              multiSelect
+            >
+              <TreeItem nodeId="1" label="Applications">
+                <TreeItem nodeId="2" label="Calendar" />
+                <TreeItem nodeId="3" label="Chrome" />
+                <TreeItem nodeId="4" label="Webstorm" />
+              </TreeItem>
+              <TreeItem nodeId="5" label="Documents">
+                <TreeItem nodeId="6" label="Material-UI">
+                  <TreeItem nodeId="7" label="src">
+                    <TreeItem nodeId="8" label="index.js" />
+                    <TreeItem nodeId="9" label="tree-view.js" />
+                  </TreeItem>
+                </TreeItem>
+              </TreeItem>
+            </TreeView> */}
+
           </Paper>
       </Grid>
       <br />
