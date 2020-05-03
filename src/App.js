@@ -282,6 +282,7 @@ const App = () => {
         <TabPanel value={currentTab} index={2}>
           <MenuBuilderComponent
             categories={CATALOG_CATEGORIES}
+            ENDPOINT={ENDPOINT}
           />
         </TabPanel>
         <TabPanel value={currentTab} index={3}>

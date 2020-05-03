@@ -21,6 +21,9 @@ import Container from "@material-ui/core/Container";
 import { ListItemText } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 
+import { useAuth0 } from "../../react-auth0-spa";
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,51 +51,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MenuBuilderComponent = ({categories}) => {
+const MenuBuilderComponent = ({ENDPOINT, categories}) => {
   const classes = useStyles();
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [parentId, setParentId] = useState("");
-  const [can_submit, setCanSubmit] = useState(false);
+  const [isProcessingAddCategory, setIsProcessingAddCategory] = useState(false);
+  const { getTokenSilently } = useAuth0();
 
-  const handleSubmit = async (e) => {
+
+  const addCategory = async (e) => {
     e.preventDefault();
 
-    // if (!isProcessing) {
-    //   setIsProcessing(true);
-    //   try {
-    //     const token = await getTokenSilently();
-    //     const response = await fetch(`${ENDPOINT}/api/v1/payments/storecredit/discount`, {
-    //       method: "POST",
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         'Content-Type': 'application/json'
-    //       },
-    //       body: JSON.stringify({
-    //         amount: amount,
-    //         recipient_name_first: firstName,
-    //         recipient_name_last: lastName,
-    //         recipient_email: recipientEmail,
-    //         added_by: addedBy,
-    //         reason: reason,
-    //         expiration: expiration && expiration.isValid() ? expiration.format(WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
-    //       })
-    //     });
-    //     console.log(JSON.stringify(response));
-    //     setAddedBy("");
-    //     setReason("");
-    //     setFirstName("");
-    //     setLastName("");
-    //     setRecipientEmail("");
-    //     setRecipientEmailError(false);
-    //     setIsProcessing(false);
-    //   } catch (error) {
-    //     console.error(error);
-    //     setIsProcessing(false);
-    //   }
-    //}
+    if (!isProcessingAddCategory) {
+      setIsProcessingAddCategory(true);
+      try {
+        const token = await getTokenSilently();
+        const response = await fetch(`${ENDPOINT}/api/v1/menu/category`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            description: description,
+            name: name,
+            parent_id: parentId
+          })
+        });
+        console.log(JSON.stringify(response));
+        setDescription("");
+        setName("");
+        setParentId("");
+        setIsProcessingAddCategory(false);
+      } catch (error) {
+        console.error(error);
+        setIsProcessingAddCategory(false);
+      }
+    }
   };
-
+  const categories_html = categories.map((category, i) => {
+      return (
+        <Container key={i}><ListItem>
+        {category.name}
+        </ListItem>
+        <List component="div" className={classes.listLevel1}>
+          {category.description}
+        </List>
+        </Container>
+      );
+  })
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -133,15 +141,25 @@ const MenuBuilderComponent = ({categories}) => {
           <Grid item xs={2}>
             <Button
               className="btn btn-light"
-              onClick={handleSubmit}
-              disabled={!can_submit}
+              onClick={addCategory}
+              disabled={name.length === 0 || description.length === 0}
             >
               Add
             </Button>
           </Grid>
         </Grid>
       </Paper>
-      <Grid container justify="center" spacing={3}></Grid>
+      <Grid container justify="center" spacing={3}>
+      <Paper className={classes.paper} >
+            <AppBar position="static">
+            <Toolbar><Typography variant="subtitle1" className={classes.title}>
+            Categories</Typography></Toolbar>
+            </AppBar>
+            <List component="nav" className={classes.listLevel0}>
+              {categories_html}
+            </List>
+          </Paper>
+      </Grid>
       <br />
     </div>
   );
