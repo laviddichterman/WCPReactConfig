@@ -20,10 +20,9 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Container from "@material-ui/core/Container";
 import { ListItemText } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import { useAuth0 } from "../../react-auth0-spa";
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,14 +50,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CategoryComponent = ({ENDPOINT}) => {
+const CategoryComponent = ({ ENDPOINT, categories }) => {
   const classes = useStyles();
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
-  const [parentId, setParentId] = useState("");
+  const [parent, setParent] = useState(null);
+  const [parentName, setParentName] = useState("");
   const [isProcessingAddCategory, setIsProcessingAddCategory] = useState(false);
   const { getTokenSilently } = useAuth0();
-
 
   const addCategory = async (e) => {
     e.preventDefault();
@@ -71,18 +70,19 @@ const CategoryComponent = ({ENDPOINT}) => {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             description: description,
             name: name,
-            parent_id: parentId
-          })
+            parent_id: parent ? parent._id : "",
+          }),
         });
         console.log(JSON.stringify(response));
         setDescription("");
         setName("");
-        setParentId("");
+        setParent(null);
+        setParentName("");
         setIsProcessingAddCategory(false);
       } catch (error) {
         console.error(error);
@@ -125,13 +125,17 @@ const CategoryComponent = ({ENDPOINT}) => {
             />
           </Grid>
           <Grid item xs={7}>
-            <TextField
-              label="Parent Category (Optional)"
-              type="text"
-              inputProps={{ size: 40 }}
-              value={parentId}
-              size="small"
-              onChange={(e) => setParentId(e.target.value)}
+            <Autocomplete
+              options={categories}
+              value={parent}
+              onChange={(e, v) => setParent(v)}
+              inputValue={parentName}
+              onInputChange={(e, v) => setParentName(v)}
+              getOptionLabel={(option) => option.name}
+              style={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Parent Category (Optional)" />
+              )}
             />
           </Grid>
           <Grid item xs={2}>
