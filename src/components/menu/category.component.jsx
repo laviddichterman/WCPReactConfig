@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CategoryComponent = ({ENDPOINT, categories}) => {
+const CategoryComponent = ({ENDPOINT}) => {
   const classes = useStyles();
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");

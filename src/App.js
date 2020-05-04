@@ -94,6 +94,10 @@ const App = () => {
   const [DELIVERY_AREA, setDELIVERY_AREA] = useState({});
   const [KEYVALUES, setKEYVALUES] = useState({});
   const [CATALOG_CATEGORIES, setCATALOG_CATEGORIES] = useState([]);
+  const [CATALOG_OPTION_TYPES, setCATALOG_OPTION_TYPES] = useState([]);
+  const [CATALOG_OPTIONS, setCATALOG_OPTIONS] = useState([]);
+  const [CATALOG_PRODUCTS, setCATALOG_PRODUCTS] = useState([]);
+  const [CATALOG_PRODUCT_INSTANCES, setCATALOG_PRODUCT_INSTANCES] = useState([]);
 
   useEffect(() => {
     let token;
@@ -129,6 +133,10 @@ const App = () => {
       socketRo.on("WCP_SETTINGS", data => setSETTINGS(data));
       socketRo.on("WCP_DELIVERY_AREA", data => setDELIVERY_AREA(data));
       socketRo.on("WCP_CATALOG_CATEGORIES", data => setCATALOG_CATEGORIES(data));
+      socketRo.on("WCP_CATALOG_OPTION_TYPES", data => setCATALOG_OPTION_TYPES(data));
+      socketRo.on("WCP_CATALOG_OPTIONS", data => setCATALOG_OPTIONS(data));
+      socketRo.on("WCP_CATALOG_PRODUCTS", data => setCATALOG_PRODUCTS(data));
+      socketRo.on("WCP_CATALOG_PRODUCT_INSTANCES", data => setCATALOG_PRODUCT_INSTANCES(data));
     });
     return function() {
       socketRo.disconnect();
@@ -282,6 +290,8 @@ const App = () => {
         <TabPanel value={currentTab} index={2}>
           <MenuBuilderComponent
             categories={CATALOG_CATEGORIES}
+            option_types={CATALOG_OPTION_TYPES}
+            options={CATALOG_OPTIONS}
             ENDPOINT={ENDPOINT}
           />
         </TabPanel>

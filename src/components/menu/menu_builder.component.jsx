@@ -9,15 +9,16 @@ import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-
 import Container from "@material-ui/core/Container";
-
 import TextField from "@material-ui/core/TextField";
+import TreeView from "@material-ui/lab/TreeView";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import TreeItem from "@material-ui/lab/TreeItem";
 
 import { useAuth0 } from "../../react-auth0-spa";
 import CategoryComponent from "./category.component";
-
-
+import OptionComponent from "./option.component";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,6 +28,11 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: theme.spacing(0.5),
     },
+  },
+  category_tree: {
+    height: 110,
+    flexGrow: 1,
+    maxWidth: 400,
   },
   paper: {
     padding: theme.spacing(2),
@@ -45,21 +51,49 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MenuBuilderComponent = ({ENDPOINT, categories}) => {
-  const classes = useStyles();
-  //const { getTokenSilently } = useAuth0();
-  const categories_html = categories.map((category, i) => {
-    return (
-      <Container key={i}><ListItem>
-      {category.name}
-      </ListItem>
-      <List component="div" className={classes.listLevel1}>
-        {category.description}
-      </List>
-      </Container>
-    );
-})
+// each node is { category, children }
+// TODO: memoize this
+const categories_list_to_dict = (categories) => {
+  const category_dict = {};
+  categories.map((curr, i) => {
+    category_dict[curr._id] = { category: curr, children: [] };
+  });
+  for (var i = 0; i < categories.length; ++i) {
+    if (categories[i].parent_id.length > 0) {
+      category_dict[categories[i].parent_id].children.push(categories[i]._id);
+    }
+  }
+  return category_dict;
+};
 
+const MenuBuilderComponent = ({ ENDPOINT, categories, options, option_types }) => {
+  const classes = useStyles();
+  console.log(JSON.stringify(categories));
+  //const { getTokenSilently } = useAuth0();
+
+  const categories_dict = categories_list_to_dict(categories);
+  const renderTree = (node) => {
+    const children_html = node.children.map((child, i) => {
+      return renderTree(categories_dict[child]);
+    });
+    return (
+      <TreeItem
+        nodeId={node.category._id}
+        key={node.category._id}
+        label={node.category.name}
+      >
+        {node.category.description}
+        {children_html}
+      </TreeItem>
+    );
+  };
+
+  const categories_html = categories.map((category, i) => {
+    if (category.parent_id != "") {
+      return null;
+    }
+    return renderTree(categories_dict[category._id]);
+  });
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -76,36 +110,31 @@ const MenuBuilderComponent = ({ENDPOINT, categories}) => {
           <Grid item xs={12}>
             <CategoryComponent ENDPOINT={ENDPOINT} categories={categories} />
           </Grid>
+          <Grid item xs={12}>
+            <OptionComponent ENDPOINT={ENDPOINT} options={options} option_types={option_types} />
+          </Grid>
         </Grid>
       </Paper>
       <Grid container justify="center" spacing={3}>
-      <Paper className={classes.paper} >
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
             <AppBar position="static">
-            <Toolbar><Typography variant="subtitle1" className={classes.title}>
-            Catalog Tree View</Typography></Toolbar>
+              <Toolbar>
+                <Typography variant="subtitle1" className={classes.title}>
+                  Catalog Tree View
+                </Typography>
+              </Toolbar>
             </AppBar>
-            {/* <TreeView
-              className={classes.root}
+            <TreeView
+              className={classes.category_tree}
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               multiSelect
             >
-              <TreeItem nodeId="1" label="Applications">
-                <TreeItem nodeId="2" label="Calendar" />
-                <TreeItem nodeId="3" label="Chrome" />
-                <TreeItem nodeId="4" label="Webstorm" />
-              </TreeItem>
-              <TreeItem nodeId="5" label="Documents">
-                <TreeItem nodeId="6" label="Material-UI">
-                  <TreeItem nodeId="7" label="src">
-                    <TreeItem nodeId="8" label="index.js" />
-                    <TreeItem nodeId="9" label="tree-view.js" />
-                  </TreeItem>
-                </TreeItem>
-              </TreeItem>
-            </TreeView> */}
-
+              {categories_html}
+            </TreeView>
           </Paper>
+        </Grid>
       </Grid>
       <br />
     </div>
