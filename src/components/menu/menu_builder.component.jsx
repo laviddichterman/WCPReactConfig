@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -14,11 +14,60 @@ import TextField from "@material-ui/core/TextField";
 import TreeView from "@material-ui/lab/TreeView";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import Hidden from '@material-ui/core/Hidden';
+
+
 import TreeItem from "@material-ui/lab/TreeItem";
+import MaterialTable from "material-table";
 
 import { useAuth0 } from "../../react-auth0-spa";
 import CategoryComponent from "./category.component";
-import OptionComponent from "./option.component";
+import OptionTypeAdderComponent from "./option_type_adder.component";
+
+import {
+  AddBox,
+  ArrowDownward,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clear,
+  DeleteOutline,
+  Edit,
+  FilterList,
+  FirstPage,
+  LastPage,
+  Remove,
+  SaveAlt,
+  Search,
+  ViewColumn,
+  ExpandLess,
+  ExpandMore,
+} from "@material-ui/icons";
+const tableIcons = {
+  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => (
+    <ChevronRight {...props} ref={ref} />
+  )),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => (
+    <ChevronLeft {...props} ref={ref} />
+  )),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
+  ExpandLess: forwardRef((props, ref) => <ExpandLess {...props} ref={ref} />),
+  ExpandMore: forwardRef((props, ref) => <ExpandMore {...props} ref={ref} />),
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,34 +115,17 @@ const categories_list_to_dict = (categories) => {
   return category_dict;
 };
 
-const MenuBuilderComponent = ({ ENDPOINT, categories, options, option_types }) => {
+const MenuBuilderComponent = ({
+  ENDPOINT,
+  categories,
+  options,
+  option_types,
+  products,
+  product_instances,
+}) => {
   const classes = useStyles();
-  console.log(JSON.stringify(categories));
   //const { getTokenSilently } = useAuth0();
 
-  const categories_dict = categories_list_to_dict(categories);
-  const renderTree = (node) => {
-    const children_html = node.children.map((child, i) => {
-      return renderTree(categories_dict[child]);
-    });
-    return (
-      <TreeItem
-        nodeId={node.category._id}
-        key={node.category._id}
-        label={node.category.name}
-      >
-        {node.category.description}
-        {children_html}
-      </TreeItem>
-    );
-  };
-
-  const categories_html = categories.map((category, i) => {
-    if (category.parent_id != "") {
-      return null;
-    }
-    return renderTree(categories_dict[category._id]);
-  });
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -107,33 +139,66 @@ const MenuBuilderComponent = ({ ENDPOINT, categories, options, option_types }) =
               </Toolbar>
             </AppBar>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <CategoryComponent ENDPOINT={ENDPOINT} categories={categories} />
           </Grid>
-          <Grid item xs={12}>
-            <OptionComponent ENDPOINT={ENDPOINT} options={options} option_types={option_types} />
+          <Grid item xs={6}>
+            <OptionTypeAdderComponent
+              ENDPOINT={ENDPOINT}
+              options={options}
+              option_types={option_types}
+            />
           </Grid>
         </Grid>
       </Paper>
       <Grid container justify="center" spacing={3}>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="subtitle1" className={classes.title}>
-                  Catalog Tree View
-                </Typography>
-              </Toolbar>
-            </AppBar>
-            <TreeView
-              className={classes.category_tree}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              multiSelect
-            >
-              {categories_html}
-            </TreeView>
-          </Paper>
+        <Grid item xs={6}>
+          <MaterialTable
+            title="Catalog Tree View"
+            parentChildData={(row, rows) =>
+              rows.find((a) => a._id === row.parent_id)
+            }
+            columns={[
+              { title: "Name", field: "name" },
+              { title: "Description", field: "description" },
+            ]}
+            options={{detailPanelType: "single"}}
+            data={categories}
+            icons={tableIcons}
+            onRowClick={(event, rowData, togglePanel) => togglePanel()}
+            detailPanel={[
+              {
+                render: (rowData) => {
+                  return <>{JSON.stringify(rowData)}</>;
+                },
+                icon: ()=> { return null }
+              }
+            ]}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <MaterialTable
+            title="Option/Modifier Types"
+            columns={[
+              { title: "Name", field: "name" },
+              { title: "Selection Type", field: "selection_type" },
+              { title: "Ordinal", field: "ordinal" },
+              { title: "EXID: Revel", field: "externalIDs.revelID" },
+              { title: "EXID: Square", field: "externalIDs.sqID" },
+            ]}
+            options={{detailPanelType: "single"}}
+            data={option_types}
+            icons={tableIcons}
+            onRowClick={(event, rowData, togglePanel) => togglePanel()}
+            detailPanel={[
+              {
+                render: (rowData) => {
+                  return <>{JSON.stringify(rowData)}</>;
+                },
+                icon: ()=> { return null }
+              }
+            ]}
+          />
         </Grid>
       </Grid>
       <br />

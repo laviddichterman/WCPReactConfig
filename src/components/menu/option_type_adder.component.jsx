@@ -1,30 +1,20 @@
 import React, { useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Chip from "@material-ui/core/Chip";
-import IconButton from "@material-ui/core/IconButton";
-import DoneIcon from "@material-ui/icons/Done";
 import Button from "@material-ui/core/Button";
-import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Toolbar from "@material-ui/core/Toolbar";
-import moment from "moment";
-import MomentUtils from "@date-io/moment";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import Container from "@material-ui/core/Container";
-import { ListItemText } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import CheckedInputComponent from "../checked_input.component";
+
 
 import { useAuth0 } from "../../react-auth0-spa";
 
@@ -54,7 +44,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OptionComponent = ({ ENDPOINT, option_types, options }) => {
+const CheckForNumberGEZeroLT64Int = (e) => {
+  const parsed = parseInt(e);
+  return isNaN(parsed) || parsed < 0 || parsed > 63 ? 1 : parsed;
+};
+
+
+const OptionTypeAdderComponent = ({ ENDPOINT, option_types, options }) => {
   const classes = useStyles();
   //
   const [ordinalOT, setOrdinalOT] = useState(0);
@@ -65,20 +61,6 @@ const OptionComponent = ({ ENDPOINT, option_types, options }) => {
   const [isProcessingAddOptionType, setIsProcessingAddOptionType] = useState(
     false
   );
-
-  const [displayNameO, setDisplayNameO] = useState("");
-  const [descriptionO, setDescriptionO] = useState("");
-  const [shortcodeO, setShortcodeO] = useState("");
-  const [ordinalO, setOrdinalO] = useState(0);
-  const [priceO, setPriceO] = useState(0);
-  const [enableFunctionNameO, setEnableFunctionNameO] = useState("");
-  const [flavorFactorO, setFlavorFactorO] = useState("");
-  const [bakeFactorO, setBakeFactorO] = useState("");
-  const [canSplitO, setCanSplitO] = useState("false");
-  const [disabledO, setDisabledO] = useState(false);
-  const [revelIDO, setRevelIDO] = useState("");
-  const [squareIDO, setSquareIDO] = useState("");
-  const [isProcessingAddOption, setIsProcessingAddOption] = useState(false);
 
   const { getTokenSilently } = useAuth0();
 
@@ -140,10 +122,11 @@ const OptionComponent = ({ ENDPOINT, option_types, options }) => {
               onChange={(e) => setNameOT(e.target.value)}
             />
           </Grid>
-          <Grid item xs={7}>
+          <Grid item xs={3}>
             <FormControl component="fieldset">
               <FormLabel component="legend">Selection Type</FormLabel>
               <RadioGroup
+                row
                 defaultValue="SINGLE"
                 aria-label="selection-type"
                 name="selection-type"
@@ -163,16 +146,17 @@ const OptionComponent = ({ ENDPOINT, option_types, options }) => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          {/* <Grid item xs={7}>
-            <TextField
-              label="Parent Category (Optional)"
-              type="text"
-              inputProps={{ size: 40 }}
-              value={parentId}
-              size="small"
-              onChange={(e) => setParentId(e.target.value)}
-            />
-          </Grid> */}
+          <Grid item xs={3}>
+            <CheckedInputComponent
+                label="Ordinal"
+                type="number"
+                fullWidth
+                checkFunction={CheckForNumberGEZeroLT64Int}
+                value={ordinalOT}
+                inputProps={{min:0, max:63}}
+                onFinishChanging={(e) => setOrdinalOT(e)}
+              />
+          </Grid>
           <Grid item xs={2}>
             <Button
               className="btn btn-light"
@@ -188,4 +172,4 @@ const OptionComponent = ({ ENDPOINT, option_types, options }) => {
   );
 };
 
-export default OptionComponent;
+export default OptionTypeAdderComponent;

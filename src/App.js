@@ -292,6 +292,8 @@ const App = () => {
             categories={CATALOG_CATEGORIES}
             option_types={CATALOG_OPTION_TYPES}
             options={CATALOG_OPTIONS}
+            products={CATALOG_PRODUCTS}
+            product_instances={CATALOG_PRODUCT_INSTANCES}
             ENDPOINT={ENDPOINT}
           />
         </TabPanel>

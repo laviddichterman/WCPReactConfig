@@ -78,7 +78,6 @@ const CategoryComponent = ({ ENDPOINT, categories }) => {
             parent_id: parent ? parent._id : "",
           }),
         });
-        console.log(JSON.stringify(response));
         setDescription("");
         setName("");
         setParent(null);
