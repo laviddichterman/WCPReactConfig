@@ -112,7 +112,7 @@ const OptionTypeAdderComponent = ({ ENDPOINT, option_types, options }) => {
               </Toolbar>
             </AppBar>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <TextField
               label="Option Type Name"
               type="text"
@@ -122,7 +122,7 @@ const OptionTypeAdderComponent = ({ ENDPOINT, option_types, options }) => {
               onChange={(e) => setNameOT(e.target.value)}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <FormControl component="fieldset">
               <FormLabel component="legend">Selection Type</FormLabel>
               <RadioGroup
@@ -146,7 +146,7 @@ const OptionTypeAdderComponent = ({ ENDPOINT, option_types, options }) => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <CheckedInputComponent
                 label="Ordinal"
                 type="number"
@@ -157,7 +157,7 @@ const OptionTypeAdderComponent = ({ ENDPOINT, option_types, options }) => {
                 onFinishChanging={(e) => setOrdinalOT(e)}
               />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={6}>
             <Button
               className="btn btn-light"
               onClick={addOptionType}

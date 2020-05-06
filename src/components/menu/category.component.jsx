@@ -123,7 +123,7 @@ const CategoryComponent = ({ ENDPOINT, categories }) => {
               onChange={(e) => setDescription(e.target.value)}
             />
           </Grid>
-          <Grid item xs={7}>
+          <Grid item xs={9}>
             <Autocomplete
               options={categories}
               value={parent}
@@ -131,13 +131,12 @@ const CategoryComponent = ({ ENDPOINT, categories }) => {
               inputValue={parentName}
               onInputChange={(e, v) => setParentName(v)}
               getOptionLabel={(option) => option.name}
-              style={{ width: 300 }}
               renderInput={(params) => (
                 <TextField {...params} label="Parent Category (Optional)" />
               )}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3}>
             <Button
               className="btn btn-light"
               onClick={addCategory}
