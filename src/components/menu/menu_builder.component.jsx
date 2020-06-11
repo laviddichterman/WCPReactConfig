@@ -1,5 +1,12 @@
 import React, { useState, forwardRef } from "react";
 
+import InterstitialDialog from '../interstitial.dialog.component'
+import DialogContainer from '../dialog.container';
+import CategoryAddContainer from "./category.add.container";
+import CategoryEditContainer from "./category.edit.container";
+import ModifierTypeAddContainer from "./modifier_type.add.container";
+import ModifierTypeEditContainer from "./modifier_type.edit.container";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -16,13 +23,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Hidden from '@material-ui/core/Hidden';
 
-
 import TreeItem from "@material-ui/lab/TreeItem";
 import MaterialTable from "material-table";
 
 import { useAuth0 } from "../../react-auth0-spa";
-import CategoryComponent from "./category.component";
-import OptionTypeAdderComponent from "./option_type_adder.component";
+
 
 import {
   AddBox,
@@ -43,6 +48,7 @@ import {
   ExpandLess,
   ExpandMore,
 } from "@material-ui/icons";
+import ModifierOptionAddContainer from "./modifier_option.add.container";
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -115,6 +121,18 @@ const categories_list_to_dict = (categories) => {
   return category_dict;
 };
 
+const options_types_map_generator = (option_types, options) => {
+  var option_types_map = {};
+  option_types.forEach(ot => {
+    option_types_map[ot._id] = [];
+  });
+  // options.forEach(o => {
+  //   option_types_map[o.option_type_id].push(o);
+  // })
+  return option_types_map;
+};
+
+
 const MenuBuilderComponent = ({
   ENDPOINT,
   categories,
@@ -124,35 +142,81 @@ const MenuBuilderComponent = ({
   product_instances,
 }) => {
   const classes = useStyles();
-  //const { getTokenSilently } = useAuth0();
+  const [isModifierInterstitialOpen, setIsModifierInterstitialOpen] = useState(false);
+  const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
+  const [isModifierOptionAddOpen, setIsModifierOptionAddOpen] = useState(false);
+
+  const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
+  const [modifierTypeToEdit, setModifierTypeToEdit] = useState(null);
+
+  const [isModifierOptionEditOpen, setIsModifierOptionEditOpen] = useState(false);
+  const [modifierOptionToEdit, setModifierOptionToEdit] = useState(null);
+  
+  const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
+  const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
+  const [isProductAddOpen, setIsProductAddOpen] = useState(false);
+  
+  const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false);
+  const [categoryToEdit, setCategoryToEdit] = useState(null);
+
+  const [isProductEditOpen, setIsProductEditOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState(null);
+
+  // create option type map
+  const options_map = options_types_map_generator(option_types, options);
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Grid container spacing={3} justify="center">
-          <Grid item xs={12}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="subtitle1" className={classes.title}>
-                  Menu builder:
-                </Typography>
-              </Toolbar>
-            </AppBar>
-          </Grid>
-          <Grid item xs={6}>
-            <CategoryComponent ENDPOINT={ENDPOINT} categories={categories} />
-          </Grid>
-          <Grid item xs={6}>
-            <OptionTypeAdderComponent
-              ENDPOINT={ENDPOINT}
-              options={options}
-              option_types={option_types}
-            />
-          </Grid>
-        </Grid>
-      </Paper>
+      <DialogContainer 
+        title={"Edit Category"}
+        onClose={() => {
+          setIsCategoryEditOpen(false);
+        }} 
+        isOpen={isCategoryEditOpen} 
+        inner_component={
+          <CategoryEditContainer 
+            categories={categories}
+            ENDPOINT={ENDPOINT}
+            category={categoryToEdit}
+          />
+        } 
+      />
+      <DialogContainer 
+        title={"Edit Modifier Type"}
+        onClose={() => {
+          setIsModifierTypeEditOpen(false);
+        }} 
+        isOpen={isModifierTypeEditOpen} 
+        inner_component={
+          <ModifierTypeEditContainer 
+            modifier_type={modifierTypeToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        } 
+      />      
       <Grid container justify="center" spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
+          <InterstitialDialog 
+            dialogTitle={"Add new..."}
+            options={[
+              {
+                title: "Add Category", 
+                cb: () => {setIsCategoryAddOpen(true)}, 
+                open: isCategoryAddOpen,
+                onClose: () => setIsCategoryAddOpen(false),
+                component: (<CategoryAddContainer ENDPOINT={ENDPOINT} categories={categories} />)
+              },
+              {
+                title: "Add Product", 
+                cb: () => setIsProductAddOpen(true), 
+                open: isProductAddOpen,
+                onClose: () => setIsProductAddOpen(false),
+                component: (<CategoryAddContainer ENDPOINT={ENDPOINT} categories={categories} />)
+              }
+            ]}
+            onClose={() => setIsCategoryInterstitialOpen(false)}
+            open={isCategoryInterstitialOpen}
+          />
           <MaterialTable
             title="Catalog Tree View"
             parentChildData={(row, rows) =>
@@ -162,7 +226,28 @@ const MenuBuilderComponent = ({
               { title: "Name", field: "name" },
               { title: "Description", field: "description" },
             ]}
-            options={{detailPanelType: "single"}}
+            options={{
+              detailPanelType: "single",
+              draggable: false
+            }}
+            actions={[
+              {
+                icon: AddBox,
+                tooltip: 'Add new...',
+                onClick: (event, rowData) => {
+                  setIsCategoryInterstitialOpen(true);
+                },
+                isFreeAction: true
+              },
+              {
+                icon: Edit,
+                tooltip: 'Edit',
+                onClick: (event, rowData) => {
+                  setIsCategoryEditOpen(true);
+                  setCategoryToEdit(rowData);
+                },
+              }
+            ]}
             data={categories}
             icons={tableIcons}
             onRowClick={(event, rowData, togglePanel) => togglePanel()}
@@ -176,24 +261,103 @@ const MenuBuilderComponent = ({
             ]}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
+          <InterstitialDialog 
+            dialogTitle={"Add new..."}
+            options={[
+              {
+                title: "Add Modifier Type", 
+                cb: () => {setIsModifierTypeAddOpen(true)}, 
+                open: isModifierTypeAddOpen,
+                onClose: () => setIsModifierTypeAddOpen(false),
+                component: (<ModifierTypeAddContainer ENDPOINT={ENDPOINT} />)
+              },
+              {
+                title: "Add Modifier Option", 
+                cb: () => setIsModifierOptionAddOpen(true), 
+                open: isModifierOptionAddOpen,
+                onClose: () => setIsModifierOptionAddOpen(false),
+                component: (<ModifierOptionAddContainer ENDPOINT={ENDPOINT} modifier_types={option_types} />)
+              }
+            ]}
+            onClose={() => setIsModifierInterstitialOpen(false)}
+            open={isModifierInterstitialOpen}
+          />
           <MaterialTable
-            title="Option/Modifier Types"
+            title="Modifier Types / Modifier Type Option"
             columns={[
               { title: "Name", field: "name" },
               { title: "Selection Type", field: "selection_type" },
               { title: "Ordinal", field: "ordinal" },
               { title: "EXID: Revel", field: "externalIDs.revelID" },
-              { title: "EXID: Square", field: "externalIDs.sqID" },
+              { title: "EXID: Square", field: "externalIDs.squareID" },
             ]}
-            options={{detailPanelType: "single"}}
+            options={{
+              detailPanelType: "single",
+              draggable: false
+            }}
+            actions={[
+              {
+                icon: AddBox,
+                tooltip: 'Add new...',
+                onClick: (event, rowData) => {
+                  setIsModifierInterstitialOpen(true);
+                },
+                isFreeAction: true
+              },
+              {
+                icon: Edit,
+                tooltip: 'Edit',
+                onClick: (event, rowData) => {
+                  setIsModifierTypeEditOpen(true);
+                  setModifierTypeToEdit(rowData);
+                },
+              }
+            ]}
             data={option_types}
             icons={tableIcons}
             onRowClick={(event, rowData, togglePanel) => togglePanel()}
             detailPanel={[
               {
                 render: (rowData) => {
-                  return <>{JSON.stringify(rowData)}</>;
+                  return options_map[rowData._id].length ? (
+                  <MaterialTable
+                    
+                    options={{
+                      showTitle: false,
+                      showEmptyDataSourceMessage: false,
+                      sorting: false,
+                      draggable: false,
+                      search: false,
+                      rowStyle: {
+                        padding: 0,
+                      },
+                      toolbar: false
+                    }}
+                    // size={"small"}
+                    // components={{
+                    //   Cell: props => (
+                    //       <MTableToolbar {...props} />
+                    //   ),
+                    // }}
+                    
+                    icons={tableIcons}
+                    columns={[
+                      { title: "Name", field: "catalog_item.display_name" },
+                      { title: "Price", field: "catalog_item.price.amount" },
+                      { title: "Shortcode", field: "catalog_item.shortcode" },
+                      { title: "Description", field: "catalog_item.description" },
+                      { title: "Ordinal", field: "ordinal" },
+                      { title: "FFactor", field: "metadata.flavor_factor" },
+                      { title: "BFactor", field: "metadata.bake_factor" },
+                      { title: "Can Split?", field: "metadata.can_split" },
+                      { title: "EnableFxn", field: "enable_function_name" },
+                      { title: "EXID: Revel", field: "catalog_item.externalIDs.revelID" },
+                      { title: "EXID: Square", field: "catalog_item.externalIDs.squareID" },
+                      { title: "Disabled", field: "catalog_item.disabled" },
+                    ]}
+                    data={options_map[rowData._id]}
+                     />) : ""
                 },
                 icon: ()=> { return null }
               }
