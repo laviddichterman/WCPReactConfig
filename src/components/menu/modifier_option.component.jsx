@@ -73,7 +73,6 @@ const ModifierOptionComponent = ({
   parentName, setParentName
 }) => {
   const classes = useStyles();
-
   const actions_html =
     actions.length === 0 ? (
       ""
@@ -195,7 +194,7 @@ const ModifierOptionComponent = ({
         <Grid item xs={4}>
           <FormControlLabel
             control={
-              <Switch checked={enabled} onChange={setEnabled} name="Enabled" />
+              <Switch checked={enabled} onChange={e => setEnabled(e.target.checked)} name="Enabled" />
             }
             label="Enabled"
           />
@@ -205,7 +204,7 @@ const ModifierOptionComponent = ({
             control={
               <Switch
                 checked={canSplit}
-                onChange={setCanSplit}
+                onChange={e => setCanSplit(e.target.checked)}
                 name="Can Split"
               />
             }
