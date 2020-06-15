@@ -49,21 +49,22 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
             squareID: squareID,
           }),
         });
-
-        setDisplayName("");
-        setDescription("");
-        setShortcode("");
-        setOrdinal(0);
-        setPrice(0);
-        setEnableFunctionName("");
-        setFlavorFactor(0);
-        setBakeFactor(0);
-        setCanSplit(true);
-        setEnabled(true);
-        setParent(null);
-        setParentName("");
-        setRevelID("");
-        setSquareID("");
+        if (response.status === 201) {
+          setDisplayName("");
+          setDescription("");
+          setShortcode("");
+          setOrdinal(0);
+          setPrice(0);
+          setEnableFunctionName("");
+          setFlavorFactor(0);
+          setBakeFactor(0);
+          setCanSplit(true);
+          setEnabled(true);
+          setParent(null);
+          setParentName("");
+          setRevelID("");
+          setSquareID("");  
+        }
         setIsProcessing(false);
       } catch (error) {
         setIsProcessing(false);
