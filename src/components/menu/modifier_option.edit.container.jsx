@@ -5,32 +5,36 @@ import ModifierOptionComponent from "./modifier_option.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
-  const [displayName, setDisplayName] = useState("");
-  const [description, setDescription] = useState("");
-  const [shortcode, setShortcode] = useState("");
-  const [ordinal, setOrdinal] = useState(0);
-  const [price, setPrice] = useState(0);
-  const [enableFunctionName, setEnableFunctionName] = useState("");
-  const [flavorFactor, setFlavorFactor] = useState(0);
-  const [bakeFactor, setBakeFactor] = useState(0);
-  const [canSplit, setCanSplit] = useState(true);
-  const [enabled, setEnabled] = useState(true);
-  const [revelID, setRevelID] = useState("");
-  const [squareID, setSquareID] = useState("");
-  const [parent, setParent] = useState(null);
-  const [parentName, setParentName] = useState("");
+const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option }) => {
+  const foundParent = modifier_types.find(x => x._id === modifier_option.option_type_id);
+
+  const [displayName, setDisplayName] = useState(modifier_option.catalog_item.display_name);
+  const [description, setDescription] = useState(modifier_option.catalog_item.description);
+  const [shortcode, setShortcode] = useState(modifier_option.catalog_item.shortcode);
+  const [ordinal, setOrdinal] = useState(modifier_option.ordinal);
+  const [price, setPrice] = useState(modifier_option.catalog_item.price.amount);
+  const [enableFunctionName, setEnableFunctionName] = useState(modifier_option.enable_function_name);
+  const [flavorFactor, setFlavorFactor] = useState(modifier_option.metadata.flavor_factor);
+  const [bakeFactor, setBakeFactor] = useState(modifier_option.metadata.bake_factor);
+  const [canSplit, setCanSplit] = useState(modifier_option.metadata.can_split);
+  const [enabled, setEnabled] = useState(!modifier_option.catalog_item.disabled);
+  const [revelID, setRevelID] = useState(modifier_option.externalIDs && modifier_option.externalIDs.revelID ? modifier_option.externalIDs.revelID : "");
+  const [squareID, setSquareID] = useState(modifier_option.externalIDs && modifier_option.externalIDs.squareID ? modifier_option.externalIDs.squareID : "");
+  const [parent, setParent] = useState(foundParent);
+  const [parentName, setParentName] = useState(foundParent.name);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
-  const addModifierOption = async (e) => {
+  const editModifierOption = async (e) => {
     e.preventDefault();
+
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getTokenSilently();
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${parent._id}/`, {
-          method: "POST",
+        const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option._id}`, {
+          method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -50,22 +54,6 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
             squareID: squareID,
           }),
         });
-        if (response.status === 201) {
-          setDisplayName("");
-          setDescription("");
-          setShortcode("");
-          setOrdinal(0);
-          setPrice(0);
-          setEnableFunctionName("");
-          setFlavorFactor(0);
-          setBakeFactor(0);
-          setCanSplit(true);
-          setEnabled(true);
-          setParent(null);
-          setParentName("");
-          setRevelID("");
-          setSquareID("");  
-        }
         setIsProcessing(false);
       } catch (error) {
         setIsProcessing(false);
@@ -78,15 +66,15 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
       actions={[          
         <Button
           className="btn btn-light"
-          onClick={addModifierOption}
+          onClick={editModifierOption}
           disabled={displayName.length === 0 || shortcode.length === 0 ||
             price < 0 || flavorFactor < 0 || bakeFactor < 0 || isProcessing}
         >
-          Add
+          Save
         </Button>
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
-      modifier_types={modifier_types}
+      modifier_types={[foundParent]}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}
@@ -114,9 +102,9 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
       parent={parent}
       setParent={setParent}
       parentName={parentName}
-      setParentName={setParentName}  
+      setParentName={setParentName} 
     />
   );
 };
 
-export default ModifierOptionAddContainer;
+export default ModifierOptionEditContainer;

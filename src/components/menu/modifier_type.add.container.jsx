@@ -33,12 +33,15 @@ const ModifierTypeAddContainer = ({ ENDPOINT }) => {
             squareID: squareID,
           }),
         });
-        setOrdinal(0);
-        setName("");
-        setSelectionType("MANY");
-        setRevelID("");
-        setSquareID("");
+        if (response.status === 201) {
+          setOrdinal(0);
+          setName("");
+          setSelectionType("MANY");
+          setRevelID("");
+          setSquareID("");
+        }
         setIsProcessing(false);
+          
       } catch (error) {
         setIsProcessing(false);
       }

@@ -4,8 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Switch from "@material-ui/core/Switch";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -44,6 +42,7 @@ const CheckForNumberGEZeroLT64Int = (e) => {
 
 const ModifierOptionComponent = ({
   actions,
+  progress,
   modifier_types,
   displayName,
   setDisplayName,
@@ -232,6 +231,7 @@ const ModifierOptionComponent = ({
           />
         </Grid>
         {actions_html}
+        {progress}
       </Grid>
     </div>
   );

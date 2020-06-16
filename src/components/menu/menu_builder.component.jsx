@@ -5,15 +5,12 @@ import DialogContainer from '../dialog.container';
 import CategoryAddContainer from "./category.add.container";
 import CategoryEditContainer from "./category.edit.container";
 import ModifierTypeAddContainer from "./modifier_type.add.container";
+import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierTypeEditContainer from "./modifier_type.edit.container";
+import ModifierOptionAddContainer from "./modifier_option.add.container";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Toolbar from "@material-ui/core/Toolbar";
-import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Container from "@material-ui/core/Container";
@@ -48,7 +45,6 @@ import {
   ExpandLess,
   ExpandMore,
 } from "@material-ui/icons";
-import ModifierOptionAddContainer from "./modifier_option.add.container";
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -126,9 +122,9 @@ const options_types_map_generator = (option_types, options) => {
   option_types.forEach(ot => {
     option_types_map[ot._id] = [];
   });
-  // options.forEach(o => {
-  //   option_types_map[o.option_type_id].push(o);
-  // })
+  options.forEach(o => {
+    option_types_map[o.option_type_id].push(o);
+  })
   return option_types_map;
 };
 
@@ -193,7 +189,21 @@ const MenuBuilderComponent = ({
             ENDPOINT={ENDPOINT}
           />
         } 
-      />      
+      />    
+      <DialogContainer 
+        title={"Edit Modifier Option"}
+        onClose={() => {
+          setIsModifierOptionEditOpen(false);
+        }} 
+        isOpen={isModifierOptionEditOpen} 
+        inner_component={
+          <ModifierOptionEditContainer 
+            modifier_option={modifierOptionToEdit}
+            modifier_types={option_types}
+            ENDPOINT={ENDPOINT}
+          />
+        } 
+      />          
       <Grid container justify="center" spacing={3}>
         <Grid item xs={12}>
           <InterstitialDialog 
@@ -228,7 +238,8 @@ const MenuBuilderComponent = ({
             ]}
             options={{
               detailPanelType: "single",
-              draggable: false
+              draggable: false,
+              paging: false
             }}
             actions={[
               {
@@ -294,7 +305,8 @@ const MenuBuilderComponent = ({
             ]}
             options={{
               detailPanelType: "single",
-              draggable: false
+              draggable: false,
+              paging: false
             }}
             actions={[
               {
@@ -332,15 +344,19 @@ const MenuBuilderComponent = ({
                       rowStyle: {
                         padding: 0,
                       },
-                      toolbar: false
+                      toolbar: false,
+                      paging: options_map[rowData._id].length > 5
                     }}
-                    // size={"small"}
-                    // components={{
-                    //   Cell: props => (
-                    //       <MTableToolbar {...props} />
-                    //   ),
-                    // }}
-                    
+                    actions={[
+                      {
+                        icon: Edit,
+                        tooltip: 'Edit',
+                        onClick: (event, rowData) => {
+                          setIsModifierOptionEditOpen(true);
+                          setModifierOptionToEdit(rowData);
+                        },
+                      }
+                    ]}
                     icons={tableIcons}
                     columns={[
                       { title: "Name", field: "catalog_item.display_name" },
