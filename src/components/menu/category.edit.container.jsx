@@ -16,7 +16,6 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category }) => {
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
   const [parent, setParent] = useState(foundParent);
-  const [parentName, setParentName] = useState(foundParent ? foundParent.name : "");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
@@ -65,8 +64,6 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category }) => {
       setName={setName}
       parent={parent}
       setParent={setParent}
-      parentName={parentName}
-      setParentName={setParentName}      
     />
   );
 };

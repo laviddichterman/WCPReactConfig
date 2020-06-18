@@ -10,7 +10,6 @@ const CategoryAddContainer = ({ ENDPOINT, categories }) => {
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [parent, setParent] = useState(null);
-  const [parentName, setParentName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
@@ -36,7 +35,6 @@ const CategoryAddContainer = ({ ENDPOINT, categories }) => {
         setDescription("");
         setName("");
         setParent(null);
-        setParentName("");
         setIsProcessing(false);
       } catch (error) {
         console.error(error);
@@ -63,8 +61,6 @@ const CategoryAddContainer = ({ ENDPOINT, categories }) => {
       setName={setName}
       parent={parent}
       setParent={setParent}
-      parentName={parentName}
-      setParentName={setParentName}      
     />
   );
 };

@@ -19,7 +19,6 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [parent, setParent] = useState(null);
-  const [parentName, setParentName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
@@ -62,7 +61,6 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
           setCanSplit(true);
           setEnabled(true);
           setParent(null);
-          setParentName("");
           setRevelID("");
           setSquareID("");  
         }
@@ -113,8 +111,6 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
       setSquareID={setSquareID}
       parent={parent}
       setParent={setParent}
-      parentName={parentName}
-      setParentName={setParentName}  
     />
   );
 };

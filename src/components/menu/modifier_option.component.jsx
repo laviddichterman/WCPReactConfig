@@ -69,7 +69,6 @@ const ModifierOptionComponent = ({
   squareID,
   setSquareID,
   parent, setParent, 
-  parentName, setParentName
 }) => {
   const classes = useStyles();
   const actions_html =
@@ -93,8 +92,6 @@ const ModifierOptionComponent = ({
             options={modifier_types}
             value={parent}
             onChange={(e, v) => setParent(v)}
-            inputValue={parentName}
-            onInputChange={(e, v) => setParentName(v)}
             getOptionLabel={(option) => option.name}
             getOptionSelected={(option, value) => option._id === value._id}
             renderInput={(params) => (

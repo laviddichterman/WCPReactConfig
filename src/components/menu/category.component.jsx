@@ -36,8 +36,7 @@ const CategoryComponent = ({
   actions, 
   description, setDescription, 
   name, setName, 
-  parent, setParent, 
-  parentName, setParentName }) => {
+  parent, setParent }) => {
   const classes = useStyles();
 
   const actions_html = actions.length === 0 ? "" : 
@@ -77,8 +76,6 @@ const CategoryComponent = ({
             options={categories}
             value={parent}
             onChange={(e, v) => setParent(v)}
-            inputValue={parentName}
-            onInputChange={(e, v) => setParentName(v)}
             getOptionLabel={(option) => option.name}
             getOptionSelected={(option, value) => option._id === value._id}
             renderInput={(params) => (

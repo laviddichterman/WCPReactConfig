@@ -102,7 +102,6 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
       parent={parent}
       setParent={setParent}
       parentName={parentName}
-      setParentName={setParentName} 
     />
   );
 };
