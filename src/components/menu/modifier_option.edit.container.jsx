@@ -18,8 +18,8 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
   const [bakeFactor, setBakeFactor] = useState(modifier_option.metadata.bake_factor);
   const [canSplit, setCanSplit] = useState(modifier_option.metadata.can_split);
   const [enabled, setEnabled] = useState(!modifier_option.catalog_item.disabled);
-  const [revelID, setRevelID] = useState(modifier_option.externalIDs && modifier_option.externalIDs.revelID ? modifier_option.externalIDs.revelID : "");
-  const [squareID, setSquareID] = useState(modifier_option.externalIDs && modifier_option.externalIDs.squareID ? modifier_option.externalIDs.squareID : "");
+  const [revelID, setRevelID] = useState(modifier_option.catalog_item.externalIDs && modifier_option.catalog_item.externalIDs.revelID ? modifier_option.catalog_item.externalIDs.revelID : "");
+  const [squareID, setSquareID] = useState(modifier_option.catalog_item.externalIDs && modifier_option.catalog_item.externalIDs.squareID ? modifier_option.catalog_item.externalIDs.squareID : "");
   const [parent, setParent] = useState(foundParent);
   const [parentName, setParentName] = useState(foundParent.name);
 
