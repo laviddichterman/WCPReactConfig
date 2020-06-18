@@ -1,31 +1,33 @@
 import React, { useState } from "react";
 
 import Button from "@material-ui/core/Button";
-import ProductComponent from "./product.component";
+import ModifierOptionComponent from "./modifier_option.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ProductAddContainer = ({ ENDPOINT, modifier_types, categories }) => {
-  const [displayName, setDisplayName] = useState("");
-  const [description, setDescription] = useState("");
-  const [shortcode, setShortcode] = useState("");
-  const [price, setPrice] = useState(0);
-  const [enabled, setEnabled] = useState(true);
-  const [revelID, setRevelID] = useState("");
-  const [squareID, setSquareID] = useState("");
-  const [parentCategories, setParentCategories] = useState([]);
-  const [modifiers, setModifiers] = useState([]);
+const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product }) => {
+  const [displayName, setDisplayName] = useState(product.catalog_item.display_name);
+  const [description, setDescription] = useState(product.catalog_item.description);
+  const [shortcode, setShortcode] = useState(product.catalog_item.shortcode);
+  const [price, setPrice] = useState(product.catalog_item.price.amount);
+  const [enabled, setEnabled] = useState(!product.catalog_item.disabled);
+  const [revelID, setRevelID] = useState(product.catalog_item.externalIDs && product.catalog_item.externalIDs.revelID ? product.catalog_item.externalIDs.revelID : "");
+  const [squareID, setSquareID] = useState(product.catalog_item.externalIDs && product.catalog_item.externalIDs.squareID ? product.catalog_item.externalIDs.squareID : "");
+  const [parentCategories, setParentCategories] = useState(categories.filter(x => product.category_ids.includes(x._id.ToString())));
+  const [modifiers, setModifiers] = useState(modifier_types.filter(x => product.modifiers.includes(x._id.ToString())));
+
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
-  const addProduct = async (e) => {
+  const editProduct = async (e) => {
     e.preventDefault();
+
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getTokenSilently();
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/product/`, {
-          method: "POST",
+        const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${product._id}`, {
+          method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -42,17 +44,6 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories }) => {
             modifiers: modifiers.map(x => x._id)
           }),
         });
-        if (response.status === 201) {
-          setDisplayName("");
-          setDescription("");
-          setShortcode("");
-          setPrice(0);
-          setEnabled(true);
-          setRevelID("");
-          setSquareID("");  
-          setModifiers([]);
-          setParentCategories([]);
-        }
         setIsProcessing(false);
       } catch (error) {
         setIsProcessing(false);
@@ -61,15 +52,15 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories }) => {
   };
 
   return (
-    <ProductComponent 
+    <ModifierOptionComponent 
       actions={[          
         <Button
           className="btn btn-light"
-          onClick={addProduct}
+          onClick={editProduct}
           disabled={displayName.length === 0 || shortcode.length === 0 ||
             price < 0 || isProcessing}
         >
-          Add
+          Save
         </Button>
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
@@ -92,9 +83,9 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories }) => {
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
       modifiers={modifiers}
-      setModifiers={setModifiers}
+      setModifiers={setModifiers} 
     />
   );
 };
 
-export default ProductAddContainer;
+export default ProductEditContainer;

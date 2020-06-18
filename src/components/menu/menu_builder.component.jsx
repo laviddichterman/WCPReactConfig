@@ -9,6 +9,7 @@ import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierTypeEditContainer from "./modifier_type.edit.container";
 import ModifierOptionAddContainer from "./modifier_option.add.container";
 import ProductAddContainer from "./product.add.container";
+import ProductEditContainer from "./product.edit.container";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -103,19 +104,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// each node is { category, children }
+// Returns [ category_map, product_map, orphan_products ] array;
+// category_map entries are mapping of catagory_id to { category, children (id list), product (id list) }
+// product_map is mapping from product_id to { product, instances (list of instance objects)}
+// orphan_products is list of orphan product ids
 // TODO: memoize this
-const categories_list_to_dict = (categories) => {
-  const category_dict = {};
+const catalog_map_generator = (categories, products, product_instances) => {
+  const category_map = {};
   categories.map((curr, i) => {
-    category_dict[curr._id] = { category: curr, children: [] };
+    category_map[curr._id] = { category: curr, children: [], products: [] };
   });
   for (var i = 0; i < categories.length; ++i) {
     if (categories[i].parent_id.length > 0) {
-      category_dict[categories[i].parent_id].children.push(categories[i]._id);
+      category_map[categories[i].parent_id].children.push(categories[i]._id);
     }
   }
-  return category_dict;
+  const product_map = {};
+  const orphan_products = [];
+  products.map((curr, i) => {
+    product_map[curr._id] = { product: curr, instances: [] };
+    if (curr.category_ids.length === 0) {
+      orphan_products.push(curr._id);
+    }
+    else {
+      curr.category_ids.map((cid, k) => {
+        category_map[cid].products.push(curr._id);
+      });
+    }
+  });
+  product_instances.map((curr, i) => {
+    product_map[curr.product_id].instances.push(curr);
+  })
+  return [ category_map, product_map, orphan_products ];
 };
 
 const options_types_map_generator = (option_types, options) => {
@@ -158,9 +178,10 @@ const MenuBuilderComponent = ({
 
   const [isProductEditOpen, setIsProductEditOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
-
-  // create option type map
+  
+  // create maps from catalog data
   const options_map = options_types_map_generator(option_types, options);
+  const [ category_map, product_map, orphan_products ] = catalog_map_generator(categories, products, product_instances);
 
   return (
     <div className={classes.root}>
@@ -204,7 +225,22 @@ const MenuBuilderComponent = ({
             ENDPOINT={ENDPOINT}
           />
         } 
-      />          
+      />      
+      <DialogContainer 
+        title={"Edit Product"}
+        onClose={() => {
+          setIsProductEditOpen(false);
+        }} 
+        isOpen={isProductEditOpen} 
+        inner_component={
+          <ProductEditContainer 
+            categories={categories} 
+            modifier_types={option_types}
+            product={productToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        } 
+      />                
       <Grid container justify="center" spacing={3}>
         <Grid item xs={12}>
           <InterstitialDialog 
@@ -266,7 +302,43 @@ const MenuBuilderComponent = ({
             detailPanel={[
               {
                 render: (rowData) => {
-                  return <>{JSON.stringify(rowData)}</>;
+                  return category_map[rowData._id].products.length ? (
+                  <MaterialTable
+                    
+                    options={{
+                      showTitle: false,
+                      showEmptyDataSourceMessage: false,
+                      sorting: false,
+                      draggable: false,
+                      search: false,
+                      rowStyle: {
+                        padding: 0,
+                      },
+                      toolbar: false,
+                      paging: category_map[rowData._id].products.length > 5
+                    }}
+                    actions={[
+                      {
+                        icon: Edit,
+                        tooltip: 'Edit',
+                        onClick: (event, rowData) => {
+                          setIsProductEditOpen(true);
+                          setProductToEdit(rowData);
+                        },
+                      }
+                    ]}
+                    icons={tableIcons}
+                    columns={[
+                      { title: "Name", field: "catalog_item.display_name" },
+                      { title: "Price", field: "catalog_item.price.amount" },
+                      { title: "Shortcode", field: "catalog_item.shortcode" },
+                      { title: "Description", field: "catalog_item.description" },
+                      { title: "EXID: Revel", field: "catalog_item.externalIDs.revelID" },
+                      { title: "EXID: Square", field: "catalog_item.externalIDs.squareID" },
+                      { title: "Disabled", field: "catalog_item.disabled" },
+                    ]}
+                    data={product_map.values.filter(x => category_map[rowData._id].products.includes(x))}
+                     />) : ""
                 },
                 icon: ()=> { return null }
               }
