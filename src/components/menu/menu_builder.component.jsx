@@ -8,6 +8,7 @@ import ModifierTypeAddContainer from "./modifier_type.add.container";
 import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierTypeEditContainer from "./modifier_type.edit.container";
 import ModifierOptionAddContainer from "./modifier_option.add.container";
+import ProductAddContainer from "./product.add.container";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -221,7 +222,7 @@ const MenuBuilderComponent = ({
                 cb: () => setIsProductAddOpen(true), 
                 open: isProductAddOpen,
                 onClose: () => setIsProductAddOpen(false),
-                component: (<CategoryAddContainer ENDPOINT={ENDPOINT} categories={categories} />)
+                component: (<ProductAddContainer ENDPOINT={ENDPOINT} categories={categories} modifier_types={option_types} />)
               }
             ]}
             onClose={() => setIsCategoryInterstitialOpen(false)}
