@@ -105,7 +105,7 @@ const ProductComponent = ({
             onChange={(e) => setDescription(e.target.value)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
             label="Short Code"
             type="text"
@@ -115,7 +115,7 @@ const ProductComponent = ({
             onChange={(e) => setShortcode(e.target.value)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
             label="Price"
             type="text"
@@ -164,7 +164,7 @@ const ProductComponent = ({
             filterSelectedOptions
             options={modifier_types}
             value={modifiers}
-            onChange={(e, v) => setModifiers(v)}
+            onChange={(e, v) => setModifiers(v.sort((a, b)=> a.ordinal - b.ordinal))}
             getOptionLabel={(option) => option.name}
             getOptionSelected={(option, value) => option._id === value._id}
             renderInput={(params) => (

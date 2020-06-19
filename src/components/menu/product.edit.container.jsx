@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 
 import Button from "@material-ui/core/Button";
-import ModifierOptionComponent from "./modifier_option.component";
+import ProductComponent from "./product.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
 const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product }) => {
-  const [displayName, setDisplayName] = useState(product.catalog_item.display_name);
-  const [description, setDescription] = useState(product.catalog_item.description);
-  const [shortcode, setShortcode] = useState(product.catalog_item.shortcode);
-  const [price, setPrice] = useState(product.catalog_item.price.amount);
-  const [enabled, setEnabled] = useState(!product.catalog_item.disabled);
-  const [revelID, setRevelID] = useState(product.catalog_item.externalIDs && product.catalog_item.externalIDs.revelID ? product.catalog_item.externalIDs.revelID : "");
-  const [squareID, setSquareID] = useState(product.catalog_item.externalIDs && product.catalog_item.externalIDs.squareID ? product.catalog_item.externalIDs.squareID : "");
-  const [parentCategories, setParentCategories] = useState(categories.filter(x => product.category_ids.includes(x._id.ToString())));
-  const [modifiers, setModifiers] = useState(modifier_types.filter(x => product.modifiers.includes(x._id.ToString())));
+  const [displayName, setDisplayName] = useState(product.item.display_name);
+  const [description, setDescription] = useState(product.item.description);
+  const [shortcode, setShortcode] = useState(product.item.shortcode);
+  const [price, setPrice] = useState(product.item.price.amount / 100);
+  const [enabled, setEnabled] = useState(!product.item.disabled);
+  const [revelID, setRevelID] = useState(product.item.externalIDs && product.item.externalIDs.revelID ? product.item.externalIDs.revelID : "");
+  const [squareID, setSquareID] = useState(product.item.externalIDs && product.item.externalIDs.squareID ? product.item.externalIDs.squareID : "");
+  const [parentCategories, setParentCategories] = useState(categories.filter(x => product.category_ids.includes(x._id.toString())));
+  const [modifiers, setModifiers] = useState(product.modifiers.map((v, i) => modifier_types.find(x => x._id.toString() === v)));
 
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
@@ -52,7 +52,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product })
   };
 
   return (
-    <ModifierOptionComponent 
+    <ProductComponent 
       actions={[          
         <Button
           className="btn btn-light"

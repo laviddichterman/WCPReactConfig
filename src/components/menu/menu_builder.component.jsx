@@ -111,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
 // TODO: memoize this
 const catalog_map_generator = (categories, products, product_instances) => {
   const category_map = {};
-  categories.map((curr, i) => {
+  categories.forEach((curr) => {
     category_map[curr._id] = { category: curr, children: [], products: [] };
   });
   for (var i = 0; i < categories.length; ++i) {
@@ -121,32 +121,32 @@ const catalog_map_generator = (categories, products, product_instances) => {
   }
   const product_map = {};
   const orphan_products = [];
-  products.map((curr, i) => {
+  products.forEach((curr) => {
     product_map[curr._id] = { product: curr, instances: [] };
     if (curr.category_ids.length === 0) {
       orphan_products.push(curr._id);
     }
     else {
-      curr.category_ids.map((cid, k) => {
+      curr.category_ids.forEach((cid) => {
         category_map[cid].products.push(curr._id);
       });
     }
   });
-  product_instances.map((curr, i) => {
+  product_instances.forEach((curr) => {
     product_map[curr.product_id].instances.push(curr);
   })
   return [ category_map, product_map, orphan_products ];
 };
 
-const options_types_map_generator = (option_types, options) => {
-  var option_types_map = {};
-  option_types.forEach(ot => {
-    option_types_map[ot._id] = [];
+const modifier_types_map_generator = (modifier_types, options) => {
+  var modifier_types_map = {};
+  modifier_types.forEach(mt => {
+    modifier_types_map[mt._id] = { options: [], modifier_type: mt } ;
   });
   options.forEach(o => {
-    option_types_map[o.option_type_id].push(o);
+    modifier_types_map[o.option_type_id].options.push(o);
   })
-  return option_types_map;
+  return modifier_types_map;
 };
 
 
@@ -172,15 +172,20 @@ const MenuBuilderComponent = ({
   const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
   const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
   const [isProductAddOpen, setIsProductAddOpen] = useState(false);
-  
+
+  const [isProductInstanceAddOpen, setIsProductInstanceAddOpen] = useState(false);
+
   const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
 
   const [isProductEditOpen, setIsProductEditOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
+
+  const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
+  const [productInstanceToEdit, setProductInstanceToEdit] = useState(null);
   
   // create maps from catalog data
-  const options_map = options_types_map_generator(option_types, options);
+  const modifier_types_map = modifier_types_map_generator(option_types, options);
   const [ category_map, product_map, orphan_products ] = catalog_map_generator(categories, products, product_instances);
 
   return (
@@ -240,7 +245,22 @@ const MenuBuilderComponent = ({
             ENDPOINT={ENDPOINT}
           />
         } 
-      />                
+      />   
+      <DialogContainer 
+        title={`Add Product Instance for: ${productToEdit ? productToEdit.item.display_name : ""}`}
+        onClose={() => {
+          setIsProductInstanceAddOpen(false);
+        }} 
+        isOpen={isProductInstanceAddOpen} 
+        inner_component={
+          <ProductAddContainer 
+            categories={categories} 
+            modifier_types={option_types}
+            product={productToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        } 
+      />                      
       <Grid container justify="center" spacing={3}>
         <Grid item xs={12}>
           <InterstitialDialog 
@@ -289,7 +309,7 @@ const MenuBuilderComponent = ({
               },
               {
                 icon: Edit,
-                tooltip: 'Edit',
+                tooltip: 'Edit Category',
                 onClick: (event, rowData) => {
                   setIsCategoryEditOpen(true);
                   setCategoryToEdit(rowData);
@@ -320,24 +340,32 @@ const MenuBuilderComponent = ({
                     actions={[
                       {
                         icon: Edit,
-                        tooltip: 'Edit',
+                        tooltip: 'Edit Product',
                         onClick: (event, rowData) => {
                           setIsProductEditOpen(true);
-                          setProductToEdit(rowData);
+                          setProductToEdit(rowData.product);
                         },
-                      }
+                      },
+                      {
+                        icon: AddBox,
+                        tooltip: 'Add Product Instance',
+                        onClick: (event, rowData) => {
+                          setIsProductInstanceAddOpen(true);
+                          setProductToEdit(rowData.product);
+                        },
+                      },
                     ]}
                     icons={tableIcons}
                     columns={[
-                      { title: "Name", field: "catalog_item.display_name" },
-                      { title: "Price", field: "catalog_item.price.amount" },
-                      { title: "Shortcode", field: "catalog_item.shortcode" },
-                      { title: "Description", field: "catalog_item.description" },
-                      { title: "EXID: Revel", field: "catalog_item.externalIDs.revelID" },
-                      { title: "EXID: Square", field: "catalog_item.externalIDs.squareID" },
-                      { title: "Disabled", field: "catalog_item.disabled" },
+                      { title: "Name", field: "product.item.display_name" },
+                      { title: "Price", field: "product.item.price.amount" },
+                      { title: "Shortcode", field: "product.item.shortcode" },
+                      { title: "Description", field: "product.item.description" },
+                      { title: "EXID: Revel", field: "product.item.externalIDs.revelID" },
+                      { title: "EXID: Square", field: "product.item.externalIDs.squareID" },
+                      { title: "Disabled", field: "product.item.disabled" },
                     ]}
-                    data={product_map.values.filter(x => category_map[rowData._id].products.includes(x))}
+                    data={Object.values(product_map).filter(x => x.product.category_ids.includes(rowData._id))}
                      />) : ""
                 },
                 icon: ()=> { return null }
@@ -392,7 +420,7 @@ const MenuBuilderComponent = ({
               },
               {
                 icon: Edit,
-                tooltip: 'Edit',
+                tooltip: 'Edit Modifier Type',
                 onClick: (event, rowData) => {
                   setIsModifierTypeEditOpen(true);
                   setModifierTypeToEdit(rowData);
@@ -405,7 +433,7 @@ const MenuBuilderComponent = ({
             detailPanel={[
               {
                 render: (rowData) => {
-                  return options_map[rowData._id].length ? (
+                  return modifier_types_map[rowData._id].options.length ? (
                   <MaterialTable
                     
                     options={{
@@ -418,12 +446,12 @@ const MenuBuilderComponent = ({
                         padding: 0,
                       },
                       toolbar: false,
-                      paging: options_map[rowData._id].length > 5
+                      paging: modifier_types_map[rowData._id].options.length > 5
                     }}
                     actions={[
                       {
                         icon: Edit,
-                        tooltip: 'Edit',
+                        tooltip: 'Edit Modifier Option',
                         onClick: (event, rowData) => {
                           setIsModifierOptionEditOpen(true);
                           setModifierOptionToEdit(rowData);
@@ -445,7 +473,7 @@ const MenuBuilderComponent = ({
                       { title: "EXID: Square", field: "catalog_item.externalIDs.squareID" },
                       { title: "Disabled", field: "catalog_item.disabled" },
                     ]}
-                    data={options_map[rowData._id]}
+                    data={modifier_types_map[rowData._id].options}
                      />) : ""
                 },
                 icon: ()=> { return null }
