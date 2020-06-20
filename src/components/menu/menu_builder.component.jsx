@@ -10,6 +10,8 @@ import ModifierTypeEditContainer from "./modifier_type.edit.container";
 import ModifierOptionAddContainer from "./modifier_option.add.container";
 import ProductAddContainer from "./product.add.container";
 import ProductEditContainer from "./product.edit.container";
+import ProductInstanceAddContainer from "./product_instance.add.container";
+//import ProductInstanceEditContainer from "./product_instance.edit.container";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -247,20 +249,35 @@ const MenuBuilderComponent = ({
         } 
       />   
       <DialogContainer 
+        maxWidth={"xl"}
         title={`Add Product Instance for: ${productToEdit ? productToEdit.item.display_name : ""}`}
         onClose={() => {
           setIsProductInstanceAddOpen(false);
         }} 
         isOpen={isProductInstanceAddOpen} 
         inner_component={
-          <ProductAddContainer 
-            categories={categories} 
-            modifier_types={option_types}
-            product={productToEdit}
+          <ProductInstanceAddContainer 
+            modifier_types_map={modifier_types_map}
+            parent_product={productToEdit}
             ENDPOINT={ENDPOINT}
           />
         } 
-      />                      
+      />    
+      <DialogContainer 
+        title={"Edit Product Instance"}
+        onClose={() => {
+          setIsProductInstanceEditOpen(false);
+        }} 
+        isOpen={isProductInstanceEditOpen} 
+        inner_component={
+          <ProductEditContainer 
+            categories={categories} 
+            modifier_types={option_types}
+            product={productInstanceToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        } 
+      />                          
       <Grid container justify="center" spacing={3}>
         <Grid item xs={12}>
           <InterstitialDialog 
