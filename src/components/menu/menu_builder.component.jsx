@@ -12,23 +12,12 @@ import ProductAddContainer from "./product.add.container";
 import ProductEditContainer from "./product.edit.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
 //import ProductInstanceEditContainer from "./product_instance.edit.container";
+import CategoryTableContainer from "./category_table.container";
+import ModifierTypeTableContainer from "./modifier_type_table.container";
+
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Container from "@material-ui/core/Container";
-import TextField from "@material-ui/core/TextField";
-import TreeView from "@material-ui/lab/TreeView";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import Hidden from '@material-ui/core/Hidden';
-
-import TreeItem from "@material-ui/lab/TreeItem";
-import MaterialTable from "material-table";
-
-import { useAuth0 } from "../../react-auth0-spa";
-
 
 import {
   AddBox,
@@ -301,93 +290,16 @@ const MenuBuilderComponent = ({
             onClose={() => setIsCategoryInterstitialOpen(false)}
             open={isCategoryInterstitialOpen}
           />
-          <MaterialTable
-            title="Catalog Tree View"
-            parentChildData={(row, rows) =>
-              rows.find((a) => a._id === row.parent_id)
-            }
-            columns={[
-              { title: "Name", field: "name" },
-              { title: "Description", field: "description" },
-            ]}
-            options={{
-              detailPanelType: "single",
-              draggable: false,
-              paging: false
-            }}
-            actions={[
-              {
-                icon: AddBox,
-                tooltip: 'Add new...',
-                onClick: (event, rowData) => {
-                  setIsCategoryInterstitialOpen(true);
-                },
-                isFreeAction: true
-              },
-              {
-                icon: Edit,
-                tooltip: 'Edit Category',
-                onClick: (event, rowData) => {
-                  setIsCategoryEditOpen(true);
-                  setCategoryToEdit(rowData);
-                },
-              }
-            ]}
-            data={categories}
-            icons={tableIcons}
-            onRowClick={(event, rowData, togglePanel) => togglePanel()}
-            detailPanel={[
-              {
-                render: (rowData) => {
-                  return category_map[rowData._id].products.length ? (
-                  <MaterialTable
-                    
-                    options={{
-                      showTitle: false,
-                      showEmptyDataSourceMessage: false,
-                      sorting: false,
-                      draggable: false,
-                      search: false,
-                      rowStyle: {
-                        padding: 0,
-                      },
-                      toolbar: false,
-                      paging: category_map[rowData._id].products.length > 5
-                    }}
-                    actions={[
-                      {
-                        icon: Edit,
-                        tooltip: 'Edit Product',
-                        onClick: (event, rowData) => {
-                          setIsProductEditOpen(true);
-                          setProductToEdit(rowData.product);
-                        },
-                      },
-                      {
-                        icon: AddBox,
-                        tooltip: 'Add Product Instance',
-                        onClick: (event, rowData) => {
-                          setIsProductInstanceAddOpen(true);
-                          setProductToEdit(rowData.product);
-                        },
-                      },
-                    ]}
-                    icons={tableIcons}
-                    columns={[
-                      { title: "Name", field: "product.item.display_name" },
-                      { title: "Price", field: "product.item.price.amount" },
-                      { title: "Shortcode", field: "product.item.shortcode" },
-                      { title: "Description", field: "product.item.description" },
-                      { title: "EXID: Revel", field: "product.item.externalIDs.revelID" },
-                      { title: "EXID: Square", field: "product.item.externalIDs.squareID" },
-                      { title: "Disabled", field: "product.item.disabled" },
-                    ]}
-                    data={Object.values(product_map).filter(x => x.product.category_ids.includes(rowData._id))}
-                     />) : ""
-                },
-                icon: ()=> { return null }
-              }
-            ]}
+          <CategoryTableContainer
+            categories={categories}
+            category_map={category_map}
+            product_map={product_map}
+            setIsCategoryInterstitialOpen={setIsCategoryInterstitialOpen}
+            setIsCategoryEditOpen={setIsCategoryEditOpen}
+            setCategoryToEdit={setCategoryToEdit}
+            setProductToEdit={setProductToEdit}            
+            setIsProductEditOpen={setIsProductEditOpen}            
+            setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}            
           />
         </Grid>
         <Grid item xs={12}>
@@ -412,90 +324,14 @@ const MenuBuilderComponent = ({
             onClose={() => setIsModifierInterstitialOpen(false)}
             open={isModifierInterstitialOpen}
           />
-          <MaterialTable
-            title="Modifier Types / Modifier Type Option"
-            columns={[
-              { title: "Name", field: "name" },
-              { title: "Selection Type", field: "selection_type" },
-              { title: "Ordinal", field: "ordinal" },
-              { title: "EXID: Revel", field: "externalIDs.revelID" },
-              { title: "EXID: Square", field: "externalIDs.squareID" },
-            ]}
-            options={{
-              detailPanelType: "single",
-              draggable: false,
-              paging: false
-            }}
-            actions={[
-              {
-                icon: AddBox,
-                tooltip: 'Add new...',
-                onClick: (event, rowData) => {
-                  setIsModifierInterstitialOpen(true);
-                },
-                isFreeAction: true
-              },
-              {
-                icon: Edit,
-                tooltip: 'Edit Modifier Type',
-                onClick: (event, rowData) => {
-                  setIsModifierTypeEditOpen(true);
-                  setModifierTypeToEdit(rowData);
-                },
-              }
-            ]}
-            data={option_types}
-            icons={tableIcons}
-            onRowClick={(event, rowData, togglePanel) => togglePanel()}
-            detailPanel={[
-              {
-                render: (rowData) => {
-                  return modifier_types_map[rowData._id].options.length ? (
-                  <MaterialTable
-                    
-                    options={{
-                      showTitle: false,
-                      showEmptyDataSourceMessage: false,
-                      sorting: false,
-                      draggable: false,
-                      search: false,
-                      rowStyle: {
-                        padding: 0,
-                      },
-                      toolbar: false,
-                      paging: modifier_types_map[rowData._id].options.length > 5
-                    }}
-                    actions={[
-                      {
-                        icon: Edit,
-                        tooltip: 'Edit Modifier Option',
-                        onClick: (event, rowData) => {
-                          setIsModifierOptionEditOpen(true);
-                          setModifierOptionToEdit(rowData);
-                        },
-                      }
-                    ]}
-                    icons={tableIcons}
-                    columns={[
-                      { title: "Name", field: "catalog_item.display_name" },
-                      { title: "Price", field: "catalog_item.price.amount" },
-                      { title: "Shortcode", field: "catalog_item.shortcode" },
-                      { title: "Description", field: "catalog_item.description" },
-                      { title: "Ordinal", field: "ordinal" },
-                      { title: "FFactor", field: "metadata.flavor_factor" },
-                      { title: "BFactor", field: "metadata.bake_factor" },
-                      { title: "Can Split?", field: "metadata.can_split" },
-                      { title: "EnableFxn", field: "enable_function_name" },
-                      { title: "EXID: Revel", field: "catalog_item.externalIDs.revelID" },
-                      { title: "EXID: Square", field: "catalog_item.externalIDs.squareID" },
-                      { title: "Disabled", field: "catalog_item.disabled" },
-                    ]}
-                    data={modifier_types_map[rowData._id].options}
-                     />) : ""
-                },
-                icon: ()=> { return null }
-              }
-            ]}
+          <ModifierTypeTableContainer
+            option_types={option_types}
+            modifier_types_map={modifier_types_map}
+            setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
+            setModifierTypeToEdit={setModifierTypeToEdit}
+            setIsModifierInterstitialOpen={setIsModifierInterstitialOpen}
+            setModifierOptionToEdit={setModifierOptionToEdit}
+            setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
           />
         </Grid>
       </Grid>

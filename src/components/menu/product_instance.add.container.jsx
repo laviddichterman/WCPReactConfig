@@ -24,7 +24,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       setIsProcessing(true);
       try {
         const token = await getTokenSilently();
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/product/`, {
+        const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${parent_product._id}`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

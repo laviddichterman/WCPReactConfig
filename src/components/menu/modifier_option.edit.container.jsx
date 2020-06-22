@@ -21,7 +21,6 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
   const [revelID, setRevelID] = useState(modifier_option.catalog_item.externalIDs && modifier_option.catalog_item.externalIDs.revelID ? modifier_option.catalog_item.externalIDs.revelID : "");
   const [squareID, setSquareID] = useState(modifier_option.catalog_item.externalIDs && modifier_option.catalog_item.externalIDs.squareID ? modifier_option.catalog_item.externalIDs.squareID : "");
   const [parent, setParent] = useState(foundParent);
-  const [parentName, setParentName] = useState(foundParent.name);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
@@ -101,7 +100,6 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
       setSquareID={setSquareID}
       parent={parent}
       setParent={setParent}
-      parentName={parentName}
     />
   );
 };
