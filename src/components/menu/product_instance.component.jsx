@@ -17,7 +17,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -262,7 +261,7 @@ const normalizeModifiersAndOptions = (parent_product, modifier_types_map, modifi
     const options = modifier_types_map[mtid].options.map((option, idx) => {
       return {
         option_id: option._id,
-        placement: is_single ? (idx === 0 ? "WHOLE" : "NONE") : "NONE"
+        placement: "NONE"
       }
     })
     normalized_modifiers.push({modifier_type_id: mtid, options: options});

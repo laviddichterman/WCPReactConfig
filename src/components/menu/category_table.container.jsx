@@ -6,8 +6,7 @@ import { AddBox, Edit } from "@material-ui/icons";
 
 const CategoryTableContainer = ({
   categories,
-  category_map,
-  product_map,
+  catalog_map,
   setIsCategoryInterstitialOpen,
   setIsCategoryEditOpen,
   setCategoryToEdit,
@@ -55,11 +54,10 @@ const CategoryTableContainer = ({
       detailPanel={[
         {
           render: (rowData) => {
-            return category_map[rowData._id].products.length ? (
+            return catalog_map.category_map[rowData._id].products.length ? (
             <ProductTableContainer
               product={rowData}
-              category_map={category_map}
-              product_map={product_map}
+              catalog_map={catalog_map}
               setProductToEdit={setProductToEdit}            
               setIsProductEditOpen={setIsProductEditOpen}            
               setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}   

@@ -5,8 +5,7 @@ import { AddBox, Edit } from "@material-ui/icons";
 
 const ProductTableContainer = ({
   product,
-  category_map,
-  product_map,
+  catalog_map,
   setProductToEdit,
   setIsProductEditOpen,
   setIsProductInstanceAddOpen,
@@ -25,7 +24,7 @@ const ProductTableContainer = ({
           padding: 0,
         },
         toolbar: false,
-        paging: category_map[product._id].products.length > 5,
+        paging: catalog_map.category_map[product._id].products.length > 5,
       }}
       actions={[
         {
@@ -54,14 +53,14 @@ const ProductTableContainer = ({
         { title: "EXID: Square", field: "product.item.externalIDs.squareID" },
         { title: "Disabled", field: "product.item.disabled" },
       ]}
-      data={Object.values(product_map).filter((x) =>
+      data={Object.values(catalog_map.product_map).filter((x) =>
         x.product.category_ids.includes(product._id)
       )}
       onRowClick={(event, rowData, togglePanel) => togglePanel()}
       detailPanel={[
         {
           render: (rowData) => {
-            return product_map[rowData.product._id].instances.length ? (
+            return catalog_map.product_map[rowData.product._id].instances.length ? (
             <TableWrapperComponent
               options={{
                 showTitle: false,
@@ -82,7 +81,6 @@ const ProductTableContainer = ({
                   onClick: (event, instanceRowData) => {
                     setIsProductInstanceEditOpen(true);
                     setProductToEdit(rowData.product);
-                    console.log(instanceRowData);
                     setProductInstanceToEdit(instanceRowData);
                   },
                 }
@@ -96,8 +94,8 @@ const ProductTableContainer = ({
                 { title: "EXID: Square", field:  "item.externalIDs.squareID" },
                 { title: "Disabled", field: "item.disabled" },
               ]}
-              data={product_map[rowData.product._id].instances}
-               />) : JSON.stringify(product_map[rowData.product._id])
+              data={catalog_map.product_map[rowData.product._id].instances}
+               />) : JSON.stringify(catalog_map.product_map[rowData.product._id])
           },
           icon: ()=> { return null }
         }

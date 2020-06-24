@@ -126,7 +126,7 @@ const catalog_map_generator = (categories, products, product_instances) => {
   product_instances.forEach((curr) => {
     product_map[curr.product_id].instances.push(curr);
   })
-  return [ category_map, product_map, orphan_products ];
+  return { category_map, product_map, orphan_products };
 };
 
 const modifier_types_map_generator = (modifier_types, options) => {
@@ -176,9 +176,8 @@ const MenuBuilderComponent = ({
   const [productInstanceToEdit, setProductInstanceToEdit] = useState(null);
   
   // create maps from catalog data
-  const modifier_types_map = modifier_types_map_generator(option_types, options);
-  const [ category_map, product_map, orphan_products ] = catalog_map_generator(categories, products, product_instances);
-
+  //const [modifierTypesMap, setModifierTypesMap] = useState(modifier_types_map_generator(option_types, options));
+  //const [mappedCatalog, setMappedCatalog] = useState(catalog_map_generator(categories, products, product_instances));
   return (
     <div className={classes.root}>
       <DialogContainer 
@@ -246,7 +245,7 @@ const MenuBuilderComponent = ({
         isOpen={isProductInstanceAddOpen} 
         inner_component={
           <ProductInstanceAddContainer 
-            modifier_types_map={modifier_types_map}
+            modifier_types_map={modifier_types_map_generator(option_types, options)}
             parent_product={productToEdit}
             ENDPOINT={ENDPOINT}
           />
@@ -261,7 +260,7 @@ const MenuBuilderComponent = ({
         isOpen={isProductInstanceEditOpen} 
         inner_component={
           <ProductInstanceEditContainer 
-            modifier_types_map={modifier_types_map}
+            modifier_types_map={modifier_types_map_generator(option_types, options)}
             parent_product={productToEdit}
             product_instance={productInstanceToEdit}
             ENDPOINT={ENDPOINT}
@@ -293,8 +292,7 @@ const MenuBuilderComponent = ({
           />
           <CategoryTableContainer
             categories={categories}
-            category_map={category_map}
-            product_map={product_map}
+            catalog_map={catalog_map_generator(categories, products, product_instances)}
             setIsCategoryInterstitialOpen={setIsCategoryInterstitialOpen}
             setIsCategoryEditOpen={setIsCategoryEditOpen}
             setCategoryToEdit={setCategoryToEdit}
@@ -330,7 +328,7 @@ const MenuBuilderComponent = ({
           />
           <ModifierTypeTableContainer
             option_types={option_types}
-            modifier_types_map={modifier_types_map}
+            modifier_types_map={modifier_types_map_generator(option_types, options)}
             setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
             setModifierTypeToEdit={setModifierTypeToEdit}
             setIsModifierInterstitialOpen={setIsModifierInterstitialOpen}
