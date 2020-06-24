@@ -21,7 +21,7 @@ const ModifierOptionTableContainer = ({
           padding: 0,
         },
         toolbar: false,
-        paging: modifier_types_map[modifier_type._id].options.length > 5,
+        paging: false,
       }}
       actions={[
         {

@@ -11,7 +11,7 @@ import ModifierOptionAddContainer from "./modifier_option.add.container";
 import ProductAddContainer from "./product.add.container";
 import ProductEditContainer from "./product.edit.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
-//import ProductInstanceEditContainer from "./product_instance.edit.container";
+import ProductInstanceEditContainer from "./product_instance.edit.container";
 import CategoryTableContainer from "./category_table.container";
 import ModifierTypeTableContainer from "./modifier_type_table.container";
 
@@ -253,16 +253,17 @@ const MenuBuilderComponent = ({
         } 
       />    
       <DialogContainer 
+        maxWidth={"xl"}
         title={"Edit Product Instance"}
         onClose={() => {
           setIsProductInstanceEditOpen(false);
         }} 
         isOpen={isProductInstanceEditOpen} 
         inner_component={
-          <ProductEditContainer 
-            categories={categories} 
-            modifier_types={option_types}
-            product={productInstanceToEdit}
+          <ProductInstanceEditContainer 
+            modifier_types_map={modifier_types_map}
+            parent_product={productToEdit}
+            product_instance={productInstanceToEdit}
             ENDPOINT={ENDPOINT}
           />
         } 
@@ -299,7 +300,10 @@ const MenuBuilderComponent = ({
             setCategoryToEdit={setCategoryToEdit}
             setProductToEdit={setProductToEdit}            
             setIsProductEditOpen={setIsProductEditOpen}            
-            setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}            
+            setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
+            setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
+            productInstanceToEdit={productInstanceToEdit}  
+            setProductInstanceToEdit={setProductInstanceToEdit}
           />
         </Grid>
         <Grid item xs={12}>

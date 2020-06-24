@@ -3,20 +3,19 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Switch from "@material-ui/core/Switch";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 
 // related to modifiers
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Checkbox from '@material-ui/core/Checkbox';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -49,37 +48,7 @@ const CheckForNumberGEZeroLT64Int = (e) => {
   const parsed = parseInt(e);
   return isNaN(parsed) || parsed < 0 || parsed > 63 ? 1 : parsed;
 };
-const normalizeModifiersAndOptions = (parent_product, modifier_types_map, modifiers) => {
-  var normalized_modifiers = [];
-  parent_product.modifiers.forEach((mtid) => {
-    const options = modifier_types_map[mtid].options.map((option) => {
-      return {
-        option_id: option._id,
-        placement: "NONE"
-      }
-    })
-    normalized_modifiers.push({modifier_type_id: mtid, options: options});
-  });
-  // copy the selected modifiers over to the normalized
-  modifiers.forEach((mod) => {
-    const normalized_modifier = normalized_modifiers.find(x => x.modifier_type_id === mod.modifier_type_id);
-    mod.options.forEach((opt) => {
-      if (opt.placement !== "NONE") {
-        normalized_modifier.options.find(x => x.option_id === opt.option_id).placement = opt.placement;
-      }
-    });
-  })
-  console.log(normalized_modifiers);
-  return normalized_modifiers;
-}
 
-const minimizeModifiers = (normalized_modifiers) => {
-  return normalized_modifiers.map((mod, idx) => {
-    const filtered_options = mod.options.filter(x => x.placement !== "NONE");
-    console.log(filtered_options);
-    return filtered_options.length ? {modifier_type_id: mod.modifier_type_id, options: filtered_options} : null;
-  }).filter(x => x != null)
-}
 
 const ProductInstanceComponent = ({
   actions,
@@ -96,7 +65,6 @@ const ProductInstanceComponent = ({
   modifiers, setModifiers
 }) => {
   const classes = useStyles();
-  const [normalizedModifiers, setNormalizedModifiers] = useState(normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers));
   const actions_html =
     actions.length === 0 ? (
       ""
@@ -112,56 +80,91 @@ const ProductInstanceComponent = ({
 
   const handleToggle = (mtid, oidx) => {
     var newval = "NONE";
-    switch (normalizedModifiers[mtid].options[oidx].placement) {
+    switch (modifiers[mtid].options[oidx].placement) {
       case "WHOLE":
-        console.log("whole!")
         newval = "NONE";
         break;
       case "NONE":
-        console.log("none, to whole");
         newval = "WHOLE";
         break;
       default:
         alert("messed up option value!");
     }
-    var new_normalized_mod = normalizedModifiers.slice();
-    new_normalized_mod[mtid].options = normalizedModifiers[mtid].options.slice();
-    Object.assign(new_normalized_mod[mtid].options[oidx], normalizedModifiers[mtid].options[oidx]);
+
+    const new_normalized_mod = modifiers.slice();
+    new_normalized_mod[mtid].options = modifiers[mtid].options.slice();
+    Object.assign(new_normalized_mod[mtid].options[oidx], modifiers[mtid].options[oidx]);
     new_normalized_mod[mtid].options[oidx].placement = newval;
-    setNormalizedModifiers(new_normalized_mod);
-    //setModifiers(minimizeModifiers(new_normalized_mod));
+    setModifiers(new_normalized_mod);
+  }
+
+  const handleRadioChange = (mtidx, oidx) => {
+    const new_normalized_mod = modifiers.slice();
+    new_normalized_mod[mtidx].options = modifiers[mtidx].options.map((opt, idx) => {
+      // specifically using a == comparison since oidx is likely a string
+      return { option_id: opt.option_id, placement: idx == oidx ? "WHOLE" : "NONE" }
+    });
+    setModifiers(new_normalized_mod);
   }
 
   const modifier_html = parent_product.modifiers.map((mtid, mtidx) => {
     const mt = modifier_types_map[mtid].modifier_type;
     const mt_options = modifier_types_map[mtid].options;
-    console.log(mt);
-    const mt_options_html = mt_options.map((option, oidx) => {
-      console.log(normalizedModifiers[mtidx]);
-      const option_state = normalizedModifiers[mtidx].options[oidx];
-      return (
-        <ListItem button key={oidx} onClick={() => handleToggle(mtidx, oidx)}>
-          <ListItemIcon>
-            <Checkbox
-                  edge="start"
-                  checked={option_state.placement === "WHOLE"}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{ 'aria-labelledby': oidx }}
-                />
-          </ListItemIcon>
-          <ListItemText id={oidx} primary={mt_options[oidx].catalog_item.display_name} />
-        </ListItem>
-      )
-    })
+    var mt_options_html;
+    switch (mt.selection_type) {
+      case "MANY": 
+        mt_options_html = (<FormGroup row>
+        {
+          mt_options.map((option, oidx) => {
+            return (
+              <FormControlLabel 
+                key={oidx}
+                control={<Checkbox
+                          checked={modifiers[mtidx].options[oidx].placement === "WHOLE"}
+                          onChange={() => handleToggle(mtidx, oidx)}
+                          disableRipple
+                          inputProps={{ 'aria-labelledby': oidx }}
+                        />} 
+                label={mt_options[oidx].catalog_item.display_name} 
+              />);  
+            })
+        }
+        </FormGroup>);
+      break;
+      case "SINGLE":
+        mt_options_html = (
+        <RadioGroup 
+          aria-label={mt._id} 
+          name={mt.name} 
+          row
+          value={modifiers[mtidx].options.findIndex(o => o.placement === "WHOLE")}
+          onChange={(e) => handleRadioChange(mtidx, e.target.value)}
+        >
+          {
+            mt_options.map((option, oidx) => {
+              return (
+                <FormControlLabel 
+                  key={oidx}
+                  control={<Radio disableRipple />} 
+                  value={oidx}
+                  label={mt_options[oidx].catalog_item.display_name} 
+                />);  
+              })
+          }
+          </RadioGroup>);
+          break;
+      default:
+        alert(`ERROR WITH MODIFIER TYPE SELECTION TYPE: ${JSON.stringify(mt)}`);
+    }
     return (
       <Grid item xs={6} key={mtidx}>
         <Card>
-          <CardHeader title={mt.name} />
+          
           <CardContent>
-            <List>
+            <FormControl component="fieldset">
+              <FormLabel>{mt.name}</FormLabel>
               {mt_options_html}
-            </List>
+            </FormControl>
           </CardContent>
         </Card>
       </Grid>
@@ -252,4 +255,83 @@ const ProductInstanceComponent = ({
   );
 };
 
-export default ProductInstanceComponent;
+const normalizeModifiersAndOptions = (parent_product, modifier_types_map, modifiers) => {
+  var normalized_modifiers = [];
+  parent_product.modifiers.forEach((mtid) => {
+    const is_single = modifier_types_map[mtid].modifier_type.selection_type === "SINGLE";
+    const options = modifier_types_map[mtid].options.map((option, idx) => {
+      return {
+        option_id: option._id,
+        placement: is_single ? (idx === 0 ? "WHOLE" : "NONE") : "NONE"
+      }
+    })
+    normalized_modifiers.push({modifier_type_id: mtid, options: options});
+  });
+  // copy the selected modifiers over to the normalized
+  modifiers.forEach((mod) => {
+    const normalized_modifier = normalized_modifiers.find(x => x.modifier_type_id === mod.modifier_type_id);
+    mod.options.forEach((opt) => {
+      if (opt.placement !== "NONE") {
+        normalized_modifier.options.find(x => x.option_id === opt.option_id).placement = opt.placement;
+      }
+    });
+  })
+  return normalized_modifiers;
+}
+
+const minimizeModifiers = (normalized_modifiers) => {
+  return normalized_modifiers.map((mod, idx) => {
+    const filtered_options = mod.options.filter(x => x.placement !== "NONE");
+    return filtered_options.length ? {modifier_type_id: mod.modifier_type_id, options: filtered_options} : null;
+  }).filter(x => x != null)
+}
+
+const ProductInstanceContainer = ({ 
+  actions,
+  progress,
+  modifier_types_map,
+  parent_product,
+  displayName, setDisplayName,
+  description, setDescription,
+  shortcode, setShortcode,
+  price, setPrice,
+  enabled, setEnabled,
+  revelID, setRevelID,
+  squareID, setSquareID,
+  modifiers, setModifiers
+}) => {
+  const [normalizedModifers, setNormalizedModifiers] = useState(normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers));
+
+  const setNormalizedModifiersIntermediate = (mods) => {
+    setNormalizedModifiers(mods);
+    setModifiers(minimizeModifiers(mods));
+  }
+
+  return (
+    <ProductInstanceComponent 
+      actions={actions}
+      progress={progress}
+      modifier_types_map={modifier_types_map}
+      parent_product={parent_product}
+      displayName={displayName}
+      setDisplayName={setDisplayName}
+      description={description}
+      setDescription={setDescription}
+      shortcode={shortcode}
+      setShortcode={setShortcode}
+      price={price}
+      setPrice={setPrice}
+      enabled={enabled}
+      setEnabled={setEnabled}
+      revelID={revelID}
+      setRevelID={setRevelID}
+      squareID={squareID}
+      setSquareID={setSquareID}
+      modifiers={normalizedModifers}
+      setModifiers={setNormalizedModifiersIntermediate}
+    />
+  );
+};
+
+
+export default ProductInstanceContainer;

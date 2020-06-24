@@ -73,15 +73,17 @@ const ProductTableContainer = ({
                   padding: 0,
                 },
                 toolbar: false,
-                paging: product_map[rowData.product._id].instances.length > 5
+                paging: false
               }}
               actions={[
                 {
                   icon: Edit,
                   tooltip: 'Edit Product Instance',
-                  onClick: (event, rowData) => {
+                  onClick: (event, instanceRowData) => {
                     setIsProductInstanceEditOpen(true);
-                    setProductInstanceToEdit(rowData);
+                    setProductToEdit(rowData.product);
+                    console.log(instanceRowData);
+                    setProductInstanceToEdit(instanceRowData);
                   },
                 }
               ]}

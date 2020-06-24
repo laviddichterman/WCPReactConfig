@@ -5,26 +5,28 @@ import ProductInstanceContainer from "./product_instance.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_product }) => {
-  const [displayName, setDisplayName] = useState("");
-  const [description, setDescription] = useState("");
-  const [shortcode, setShortcode] = useState("");
-  const [price, setPrice] = useState(0);
-  const [enabled, setEnabled] = useState(true);
-  const [revelID, setRevelID] = useState("");
-  const [squareID, setSquareID] = useState("");
-  const [modifiers, setModifiers] = useState([]);
+const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_product, product_instance}) => {
+  const [displayName, setDisplayName] = useState(product_instance.item.display_name);
+  const [description, setDescription] = useState(product_instance.item.description);
+  const [shortcode, setShortcode] = useState(product_instance.item.shortcode);
+  const [price, setPrice] = useState(product_instance.item.price.amount / 100);
+  const [enabled, setEnabled] = useState(!product_instance.item.disabled);
+  const [revelID, setRevelID] = useState(product_instance.item.externalIDs && product_instance.item.externalIDs.revelID ? product_instance.item.externalIDs.revelID : "");
+  const [squareID, setSquareID] = useState(product_instance.item.externalIDs && product_instance.item.externalIDs.squareID ? product_instance.item.externalIDs.squareID : "");
+  const [modifiers, setModifiers] = useState(product_instance.modifiers);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
-  const addProductInstance = async (e) => {
+  const editProductInstance = async (e) => {
     e.preventDefault();
+
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getTokenSilently();
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${parent_product._id}`, {
-          method: "POST",
+        const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${parent_product._id}/${product_instance._id}`, {
+          method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -40,16 +42,6 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
             modifiers: modifiers
           }),
         });
-        if (response.status === 201) {
-          setDisplayName("");
-          setDescription("");
-          setShortcode("");
-          setPrice(0);
-          setEnabled(true);
-          setRevelID("");
-          setSquareID("");  
-          setModifiers([]);
-        }
         setIsProcessing(false);
       } catch (error) {
         setIsProcessing(false);
@@ -62,11 +54,11 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       actions={[          
         <Button
           className="btn btn-light"
-          onClick={addProductInstance}
+          onClick={editProductInstance}
           disabled={displayName.length === 0 || shortcode.length === 0 ||
             price < 0 || isProcessing}
         >
-          Add
+          Save
         </Button>
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
@@ -87,9 +79,9 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       squareID={squareID}
       setSquareID={setSquareID}
       modifiers={modifiers}
-      setModifiers={setModifiers}
+      setModifiers={setModifiers} 
     />
   );
 };
 
-export default ProductInstanceAddContainer;
+export default ProductInstanceEditContainer;
