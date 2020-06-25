@@ -2,13 +2,14 @@ import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
 import ProductTableContainer from "./product_table.container";
-import { AddBox, Edit } from "@material-ui/icons";
+import { AddBox, DeleteOutline, Edit } from "@material-ui/icons";
 
 const CategoryTableContainer = ({
   categories,
   catalog_map,
   setIsCategoryInterstitialOpen,
   setIsCategoryEditOpen,
+  setIsCategoryDeleteOpen,
   setCategoryToEdit,
   setProductToEdit,
   setIsProductEditOpen,
@@ -45,6 +46,14 @@ const CategoryTableContainer = ({
           tooltip: 'Edit Category',
           onClick: (event, rowData) => {
             setIsCategoryEditOpen(true);
+            setCategoryToEdit(rowData);
+          },
+        },
+        {
+          icon: DeleteOutline,
+          tooltip: 'Delete Category',
+          onClick: (event, rowData) => {
+            setIsCategoryDeleteOpen(true);
             setCategoryToEdit(rowData);
           },
         }

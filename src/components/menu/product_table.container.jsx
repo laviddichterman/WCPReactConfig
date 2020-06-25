@@ -95,7 +95,7 @@ const ProductTableContainer = ({
                 { title: "Disabled", field: "item.disabled" },
               ]}
               data={catalog_map.product_map[rowData.product._id].instances}
-               />) : JSON.stringify(catalog_map.product_map[rowData.product._id])
+               />) : ""
           },
           icon: ()=> { return null }
         }

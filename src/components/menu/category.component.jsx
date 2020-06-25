@@ -41,8 +41,8 @@ const CategoryComponent = ({
 
   const actions_html = actions.length === 0 ? "" : 
     (<Grid container justify="flex-end" item xs={12}>
-      {actions.map((action) => (
-        <Grid item key={action}>
+      {actions.map((action, idx) => (
+        <Grid item key={idx}>
           {action}
         </Grid>
       ))}

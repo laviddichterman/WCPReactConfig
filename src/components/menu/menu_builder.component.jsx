@@ -4,6 +4,7 @@ import InterstitialDialog from '../interstitial.dialog.component'
 import DialogContainer from '../dialog.container';
 import CategoryAddContainer from "./category.add.container";
 import CategoryEditContainer from "./category.edit.container";
+import CategoryDeleteContainer from "./category.delete.container";
 import ModifierTypeAddContainer from "./modifier_type.add.container";
 import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierTypeEditContainer from "./modifier_type.edit.container";
@@ -119,7 +120,7 @@ const catalog_map_generator = (categories, products, product_instances) => {
     }
     else {
       curr.category_ids.forEach((cid) => {
-        category_map[cid].products.push(curr._id);
+        category_map[cid] ? category_map[cid].products.push(curr._id) : console.error(`Missing category ID: ${cid} in product: ${JSON.stringify(curr)}`);
       });
     }
   });
@@ -167,6 +168,7 @@ const MenuBuilderComponent = ({
   const [isProductInstanceAddOpen, setIsProductInstanceAddOpen] = useState(false);
 
   const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false);
+  const [isCategoryDeleteOpen, setIsCategoryDeleteOpen] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
 
   const [isProductEditOpen, setIsProductEditOpen] = useState(false);
@@ -194,6 +196,18 @@ const MenuBuilderComponent = ({
           />
         } 
       />
+      <DialogContainer 
+        title={"Delete Category"}
+        onClose={() => {setIsCategoryDeleteOpen(false);}} 
+        isOpen={isCategoryDeleteOpen} 
+        inner_component={
+          <CategoryDeleteContainer 
+            ENDPOINT={ENDPOINT}
+            category={categoryToEdit}
+            onCloseCallback={() => {setIsCategoryDeleteOpen(false);}} 
+          />
+        } 
+      />      
       <DialogContainer 
         title={"Edit Modifier Type"}
         onClose={() => {
@@ -294,6 +308,7 @@ const MenuBuilderComponent = ({
             categories={categories}
             catalog_map={catalog_map_generator(categories, products, product_instances)}
             setIsCategoryInterstitialOpen={setIsCategoryInterstitialOpen}
+            setIsCategoryDeleteOpen={setIsCategoryDeleteOpen}
             setIsCategoryEditOpen={setIsCategoryEditOpen}
             setCategoryToEdit={setCategoryToEdit}
             setProductToEdit={setProductToEdit}            
