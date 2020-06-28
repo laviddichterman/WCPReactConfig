@@ -12,7 +12,6 @@ const ProductTableContainer = ({
   setIsProductInstanceEditOpen,
   setProductInstanceToEdit
 }) => {
-  console.log(category);
   return (
     <TableWrapperComponent
       options={{

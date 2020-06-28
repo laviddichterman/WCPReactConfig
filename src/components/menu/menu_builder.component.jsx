@@ -101,7 +101,6 @@ const MenuBuilderComponent = ({
   catalog
 }) => {
   const classes = useStyles();
-  const [isModifierInterstitialOpen, setIsModifierInterstitialOpen] = useState(false);
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
   const [isModifierOptionAddOpen, setIsModifierOptionAddOpen] = useState(false);
 
@@ -154,6 +153,16 @@ const MenuBuilderComponent = ({
             ENDPOINT={ENDPOINT}
             category={categoryToEdit}
           />
+        } 
+      />
+      <DialogContainer 
+        title={"Add Modifier Type"}
+        onClose={() => {setIsModifierTypeAddOpen(false);}} 
+        isOpen={isModifierTypeAddOpen} 
+        inner_component={
+          <ModifierTypeAddContainer 
+            onCloseCallback={() => {setIsModifierTypeAddOpen(false);}} 
+            ENDPOINT={ENDPOINT} />
         } 
       />      
       <DialogContainer 
@@ -294,28 +303,11 @@ const MenuBuilderComponent = ({
           />
         </Grid>
         <Grid item xs={12}>
-          <InterstitialDialog 
-            dialogTitle={"Add new..."}
-            options={[
-              {
-                title: "Add Modifier Type", 
-                cb: () => {setIsModifierTypeAddOpen(true)}, 
-                open: isModifierTypeAddOpen,
-                onClose: () => setIsModifierTypeAddOpen(false),
-                component: (<ModifierTypeAddContainer 
-                  onCloseCallback={() => {setIsModifierTypeAddOpen(false);}} 
-                  ENDPOINT={ENDPOINT} />)
-              },
-
-            ]}
-            onClose={() => setIsModifierInterstitialOpen(false)}
-            open={isModifierInterstitialOpen}
-          />
           <ModifierTypeTableContainer
             modifier_types_map={catalog.modifiers}
             setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
             setModifierTypeToEdit={setModifierTypeToEdit}
-            setIsModifierInterstitialOpen={setIsModifierInterstitialOpen}
+            setIsModifierTypeAddOpen={setIsModifierTypeAddOpen}
             setIsModifierOptionAddOpen={setIsModifierOptionAddOpen}
             setModifierOptionToEdit={setModifierOptionToEdit}
             setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}

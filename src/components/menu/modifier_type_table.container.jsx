@@ -8,7 +8,7 @@ const ModifierTypeTableContainer = ({
   modifier_types_map,
   setIsModifierTypeEditOpen,
   setModifierTypeToEdit,
-  setIsModifierInterstitialOpen,
+  setIsModifierTypeAddOpen,
   setIsModifierOptionAddOpen,
   setModifierOptionToEdit,
   setIsModifierOptionEditOpen
@@ -31,9 +31,9 @@ const ModifierTypeTableContainer = ({
       actions={[
         {
           icon: AddBox,
-          tooltip: "Add new...",
+          tooltip: "Add Modifier Type",
           onClick: (event, rowData) => {
-            setIsModifierInterstitialOpen(true);
+            setIsModifierTypeAddOpen(true);
           },
           isFreeAction: true,
         },
