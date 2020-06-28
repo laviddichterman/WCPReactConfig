@@ -5,8 +5,7 @@ import ProductTableContainer from "./product_table.container";
 import { AddBox, DeleteOutline, Edit } from "@material-ui/icons";
 
 const CategoryTableContainer = ({
-  categories,
-  catalog_map,
+  catalog,
   setIsCategoryInterstitialOpen,
   setIsCategoryEditOpen,
   setIsCategoryDeleteOpen,
@@ -21,11 +20,11 @@ const CategoryTableContainer = ({
     <TableWrapperComponent
       title="Catalog Tree View"
       parentChildData={(row, rows) =>
-        rows.find((a) => a._id === row.parent_id)
+        rows.find((a) => a.category._id === row.category.parent_id)
       }
       columns={[
-        { title: "Name", field: "name" },
-        { title: "Description", field: "description" },
+        { title: "Name", field: "category.name" },
+        { title: "Description", field: "category.description" },
       ]}
       options={{
         detailPanelType: "single",
@@ -46,7 +45,7 @@ const CategoryTableContainer = ({
           tooltip: 'Edit Category',
           onClick: (event, rowData) => {
             setIsCategoryEditOpen(true);
-            setCategoryToEdit(rowData);
+            setCategoryToEdit(rowData.category);
           },
         },
         {
@@ -58,15 +57,15 @@ const CategoryTableContainer = ({
           },
         }
       ]}
-      data={categories}
+      data={Object.values(catalog.categories)}
       onRowClick={(event, rowData, togglePanel) => togglePanel()}
       detailPanel={[
         {
           render: (rowData) => {
-            return catalog_map.category_map[rowData._id].products.length ? (
+            return catalog.categories[rowData.category._id].products.length ? (
             <ProductTableContainer
-              product={rowData}
-              catalog_map={catalog_map}
+              category={rowData.category}
+              catalog={catalog}
               setProductToEdit={setProductToEdit}            
               setIsProductEditOpen={setIsProductEditOpen}            
               setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}   

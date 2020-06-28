@@ -43,7 +43,6 @@ const CheckForNumberGEZeroLT64Int = (e) => {
 const ModifierOptionComponent = ({
   actions,
   progress,
-  modifier_types,
   displayName,
   setDisplayName,
   description,
@@ -68,7 +67,6 @@ const ModifierOptionComponent = ({
   setRevelID,
   squareID,
   setSquareID,
-  parent, setParent, 
 }) => {
   const classes = useStyles();
   const actions_html =
@@ -87,18 +85,6 @@ const ModifierOptionComponent = ({
   return (
     <div className={classes.root}>
       <Grid container spacing={3} justify="center">
-        <Grid item xs={6}>
-          <Autocomplete
-            options={modifier_types}
-            value={parent}
-            onChange={(e, v) => setParent(v)}
-            getOptionLabel={(option) => option.name}
-            getOptionSelected={(option, value) => option._id === value._id}
-            renderInput={(params) => (
-              <TextField {...params} label="Modifier Type" />
-            )}
-          />
-        </Grid>
         <Grid item xs={6}>
           <TextField
             label="Display Name"

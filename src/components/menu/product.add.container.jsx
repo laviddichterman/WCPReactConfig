@@ -5,7 +5,7 @@ import ProductComponent from "./product.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ProductAddContainer = ({ ENDPOINT, modifier_types, categories }) => {
+const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
@@ -38,8 +38,8 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories }) => {
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,
-            category_ids: parentCategories.map(x => x._id),
-            modifiers: modifiers.map(x => x._id)
+            category_ids: parentCategories.map(x => x.category._id),
+            modifiers: modifiers.map(x => x.modifier_type._id)
           }),
         });
         if (response.status === 201) {
@@ -52,6 +52,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories }) => {
           setSquareID("");  
           setModifiers([]);
           setParentCategories([]);
+          onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
@@ -62,7 +63,13 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories }) => {
 
   return (
     <ProductComponent 
-      actions={[          
+      actions={[ 
+        <Button
+          className="btn btn-light"
+          onClick={onCloseCallback}
+          disabled={isProcessing}>
+          Cancel
+        </Button>,                 
         <Button
           className="btn btn-light"
           onClick={addProduct}

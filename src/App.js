@@ -71,15 +71,19 @@ const ENDPOINT = "http://localhost:4001";
 const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, { autoConnect: false, secure: true, cookie: false });
 const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false });
 
+const setWrapper = (data, setter) => {
+  console.log(data);
+  return setter(data);
+}
 const App = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = React.useState(0);
   const { loading, getTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [socketAuth] = useState(IO_CLIENT_AUTH);
   const [socketRo] = useState(IO_CLIENT_RO);
-  const [SERVICES, setSERVICES] = useState(["Pick-up", "Dine-In", "Delivery"]);
-  const [BLOCKED_OFF, setBLOCKED_OFF] = useState(Array(3).fill([]));
-  const [LEADTIME, setLEADTIME] = useState([40, 40, 1440]);
+  const [SERVICES, setSERVICES] = useState([]);
+  const [BLOCKED_OFF, setBLOCKED_OFF] = useState();
+  const [LEADTIME, setLEADTIME] = useState();
   const [SETTINGS, setSETTINGS] = useState({
     additional_pizza_lead_time: 5, //to deprecate
     time_step: 15,
@@ -93,11 +97,12 @@ const App = () => {
   });
   const [DELIVERY_AREA, setDELIVERY_AREA] = useState({});
   const [KEYVALUES, setKEYVALUES] = useState({});
-  const [CATALOG_CATEGORIES, setCATALOG_CATEGORIES] = useState([]);
-  const [CATALOG_OPTION_TYPES, setCATALOG_OPTION_TYPES] = useState([]);
-  const [CATALOG_OPTIONS, setCATALOG_OPTIONS] = useState([]);
-  const [CATALOG_PRODUCTS, setCATALOG_PRODUCTS] = useState([]);
-  const [CATALOG_PRODUCT_INSTANCES, setCATALOG_PRODUCT_INSTANCES] = useState([]);
+  const [CATALOG, setCATALOG] = useState({ 
+    modifiers: {},
+    categories: {},
+    products: {},
+    orphan_products: []
+  });
 
   useEffect(() => {
     let token;
@@ -132,11 +137,7 @@ const App = () => {
       socketRo.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
       socketRo.on("WCP_SETTINGS", data => setSETTINGS(data));
       socketRo.on("WCP_DELIVERY_AREA", data => setDELIVERY_AREA(data));
-      socketRo.on("WCP_CATALOG_CATEGORIES", data => setCATALOG_CATEGORIES(data));
-      socketRo.on("WCP_CATALOG_OPTION_TYPES", data => setCATALOG_OPTION_TYPES(data));
-      socketRo.on("WCP_CATALOG_OPTIONS", data => setCATALOG_OPTIONS(data));
-      socketRo.on("WCP_CATALOG_PRODUCTS", data => setCATALOG_PRODUCTS(data));
-      socketRo.on("WCP_CATALOG_PRODUCT_INSTANCES", data => setCATALOG_PRODUCT_INSTANCES(data));
+      socketRo.on("WCP_CATALOG", data => setCATALOG(data));
     });
     return function() {
       socketRo.disconnect();
@@ -289,11 +290,7 @@ const App = () => {
         </TabPanel>
         <TabPanel value={currentTab} index={2}>
           <MenuBuilderComponent
-            categories={CATALOG_CATEGORIES}
-            option_types={CATALOG_OPTION_TYPES}
-            options={CATALOG_OPTIONS}
-            products={CATALOG_PRODUCTS}
-            product_instances={CATALOG_PRODUCT_INSTANCES}
+            catalog={CATALOG}
             ENDPOINT={ENDPOINT}
           />
         </TabPanel>

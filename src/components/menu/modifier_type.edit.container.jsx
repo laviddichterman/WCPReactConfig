@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import ModifierTypeComponent from "./modifier_type.component";
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type }) => {
+const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback }) => {
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
   const [selectionType, setSelectionType] = useState(modifier_type.selection_type);
@@ -35,6 +35,7 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type }) => {
           }),
         });
         setIsProcessing(false);
+        onCloseCallback();
       } catch (error) {
         setIsProcessing(false);
       }
@@ -43,7 +44,13 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type }) => {
 
   return (
     <ModifierTypeComponent 
-      actions={[          
+      actions={[ 
+        <Button
+          className="btn btn-light"
+          onClick={onCloseCallback}
+          disabled={isProcessing}>
+          Cancel
+        </Button>,                  
         <Button
           className="btn btn-light"
           onClick={editModifierType}

@@ -4,9 +4,7 @@ import Button from "@material-ui/core/Button";
 import CategoryComponent from "./category.component";
 import { useAuth0 } from "../../react-auth0-spa";
 
-
-
-const CategoryAddContainer = ({ ENDPOINT, categories }) => {
+const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [parent, setParent] = useState(null);
@@ -36,6 +34,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories }) => {
         setName("");
         setParent(null);
         setIsProcessing(false);
+        onCloseCallback()
       } catch (error) {
         console.error(error);
         setIsProcessing(false);
@@ -45,7 +44,13 @@ const CategoryAddContainer = ({ ENDPOINT, categories }) => {
 
   return (
     <CategoryComponent 
-      actions={[          
+      actions={[
+        <Button
+          className="btn btn-light"
+          onClick={onCloseCallback}
+          disabled={isProcessing}>
+          Cancel
+        </Button>,
         <Button
           className="btn btn-light"
           onClick={addCategory}
@@ -54,7 +59,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories }) => {
           Add
         </Button>
       ]}
-      categories={categories}
+      categories={Object.values(categories)}
       description={description}
       setDescription={setDescription}
       name={name}

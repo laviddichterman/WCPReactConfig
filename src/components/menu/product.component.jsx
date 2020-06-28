@@ -75,11 +75,11 @@ const ProductComponent = ({
           <Autocomplete
             multiple
             filterSelectedOptions
-            options={categories}
+            options={Object.values(categories)}
             value={parentCategories}
             onChange={(e, v) => setParentCategories(v)}
-            getOptionLabel={(option) => option.name}
-            getOptionSelected={(option, value) => option._id === value._id}
+            getOptionLabel={(option) => option.category.name}
+            getOptionSelected={(option, value) => option.category._id === value.category._id}
             renderInput={(params) => (
               <TextField {...params} label="Categories" />
             )}
@@ -162,11 +162,11 @@ const ProductComponent = ({
           <Autocomplete
             multiple
             filterSelectedOptions
-            options={modifier_types}
+            options={Object.values(modifier_types)}
             value={modifiers}
-            onChange={(e, v) => setModifiers(v.sort((a, b)=> a.ordinal - b.ordinal))}
-            getOptionLabel={(option) => option.name}
-            getOptionSelected={(option, value) => option._id === value._id}
+            onChange={(e, v) => setModifiers(v.sort((a, b)=> a.modifier_type.ordinal - b.modifier_type.ordinal))}
+            getOptionLabel={(option) => option.modifier_type.name}
+            getOptionSelected={(option, value) => option.modifier_type._id === value.modifier_type._id}
             renderInput={(params) => (
               <TextField {...params} label="Modifiers" />
             )}

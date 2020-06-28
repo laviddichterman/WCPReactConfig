@@ -5,7 +5,7 @@ import ProductInstanceContainer from "./product_instance.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_product, product_instance}) => {
+const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_product, product_instance, onCloseCallback}) => {
   const [displayName, setDisplayName] = useState(product_instance.item.display_name);
   const [description, setDescription] = useState(product_instance.item.description);
   const [shortcode, setShortcode] = useState(product_instance.item.shortcode);
@@ -43,6 +43,7 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
           }),
         });
         setIsProcessing(false);
+        onCloseCallback();
       } catch (error) {
         setIsProcessing(false);
       }
@@ -51,7 +52,13 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
 
   return (
     <ProductInstanceContainer 
-      actions={[          
+      actions={[  
+        <Button
+          className="btn btn-light"
+          onClick={onCloseCallback}
+          disabled={isProcessing}>
+          Cancel
+        </Button>,                  
         <Button
           className="btn btn-light"
           onClick={editProductInstance}

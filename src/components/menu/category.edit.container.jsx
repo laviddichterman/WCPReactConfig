@@ -4,18 +4,10 @@ import Button from "@material-ui/core/Button";
 import CategoryComponent from "./category.component";
 import { useAuth0 } from "../../react-auth0-spa";
 
-const FindParent = (categories, category) => {
-  const parent = category.parent_id ? categories.find(cat => category.parent_id === cat._id) : null;
-  return parent ? parent : null;
-}
-
-const CategoryEditContainer = ({ ENDPOINT, categories, category }) => {
-  // filter out this category so we don't generate a circular reference loop
-  const filtered_categories = categories.filter(cat => cat._id !== category._id);
-  const foundParent = FindParent(categories, category);
+const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback }) => {
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
-  const [parent, setParent] = useState(foundParent);
+  const [parent, setParent] = useState(category.parent_id ? categories[category.parent_id] : null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
@@ -52,12 +44,18 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category }) => {
       actions={[
         <Button
           className="btn btn-light"
+          onClick={onCloseCallback}
+          disabled={isProcessing}>
+          Cancel
+        </Button>,
+        <Button
+          className="btn btn-light"
           onClick={editCategory}
           disabled={name.length === 0 || description.length === 0 || isProcessing}>
           Save
         </Button>
       ]}
-      categories={filtered_categories}
+      categories={Object.values(categories).filter(cat => cat.category._id !== category._id)}
       description={description}
       setDescription={setDescription}
       name={name}

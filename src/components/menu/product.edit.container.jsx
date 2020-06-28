@@ -5,7 +5,7 @@ import ProductComponent from "./product.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product }) => {
+const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState(product.item.display_name);
   const [description, setDescription] = useState(product.item.description);
   const [shortcode, setShortcode] = useState(product.item.shortcode);
@@ -13,8 +13,8 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product })
   const [enabled, setEnabled] = useState(!product.item.disabled);
   const [revelID, setRevelID] = useState(product.item.externalIDs && product.item.externalIDs.revelID ? product.item.externalIDs.revelID : "");
   const [squareID, setSquareID] = useState(product.item.externalIDs && product.item.externalIDs.squareID ? product.item.externalIDs.squareID : "");
-  const [parentCategories, setParentCategories] = useState(categories.filter(x => product.category_ids.includes(x._id.toString())));
-  const [modifiers, setModifiers] = useState(product.modifiers.map((v, i) => modifier_types.find(x => x._id.toString() === v)));
+  const [parentCategories, setParentCategories] = useState(Object.values(categories).filter(x => product.category_ids.includes(x.category._id.toString())));
+  const [modifiers, setModifiers] = useState(product.modifiers.map((v, i) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v)));
 
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
@@ -40,11 +40,12 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product })
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,
-            category_ids: parentCategories.map(x => x._id),
-            modifiers: modifiers.map(x => x._id)
+            category_ids: parentCategories.map(x => x.category._id),
+            modifiers: modifiers.map(x => x.modifier_type._id)
           }),
         });
         setIsProcessing(false);
+        onCloseCallback();
       } catch (error) {
         setIsProcessing(false);
       }
@@ -53,7 +54,13 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product })
 
   return (
     <ProductComponent 
-      actions={[          
+      actions={[ 
+        <Button
+          className="btn btn-light"
+          onClick={onCloseCallback}
+          disabled={isProcessing}>
+          Cancel
+        </Button>,                 
         <Button
           className="btn btn-light"
           onClick={editProduct}

@@ -4,14 +4,15 @@ import TableWrapperComponent from "../table_wrapper.component";
 import { AddBox, Edit } from "@material-ui/icons";
 
 const ProductTableContainer = ({
-  product,
-  catalog_map,
+  category,
+  catalog,
   setProductToEdit,
   setIsProductEditOpen,
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
   setProductInstanceToEdit
 }) => {
+  console.log(category);
   return (
     <TableWrapperComponent
       options={{
@@ -24,7 +25,7 @@ const ProductTableContainer = ({
           padding: 0,
         },
         toolbar: false,
-        paging: catalog_map.category_map[product._id].products.length > 5,
+        paging: false,
       }}
       actions={[
         {
@@ -53,14 +54,14 @@ const ProductTableContainer = ({
         { title: "EXID: Square", field: "product.item.externalIDs.squareID" },
         { title: "Disabled", field: "product.item.disabled" },
       ]}
-      data={Object.values(catalog_map.product_map).filter((x) =>
-        x.product.category_ids.includes(product._id)
+      data={Object.values(catalog.products).filter((x) =>
+        x.product.category_ids.includes(category._id)
       )}
       onRowClick={(event, rowData, togglePanel) => togglePanel()}
       detailPanel={[
         {
           render: (rowData) => {
-            return catalog_map.product_map[rowData.product._id].instances.length ? (
+            return catalog.products[rowData.product._id].instances.length ? (
             <TableWrapperComponent
               options={{
                 showTitle: false,
@@ -94,7 +95,7 @@ const ProductTableContainer = ({
                 { title: "EXID: Square", field:  "item.externalIDs.squareID" },
                 { title: "Disabled", field: "item.disabled" },
               ]}
-              data={catalog_map.product_map[rowData.product._id].instances}
+              data={catalog.products[rowData.product._id].instances}
                />) : ""
           },
           icon: ()=> { return null }

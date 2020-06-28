@@ -96,59 +96,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Returns [ category_map, product_map, orphan_products ] array;
-// category_map entries are mapping of catagory_id to { category, children (id list), product (id list) }
-// product_map is mapping from product_id to { product, instances (list of instance objects)}
-// orphan_products is list of orphan product ids
-// TODO: memoize this
-const catalog_map_generator = (categories, products, product_instances) => {
-  const category_map = {};
-  categories.forEach((curr) => {
-    category_map[curr._id] = { category: curr, children: [], products: [] };
-  });
-  for (var i = 0; i < categories.length; ++i) {
-    if (categories[i].parent_id.length > 0) {
-      category_map[categories[i].parent_id].children.push(categories[i]._id);
-    }
-  }
-  const product_map = {};
-  const orphan_products = [];
-  products.forEach((curr) => {
-    product_map[curr._id] = { product: curr, instances: [] };
-    if (curr.category_ids.length === 0) {
-      orphan_products.push(curr._id);
-    }
-    else {
-      curr.category_ids.forEach((cid) => {
-        category_map[cid] ? category_map[cid].products.push(curr._id) : console.error(`Missing category ID: ${cid} in product: ${JSON.stringify(curr)}`);
-      });
-    }
-  });
-  product_instances.forEach((curr) => {
-    product_map[curr.product_id].instances.push(curr);
-  })
-  return { category_map, product_map, orphan_products };
-};
-
-const modifier_types_map_generator = (modifier_types, options) => {
-  var modifier_types_map = {};
-  modifier_types.forEach(mt => {
-    modifier_types_map[mt._id] = { options: [], modifier_type: mt } ;
-  });
-  options.forEach(o => {
-    modifier_types_map[o.option_type_id].options.push(o);
-  })
-  return modifier_types_map;
-};
-
-
 const MenuBuilderComponent = ({
   ENDPOINT,
-  categories,
-  options,
-  option_types,
-  products,
-  product_instances,
+  catalog
 }) => {
   const classes = useStyles();
   const [isModifierInterstitialOpen, setIsModifierInterstitialOpen] = useState(false);
@@ -177,9 +127,6 @@ const MenuBuilderComponent = ({
   const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
   const [productInstanceToEdit, setProductInstanceToEdit] = useState(null);
   
-  // create maps from catalog data
-  //const [modifierTypesMap, setModifierTypesMap] = useState(modifier_types_map_generator(option_types, options));
-  //const [mappedCatalog, setMappedCatalog] = useState(catalog_map_generator(categories, products, product_instances));
   return (
     <div className={classes.root}>
       <DialogContainer 
@@ -190,7 +137,8 @@ const MenuBuilderComponent = ({
         isOpen={isCategoryEditOpen} 
         inner_component={
           <CategoryEditContainer 
-            categories={categories}
+            onCloseCallback={() => {setIsCategoryEditOpen(false);}}
+            categories={catalog.categories}
             ENDPOINT={ENDPOINT}
             category={categoryToEdit}
           />
@@ -202,9 +150,9 @@ const MenuBuilderComponent = ({
         isOpen={isCategoryDeleteOpen} 
         inner_component={
           <CategoryDeleteContainer 
+            onCloseCallback={() => {setIsCategoryDeleteOpen(false);}}   
             ENDPOINT={ENDPOINT}
             category={categoryToEdit}
-            onCloseCallback={() => {setIsCategoryDeleteOpen(false);}} 
           />
         } 
       />      
@@ -216,11 +164,26 @@ const MenuBuilderComponent = ({
         isOpen={isModifierTypeEditOpen} 
         inner_component={
           <ModifierTypeEditContainer 
+            onCloseCallback={() => {setIsModifierTypeEditOpen(false);}}
             modifier_type={modifierTypeToEdit}
             ENDPOINT={ENDPOINT}
           />
         } 
-      />    
+      />   
+      <DialogContainer 
+        maxWidth={"xl"}
+        title={`Add Modifier Option for Type: ${modifierTypeToEdit ? modifierTypeToEdit.name : ""}`}
+        onClose={() => {
+          setIsModifierOptionAddOpen(false);
+        }} 
+        isOpen={isModifierOptionAddOpen} 
+        inner_component={
+          <ModifierOptionAddContainer 
+                  onCloseCallback={() => {setIsModifierOptionAddOpen(false);}} 
+                  ENDPOINT={ENDPOINT} 
+                  parent={modifierTypeToEdit} />
+        } 
+      />           
       <DialogContainer 
         title={"Edit Modifier Option"}
         onClose={() => {
@@ -229,8 +192,9 @@ const MenuBuilderComponent = ({
         isOpen={isModifierOptionEditOpen} 
         inner_component={
           <ModifierOptionEditContainer 
+            onCloseCallback={() => {setIsModifierOptionEditOpen(false);}}
             modifier_option={modifierOptionToEdit}
-            modifier_types={option_types}
+            modifier_types={catalog.modifiers}
             ENDPOINT={ENDPOINT}
           />
         } 
@@ -243,8 +207,9 @@ const MenuBuilderComponent = ({
         isOpen={isProductEditOpen} 
         inner_component={
           <ProductEditContainer 
-            categories={categories} 
-            modifier_types={option_types}
+            onCloseCallback={() => {setIsProductEditOpen(false);}}
+            categories={catalog.categories} 
+            modifier_types={catalog.modifiers}
             product={productToEdit}
             ENDPOINT={ENDPOINT}
           />
@@ -259,12 +224,13 @@ const MenuBuilderComponent = ({
         isOpen={isProductInstanceAddOpen} 
         inner_component={
           <ProductInstanceAddContainer 
-            modifier_types_map={modifier_types_map_generator(option_types, options)}
+            onCloseCallback={() => {setIsProductInstanceAddOpen(false);}}
+            modifier_types_map={catalog.modifiers}
             parent_product={productToEdit}
             ENDPOINT={ENDPOINT}
           />
         } 
-      />    
+      />          
       <DialogContainer 
         maxWidth={"xl"}
         title={"Edit Product Instance"}
@@ -274,7 +240,8 @@ const MenuBuilderComponent = ({
         isOpen={isProductInstanceEditOpen} 
         inner_component={
           <ProductInstanceEditContainer 
-            modifier_types_map={modifier_types_map_generator(option_types, options)}
+            onCloseCallback={() => {setIsProductInstanceEditOpen(false);}} 
+            modifier_types_map={catalog.modifiers}
             parent_product={productToEdit}
             product_instance={productInstanceToEdit}
             ENDPOINT={ENDPOINT}
@@ -291,22 +258,29 @@ const MenuBuilderComponent = ({
                 cb: () => {setIsCategoryAddOpen(true)}, 
                 open: isCategoryAddOpen,
                 onClose: () => setIsCategoryAddOpen(false),
-                component: (<CategoryAddContainer ENDPOINT={ENDPOINT} categories={categories} />)
+                component: (<CategoryAddContainer 
+                  onCloseCallback={() => {setIsCategoryAddOpen(false);}} 
+                  ENDPOINT={ENDPOINT} 
+                  categories={catalog.categories} 
+                  />)
               },
               {
                 title: "Add Product", 
                 cb: () => setIsProductAddOpen(true), 
                 open: isProductAddOpen,
                 onClose: () => setIsProductAddOpen(false),
-                component: (<ProductAddContainer ENDPOINT={ENDPOINT} categories={categories} modifier_types={option_types} />)
+                component: (<ProductAddContainer 
+                  ENDPOINT={ENDPOINT} 
+                  onCloseCallback={() => {setIsProductAddOpen(false);}} 
+                  categories={catalog.categories} 
+                  modifier_types={catalog.modifiers} />)
               }
             ]}
             onClose={() => setIsCategoryInterstitialOpen(false)}
             open={isCategoryInterstitialOpen}
           />
           <CategoryTableContainer
-            categories={categories}
-            catalog_map={catalog_map_generator(categories, products, product_instances)}
+            catalog={catalog}
             setIsCategoryInterstitialOpen={setIsCategoryInterstitialOpen}
             setIsCategoryDeleteOpen={setIsCategoryDeleteOpen}
             setIsCategoryEditOpen={setIsCategoryEditOpen}
@@ -328,25 +302,21 @@ const MenuBuilderComponent = ({
                 cb: () => {setIsModifierTypeAddOpen(true)}, 
                 open: isModifierTypeAddOpen,
                 onClose: () => setIsModifierTypeAddOpen(false),
-                component: (<ModifierTypeAddContainer ENDPOINT={ENDPOINT} />)
+                component: (<ModifierTypeAddContainer 
+                  onCloseCallback={() => {setIsModifierTypeAddOpen(false);}} 
+                  ENDPOINT={ENDPOINT} />)
               },
-              {
-                title: "Add Modifier Option", 
-                cb: () => setIsModifierOptionAddOpen(true), 
-                open: isModifierOptionAddOpen,
-                onClose: () => setIsModifierOptionAddOpen(false),
-                component: (<ModifierOptionAddContainer ENDPOINT={ENDPOINT} modifier_types={option_types} />)
-              }
+
             ]}
             onClose={() => setIsModifierInterstitialOpen(false)}
             open={isModifierInterstitialOpen}
           />
           <ModifierTypeTableContainer
-            option_types={option_types}
-            modifier_types_map={modifier_types_map_generator(option_types, options)}
+            modifier_types_map={catalog.modifiers}
             setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
             setModifierTypeToEdit={setModifierTypeToEdit}
             setIsModifierInterstitialOpen={setIsModifierInterstitialOpen}
+            setIsModifierOptionAddOpen={setIsModifierOptionAddOpen}
             setModifierOptionToEdit={setModifierOptionToEdit}
             setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
           />

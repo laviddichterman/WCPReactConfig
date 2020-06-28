@@ -5,7 +5,7 @@ import ModifierOptionComponent from "./modifier_option.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
+const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
@@ -18,7 +18,6 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
   const [enabled, setEnabled] = useState(true);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
-  const [parent, setParent] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
@@ -60,9 +59,9 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
           setBakeFactor(0);
           setCanSplit(true);
           setEnabled(true);
-          setParent(null);
           setRevelID("");
           setSquareID("");  
+          onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
@@ -73,7 +72,13 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
 
   return (
     <ModifierOptionComponent 
-      actions={[          
+      actions={[ 
+        <Button
+          className="btn btn-light"
+          onClick={onCloseCallback}
+          disabled={isProcessing}>
+          Cancel
+        </Button>,                  
         <Button
           className="btn btn-light"
           onClick={addModifierOption}
@@ -84,7 +89,6 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
         </Button>
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
-      modifier_types={modifier_types}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}
@@ -109,8 +113,6 @@ const ModifierOptionAddContainer = ({ ENDPOINT, modifier_types }) => {
       setRevelID={setRevelID}
       squareID={squareID}
       setSquareID={setSquareID}
-      parent={parent}
-      setParent={setParent}
     />
   );
 };

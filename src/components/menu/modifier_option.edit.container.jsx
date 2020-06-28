@@ -5,9 +5,7 @@ import ModifierOptionComponent from "./modifier_option.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
-const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option }) => {
-  const foundParent = modifier_types.find(x => x._id === modifier_option.option_type_id);
-
+const ModifierOptionEditContainer = ({ ENDPOINT, modifier_option, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState(modifier_option.catalog_item.display_name);
   const [description, setDescription] = useState(modifier_option.catalog_item.description);
   const [shortcode, setShortcode] = useState(modifier_option.catalog_item.shortcode);
@@ -20,8 +18,6 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
   const [enabled, setEnabled] = useState(!modifier_option.catalog_item.disabled);
   const [revelID, setRevelID] = useState(modifier_option.catalog_item.externalIDs && modifier_option.catalog_item.externalIDs.revelID ? modifier_option.catalog_item.externalIDs.revelID : "");
   const [squareID, setSquareID] = useState(modifier_option.catalog_item.externalIDs && modifier_option.catalog_item.externalIDs.squareID ? modifier_option.catalog_item.externalIDs.squareID : "");
-  const [parent, setParent] = useState(foundParent);
-
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
 
@@ -54,6 +50,7 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
           }),
         });
         setIsProcessing(false);
+        onCloseCallback();
       } catch (error) {
         setIsProcessing(false);
       }
@@ -62,7 +59,13 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
 
   return (
     <ModifierOptionComponent 
-      actions={[          
+      actions={[  
+        <Button
+          className="btn btn-light"
+          onClick={onCloseCallback}
+          disabled={isProcessing}>
+          Cancel
+        </Button>,                 
         <Button
           className="btn btn-light"
           onClick={editModifierOption}
@@ -73,7 +76,6 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
         </Button>
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
-      modifier_types={[foundParent]}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}
@@ -98,8 +100,6 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_types, modifier_option
       setRevelID={setRevelID}
       squareID={squareID}
       setSquareID={setSquareID}
-      parent={parent}
-      setParent={setParent}
     />
   );
 };

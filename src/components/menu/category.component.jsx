@@ -38,7 +38,6 @@ const CategoryComponent = ({
   name, setName, 
   parent, setParent }) => {
   const classes = useStyles();
-
   const actions_html = actions.length === 0 ? "" : 
     (<Grid container justify="flex-end" item xs={12}>
       {actions.map((action, idx) => (
@@ -76,8 +75,8 @@ const CategoryComponent = ({
             options={categories}
             value={parent}
             onChange={(e, v) => setParent(v)}
-            getOptionLabel={(option) => option.name}
-            getOptionSelected={(option, value) => option._id === value._id}
+            getOptionLabel={(option) => option.category.name}
+            getOptionSelected={(option, value) => option.category._id === value.category._id}
             renderInput={(params) => (
               <TextField {...params} label="Parent Category (Optional)" />
             )}

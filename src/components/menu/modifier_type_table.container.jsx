@@ -5,11 +5,11 @@ import ModifierOptionTableContainer from "./modifier_option_table.container";
 import { AddBox, Edit } from "@material-ui/icons";
 
 const ModifierTypeTableContainer = ({
-  option_types,
   modifier_types_map,
   setIsModifierTypeEditOpen,
   setModifierTypeToEdit,
   setIsModifierInterstitialOpen,
+  setIsModifierOptionAddOpen,
   setModifierOptionToEdit,
   setIsModifierOptionEditOpen
 }) => {
@@ -17,11 +17,11 @@ const ModifierTypeTableContainer = ({
     <TableWrapperComponent
       title="Modifier Types / Modifier Type Option"
       columns={[
-        { title: "Name", field: "name" },
-        { title: "Selection Type", field: "selection_type" },
-        { title: "Ordinal", field: "ordinal" },
-        { title: "EXID: Revel", field: "externalIDs.revelID" },
-        { title: "EXID: Square", field: "externalIDs.squareID" },
+        { title: "Name", field: "modifier_type.name" },
+        { title: "Selection Type", field: "modifier_type.selection_type" },
+        { title: "Ordinal", field: "modifier_type.ordinal" },
+        { title: "EXID: Revel", field: "modifier_type.externalIDs.revelID" },
+        { title: "EXID: Square", field: "modifier_type.externalIDs.squareID" },
       ]}
       options={{
         detailPanelType: "single",
@@ -38,22 +38,30 @@ const ModifierTypeTableContainer = ({
           isFreeAction: true,
         },
         {
+          icon: AddBox,
+          tooltip: "Add Modifier Option",
+          onClick: (event, rowData) => {
+            setIsModifierOptionAddOpen(true);
+            setModifierTypeToEdit(rowData.modifier_type);
+          },
+        },
+        {
           icon: Edit,
           tooltip: "Edit Modifier Type",
           onClick: (event, rowData) => {
             setIsModifierTypeEditOpen(true);
-            setModifierTypeToEdit(rowData);
+            setModifierTypeToEdit(rowData.modifier_type);
           },
         },
       ]}
-      data={option_types}
+      data={Object.values(modifier_types_map)}
       onRowClick={(event, rowData, togglePanel) => togglePanel()}
       detailPanel={[
         {
           render: (rowData) => {
-            return modifier_types_map[rowData._id].options.length ? (
+            return rowData.options.length ? (
               <ModifierOptionTableContainer
-                modifier_type={rowData}
+                modifier_type={rowData.modifier_type}
                 modifier_types_map={modifier_types_map}
                 setModifierOptionToEdit={setModifierOptionToEdit}
                 setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
