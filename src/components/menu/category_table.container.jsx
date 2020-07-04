@@ -53,7 +53,7 @@ const CategoryTableContainer = ({
           tooltip: 'Delete Category',
           onClick: (event, rowData) => {
             setIsCategoryDeleteOpen(true);
-            setCategoryToEdit(rowData);
+            setCategoryToEdit(rowData.category);
           },
         }
       ]}
@@ -64,7 +64,9 @@ const CategoryTableContainer = ({
           render: (rowData) => {
             return catalog.categories[rowData.category._id].products.length ? (
             <ProductTableContainer
-              category={rowData.category}
+              products={Object.values(catalog.products).filter((x) =>
+                x.product.category_ids.includes(rowData.category._id)
+              )}
               catalog={catalog}
               setProductToEdit={setProductToEdit}            
               setIsProductEditOpen={setIsProductEditOpen}            

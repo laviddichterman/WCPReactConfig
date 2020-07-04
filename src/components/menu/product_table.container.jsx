@@ -4,7 +4,8 @@ import TableWrapperComponent from "../table_wrapper.component";
 import { AddBox, Edit } from "@material-ui/icons";
 
 const ProductTableContainer = ({
-  category,
+  tableTitle,
+  products,
   catalog,
   setProductToEdit,
   setIsProductEditOpen,
@@ -14,8 +15,9 @@ const ProductTableContainer = ({
 }) => {
   return (
     <TableWrapperComponent
+      title={tableTitle}
       options={{
-        showTitle: false,
+        showTitle: tableTitle && tableTitle.length > 0,
         showEmptyDataSourceMessage: false,
         sorting: false,
         draggable: false,
@@ -53,9 +55,7 @@ const ProductTableContainer = ({
         { title: "EXID: Square", field: "product.item.externalIDs.squareID" },
         { title: "Disabled", field: "product.item.disabled" },
       ]}
-      data={Object.values(catalog.products).filter((x) =>
-        x.product.category_ids.includes(category._id)
-      )}
+      data={products}
       onRowClick={(event, rowData, togglePanel) => togglePanel()}
       detailPanel={[
         {

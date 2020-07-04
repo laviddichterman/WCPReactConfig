@@ -27,7 +27,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
           body: JSON.stringify({
             description: description,
             name: name,
-            parent_id: parent ? parent._id : "",
+            parent_id: parent ? parent.category._id : "",
           }),
         });
         setDescription("");

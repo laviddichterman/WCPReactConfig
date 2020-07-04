@@ -15,7 +15,7 @@ import ProductInstanceAddContainer from "./product_instance.add.container";
 import ProductInstanceEditContainer from "./product_instance.edit.container";
 import CategoryTableContainer from "./category_table.container";
 import ModifierTypeTableContainer from "./modifier_type_table.container";
-
+import ProductTableContainer from "./product_table.container";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -125,7 +125,7 @@ const MenuBuilderComponent = ({
 
   const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
   const [productInstanceToEdit, setProductInstanceToEdit] = useState(null);
-  
+  console.log(catalog);
   return (
     <div className={classes.root}>
       <DialogContainer 
@@ -299,6 +299,19 @@ const MenuBuilderComponent = ({
             setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
             setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
             productInstanceToEdit={productInstanceToEdit}  
+            setProductInstanceToEdit={setProductInstanceToEdit}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <ProductTableContainer
+            title="Orphan Products"
+            products={Object.values(catalog.products).filter((x) =>
+              x.product.category_ids.filter(x => x && x.length > 0).length === 0)}
+            catalog={catalog}
+            setProductToEdit={setProductToEdit}            
+            setIsProductEditOpen={setIsProductEditOpen}            
+            setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}   
+            setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}   
             setProductInstanceToEdit={setProductInstanceToEdit}
           />
         </Grid>

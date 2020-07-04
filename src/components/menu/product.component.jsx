@@ -76,7 +76,7 @@ const ProductComponent = ({
             multiple
             filterSelectedOptions
             options={Object.values(categories)}
-            value={parentCategories}
+            value={parentCategories.filter(x=>x)}
             onChange={(e, v) => setParentCategories(v)}
             getOptionLabel={(option) => option.category.name}
             getOptionSelected={(option, value) => option.category._id === value.category._id}

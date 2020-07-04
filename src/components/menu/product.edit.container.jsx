@@ -14,11 +14,10 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
   const [revelID, setRevelID] = useState(product.item.externalIDs && product.item.externalIDs.revelID ? product.item.externalIDs.revelID : "");
   const [squareID, setSquareID] = useState(product.item.externalIDs && product.item.externalIDs.squareID ? product.item.externalIDs.squareID : "");
   const [parentCategories, setParentCategories] = useState(Object.values(categories).filter(x => product.category_ids.includes(x.category._id.toString())));
-  const [modifiers, setModifiers] = useState(product.modifiers.map((v, i) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v)));
+  const [modifiers, setModifiers] = useState(product.modifiers.filter(x=>x).map((v, i) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v)));
 
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
-
   const editProduct = async (e) => {
     e.preventDefault();
 
