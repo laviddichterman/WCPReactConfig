@@ -1,8 +1,6 @@
 import React, { forwardRef } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
-
 
 import {
   AddBox,
@@ -49,41 +47,9 @@ const tableIcons = {
   ExpandMore: forwardRef((props, ref) => <ExpandMore {...props} ref={ref} />),
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-  category_tree: {
-    height: 110,
-    flexGrow: 1,
-    maxWidth: 400,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  listLevel0: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  listLevel1: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
-
 const TableWrapperComponent = ({
   ...forwardParams
 }) => {
-  const classes = useStyles();
 
   return (
     <MaterialTable
