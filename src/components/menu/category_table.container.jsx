@@ -25,6 +25,7 @@ const CategoryTableContainer = ({
       columns={[
         { title: "Name", field: "category.name" },
         { title: "Description", field: "category.description" },
+        { title: "Subheading", field: "category.subheading" },
       ]}
       options={{
         detailPanelType: "single",

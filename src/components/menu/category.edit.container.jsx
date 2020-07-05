@@ -7,6 +7,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback }) => {
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
+  const [subheading, setSubheading] = useState(category.subheading);
   const [parent, setParent] = useState(category.parent_id ? categories[category.parent_id] : null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
@@ -31,8 +32,10 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
             parent_id: parent ? parent.category._id : "",
           }),
         });
+        if (response.status === 201) {
+          onCloseCallback();
+        }
         setIsProcessing(false);
-        onCloseCallback();
       } catch (error) {
         console.error(error);
         setIsProcessing(false);
@@ -52,7 +55,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
         <Button
           className="btn btn-light"
           onClick={editCategory}
-          disabled={name.length === 0 || description.length === 0 || isProcessing}>
+          disabled={name.length === 0 || isProcessing}>
           Save
         </Button>
       ]}
@@ -63,6 +66,8 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
       setName={setName}
       parent={parent}
       setParent={setParent}
+      subheading={subheading}
+      setSubheading={setSubheading}
     />
   );
 };

@@ -35,6 +35,7 @@ const CategoryComponent = ({
   categories, 
   actions, 
   description, setDescription, 
+  subheading, setSubheading, 
   name, setName, 
   parent, setParent }) => {
   const classes = useStyles();
@@ -50,7 +51,7 @@ const CategoryComponent = ({
   return (
     <div className={classes.root}>
       <Grid container spacing={3} justify="center">
-        <Grid item xs={5}>
+        <Grid item xs={6}>
           <TextField
             label="Category Name"
             type="text"
@@ -60,17 +61,7 @@ const CategoryComponent = ({
             onChange={(e) => setName(e.target.value)}
           />
         </Grid>
-        <Grid item xs={7}>
-          <TextField
-            label="Category Description"
-            type="text"
-            inputProps={{ size: 40 }}
-            value={description}
-            size="small"
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={6}>
           <Autocomplete
             options={categories}
             value={parent}
@@ -80,6 +71,30 @@ const CategoryComponent = ({
             renderInput={(params) => (
               <TextField {...params} label="Parent Category (Optional)" />
             )}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            multiline
+            fullWidth
+            label="Category Description (Optional, HTML allowed)"
+            type="text"
+            inputProps={{ size: 100 }}
+            value={description}
+            size="small"
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            multiline
+            fullWidth
+            label="Subheading (Optional, HTML allowed)"
+            type="text"
+            inputProps={{ size: 100 }}
+            value={subheading}
+            size="small"
+            onChange={(e) => setSubheading(e.target.value)}
           />
         </Grid>
         {actions_html}

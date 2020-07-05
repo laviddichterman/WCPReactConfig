@@ -6,6 +6,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 
 const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
   const [description, setDescription] = useState("");
+  const [subheading, setSubheading] = useState("");
   const [name, setName] = useState("");
   const [parent, setParent] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -26,15 +27,19 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
           },
           body: JSON.stringify({
             description: description,
+            subheading: subheading,
             name: name,
             parent_id: parent ? parent.category._id : "",
           }),
         });
-        setDescription("");
-        setName("");
-        setParent(null);
+        if (response.status === 201) {
+          setDescription("");
+          setName("");
+          setSubheading("");
+          setParent(null);
+          onCloseCallback();
+        }
         setIsProcessing(false);
-        onCloseCallback()
       } catch (error) {
         console.error(error);
         setIsProcessing(false);
@@ -54,7 +59,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
         <Button
           className="btn btn-light"
           onClick={addCategory}
-          disabled={name.length === 0 || description.length === 0 || isProcessing}
+          disabled={name.length === 0 || isProcessing}
         >
           Add
         </Button>
@@ -66,6 +71,8 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
       setName={setName}
       parent={parent}
       setParent={setParent}
+      subheading={subheading}
+      setSubheading={setSubheading}
     />
   );
 };
