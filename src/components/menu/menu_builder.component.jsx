@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState } from "react";
 
 import InterstitialDialog from '../interstitial.dialog.component'
 import DialogContainer from '../dialog.container';
@@ -6,9 +6,10 @@ import CategoryAddContainer from "./category.add.container";
 import CategoryEditContainer from "./category.edit.container";
 import CategoryDeleteContainer from "./category.delete.container";
 import ModifierTypeAddContainer from "./modifier_type.add.container";
-import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierTypeEditContainer from "./modifier_type.edit.container";
+import ModifierTypeDeleteContainer from "./modifier_type.delete.container";
 import ModifierOptionAddContainer from "./modifier_option.add.container";
+import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ProductAddContainer from "./product.add.container";
 import ProductEditContainer from "./product.edit.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
@@ -19,51 +20,6 @@ import ProductTableContainer from "./product_table.container";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-
-import {
-  AddBox,
-  ArrowDownward,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Clear,
-  DeleteOutline,
-  Edit,
-  FilterList,
-  FirstPage,
-  LastPage,
-  Remove,
-  SaveAlt,
-  Search,
-  ViewColumn,
-  ExpandLess,
-  ExpandMore,
-} from "@material-ui/icons";
-const tableIcons = {
-  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
-  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => (
-    <ChevronLeft {...props} ref={ref} />
-  )),
-  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
-  ExpandLess: forwardRef((props, ref) => <ExpandLess {...props} ref={ref} />),
-  ExpandMore: forwardRef((props, ref) => <ExpandMore {...props} ref={ref} />),
-};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -106,6 +62,7 @@ const MenuBuilderComponent = ({
 
   const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
   const [modifierTypeToEdit, setModifierTypeToEdit] = useState(null);
+  const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
 
   const [isModifierOptionEditOpen, setIsModifierOptionEditOpen] = useState(false);
   const [modifierOptionToEdit, setModifierOptionToEdit] = useState(null);
@@ -179,6 +136,18 @@ const MenuBuilderComponent = ({
           />
         } 
       />   
+      <DialogContainer 
+        title={"Delete Modifier Type"}
+        onClose={() => {setIsModifierTypeDeleteOpen(false);}} 
+        isOpen={isModifierTypeDeleteOpen} 
+        inner_component={
+          <ModifierTypeDeleteContainer 
+            onCloseCallback={() => {setIsModifierTypeDeleteOpen(false);}}   
+            ENDPOINT={ENDPOINT}
+            modifier_type={modifierTypeToEdit}
+          />
+        } 
+      />      
       <DialogContainer 
         maxWidth={"xl"}
         title={`Add Modifier Option for Type: ${modifierTypeToEdit ? modifierTypeToEdit.name : ""}`}
@@ -319,6 +288,7 @@ const MenuBuilderComponent = ({
           <ModifierTypeTableContainer
             modifier_types_map={catalog.modifiers}
             setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
+            setIsModifierTypeDeleteOpen={setIsModifierTypeDeleteOpen}
             setModifierTypeToEdit={setModifierTypeToEdit}
             setIsModifierTypeAddOpen={setIsModifierTypeAddOpen}
             setIsModifierOptionAddOpen={setIsModifierOptionAddOpen}

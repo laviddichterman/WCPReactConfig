@@ -49,8 +49,10 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_option, onCloseCallbac
             squareID: squareID,
           }),
         });
+        if (response.status === 201) {
+          onCloseCallback();
+        }
         setIsProcessing(false);
-        onCloseCallback();
       } catch (error) {
         setIsProcessing(false);
       }

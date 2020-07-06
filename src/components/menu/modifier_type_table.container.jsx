@@ -2,11 +2,12 @@ import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
 import ModifierOptionTableContainer from "./modifier_option_table.container";
-import { AddBox, Edit } from "@material-ui/icons";
+import { AddBox, Edit, DeleteOutline } from "@material-ui/icons";
 
 const ModifierTypeTableContainer = ({
   modifier_types_map,
   setIsModifierTypeEditOpen,
+  setIsModifierTypeDeleteOpen,
   setModifierTypeToEdit,
   setIsModifierTypeAddOpen,
   setIsModifierOptionAddOpen,
@@ -53,6 +54,14 @@ const ModifierTypeTableContainer = ({
             setModifierTypeToEdit(rowData.modifier_type);
           },
         },
+        {
+          icon: DeleteOutline,
+          tooltip: 'Delete Modifier Type',
+          onClick: (event, rowData) => {
+            setIsModifierTypeDeleteOpen(true);
+            setModifierTypeToEdit(rowData.modifier_type);
+          },
+        }
       ]}
       data={Object.values(modifier_types_map)}
       onRowClick={(event, rowData, togglePanel) => togglePanel()}
