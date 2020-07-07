@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import Switch from "@material-ui/core/Switch";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckedInputComponent from "../checked_input.component";
@@ -138,18 +137,6 @@ const ProductComponent = ({
             />
         </Grid>
         <Grid item xs={4}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={enabled}
-                onChange={(e) => setEnabled(e.target.checked)}
-                name="Enabled"
-              />
-            }
-            label="Enabled"
-          />
-        </Grid>
-        <Grid item xs={4}>
           <CheckedInputComponent
             label="Ordinal"
             type="number"
@@ -177,6 +164,18 @@ const ProductComponent = ({
             value={squareID}
             size="small"
             onChange={(e) => setSquareID(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={enabled}
+                onChange={(e) => setEnabled(e.target.checked)}
+                name="Enabled"
+              />
+            }
+            label="Enabled"
           />
         </Grid>
         <Grid item xs={12}>

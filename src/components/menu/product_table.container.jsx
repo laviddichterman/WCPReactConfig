@@ -1,7 +1,7 @@
 import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
-import { AddBox, Edit } from "@material-ui/icons";
+import { AddBox, DeleteOutline, Edit } from "@material-ui/icons";
 
 const ProductTableContainer = ({
   tableTitle,
@@ -9,8 +9,10 @@ const ProductTableContainer = ({
   catalog,
   setProductToEdit,
   setIsProductEditOpen,
+  setIsProductDeleteOpen,
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
+  setIsProductInstanceDeleteOpen,
   setProductInstanceToEdit
 }) => {
   return (
@@ -30,6 +32,14 @@ const ProductTableContainer = ({
       }}
       actions={[
         {
+          icon: AddBox,
+          tooltip: "Add Product Instance",
+          onClick: (event, rowData) => {
+            setIsProductInstanceAddOpen(true);
+            setProductToEdit(rowData.product);
+          },
+        },
+        {
           icon: Edit,
           tooltip: "Edit Product",
           onClick: (event, rowData) => {
@@ -38,13 +48,13 @@ const ProductTableContainer = ({
           },
         },
         {
-          icon: AddBox,
-          tooltip: "Add Product Instance",
+          icon: DeleteOutline,
+          tooltip: 'Delete Product',
           onClick: (event, rowData) => {
-            setIsProductInstanceAddOpen(true);
+            setIsProductDeleteOpen(true);
             setProductToEdit(rowData.product);
           },
-        },
+        }
       ]}
       columns={[
         { title: "Name", field: "product.item.display_name" },
@@ -81,6 +91,14 @@ const ProductTableContainer = ({
                   onClick: (event, instanceRowData) => {
                     setIsProductInstanceEditOpen(true);
                     setProductToEdit(rowData.product);
+                    setProductInstanceToEdit(instanceRowData);
+                  },
+                },
+                {
+                  icon: DeleteOutline,
+                  tooltip: 'Delete Product Instance',
+                  onClick: (event, instanceRowData) => {
+                    setIsProductInstanceDeleteOpen(true);
                     setProductInstanceToEdit(instanceRowData);
                   },
                 }

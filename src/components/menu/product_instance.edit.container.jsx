@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import Button from "@material-ui/core/Button";
-import ProductInstanceContainer from "./product_instance.component";
+import ProductInstanceComponent from "./product_instance.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from "../../react-auth0-spa";
 
@@ -11,6 +11,7 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
   const [shortcode, setShortcode] = useState(product_instance.item.shortcode);
   const [price, setPrice] = useState(product_instance.item.price.amount / 100);
   const [enabled, setEnabled] = useState(!product_instance.item.disabled);
+  const [ordinal, setOrdinal] = useState(product_instance.ordinal || 0);
   const [revelID, setRevelID] = useState(product_instance.item.externalIDs && product_instance.item.externalIDs.revelID ? product_instance.item.externalIDs.revelID : "");
   const [squareID, setSquareID] = useState(product_instance.item.externalIDs && product_instance.item.externalIDs.squareID ? product_instance.item.externalIDs.squareID : "");
   const [modifiers, setModifiers] = useState(product_instance.modifiers);
@@ -53,7 +54,7 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
   };
 
   return (
-    <ProductInstanceContainer 
+    <ProductInstanceComponent 
       actions={[  
         <Button
           className="btn btn-light"
@@ -83,6 +84,8 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
       setPrice={setPrice}
       enabled={enabled}
       setEnabled={setEnabled}
+      ordinal={ordinal}
+      setOrdinal={setOrdinal}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID}

@@ -13,8 +13,10 @@ import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierOptionDeleteContainer from "./modifier_option.delete.container";
 import ProductAddContainer from "./product.add.container";
 import ProductEditContainer from "./product.edit.container";
+import ProductDeleteContainer from "./product.delete.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
 import ProductInstanceEditContainer from "./product_instance.edit.container";
+import ProductInstanceDeleteContainer from "./product_instance.delete.container";
 import CategoryTableContainer from "./category_table.container";
 import ModifierTypeTableContainer from "./modifier_type_table.container";
 import ProductTableContainer from "./product_table.container";
@@ -73,8 +75,10 @@ const MenuBuilderComponent = ({
   const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
   const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
   const [isProductAddOpen, setIsProductAddOpen] = useState(false);
+  const [isProductDeleteOpen, setIsProductDeleteOpen] = useState(false);
 
   const [isProductInstanceAddOpen, setIsProductInstanceAddOpen] = useState(false);
+  const [isProductInstanceDeleteOpen, setIsProductInstanceDeleteOpen] = useState(false);
 
   const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false);
   const [isCategoryDeleteOpen, setIsCategoryDeleteOpen] = useState(false);
@@ -209,6 +213,18 @@ const MenuBuilderComponent = ({
         } 
       />   
       <DialogContainer 
+        title={"Delete Product"}
+        onClose={() => {setIsProductDeleteOpen(false);}} 
+        isOpen={isProductDeleteOpen} 
+        inner_component={
+          <ProductDeleteContainer 
+            onCloseCallback={() => {setIsProductDeleteOpen(false);}}   
+            ENDPOINT={ENDPOINT}
+            product={productToEdit}
+          />
+        } 
+      />          
+      <DialogContainer 
         maxWidth={"xl"}
         title={`Add Product Instance for: ${productToEdit ? productToEdit.item.display_name : ""}`}
         onClose={() => {
@@ -240,7 +256,19 @@ const MenuBuilderComponent = ({
             ENDPOINT={ENDPOINT}
           />
         } 
-      />                          
+      />  
+      <DialogContainer 
+        title={"Delete Product Instance"}
+        onClose={() => {setIsProductInstanceDeleteOpen(false);}} 
+        isOpen={isProductInstanceDeleteOpen} 
+        inner_component={
+          <ProductInstanceDeleteContainer 
+            onCloseCallback={() => {setIsProductInstanceDeleteOpen(false);}}   
+            ENDPOINT={ENDPOINT}
+            product_instance={productInstanceToEdit}
+          />
+        } 
+      />                            
       <Grid container justify="center" spacing={3}>
         <Grid item xs={12}>
           <InterstitialDialog 
@@ -280,8 +308,10 @@ const MenuBuilderComponent = ({
             setCategoryToEdit={setCategoryToEdit}
             setProductToEdit={setProductToEdit}            
             setIsProductEditOpen={setIsProductEditOpen}            
+            setIsProductDeleteOpen={setIsProductDeleteOpen}
             setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
             setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
+            setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
             productInstanceToEdit={productInstanceToEdit}  
             setProductInstanceToEdit={setProductInstanceToEdit}
           />
@@ -293,9 +323,11 @@ const MenuBuilderComponent = ({
               x.product.category_ids.filter(x => x && x.length > 0).length === 0)}
             catalog={catalog}
             setProductToEdit={setProductToEdit}            
-            setIsProductEditOpen={setIsProductEditOpen}            
-            setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}   
-            setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}   
+            setIsProductEditOpen={setIsProductEditOpen}
+            setIsProductDeleteOpen={setIsProductDeleteOpen}
+            setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
+            setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}  
+            setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen} 
             setProductInstanceToEdit={setProductInstanceToEdit}
           />
         </Grid>

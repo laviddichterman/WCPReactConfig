@@ -12,8 +12,10 @@ const CategoryTableContainer = ({
   setCategoryToEdit,
   setProductToEdit,
   setIsProductEditOpen,
+  setIsProductDeleteOpen,
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
+  setIsProductInstanceDeleteOpen,
   setProductInstanceToEdit
 }) => {
   return (
@@ -71,9 +73,12 @@ const CategoryTableContainer = ({
               catalog={catalog}
               setProductToEdit={setProductToEdit}            
               setIsProductEditOpen={setIsProductEditOpen}            
+              setIsProductDeleteOpen={setIsProductDeleteOpen}
               setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}   
               setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}   
+              setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
               setProductInstanceToEdit={setProductInstanceToEdit}
+              
                />) : ""
           },
           icon: ()=> { return null }

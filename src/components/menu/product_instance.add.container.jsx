@@ -11,12 +11,12 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   const [shortcode, setShortcode] = useState("");
   const [price, setPrice] = useState(0);
   const [enabled, setEnabled] = useState(true);
+  const [ordinal, setOrdinal] = useState(0);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [modifiers, setModifiers] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
-
   const addProductInstance = async (e) => {
     e.preventDefault();
     if (!isProcessing) {
@@ -34,6 +34,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
             description: description,
             shortcode: shortcode,
             disabled: !enabled,
+            ordinal: ordinal,
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,
@@ -46,6 +47,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
           setShortcode("");
           setPrice(0);
           setEnabled(true);
+          setOrdinal(0);
           setRevelID("");
           setSquareID("");  
           setModifiers([]);
@@ -89,6 +91,8 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       setPrice={setPrice}
       enabled={enabled}
       setEnabled={setEnabled}
+      ordinal={ordinal}
+      setOrdinal={setOrdinal}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID}
