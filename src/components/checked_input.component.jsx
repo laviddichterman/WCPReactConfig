@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 
-const CheckForNumberGTZero = (e) => {
-  const parsed = parseInt(e);
-  return isNaN(parsed) || parsed <= 0 ? 1 : parsed;
-};
+const CheckFunctionGenerator = (inputProps, parseFunction, allowEmpty) => {
+  return (e) => {
+    const parsed = parseFunction(e);
+    if (isNaN(parsed)) {
+      return allowEmpty ? "" : (Number.isFinite(inputProps.min) ? inputProps.min : "");
+    }
+    else {
+      return Number.isFinite(inputProps.min) && parsed < inputProps.min ? inputProps.min : (Number.isFinite(inputProps.max) && parsed > inputProps.max ? inputProps.max : parsed);
+    }
+  }
+}
 
-const CheckedInputComponent = ({onFinishChanging, className, checkFunction, inputProps, label, type, value}) => {
+const CheckedInputComponent = ({onFinishChanging, className, parseFunction, allowEmpty, inputProps, label, type, value, ...forwardParams}) => {
   const [ local_value, setLocalValue ] = useState(value);
   const [ dirty, setDirty ] = useState(false);
   const onFinishChangingLocal = () => {
-    const new_val = checkFunction(local_value);
-    setLocalValue(new_val);
+    const new_val = CheckFunctionGenerator(inputProps, parseFunction, allowEmpty)(local_value);
     setDirty(false);
+    setLocalValue(new_val);
     onFinishChanging(new_val);
   }
 
@@ -23,6 +30,7 @@ const CheckedInputComponent = ({onFinishChanging, className, checkFunction, inpu
 
   return (
     <TextField
+      {...forwardParams}
       label={label}
       type={type}
       className={className}
@@ -36,7 +44,8 @@ const CheckedInputComponent = ({onFinishChanging, className, checkFunction, inpu
 }
 
 CheckedInputComponent.defaultProps = {
-  checkFunction: CheckForNumberGTZero
+  parseFunction: parseInt,
+  allowEmpty: false
 };
 
 export default CheckedInputComponent;

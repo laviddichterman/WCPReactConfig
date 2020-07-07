@@ -1,13 +1,14 @@
 import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
-import { Edit } from "@material-ui/icons";
+import { Edit, DeleteOutline } from "@material-ui/icons";
 
 const ModifierOptionTableContainer = ({
   modifier_type,
   modifier_types_map,
   setModifierOptionToEdit,
   setIsModifierOptionEditOpen,
+  setIsModifierOptionDeleteOpen
 }) => {
   return (
     <TableWrapperComponent
@@ -32,6 +33,14 @@ const ModifierOptionTableContainer = ({
             setModifierOptionToEdit(rowData);
           },
         },
+        {
+          icon: DeleteOutline,
+          tooltip: 'Delete Modifier Option',
+          onClick: (event, rowData) => {
+            setIsModifierOptionDeleteOpen(true);
+            setModifierOptionToEdit(rowData);
+          },
+        }
       ]}
       columns={[
         { title: "Name", field: "catalog_item.display_name" },

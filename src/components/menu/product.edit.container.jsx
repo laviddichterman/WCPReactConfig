@@ -11,6 +11,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
   const [shortcode, setShortcode] = useState(product.item.shortcode);
   const [price, setPrice] = useState(product.item.price.amount / 100);
   const [enabled, setEnabled] = useState(!product.item.disabled);
+  const [ordinal, setOrdinal] = useState(product.ordinal || 0);
   const [revelID, setRevelID] = useState(product.item.externalIDs && product.item.externalIDs.revelID ? product.item.externalIDs.revelID : "");
   const [squareID, setSquareID] = useState(product.item.externalIDs && product.item.externalIDs.squareID ? product.item.externalIDs.squareID : "");
   const [parentCategories, setParentCategories] = useState(Object.values(categories).filter(x => product.category_ids.includes(x.category._id.toString())));
@@ -36,6 +37,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
             description: description,
             shortcode: shortcode,
             disabled: !enabled,
+            ordinal: ordinal,
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,
@@ -43,8 +45,10 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
             modifiers: modifiers.map(x => x.modifier_type._id)
           }),
         });
+        if (response.status === 200) {
+          onCloseCallback();
+        }
         setIsProcessing(false);
-        onCloseCallback();
       } catch (error) {
         setIsProcessing(false);
       }
@@ -82,6 +86,8 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
       setPrice={setPrice}
       enabled={enabled}
       setEnabled={setEnabled}
+      ordinal={ordinal}
+      setOrdinal={setOrdinal}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID}

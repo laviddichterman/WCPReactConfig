@@ -7,6 +7,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Switch from "@material-ui/core/Switch";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import CheckedInputComponent from "../checked_input.component";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,25 +35,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CheckForNumberGEZeroLT64Int = (e) => {
-  const parsed = parseInt(e);
-  return isNaN(parsed) || parsed < 0 || parsed > 63 ? 1 : parsed;
-};
-
 const ProductComponent = ({
   actions,
   progress,
   modifier_types,
   categories,
-  displayName, setDisplayName,
-  description, setDescription,
-  shortcode, setShortcode,
-  price, setPrice,
-  enabled, setEnabled,
-  revelID, setRevelID,
-  squareID, setSquareID,
-  parentCategories, setParentCategories, 
-  modifiers, setModifiers
+  displayName,
+  setDisplayName,
+  description,
+  setDescription,
+  shortcode,
+  setShortcode,
+  price,
+  setPrice,
+  enabled,
+  setEnabled,
+  ordinal,
+  setOrdinal,
+  revelID,
+  setRevelID,
+  squareID,
+  setSquareID,
+  parentCategories,
+  setParentCategories,
+  modifiers,
+  setModifiers,
 }) => {
   const classes = useStyles();
   const actions_html =
@@ -76,10 +83,12 @@ const ProductComponent = ({
             multiple
             filterSelectedOptions
             options={Object.values(categories)}
-            value={parentCategories.filter(x=>x)}
+            value={parentCategories.filter((x) => x)}
             onChange={(e, v) => setParentCategories(v)}
             getOptionLabel={(option) => option.category.name}
-            getOptionSelected={(option, value) => option.category._id === value.category._id}
+            getOptionSelected={(option, value) =>
+              option.category._id === value.category._id
+            }
             renderInput={(params) => (
               <TextField {...params} label="Categories" />
             )}
@@ -116,29 +125,41 @@ const ProductComponent = ({
           />
         </Grid>
         <Grid item xs={4}>
-          <TextField
-            label="Price"
-            type="text"
-            inputProps={{ size: 10 }}
-            value={price}
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
-            }}
-            onChange={(e) => setPrice(e.target.value)}
-          />
+          <CheckedInputComponent
+              label="Price"
+              fullWidth={false}
+              className="form-control"
+              type="number"
+              size="small"
+              parseFunction={(e) => parseFloat(e).toFixed(2)}
+              value={price}
+              inputProps={{min:0.00}}
+              onFinishChanging={(e) => setPrice(e)}
+            />
         </Grid>
         <Grid item xs={4}>
           <FormControlLabel
             control={
-              <Switch checked={enabled} onChange={e => setEnabled(e.target.checked)} name="Enabled" />
+              <Switch
+                checked={enabled}
+                onChange={(e) => setEnabled(e.target.checked)}
+                name="Enabled"
+              />
             }
             label="Enabled"
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
+          <CheckedInputComponent
+            label="Ordinal"
+            type="number"
+            fullWidth
+            value={ordinal}
+            inputProps={{ min: 0 }}
+            onFinishChanging={(e) => setOrdinal(e)}
+          />
+        </Grid>
+        <Grid item xs={4}>
           <TextField
             label="Revel ID"
             type="text"
@@ -148,7 +169,7 @@ const ProductComponent = ({
             onChange={(e) => setRevelID(e.target.value)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
             label="Square ID"
             type="text"
@@ -164,9 +185,17 @@ const ProductComponent = ({
             filterSelectedOptions
             options={Object.values(modifier_types)}
             value={modifiers}
-            onChange={(e, v) => setModifiers(v.sort((a, b)=> a.modifier_type.ordinal - b.modifier_type.ordinal))}
-            getOptionLabel={(option) => option.modifier_type.name}
-            getOptionSelected={(option, value) => option.modifier_type._id === value.modifier_type._id}
+            onChange={(e, v) =>
+              setModifiers(
+                v.sort(
+                  (a, b) => a.modifier_type.ordinal - b.modifier_type.ordinal
+                )
+              )
+            }
+            getOptionLabel={(option) => option ? option.modifier_type.name : "CORRUPT DATA"}
+            getOptionSelected={(option, value) =>
+              option && value && option.modifier_type._id === value.modifier_type._id
+            }
             renderInput={(params) => (
               <TextField {...params} label="Modifiers" />
             )}

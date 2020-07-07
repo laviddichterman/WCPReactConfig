@@ -9,8 +9,6 @@ import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 
-
-
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -45,7 +43,7 @@ const LeadTimesComp = ({
           label={SERVICES[i]}
           className="form-control"
           type="number"
-          //InputCheckFunction={CheckedInputComponent.CheckForNumberGTZero}
+          inputProps={{min: 1, max: 43200}}
           value={x}
           onFinishChanging={(e) => onChange(i, e)}
           />

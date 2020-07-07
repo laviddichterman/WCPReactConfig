@@ -11,7 +11,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
   const [price, setPrice] = useState(0);
-  const [enableFunctionName, setEnableFunctionName] = useState("");
+  const [enableFunctionName, setEnableFunctionName] = useState("always");
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
   const [canSplit, setCanSplit] = useState(true);
@@ -54,7 +54,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
           setShortcode("");
           setOrdinal(0);
           setPrice(0);
-          setEnableFunctionName("");
+          setEnableFunctionName("always");
           setFlavorFactor(0);
           setBakeFactor(0);
           setCanSplit(true);

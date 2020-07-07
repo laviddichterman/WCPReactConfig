@@ -11,6 +11,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
   const [shortcode, setShortcode] = useState("");
   const [price, setPrice] = useState(0);
   const [enabled, setEnabled] = useState(true);
+  const [ordinal, setOrdinal] = useState(0);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [parentCategories, setParentCategories] = useState([]);
@@ -35,6 +36,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
             description: description,
             shortcode: shortcode,
             disabled: !enabled,
+            ordinal: ordinal,
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,
@@ -48,6 +50,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
           setShortcode("");
           setPrice(0);
           setEnabled(true);
+          setOrdinal(0);
           setRevelID("");
           setSquareID("");  
           setModifiers([]);
@@ -92,6 +95,8 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
       setPrice={setPrice}
       enabled={enabled}
       setEnabled={setEnabled}
+      ordinal={ordinal}
+      setOrdinal={setOrdinal}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID}

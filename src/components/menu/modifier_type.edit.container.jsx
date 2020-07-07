@@ -7,7 +7,8 @@ import { useAuth0 } from "../../react-auth0-spa";
 const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback }) => {
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
-  const [selectionType, setSelectionType] = useState(modifier_type.selection_type);
+  const [minSelected, setMinSelected] = useState(modifier_type.min_selected || 0);
+  const [maxSelected, setMaxSelected] = useState(modifier_type.max_selected || "");
   const [revelID, setRevelID] = useState(modifier_type.externalIDs && modifier_type.externalIDs.revelID ? modifier_type.externalIDs.revelID : "");
   const [squareID, setSquareID] = useState(modifier_type.externalIDs && modifier_type.externalIDs.squareID ? modifier_type.externalIDs.squareID : "");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -29,12 +30,13 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
           body: JSON.stringify({
             name: name,
             ordinal: ordinal,
-            selection_type: selectionType,
+            min_selected: minSelected,
+            max_selected: maxSelected || null,
             revelID: revelID,
             squareID: squareID,
           }),
         });
-        if (response.status === 201) {
+        if (response.status === 200) {
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -56,7 +58,7 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
         <Button
           className="btn btn-light"
           onClick={editModifierType}
-          disabled={name.length === 0 || isProcessing}
+          disabled={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || isProcessing}
         >
           Save
         </Button>
@@ -65,8 +67,10 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
       setOrdinal={setOrdinal}
       name={name}
       setName={setName}
-      selectionType={selectionType} 
-      setSelectionType={setSelectionType}
+      minSelected={minSelected} 
+      setMinSelected={setMinSelected}
+      maxSelected={maxSelected} 
+      setMaxSelected={setMaxSelected}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID} 

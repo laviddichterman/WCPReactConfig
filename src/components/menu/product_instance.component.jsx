@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import Switch from "@material-ui/core/Switch";
+
+import CheckedInputComponent from "../checked_input.component";
 
 // related to modifiers
 import Card from '@material-ui/core/Card';
@@ -42,12 +43,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(4),
   },
 }));
-
-const CheckForNumberGEZeroLT64Int = (e) => {
-  const parsed = parseInt(e);
-  return isNaN(parsed) || parsed < 0 || parsed > 63 ? 1 : parsed;
-};
-
 
 const ProductInstanceComponent = ({
   actions,
@@ -202,21 +197,18 @@ const ProductInstanceComponent = ({
             size="small"
             onChange={(e) => setShortcode(e.target.value)}
           />
-        </Grid>
+        </Grid>        
         <Grid item xs={4}>
-          <TextField
-            label="Price"
-            type="text"
-            inputProps={{ size: 10 }}
-            value={price}
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
-            }}
-            onChange={(e) => setPrice(e.target.value)}
-          />
+          <CheckedInputComponent
+              label="Price"
+              className="form-control"
+              type="number"
+              fullWidth
+              parseFunction={(e) => parseFloat(e).toFixed(2)}
+              value={price}
+              inputProps={{min:0}}
+              onFinishChanging={(e) => setPrice(e)}
+            />
         </Grid>
         <Grid item xs={4}>
           <FormControlLabel

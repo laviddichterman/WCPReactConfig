@@ -7,7 +7,8 @@ import { useAuth0 } from "../../react-auth0-spa";
 const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [ordinal, setOrdinal] = useState(0);
   const [name, setName] = useState("");
-  const [selectionType, setSelectionType] = useState("MANY");
+  const [minSelected, setMinSelected] = useState(0);
+  const [maxSelected, setMaxSelected] = useState("");
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -28,7 +29,8 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
           body: JSON.stringify({
             name: name,
             ordinal: ordinal,
-            selection_type: selectionType,
+            min_selected: minSelected,
+            max_selected: maxSelected || null,
             revelID: revelID,
             squareID: squareID,
           }),
@@ -36,7 +38,8 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
         if (response.status === 201) {
           setOrdinal(0);
           setName("");
-          setSelectionType("MANY");
+          setMinSelected(0);
+          setMaxSelected("");
           setRevelID("");
           setSquareID("");
           onCloseCallback();
@@ -61,7 +64,7 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
         <Button
           className="btn btn-light"
           onClick={addModifierType}
-          disabled={name.length === 0 || isProcessing}
+          disabled={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || isProcessing}
         >
           Add
         </Button>
@@ -70,8 +73,10 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
       setOrdinal={setOrdinal}
       name={name}
       setName={setName}
-      selectionType={selectionType} 
-      setSelectionType={setSelectionType}
+      minSelected={minSelected} 
+      setMinSelected={setMinSelected}
+      maxSelected={maxSelected} 
+      setMaxSelected={setMaxSelected}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID} 

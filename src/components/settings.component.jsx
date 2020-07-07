@@ -215,15 +215,17 @@ const SettingsComponent = ({
               className="form-control"
               value={settings.additional_pizza_lead_time}
               onFinishChanging={onChangeAdditionalPizzaLeadTime}
+              inputProps={{min: 0, max: 64}}
             />
           </Grid>
           <Grid item xs={5}>
             <CheckedInputComponent
               type="number"
-              label="Time Step"
+              label="Time Step (minutes)"
               className="form-control"
               value={settings.time_step}
               onFinishChanging={onChangeTimeStep}
+              inputProps={{min: 1, max: 1440}}
             />
           </Grid>
           <Grid item xs={2}>

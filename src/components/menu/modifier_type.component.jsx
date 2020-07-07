@@ -3,11 +3,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import CheckedInputComponent from "../checked_input.component";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,17 +31,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CheckForNumberGEZeroLT64Int = (e) => {
-  const parsed = parseInt(e);
-  return isNaN(parsed) || parsed < 0 || parsed > 63 ? 1 : parsed;
-};
-
-
 const ModifierTypeComponent = ({
   actions,
   ordinal, setOrdinal,
+  minSelected, setMinSelected,
+  maxSelected, setMaxSelected,
   name, setName,
-  selectionType, setSelectionType,
   revelID, setRevelID,
   squareID, setSquareID
  }) => {
@@ -64,16 +54,44 @@ const ModifierTypeComponent = ({
   return (
     <div className={classes.root}>
       <Grid container spacing={3} justify="center">
-        <Grid item container xs={9}>
           <Grid item xs={12}>
             <TextField
               label="Modifier Type Name"
               type="text"
+              fullWidth
               inputProps={{ size: 40 }}
               value={name}
               size="small"
               onChange={(e) => setName(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={4}>
+            <CheckedInputComponent
+                label="Ordinal"
+                type="number"
+                value={ordinal}
+                inputProps={{min:0}}
+                onFinishChanging={(e) => setOrdinal(e)}
+              />
+          </Grid>
+          <Grid item xs={4}>
+            <CheckedInputComponent
+                label="Min Selected"
+                type="number"
+                value={minSelected}
+                inputProps={{min:0, size: 10}}
+                onFinishChanging={(e) => setMinSelected(e)}
+              />
+          </Grid>
+          <Grid item xs={4}>
+            <CheckedInputComponent
+                label="Max Selected"
+                type="number"
+                value={maxSelected}
+                allowEmpty
+                inputProps={{size: 10, min: minSelected }}
+                onFinishChanging={(e) => setMaxSelected(e)}
+              />
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -95,43 +113,6 @@ const ModifierTypeComponent = ({
               onChange={(e) => setSquareID(e.target.value)}
             />
           </Grid>
-          <Grid item xs={7}>
-          <CheckedInputComponent
-              label="Ordinal"
-              type="number"
-              fullWidth
-              checkFunction={CheckForNumberGEZeroLT64Int}
-              value={ordinal}
-              inputProps={{min:0, max:63}}
-              onFinishChanging={(e) => setOrdinal(e)}
-            />
-        </Grid>
-        </Grid>
-        <Grid item xs={3}>
-          <Grid container item xs={12}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Selection Type</FormLabel>
-              <RadioGroup
-                defaultValue="SINGLE"
-                aria-label="selection-type"
-                name="selection-type"
-                value={selectionType}
-                onChange={e=> setSelectionType(e.target.value)}
-              >
-                <FormControlLabel
-                  value="SINGLE"
-                  control={<Radio />}
-                  label="Single"
-                />
-                <FormControlLabel
-                  value="MANY"
-                  control={<Radio />}
-                  label="Many"
-                />
-              </RadioGroup>
-            </FormControl>
-          </Grid>
-        </Grid>
         {actions_html}
       </Grid>
     </div>

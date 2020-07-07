@@ -10,6 +10,7 @@ import ModifierTypeEditContainer from "./modifier_type.edit.container";
 import ModifierTypeDeleteContainer from "./modifier_type.delete.container";
 import ModifierOptionAddContainer from "./modifier_option.add.container";
 import ModifierOptionEditContainer from "./modifier_option.edit.container";
+import ModifierOptionDeleteContainer from "./modifier_option.delete.container";
 import ProductAddContainer from "./product.add.container";
 import ProductEditContainer from "./product.edit.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
@@ -62,6 +63,8 @@ const MenuBuilderComponent = ({
 
   const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
   const [modifierTypeToEdit, setModifierTypeToEdit] = useState(null);
+  
+  const [isModifierOptionDeleteOpen, setIsModifierOptionDeleteOpen] = useState(false);
   const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
 
   const [isModifierOptionEditOpen, setIsModifierOptionEditOpen] = useState(false);
@@ -176,7 +179,19 @@ const MenuBuilderComponent = ({
             ENDPOINT={ENDPOINT}
           />
         } 
-      />      
+      />
+      <DialogContainer 
+        title={"Delete Modifier Option"}
+        onClose={() => {setIsModifierOptionDeleteOpen(false);}} 
+        isOpen={isModifierOptionDeleteOpen} 
+        inner_component={
+          <ModifierOptionDeleteContainer 
+            onCloseCallback={() => {setIsModifierOptionDeleteOpen(false);}}   
+            ENDPOINT={ENDPOINT}
+            modifier_option={modifierOptionToEdit}
+          />
+        } 
+      />           
       <DialogContainer 
         title={"Edit Product"}
         onClose={() => {
@@ -286,14 +301,15 @@ const MenuBuilderComponent = ({
         </Grid>
         <Grid item xs={12}>
           <ModifierTypeTableContainer
-            modifier_types_map={catalog.modifiers}
-            setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
-            setIsModifierTypeDeleteOpen={setIsModifierTypeDeleteOpen}
-            setModifierTypeToEdit={setModifierTypeToEdit}
+            modifier_types_map={catalog.modifiers}            
             setIsModifierTypeAddOpen={setIsModifierTypeAddOpen}
+            setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
             setIsModifierOptionAddOpen={setIsModifierOptionAddOpen}
-            setModifierOptionToEdit={setModifierOptionToEdit}
             setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
+            setIsModifierTypeDeleteOpen={setIsModifierTypeDeleteOpen}
+            setIsModifierOptionDeleteOpen={setIsModifierOptionDeleteOpen}
+            setModifierOptionToEdit={setModifierOptionToEdit}
+            setModifierTypeToEdit={setModifierTypeToEdit}            
           />
         </Grid>
       </Grid>

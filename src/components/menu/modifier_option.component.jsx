@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import Switch from "@material-ui/core/Switch";
 import CheckedInputComponent from "../checked_input.component";
 
@@ -33,11 +32,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(4),
   },
 }));
-
-const CheckForNumberGEZeroLT64Int = (e) => {
-  const parsed = parseInt(e);
-  return isNaN(parsed) || parsed < 0 || parsed > 63 ? 1 : parsed;
-};
 
 const ModifierOptionComponent = ({
   actions,
@@ -98,6 +92,7 @@ const ModifierOptionComponent = ({
           <TextField
             label="Description"
             type="text"
+            fullWidth
             inputProps={{ size: 40 }}
             value={description}
             size="small"
@@ -115,18 +110,45 @@ const ModifierOptionComponent = ({
           />
         </Grid>
         <Grid item xs={6}>
-          <TextField
-            label="Price"
-            type="text"
-            inputProps={{ size: 10 }}
-            value={price}
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
-            }}
-            onChange={(e) => setPrice(e.target.value)}
+          <CheckedInputComponent
+              label="Price"
+              fullWidth={false}
+              className="form-control"
+              type="number"
+              size="small"
+              parseFunction={(e) => parseFloat(e).toFixed(2)}
+              value={price}
+              inputProps={{min:0.00}}
+              onFinishChanging={(e) => setPrice(e)}
+            />
+        </Grid>
+        <Grid item xs={4}>
+          <CheckedInputComponent
+            label="Ordinal"
+            type="number"
+            value={ordinal}
+            inputProps={{ min: 0 }}
+            onFinishChanging={(e) => setOrdinal(e)}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <CheckedInputComponent
+            label="Flavor Factor"
+            type="number"
+            value={flavorFactor}
+            fullWidth
+            inputProps={{ min: 0, max: 63 }}
+            onFinishChanging={(e) => setFlavorFactor(e)}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <CheckedInputComponent
+            label="Bake Factor"
+            type="number"
+            fullWidth
+            value={bakeFactor}
+            inputProps={{ min: 0, max: 63 }}
+            onFinishChanging={(e) => setBakeFactor(e)}
           />
         </Grid>
         <Grid item xs={6}>
@@ -139,40 +161,7 @@ const ModifierOptionComponent = ({
             onChange={(e) => setEnableFunctionName(e.target.value)}
           />
         </Grid>
-        <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Ordinal"
-            type="number"
-            fullWidth
-            checkFunction={CheckForNumberGEZeroLT64Int}
-            value={ordinal}
-            inputProps={{ min: 0, max: 63 }}
-            onFinishChanging={(e) => setOrdinal(e)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Flavor Factor"
-            type="number"
-            fullWidth
-            checkFunction={CheckForNumberGEZeroLT64Int}
-            value={flavorFactor}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setFlavorFactor(e)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Bake Factor"
-            type="number"
-            fullWidth
-            checkFunction={CheckForNumberGEZeroLT64Int}
-            value={bakeFactor}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setBakeFactor(e)}
-          />
-        </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <FormControlLabel
             control={
               <Switch checked={enabled} onChange={e => setEnabled(e.target.checked)} name="Enabled" />
@@ -180,7 +169,7 @@ const ModifierOptionComponent = ({
             label="Enabled"
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <FormControlLabel
             control={
               <Switch

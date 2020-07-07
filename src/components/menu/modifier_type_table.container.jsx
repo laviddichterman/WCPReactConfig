@@ -11,6 +11,7 @@ const ModifierTypeTableContainer = ({
   setModifierTypeToEdit,
   setIsModifierTypeAddOpen,
   setIsModifierOptionAddOpen,
+  setIsModifierOptionDeleteOpen,
   setModifierOptionToEdit,
   setIsModifierOptionEditOpen
 }) => {
@@ -19,8 +20,9 @@ const ModifierTypeTableContainer = ({
       title="Modifier Types / Modifier Type Option"
       columns={[
         { title: "Name", field: "modifier_type.name" },
-        { title: "Selection Type", field: "modifier_type.selection_type" },
         { title: "Ordinal", field: "modifier_type.ordinal" },
+        { title: "Min Selected", field: "modifier_type.min_selected" },
+        { title: "Max Selected", field: "modifier_type.max_selected" },
         { title: "EXID: Revel", field: "modifier_type.externalIDs.revelID" },
         { title: "EXID: Square", field: "modifier_type.externalIDs.squareID" },
       ]}
@@ -74,6 +76,7 @@ const ModifierTypeTableContainer = ({
                 modifier_types_map={modifier_types_map}
                 setModifierOptionToEdit={setModifierOptionToEdit}
                 setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
+                setIsModifierOptionDeleteOpen={setIsModifierOptionDeleteOpen}
               />
             ) : (
               ""

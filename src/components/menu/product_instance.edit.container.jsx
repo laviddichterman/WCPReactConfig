@@ -42,8 +42,10 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
             modifiers: modifiers
           }),
         });
+        if (response.status === 200) {
+          onCloseCallback();
+        }
         setIsProcessing(false);
-        onCloseCallback();
       } catch (error) {
         setIsProcessing(false);
       }

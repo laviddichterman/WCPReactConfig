@@ -46,14 +46,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CheckForNumberGTZeroLTE500Float = (e) => {
-  const parsed = parseFloat(e);
-  return isNaN(parsed) || parsed <= 0 || parsed > 500 ? 1 : parsed;
-};
-
 const StoreCreditComponent = ({ ENDPOINT }) => {
   const classes = useStyles();
-  const [amount, setAmount] = useState(5);
+  const [amount, setAmount] = useState(5.00);
   const [addedBy, setAddedBy] = useState("");
   const [reason, setReason] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -156,9 +151,9 @@ const StoreCreditComponent = ({ ENDPOINT }) => {
               className="form-control"
               type="number"
               fullWidth
-              checkFunction={CheckForNumberGTZeroLTE500Float}
+              parseFunction={(e) => parseFloat(e).toFixed(2)}
               value={amount}
-              inputProps={{min:1, max:500}}
+              inputProps={{min:1.00, max:500.00}}
               onFinishChanging={(e) => setAmount(e)}
             />
           </Grid>

@@ -29,10 +29,11 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
           body: JSON.stringify({
             description: description,
             name: name,
+            subheading: subheading,
             parent_id: parent ? parent.category._id : "",
           }),
         });
-        if (response.status === 201) {
+        if (response.status === 200) {
           onCloseCallback();
         }
         setIsProcessing(false);
