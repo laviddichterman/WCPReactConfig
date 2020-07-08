@@ -41,7 +41,8 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
             revelID: revelID,
             squareID: squareID,
             category_ids: parentCategories.map(x => x.category._id),
-            modifiers: modifiers.map(x => x.modifier_type._id)
+            modifiers: modifiers.map(x => x.modifier_type._id),
+            create_product_instance: true
           }),
         });
         if (response.status === 201) {
