@@ -37,6 +37,7 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
             description: description,
             shortcode: shortcode,
             disabled: !enabled,
+            ordinal: ordinal,
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,

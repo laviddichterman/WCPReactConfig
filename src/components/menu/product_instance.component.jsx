@@ -347,6 +347,7 @@ const ProductInstanceContainer = ({
   modifiers,
   setModifiers,
 }) => {
+  console.log(modifiers);
   const [normalizedModifers, setNormalizedModifiers] = useState(
     normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers)
   );
