@@ -47,7 +47,7 @@ const ModifierOptionTableContainer = ({
         { title: "Price", field: "catalog_item.price.amount" },
         { title: "Shortcode", field: "catalog_item.shortcode" },
         { title: "Description", field: "catalog_item.description" },
-        { title: "Ordinal", field: "ordinal" },
+        { title: "Ordinal", field: "ordinal", defaultSort: "asc" },
         { title: "FFactor", field: "metadata.flavor_factor" },
         { title: "BFactor", field: "metadata.bake_factor" },
         { title: "Can Split?", field: "metadata.can_split" },

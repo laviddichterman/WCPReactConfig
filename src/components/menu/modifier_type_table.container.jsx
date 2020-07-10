@@ -20,7 +20,7 @@ const ModifierTypeTableContainer = ({
       title="Modifier Types / Modifier Type Option"
       columns={[
         { title: "Name", field: "modifier_type.name" },
-        { title: "Ordinal", field: "modifier_type.ordinal" },
+        { title: "Ordinal", field: "modifier_type.ordinal", defaultSort: "asc" },
         { title: "Min Selected", field: "modifier_type.min_selected" },
         { title: "Max Selected", field: "modifier_type.max_selected" },
         { title: "EXID: Revel", field: "modifier_type.externalIDs.revelID" },
