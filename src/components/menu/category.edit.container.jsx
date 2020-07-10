@@ -8,6 +8,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
   const [subheading, setSubheading] = useState(category.subheading);
+  const [ordinal, setOrdinal] = useState(category.ordinal || 0);
   const [parent, setParent] = useState(category.parent_id ? categories[category.parent_id] : null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
@@ -29,6 +30,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
           body: JSON.stringify({
             description: description,
             name: name,
+            ordinal: ordinal,
             subheading: subheading,
             parent_id: parent ? parent.category._id : "",
           }),
@@ -56,7 +58,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
         <Button
           className="btn btn-light"
           onClick={editCategory}
-          disabled={name.length === 0 || isProcessing}>
+          disabled={name.length === 0 || ordinal < 0 || isProcessing}>
           Save
         </Button>
       ]}
@@ -65,6 +67,8 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
       setDescription={setDescription}
       name={name}
       setName={setName}
+      ordinal={ordinal}
+      setOrdinal={setOrdinal}
       parent={parent}
       setParent={setParent}
       subheading={subheading}

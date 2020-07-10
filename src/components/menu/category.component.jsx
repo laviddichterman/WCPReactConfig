@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import CheckedInputComponent from "../checked_input.component";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +36,7 @@ const CategoryComponent = ({
   categories, 
   actions, 
   description, setDescription, 
+  ordinal, setOrdinal,
   subheading, setSubheading, 
   name, setName, 
   parent, setParent }) => {
@@ -73,7 +75,7 @@ const CategoryComponent = ({
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={9}>
           <TextField
             multiline
             fullWidth
@@ -83,6 +85,16 @@ const CategoryComponent = ({
             value={description}
             size="small"
             onChange={(e) => setDescription(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <CheckedInputComponent
+            label="Ordinal"
+            type="number"
+            fullWidth
+            value={ordinal}
+            inputProps={{ min: 0 }}
+            onFinishChanging={(e) => setOrdinal(e)}
           />
         </Grid>
         <Grid item xs={12}>

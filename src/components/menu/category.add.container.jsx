@@ -8,6 +8,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
   const [description, setDescription] = useState("");
   const [subheading, setSubheading] = useState("");
   const [name, setName] = useState("");
+  const [ordinal, setOrdinal] = useState(0);
   const [parent, setParent] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getTokenSilently } = useAuth0();
@@ -29,6 +30,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
             description: description,
             subheading: subheading,
             name: name,
+            ordinal: ordinal,
             parent_id: parent ? parent.category._id : "",
           }),
         });
@@ -36,6 +38,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
           setDescription("");
           setName("");
           setSubheading("");
+          setOrdinal(0);
           setParent(null);
           onCloseCallback();
         }
@@ -59,7 +62,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
         <Button
           className="btn btn-light"
           onClick={addCategory}
-          disabled={name.length === 0 || isProcessing}
+          disabled={name.length === 0 || ordinal < 0 || isProcessing}
         >
           Add
         </Button>
@@ -69,6 +72,8 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
       setDescription={setDescription}
       name={name}
       setName={setName}
+      ordinal={ordinal}
+      setOrdinal={setOrdinal}
       parent={parent}
       setParent={setParent}
       subheading={subheading}
