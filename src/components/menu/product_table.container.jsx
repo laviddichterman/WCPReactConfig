@@ -21,7 +21,6 @@ const ProductTableContainer = ({
       options={{
         showTitle: tableTitle && tableTitle.length > 0,
         showEmptyDataSourceMessage: false,
-        sorting: false,
         draggable: false,
         search: false,
         rowStyle: {
@@ -76,7 +75,6 @@ const ProductTableContainer = ({
               options={{
                 showTitle: false,
                 showEmptyDataSourceMessage: false,
-                sorting: false,
                 draggable: false,
                 search: false,
                 rowStyle: {
