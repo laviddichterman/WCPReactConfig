@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import CheckedInputComponent from "./checked_input.component";
-import { useAuth0 } from "../react-auth0-spa";
-
+import { useAuth0 } from '@auth0/auth0-react';
 
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
@@ -57,7 +56,7 @@ const StoreCreditComponent = ({ ENDPOINT }) => {
   const [recipientEmailError, setRecipientEmailError] = useState(false);
   const [expiration, setExpiration] = useState(moment().add(60, "days"));
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
 
   const validateRecipientEmail = () => {
@@ -68,7 +67,7 @@ const StoreCreditComponent = ({ ENDPOINT }) => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/payments/storecredit/discount`, {
           method: "POST",
           headers: {

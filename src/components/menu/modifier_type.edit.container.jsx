@@ -2,17 +2,17 @@ import React, { useState } from "react";
 
 import Button from "@material-ui/core/Button";
 import ModifierTypeComponent from "./modifier_type.component";
-import { useAuth0 } from "../../react-auth0-spa";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback }) => {
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
   const [minSelected, setMinSelected] = useState(modifier_type.min_selected || 0);
   const [maxSelected, setMaxSelected] = useState(modifier_type.max_selected || "");
-  const [revelID, setRevelID] = useState(modifier_type.externalIDs && modifier_type.externalIDs.revelID ? modifier_type.externalIDs.revelID : "");
-  const [squareID, setSquareID] = useState(modifier_type.externalIDs && modifier_type.externalIDs.squareID ? modifier_type.externalIDs.squareID : "");
+  const [revelID, setRevelID] = useState(modifier_type.externalIDs?.revelID ?? "");
+  const [squareID, setSquareID] = useState(modifier_type.externalIDs?.squareID ?? "");
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
   const editModifierType = async (e) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${modifier_type._id}`, {
           method: "PATCH",
           headers: {

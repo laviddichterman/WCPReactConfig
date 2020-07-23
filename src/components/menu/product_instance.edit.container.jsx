@@ -3,21 +3,21 @@ import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import ProductInstanceComponent from "./product_instance.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { useAuth0 } from "../../react-auth0-spa";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_product, product_instance, onCloseCallback}) => {
   const [displayName, setDisplayName] = useState(product_instance.item.display_name);
   const [description, setDescription] = useState(product_instance.item.description);
   const [shortcode, setShortcode] = useState(product_instance.item.shortcode);
   const [price, setPrice] = useState(product_instance.item.price.amount / 100);
-  const [enabled, setEnabled] = useState(!product_instance.item.disabled);
+  const [disabled, setDisabled] = useState(product_instance.item?.disabled);
   const [ordinal, setOrdinal] = useState(product_instance.ordinal || 0);
-  const [revelID, setRevelID] = useState(product_instance.item.externalIDs && product_instance.item.externalIDs.revelID ? product_instance.item.externalIDs.revelID : "");
-  const [squareID, setSquareID] = useState(product_instance.item.externalIDs && product_instance.item.externalIDs.squareID ? product_instance.item.externalIDs.squareID : "");
+  const [revelID, setRevelID] = useState(product_instance.item?.externalIDs?.revelID ?? "");
+  const [squareID, setSquareID] = useState(product_instance.item?.externalIDs?.squareID ?? "");
   const [modifiers, setModifiers] = useState(product_instance.modifiers);
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
   const editProductInstance = async (e) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${parent_product._id}/${product_instance._id}`, {
           method: "PATCH",
           headers: {
@@ -36,7 +36,7 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
             display_name: displayName,
             description: description,
             shortcode: shortcode,
-            disabled: !enabled,
+            disabled: disabled,
             ordinal: ordinal,
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
@@ -83,8 +83,8 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
       setShortcode={setShortcode}
       price={price}
       setPrice={setPrice}
-      enabled={enabled}
-      setEnabled={setEnabled}
+      disabled={disabled}
+      setDisabled={setDisabled}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       revelID={revelID}

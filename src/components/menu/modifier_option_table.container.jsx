@@ -1,5 +1,5 @@
 import React from "react";
-
+import moment from 'moment';
 import TableWrapperComponent from "../table_wrapper.component";
 import { Edit, DeleteOutline } from "@material-ui/icons";
 
@@ -43,24 +43,16 @@ const ModifierOptionTableContainer = ({
         }
       ]}
       columns={[
-        { title: "Name", field: "catalog_item.display_name" },
-        { title: "Price", field: "catalog_item.price.amount" },
-        { title: "Shortcode", field: "catalog_item.shortcode" },
-        { title: "Description", field: "catalog_item.description" },
+        { title: "Name", field: "item.display_name" },
+        { title: "Price", field: "item.price.amount", render: rowData => `$${Number(rowData.item.price.amount / 100).toFixed(2)}` },
+        { title: "Shortcode", field: "item.shortcode" },
+        { title: "Description", field: "item.description" },
         { title: "Ordinal", field: "ordinal", defaultSort: "asc" },
         { title: "FFactor", field: "metadata.flavor_factor" },
         { title: "BFactor", field: "metadata.bake_factor" },
         { title: "Can Split?", field: "metadata.can_split" },
         { title: "EnableFxn", field: "enable_function_name" },
-        {
-          title: "EXID: Revel",
-          field: "catalog_item.externalIDs.revelID",
-        },
-        {
-          title: "EXID: Square",
-          field: "catalog_item.externalIDs.squareID",
-        },
-        { title: "Disabled", field: "catalog_item.disabled" },
+        { title: "Disabled", field: "item.disabled", render: rowData => rowData.item.disabled ? (rowData.item.disabled.start > rowData.item.disabled.end ? "True" : `${moment(rowData.item.disabled.start).format("MMMM DD, Y hh:mm A")} to  ${moment(rowData.item.disabled.end).format("MMMM DD, Y hh:mm A")}`) : "False" },
       ]}
       data={modifier_types_map[modifier_type._id].options}
     />

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 
 import Button from "@material-ui/core/Button";
 import ElementDeleteComponent from "./element.delete.component";
-import { useAuth0 } from "../../react-auth0-spa";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ProductInstanceDeleteContainer = ({ ENDPOINT, product_instance, onCloseCallback }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
   const deleteProductInstance = async (e) => {
     e.preventDefault();
@@ -14,7 +14,7 @@ const ProductInstanceDeleteContainer = ({ ENDPOINT, product_instance, onCloseCal
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${product_instance.product_id}/${product_instance._id}`, {
           method: "DELETE",
           headers: {

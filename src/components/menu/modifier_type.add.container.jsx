@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Button from "@material-ui/core/Button";
 import ModifierTypeComponent from "./modifier_type.component";
-import { useAuth0 } from "../../react-auth0-spa";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [ordinal, setOrdinal] = useState(0);
@@ -12,14 +12,14 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
   const addModifierType = async (e) => {
     e.preventDefault();
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/menu/option/`, {
           method: "POST",
           headers: {

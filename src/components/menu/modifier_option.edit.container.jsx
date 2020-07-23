@@ -3,31 +3,31 @@ import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import ModifierOptionComponent from "./modifier_option.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { useAuth0 } from "../../react-auth0-spa";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ModifierOptionEditContainer = ({ ENDPOINT, modifier_option, onCloseCallback }) => {
-  const [displayName, setDisplayName] = useState(modifier_option.catalog_item.display_name);
-  const [description, setDescription] = useState(modifier_option.catalog_item.description);
-  const [shortcode, setShortcode] = useState(modifier_option.catalog_item.shortcode);
+  const [displayName, setDisplayName] = useState(modifier_option.item.display_name);
+  const [description, setDescription] = useState(modifier_option.item.description);
+  const [shortcode, setShortcode] = useState(modifier_option.item.shortcode);
   const [ordinal, setOrdinal] = useState(modifier_option.ordinal);
-  const [price, setPrice] = useState(modifier_option.catalog_item.price.amount / 100);
+  const [price, setPrice] = useState(modifier_option.item.price.amount / 100);
   const [enableFunctionName, setEnableFunctionName] = useState(modifier_option.enable_function_name);
   const [flavorFactor, setFlavorFactor] = useState(modifier_option.metadata.flavor_factor);
   const [bakeFactor, setBakeFactor] = useState(modifier_option.metadata.bake_factor);
   const [canSplit, setCanSplit] = useState(modifier_option.metadata.can_split);
-  const [enabled, setEnabled] = useState(!modifier_option.catalog_item.disabled);
-  const [revelID, setRevelID] = useState(modifier_option.catalog_item.externalIDs && modifier_option.catalog_item.externalIDs.revelID ? modifier_option.catalog_item.externalIDs.revelID : "");
-  const [squareID, setSquareID] = useState(modifier_option.catalog_item.externalIDs && modifier_option.catalog_item.externalIDs.squareID ? modifier_option.catalog_item.externalIDs.squareID : "");
+  const [disabled, setDisabled] = useState(modifier_option.item?.disabled);
+  const [revelID, setRevelID] = useState(modifier_option.item?.externalIDs?.revelID ?? "");
+  const [squareID, setSquareID] = useState(modifier_option.item?.externalIDs?.squareID ?? "");
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getTokenSilently } = useAuth0();
-
+  const { getAccessTokenSilently } = useAuth0();
+console.log(modifier_option.item.disabled);
   const editModifierOption = async (e) => {
     e.preventDefault();
 
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option._id}`, {
           method: "PATCH",
           headers: {
@@ -38,7 +38,7 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_option, onCloseCallbac
             display_name: displayName,
             description: description,
             shortcode: shortcode,
-            disabled: !enabled,
+            disabled: disabled,
             price: { amount: price * 100, currency: "USD" },
             ordinal: ordinal,
             enable_function_name: enableFunctionName,
@@ -96,8 +96,8 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_option, onCloseCallbac
       setBakeFactor={setBakeFactor}
       canSplit={canSplit}
       setCanSplit={setCanSplit}
-      enabled={enabled}
-      setEnabled={setEnabled}
+      disabled={disabled}
+      setDisabled={setDisabled}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID}

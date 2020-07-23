@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import PACKAGE_JSON from "../package.json";
 import socketIOClient from "socket.io-client";
 import BlockOffComp from "./components/blockoff.component";
 import LeadTimesComp from "./components/leadtimes.component";
@@ -8,7 +9,8 @@ import StoreCreditComponent from "./components/store_credit.component";
 import SettingsComp from "./components/settings.component";
 import DeliveryAreaComp from "./components/deliveryarea.component";
 import KeyValuesComponent from "./components/keyvalues.component";
-import { useAuth0 } from "./react-auth0-spa";
+import FooterComponent from "./components/footer.component";
+import { useAuth0 } from '@auth0/auth0-react';
 
 import PropTypes from 'prop-types';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
@@ -18,6 +20,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,14 +74,10 @@ const ENDPOINT = "http://localhost:4001";
 const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, { autoConnect: false, secure: true, cookie: false });
 const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false });
 
-const setWrapper = (data, setter) => {
-  console.log(data);
-  return setter(data);
-}
 const App = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = React.useState(0);
-  const { loading, getTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [socketAuth] = useState(IO_CLIENT_AUTH);
   const [socketRo] = useState(IO_CLIENT_RO);
   const [SERVICES, setSERVICES] = useState([]);
@@ -101,13 +100,26 @@ const App = () => {
     modifiers: {},
     categories: {},
     products: {},
-    orphan_products: []
+    orphan_products: [],
+    version: "NONE"
   });
+
+  // const setCatalogIfNewVersion = useCallback(
+  //   (newCatalog) => {
+  //     if (CATALOG.version !== newCatalog.version) {
+  //       return setCATALOG(newCatalog);
+  //     }
+  //     else {
+  //       console.log("ignoring same version");
+  //     }
+  // },
+  //   [CATALOG.version]
+  // )
 
   useEffect(() => {
     let token;
     const getToken = async () => {
-      token = await getTokenSilently();
+      token = await getAccessTokenSilently();
       socketAuth.open();
       socketAuth.on("connect", () => {
         socketAuth.emit("authenticate", { token: token })
@@ -121,13 +133,13 @@ const App = () => {
       });
     }
 
-    if (!loading && isAuthenticated) {
+    if (!isLoading && isAuthenticated) {
       getToken();
     }
-    if (!loading && !isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       loginWithRedirect();
     }
-  }, [loading, getTokenSilently, socketAuth, isAuthenticated, loginWithRedirect, logout]);
+  }, [isLoading, getAccessTokenSilently, socketAuth, isAuthenticated, loginWithRedirect, logout]);
 
   useEffect(() => {
     socketRo.open();
@@ -244,7 +256,7 @@ const App = () => {
     setKEYVALUES(new_dict);
   }
 
-  if (loading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
   if (!isAuthenticated) {
@@ -317,6 +329,7 @@ const App = () => {
           />
         </TabPanel>
       </div>
+      <FooterComponent>WARIO Backend Application version {PACKAGE_JSON.version}</FooterComponent>
     </ThemeProvider>
   );
 }

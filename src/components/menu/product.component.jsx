@@ -3,10 +3,9 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckedInputComponent from "../checked_input.component";
+import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +38,7 @@ const ProductComponent = ({
   progress,
   modifier_types,
   categories,
+  suppressNonProductInstanceFields,
   displayName,
   setDisplayName,
   description,
@@ -47,8 +47,8 @@ const ProductComponent = ({
   setShortcode,
   price,
   setPrice,
-  enabled,
-  setEnabled,
+  disabled,
+  setDisabled,
   ordinal,
   setOrdinal,
   revelID,
@@ -74,6 +74,7 @@ const ProductComponent = ({
       </Grid>
     );
 
+   
   return (
     <div className={classes.root}>
       <Grid container spacing={3} justify="center">
@@ -97,23 +98,35 @@ const ProductComponent = ({
           <TextField
             label="Display Name"
             type="text"
-            inputProps={{ size: 40 }}
+            inputProps={{ size: 60 }}
             value={displayName}
             size="small"
             onChange={(e) => setDisplayName(e.target.value)}
           />
         </Grid>
         <Grid item xs={6}>
+        {suppressNonProductInstanceFields ? "" :
           <TextField
             label="Description"
             type="text"
-            inputProps={{ size: 40 }}
+            inputProps={{ size: 60 }}
             value={description}
             size="small"
             onChange={(e) => setDescription(e.target.value)}
+          />}
+        </Grid>
+        <Grid container item xs={7}>
+        <Grid item xs={4}>
+          <CheckedInputComponent
+            label="Ordinal"
+            type="number"
+            value={ordinal}
+            inputProps={{ min: 0 }}
+            onFinishChanging={(e) => setOrdinal(e)}
           />
         </Grid>
-        <Grid item xs={4}>
+        {suppressNonProductInstanceFields ? "" :
+        (<><Grid item xs={4}>
           <TextField
             label="Short Code"
             type="text"
@@ -137,16 +150,6 @@ const ProductComponent = ({
             />
         </Grid>
         <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Ordinal"
-            type="number"
-            fullWidth
-            value={ordinal}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setOrdinal(e)}
-          />
-        </Grid>
-        <Grid item xs={4}>
           <TextField
             label="Revel ID"
             type="text"
@@ -165,19 +168,15 @@ const ProductComponent = ({
             size="small"
             onChange={(e) => setSquareID(e.target.value)}
           />
+        </Grid></>) }
         </Grid>
-        <Grid item xs={4}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={enabled}
-                onChange={(e) => setEnabled(e.target.checked)}
-                name="Enabled"
-              />
-            }
-            label="Enabled"
+        {suppressNonProductInstanceFields ? "" :
+        <Grid item xs={5}>
+          <DatetimeBasedDisableComponent
+            disabled={disabled}
+            setDisabled={setDisabled}
           />
-        </Grid>
+        </Grid> }
         <Grid item xs={12}>
           <Autocomplete
             multiple

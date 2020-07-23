@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 import InterstitialDialog from '../interstitial.dialog.component'
 import DialogContainer from '../dialog.container';
@@ -12,6 +12,7 @@ import ModifierOptionAddContainer from "./modifier_option.add.container";
 import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierOptionDeleteContainer from "./modifier_option.delete.container";
 import ProductAddContainer from "./product.add.container";
+//import ProductImportContainer from "./product.import.container";
 import ProductEditContainer from "./product.edit.container";
 import ProductDeleteContainer from "./product.delete.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
@@ -89,6 +90,10 @@ const MenuBuilderComponent = ({
 
   const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
   const [productInstanceToEdit, setProductInstanceToEdit] = useState(null);
+
+  const orphanedProducts = useMemo(() => Object.values(catalog.products).filter((x) =>
+    x.product.category_ids.filter(x => x && x.length > 0).length === 0), [catalog.products]);
+
   console.log(catalog);
   return (
     <div className={classes.root}>
@@ -226,7 +231,7 @@ const MenuBuilderComponent = ({
       />          
       <DialogContainer 
         maxWidth={"xl"}
-        title={`Add Product Instance for: ${productToEdit ? productToEdit.item.display_name : ""}`}
+        title={`Add Product Instance for: ${productToEdit ? productToEdit.item?.display_name : ""}`}
         onClose={() => {
           setIsProductInstanceAddOpen(false);
         }} 
@@ -290,7 +295,7 @@ const MenuBuilderComponent = ({
                 cb: () => setIsProductAddOpen(true), 
                 open: isProductAddOpen,
                 onClose: () => setIsProductAddOpen(false),
-                component: (<ProductAddContainer 
+                component: (<ProductAddContainer
                   ENDPOINT={ENDPOINT} 
                   onCloseCallback={() => {setIsProductAddOpen(false);}} 
                   categories={catalog.categories} 
@@ -316,11 +321,11 @@ const MenuBuilderComponent = ({
             setProductInstanceToEdit={setProductInstanceToEdit}
           />
         </Grid>
+        {orphanedProducts.length > 0 ? 
         <Grid item xs={12}>
           <ProductTableContainer
             title="Orphan Products"
-            products={Object.values(catalog.products).filter((x) =>
-              x.product.category_ids.filter(x => x && x.length > 0).length === 0)}
+            products={orphanedProducts}
             catalog={catalog}
             setProductToEdit={setProductToEdit}            
             setIsProductEditOpen={setIsProductEditOpen}
@@ -330,7 +335,8 @@ const MenuBuilderComponent = ({
             setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen} 
             setProductInstanceToEdit={setProductInstanceToEdit}
           />
-        </Grid>
+        </Grid> : ""
+        }
         <Grid item xs={12}>
           <ModifierTypeTableContainer
             modifier_types_map={catalog.modifiers}            

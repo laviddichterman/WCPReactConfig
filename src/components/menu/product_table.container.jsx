@@ -1,4 +1,5 @@
 import React from "react";
+import moment from 'moment';
 
 import TableWrapperComponent from "../table_wrapper.component";
 import { AddBox, DeleteOutline, Edit } from "@material-ui/icons";
@@ -26,7 +27,7 @@ const ProductTableContainer = ({
         rowStyle: {
           padding: 0,
         },
-        toolbar: false,
+        toolbar: tableTitle && tableTitle.length > 0,
         paging: false,
       }}
       actions={[
@@ -57,13 +58,7 @@ const ProductTableContainer = ({
       ]}
       columns={[
         { title: "Name", field: "product.item.display_name" },
-        { title: "Price", field: "product.item.price.amount" },
-        { title: "Shortcode", field: "product.item.shortcode" },
-        { title: "Description", field: "product.item.description" },
         { title: "Ordinal", field: "product.ordinal", defaultSort: "asc" },
-        { title: "EXID: Revel", field: "product.item.externalIDs.revelID" },
-        { title: "EXID: Square", field: "product.item.externalIDs.squareID" },
-        { title: "Disabled", field: "product.item.disabled" },
       ]}
       data={products}
       onRowClick={(event, rowData, togglePanel) => togglePanel()}
@@ -104,13 +99,11 @@ const ProductTableContainer = ({
               ]}
               columns={[
                 { title: "Name", field: "item.display_name" },
-                { title: "Price", field: "item.price.amount" },
+                { title: "Price", field: "item.price.amount", render: rowData => `$${Number(rowData.item.price.amount / 100).toFixed(2)}` },
                 { title: "Shortcode", field: "item.shortcode" },
                 { title: "Description", field: "item.description" },
                 { title: "Ordinal", field: "ordinal", defaultSort: "asc" },
-                { title: "EXID: Revel", field: "item.externalIDs.revelID" },
-                { title: "EXID: Square", field:  "item.externalIDs.squareID" },
-                { title: "Disabled", field: "item.disabled" },
+                { title: "Disabled", field: "item.disabled", render: rowData => rowData.item.disabled ? (rowData.item.disabled.start > rowData.item.disabled.end ? "True" : `${moment(rowData.item.disabled.start).format("MMMM DD, Y hh:mm A")} to  ${moment(rowData.item.disabled.end).format("MMMM DD, Y hh:mm A")}`) : "False" },
               ]}
               data={catalog.products[rowData.product._id].instances}
                />) : ""

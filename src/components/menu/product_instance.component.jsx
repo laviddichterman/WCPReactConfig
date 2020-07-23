@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import Switch from "@material-ui/core/Switch";
 
 import CheckedInputComponent from "../checked_input.component";
+import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 
 // related to modifiers
 import Card from "@material-ui/core/Card";
@@ -57,8 +58,8 @@ const ProductInstanceComponent = ({
   setShortcode,
   price,
   setPrice,
-  enabled,
-  setEnabled,
+  disabled,
+  setDisabled,
   ordinal,
   setOrdinal,
   revelID,
@@ -140,7 +141,7 @@ const ProductInstanceComponent = ({
                 key={oidx}
                 control={<Radio disableRipple />}
                 value={oidx}
-                label={mt_options[oidx].catalog_item.display_name}
+                label={mt_options[oidx].item.display_name}
               />
             );
           })}
@@ -163,7 +164,7 @@ const ProductInstanceComponent = ({
                     inputProps={{ "aria-labelledby": oidx }}
                   />
                 }
-                label={mt_options[oidx].catalog_item.display_name}
+                label={mt_options[oidx].item.display_name}
               />
             );
           })}
@@ -201,74 +202,68 @@ const ProductInstanceComponent = ({
           <TextField
             label="Description"
             type="text"
+            fullWidth
             inputProps={{ size: 60 }}
             value={description}
             size="small"
             onChange={(e) => setDescription(e.target.value)}
           />
         </Grid>
-        <Grid item xs={2}>
-          <TextField
-            label="Short Code"
-            type="text"
-            inputProps={{ size: 40 }}
-            value={shortcode}
-            size="small"
-            onChange={(e) => setShortcode(e.target.value)}
-          />
+        <Grid item xs={7} container>
+          <Grid item xs={4}>
+            <CheckedInputComponent
+              label="Ordinal"
+              type="number"
+              value={ordinal}
+              inputProps={{ min: 0 }}
+              onFinishChanging={(e) => setOrdinal(e)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Short Code"
+              type="text"
+              value={shortcode}
+              size="small"
+              onChange={(e) => setShortcode(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <CheckedInputComponent
+              label="Price"
+              className="form-control"
+              type="number"
+              parseFunction={(e) => parseFloat(e).toFixed(2)}
+              value={price}
+              inputProps={{ min: 0, size: 40 }}
+              onFinishChanging={(e) => setPrice(e)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Revel ID"
+              type="text"
+              value={revelID}
+              inputProps={{ size: 50 }}
+              size="small"
+              onChange={(e) => setRevelID(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Square ID"
+              type="text"
+              value={squareID}
+              inputProps={{ size: 50 }}
+              size="small"
+              onChange={(e) => setSquareID(e.target.value)}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={2}>
-          <CheckedInputComponent
-            label="Price"
-            className="form-control"
-            type="number"
-            fullWidth
-            parseFunction={(e) => parseFloat(e).toFixed(2)}
-            value={price}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setPrice(e)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Ordinal"
-            type="number"
-            fullWidth
-            value={ordinal}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setOrdinal(e)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={enabled}
-                onChange={(e) => setEnabled(e.target.checked)}
-                name="Enabled"
-              />
-            }
-            label="Enabled"
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Revel ID"
-            type="text"
-            inputProps={{ size: 20 }}
-            value={revelID}
-            size="small"
-            onChange={(e) => setRevelID(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Square ID"
-            type="text"
-            inputProps={{ size: 20 }}
-            value={squareID}
-            size="small"
-            onChange={(e) => setSquareID(e.target.value)}
+        <Grid item xs={5}>
+          <DatetimeBasedDisableComponent
+            disabled={disabled}
+            setDisabled={setDisabled}
           />
         </Grid>
         {modifier_html}
@@ -336,8 +331,8 @@ const ProductInstanceContainer = ({
   setShortcode,
   price,
   setPrice,
-  enabled,
-  setEnabled,
+  disabled,
+  setDisabled,
   ordinal,
   setOrdinal,
   revelID,
@@ -371,8 +366,8 @@ const ProductInstanceContainer = ({
       setShortcode={setShortcode}
       price={price}
       setPrice={setPrice}
-      enabled={enabled}
-      setEnabled={setEnabled}
+      disabled={disabled}
+      setDisabled={setDisabled}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       revelID={revelID}

@@ -31,6 +31,7 @@ function InterstitialDialog(props) {
     <>
       {options.map((option) => (
         <DialogContainer 
+          maxWidth={"xl"}
           key={option.title} 
           title={option.title}
           onClose={option.onClose} 

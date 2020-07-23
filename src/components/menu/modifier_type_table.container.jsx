@@ -23,8 +23,6 @@ const ModifierTypeTableContainer = ({
         { title: "Ordinal", field: "modifier_type.ordinal", defaultSort: "asc" },
         { title: "Min Selected", field: "modifier_type.min_selected" },
         { title: "Max Selected", field: "modifier_type.max_selected" },
-        { title: "EXID: Revel", field: "modifier_type.externalIDs.revelID" },
-        { title: "EXID: Square", field: "modifier_type.externalIDs.squareID" },
       ]}
       options={{
         detailPanelType: "single",

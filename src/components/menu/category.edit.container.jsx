@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Button from "@material-ui/core/Button";
 import CategoryComponent from "./category.component";
-import { useAuth0 } from "../../react-auth0-spa";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback }) => {
   const [description, setDescription] = useState(category.description);
@@ -11,7 +11,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
   const [ordinal, setOrdinal] = useState(category.ordinal || 0);
   const [parent, setParent] = useState(category.parent_id ? categories[category.parent_id] : null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
   const editCategory = async (e) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
       console.log(parent);
       setIsProcessing(true);
       try {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/menu/category/${category._id}`, {
           method: "PATCH",
           headers: {

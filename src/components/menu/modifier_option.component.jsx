@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import CheckedInputComponent from "../checked_input.component";
+import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,8 +55,8 @@ const ModifierOptionComponent = ({
   setBakeFactor,
   canSplit,
   setCanSplit,
-  enabled,
-  setEnabled,
+  disabled,
+  setDisabled,
   revelID,
   setRevelID,
   squareID,
@@ -161,12 +162,10 @@ const ModifierOptionComponent = ({
             onChange={(e) => setEnableFunctionName(e.target.value)}
           />
         </Grid>
-        <Grid item xs={3}>
-          <FormControlLabel
-            control={
-              <Switch checked={enabled} onChange={e => setEnabled(e.target.checked)} name="Enabled" />
-            }
-            label="Enabled"
+        <Grid item xs={5}>
+          <DatetimeBasedDisableComponent
+            disabled={disabled}
+            setDisabled={setDisabled}
           />
         </Grid>
         <Grid item xs={3}>

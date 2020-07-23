@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import ModifierOptionComponent from "./modifier_option.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { useAuth0 } from "../../react-auth0-spa";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState("");
@@ -15,18 +15,18 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
   const [canSplit, setCanSplit] = useState(true);
-  const [enabled, setEnabled] = useState(true);
+  const [disabled, setDisabled] = useState(null);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
   const addModifierOption = async (e) => {
     e.preventDefault();
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${parent._id}/`, {
           method: "POST",
           headers: {
@@ -37,7 +37,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
             display_name: displayName,
             description: description,
             shortcode: shortcode,
-            disabled: !enabled,
+            disabled: disabled,
             price: { amount: price * 100, currency: "USD" },
             ordinal: ordinal,
             enable_function_name: enableFunctionName,
@@ -58,7 +58,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
           setFlavorFactor(0);
           setBakeFactor(0);
           setCanSplit(true);
-          setEnabled(true);
+          setDisabled(null);
           setRevelID("");
           setSquareID("");  
           onCloseCallback();
@@ -107,8 +107,8 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
       setBakeFactor={setBakeFactor}
       canSplit={canSplit}
       setCanSplit={setCanSplit}
-      enabled={enabled}
-      setEnabled={setEnabled}
+      disabled={disabled}
+      setDisabled={setDisabled}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID}
