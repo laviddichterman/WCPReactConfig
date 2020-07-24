@@ -97,7 +97,7 @@ const ModifierTypeComponent = ({
             <TextField
               label="Revel ID"
               type="text"
-              inputProps={{ size: 20 }}
+              inputProps={{ size: 40 }}
               value={revelID}
               size="small"
               onChange={(e) => setRevelID(e.target.value)}
@@ -107,7 +107,7 @@ const ModifierTypeComponent = ({
             <TextField
               label="Square ID"
               type="text"
-              inputProps={{ size: 20 }}
+              inputProps={{ size: 40 }}
               value={squareID}
               size="small"
               onChange={(e) => setSquareID(e.target.value)}

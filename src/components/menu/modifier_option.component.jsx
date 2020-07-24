@@ -100,7 +100,8 @@ const ModifierOptionComponent = ({
             onChange={(e) => setDescription(e.target.value)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid container item xs={7}>
+        <Grid item xs={5}>
           <TextField
             label="Short Code"
             type="text"
@@ -110,7 +111,8 @@ const ModifierOptionComponent = ({
             onChange={(e) => setShortcode(e.target.value)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={2} />
+        <Grid item xs={5}>
           <CheckedInputComponent
               label="Price"
               fullWidth={false}
@@ -123,7 +125,7 @@ const ModifierOptionComponent = ({
               onFinishChanging={(e) => setPrice(e)}
             />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <CheckedInputComponent
             label="Ordinal"
             type="number"
@@ -132,17 +134,19 @@ const ModifierOptionComponent = ({
             onFinishChanging={(e) => setOrdinal(e)}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={1} />
+        <Grid item xs={3}>
           <CheckedInputComponent
             label="Flavor Factor"
             type="number"
-            value={flavorFactor}
             fullWidth
+            value={flavorFactor}
             inputProps={{ min: 0, max: 63 }}
             onFinishChanging={(e) => setFlavorFactor(e)}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={1} />
+        <Grid item xs={3}>
           <CheckedInputComponent
             label="Bake Factor"
             type="number"
@@ -150,6 +154,13 @@ const ModifierOptionComponent = ({
             value={bakeFactor}
             inputProps={{ min: 0, max: 63 }}
             onFinishChanging={(e) => setBakeFactor(e)}
+          />
+        </Grid>
+        </Grid>
+        <Grid item xs={5}>
+          <DatetimeBasedDisableComponent
+            disabled={disabled}
+            setDisabled={setDisabled}
           />
         </Grid>
         <Grid item xs={6}>
@@ -162,13 +173,7 @@ const ModifierOptionComponent = ({
             onChange={(e) => setEnableFunctionName(e.target.value)}
           />
         </Grid>
-        <Grid item xs={5}>
-          <DatetimeBasedDisableComponent
-            disabled={disabled}
-            setDisabled={setDisabled}
-          />
-        </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={6}>
           <FormControlLabel
             control={
               <Switch
@@ -184,7 +189,7 @@ const ModifierOptionComponent = ({
           <TextField
             label="Revel ID"
             type="text"
-            inputProps={{ size: 20 }}
+            inputProps={{ size: 40 }}
             value={revelID}
             size="small"
             onChange={(e) => setRevelID(e.target.value)}
@@ -194,7 +199,7 @@ const ModifierOptionComponent = ({
           <TextField
             label="Square ID"
             type="text"
-            inputProps={{ size: 20 }}
+            inputProps={{ size: 40 }}
             value={squareID}
             size="small"
             onChange={(e) => setSquareID(e.target.value)}

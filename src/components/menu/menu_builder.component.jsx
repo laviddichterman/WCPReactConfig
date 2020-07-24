@@ -175,6 +175,7 @@ const MenuBuilderComponent = ({
         } 
       />           
       <DialogContainer 
+        maxWidth={"xl"}
         title={"Edit Modifier Option"}
         onClose={() => {
           setIsModifierOptionEditOpen(false);
