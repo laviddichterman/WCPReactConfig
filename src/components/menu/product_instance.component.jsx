@@ -68,6 +68,10 @@ const ProductInstanceComponent = ({
   setSquareID,
   modifiers,
   setModifiers,
+  isBase,
+  setIsBase,
+  skipCustomization,
+  setSkipCustomization
 }) => {
   const classes = useStyles();
   const actions_html =
@@ -240,6 +244,35 @@ const ProductInstanceComponent = ({
             />
           </Grid>
           <Grid item xs={6}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isBase}
+                  onChange={(e) =>
+                    setIsBase(e.target.checked)
+                  }
+                  name="Is Base"
+                />
+              }
+              label="Is Base"
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={skipCustomization}
+                  onChange={(e) =>
+                    setSkipCustomization(e.target.checked)
+                  }
+                  name="Skip Customization"
+                />
+              }
+              label="Skip Customization"
+            />
+          </Grid>
+
+          <Grid item xs={6}>
             <TextField
               label="Revel ID"
               type="text"
@@ -341,6 +374,10 @@ const ProductInstanceContainer = ({
   setSquareID,
   modifiers,
   setModifiers,
+  isBase,
+  setIsBase,
+  skipCustomization,
+  setSkipCustomization
 }) => {
   console.log(modifiers);
   const [normalizedModifers, setNormalizedModifiers] = useState(
@@ -376,6 +413,10 @@ const ProductInstanceContainer = ({
       setSquareID={setSquareID}
       modifiers={normalizedModifers}
       setModifiers={setNormalizedModifiersIntermediate}
+      isBase={isBase}
+      setIsBase={setIsBase}
+      skipCustomization={skipCustomization}
+      setSkipCustomization={setSkipCustomization}
     />
   );
 };

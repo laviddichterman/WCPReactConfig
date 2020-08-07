@@ -11,6 +11,9 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
   const [maxSelected, setMaxSelected] = useState(modifier_type.max_selected || "");
   const [revelID, setRevelID] = useState(modifier_type.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(modifier_type.externalIDs?.squareID ?? "");
+  const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(modifier_type.display_flags?.omit_options_if_not_available ?? false);
+  const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(modifier_type.display_flags?.omit_section_if_no_available_options ?? false);
+  const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(modifier_type.display_flags?.use_toggle_if_only_two_options ?? false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -34,6 +37,11 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
             max_selected: maxSelected || null,
             revelID: revelID,
             squareID: squareID,
+            display_flags: {
+              omit_options_if_not_available: omitOptionIfNotAvailable,
+              omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,
+              use_toggle_if_only_two_options: (useToggleIfOnlyTwoOptions && minSelected === 1 && maxSelected === 1),
+            }
           }),
         });
         if (response.status === 200) {
@@ -58,7 +66,7 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
         <Button
           className="btn btn-light"
           onClick={editModifierType}
-          disabled={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || isProcessing}
+          disabled={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || (useToggleIfOnlyTwoOptions && (maxSelected!==1 && minSelected !== 1)) || isProcessing}
         >
           Save
         </Button>
@@ -75,6 +83,12 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
       setRevelID={setRevelID}
       squareID={squareID} 
       setSquareID={setSquareID}
+      omitOptionIfNotAvailable={omitOptionIfNotAvailable}
+      setOmitOptionIfNotAvailable={setOmitOptionIfNotAvailable}
+      omitSectionIfNoAvailableOptions={omitSectionIfNoAvailableOptions}
+      setOmitSectionIfNoAvailableOptions={setOmitSectionIfNoAvailableOptions}
+      useToggleIfOnlyTwoOptions={useToggleIfOnlyTwoOptions}
+      setUseToggleIfOnlyTwoOptions={setUseToggleIfOnlyTwoOptions}
     />
   );
 };

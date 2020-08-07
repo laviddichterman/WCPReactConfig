@@ -15,7 +15,8 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
   const [revelID, setRevelID] = useState(product_instance.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(product_instance.item?.externalIDs?.squareID ?? "");
   const [modifiers, setModifiers] = useState(product_instance.modifiers);
-
+  const [isBase, setIsBase] = useState(product_instance.is_base ?? false);
+  const [skipCustomization, setSkipCustomization] = useState(product_instance.display_flags?.skip_customization ?? false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -41,7 +42,11 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,
-            modifiers: modifiers
+            modifiers: modifiers,
+            is_base: isBase,
+            display_flags: {
+              skip_customization: skipCustomization
+            }
           }),
         });
         if (response.status === 200) {
@@ -92,7 +97,11 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
       squareID={squareID}
       setSquareID={setSquareID}
       modifiers={modifiers}
-      setModifiers={setModifiers} 
+      setModifiers={setModifiers}
+      isBase={isBase}
+      setIsBase={setIsBase}
+      skipCustomization={skipCustomization}
+      setSkipCustomization={setSkipCustomization}
     />
   );
 };

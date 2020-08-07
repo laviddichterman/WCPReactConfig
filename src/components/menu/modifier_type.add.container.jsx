@@ -11,6 +11,9 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [maxSelected, setMaxSelected] = useState("");
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
+  const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(false);
+  const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(true);
+  const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -81,6 +84,12 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
       setRevelID={setRevelID}
       squareID={squareID} 
       setSquareID={setSquareID}
+      omitOptionIfNotAvailable={omitOptionIfNotAvailable}
+      setOmitOptionIfNotAvailable={setOmitOptionIfNotAvailable}
+      omitSectionIfNoAvailableOptions={omitSectionIfNoAvailableOptions}
+      setOmitSectionIfNoAvailableOptions={setOmitSectionIfNoAvailableOptions}
+      useToggleIfOnlyTwoOptions={useToggleIfOnlyTwoOptions}
+      setUseToggleIfOnlyTwoOptions={setUseToggleIfOnlyTwoOptions}
     />
   );
 };

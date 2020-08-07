@@ -15,6 +15,8 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [modifiers, setModifiers] = useState([]);
+  const [isBase, setIsBase] = useState(false);
+  const [skipCustomization, setSkipCustomization] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const addProductInstance = async (e) => {
@@ -38,7 +40,11 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,
-            modifiers: modifiers
+            modifiers: modifiers,
+            is_base: isBase,
+            display_flags: {
+              skip_customization: skipCustomization
+            }
           }),
         });
         if (response.status === 201) {
@@ -99,6 +105,10 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       setSquareID={setSquareID}
       modifiers={modifiers}
       setModifiers={setModifiers}
+      isBase={isBase}
+      setIsBase={setIsBase}
+      skipCustomization={skipCustomization}
+      setSkipCustomization={setSkipCustomization}
     />
   );
 };
