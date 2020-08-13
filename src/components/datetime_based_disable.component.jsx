@@ -24,13 +24,12 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
   const toggleEnabled = () => {
     if (enabled) {
       setEnabled(false);
-      setDisabled({ start: disabledStart.valueOf(), end: disabledEnd.valueOf() });
+      setDisabled(isDatetimeBased ? { start: disabledStart.valueOf(), end: disabledEnd.valueOf() } : { start: 1, end: 0 });
     }
     else {
       setEnabled(true);
       setDisabled(null);
     }
-    console.log(disabled);
   }
   const toggleIsDatetimeBased = () => {
     if (isDatetimeBased) {
