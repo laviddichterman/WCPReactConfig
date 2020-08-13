@@ -3,6 +3,8 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckedInputComponent from "../checked_input.component";
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
@@ -55,6 +57,14 @@ const ProductComponent = ({
   setRevelID,
   squareID,
   setSquareID,
+  flavorMax,
+  setFlavorMax,
+  bakeMax,
+  setBakeMax,
+  bakeDifferentialMax,
+  setBakeDifferentialMax,
+  showNameOfBaseProduct,
+  setShowNameOfBaseProduct,
   parentCategories,
   setParentCategories,
   modifiers,
@@ -104,8 +114,8 @@ const ProductComponent = ({
             onChange={(e) => setDisplayName(e.target.value)}
           />
         </Grid>
-        <Grid item xs={6}>
         {suppressNonProductInstanceFields ? "" :
+        <Grid item xs={6}>
           <TextField
             label="Description"
             type="text"
@@ -113,9 +123,11 @@ const ProductComponent = ({
             value={description}
             size="small"
             onChange={(e) => setDescription(e.target.value)}
-          />}
+          />
         </Grid>
-        <Grid container item xs={7}>
+        }
+
+        <Grid container item xs>
         <Grid item xs={4}>
           <CheckedInputComponent
             label="Ordinal"
@@ -149,6 +161,7 @@ const ProductComponent = ({
               onFinishChanging={(e) => setPrice(e)}
             />
         </Grid>
+        <>
         <Grid item xs={4}>
           <TextField
             label="Revel ID"
@@ -168,7 +181,9 @@ const ProductComponent = ({
             size="small"
             onChange={(e) => setSquareID(e.target.value)}
           />
-        </Grid></>) }
+        </Grid>
+        </>
+        </>) }
         </Grid>
         {suppressNonProductInstanceFields ? "" :
         <Grid item xs={5}>
@@ -177,6 +192,50 @@ const ProductComponent = ({
             setDisabled={setDisabled}
           />
         </Grid> }
+        <Grid item xs={3}>
+          <CheckedInputComponent
+            label="Flavor Max"
+            type="number"
+            value={flavorMax}
+            parseFunction={parseFloat}
+            inputProps={{ min: 0 }}
+            onFinishChanging={(e) => setFlavorMax(e)}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <CheckedInputComponent
+            label="Bake Max"
+            type="number"
+            value={bakeMax}
+            parseFunction={parseFloat}
+            inputProps={{ min: 0 }}
+            onFinishChanging={(e) => setBakeMax(e)}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <CheckedInputComponent
+            label="Bake Differential Max"
+            type="number"
+            value={bakeDifferentialMax}
+            parseFunction={parseFloat}
+            inputProps={{ min: 0 }}
+            onFinishChanging={(e) => setBakeDifferentialMax(e)}
+          />
+        </Grid>
+        <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showNameOfBaseProduct}
+                  onChange={(e) =>
+                    setShowNameOfBaseProduct(e.target.checked)
+                  }
+                  name="Show Name of Base Product Instead of Component Modifiers"
+                />
+              }
+              label="Show Name of Base Product Instead of Component Modifiers"
+            />
+          </Grid>
         <Grid item xs={12}>
           <Autocomplete
             multiple

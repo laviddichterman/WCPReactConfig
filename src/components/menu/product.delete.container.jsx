@@ -49,7 +49,7 @@ const ProductDeleteContainer = ({ ENDPOINT, product, onCloseCallback }) => {
         Confirm
       </Button>
       ]}
-      name={product.item.display_name}
+      name={product?.item?.display_name}
     />
   );
 };

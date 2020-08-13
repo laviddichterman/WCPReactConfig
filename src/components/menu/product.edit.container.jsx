@@ -14,6 +14,10 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
   const [ordinal, setOrdinal] = useState(product.ordinal || 0);
   const [revelID, setRevelID] = useState(product.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(product.item?.externalIDs?.squareID ?? "");
+  const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
+  const [bakeMax, setBakeMax] = useState(product.display_flags?.bake_max ?? 10);
+  const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.display_flags?.bake_differential ?? 100);
+  const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.display_flags?.show_name_of_base_product ?? true);
   const [parentCategories, setParentCategories] = useState(Object.values(categories).filter(x => product.category_ids.includes(x.category._id.toString())));
   const [modifiers, setModifiers] = useState(product.modifiers.filter(x=>x).map((v, i) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v)));
 
@@ -41,6 +45,12 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
             price: { amount: price  * 100, currency: "USD" },
             revelID: revelID,
             squareID: squareID,
+            display_flags: {
+              bake_differential: bakeDifferentialMax,
+              show_name_of_base_product: showNameOfBaseProduct,
+              flavor_max: flavorMax,
+              bake_max: bakeMax
+            },
             category_ids: parentCategories.map(x => x.category._id),
             modifiers: modifiers.map(x => x.modifier_type._id)
           }),
@@ -92,6 +102,14 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
       setRevelID={setRevelID}
       squareID={squareID}
       setSquareID={setSquareID}
+      flavorMax={flavorMax}
+      setFlavorMax={setFlavorMax}
+      bakeMax={bakeMax}
+      setBakeMax={setBakeMax}
+      bakeDifferentialMax={bakeDifferentialMax}
+      setBakeDifferentialMax={setBakeDifferentialMax}
+      showNameOfBaseProduct={showNameOfBaseProduct}
+      setShowNameOfBaseProduct={setShowNameOfBaseProduct}
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
       modifiers={modifiers}

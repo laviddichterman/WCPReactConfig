@@ -141,6 +141,7 @@ const ModifierOptionComponent = ({
             type="number"
             fullWidth
             value={flavorFactor}
+            parseFunction={parseFloat}
             inputProps={{ min: 0, max: 63 }}
             onFinishChanging={(e) => setFlavorFactor(e)}
           />
@@ -152,6 +153,7 @@ const ModifierOptionComponent = ({
             type="number"
             fullWidth
             value={bakeFactor}
+            parseFunction={parseFloat}
             inputProps={{ min: 0, max: 63 }}
             onFinishChanging={(e) => setBakeFactor(e)}
           />
