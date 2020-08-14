@@ -36,7 +36,7 @@ const LeadTimesComp = ({
   onSubmit
 }) => {
   const classes = useStyles();
-  const leadtime_html = leadtimes.map((x, i) => {
+  const leadtime_html = leadtimes ? leadtimes.map((x, i) => {
     return (
       <Grid item xs={4} key={i}>
         <CheckedInputComponent
@@ -49,7 +49,7 @@ const LeadTimesComp = ({
           />
       </Grid>
     );
-  });
+  }) : "";
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>

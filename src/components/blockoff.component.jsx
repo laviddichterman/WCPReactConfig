@@ -168,7 +168,7 @@ const BlockOffComp = ({
       </Grid>
     );
   });
-  const blocked_off_html = blocked_off.map((service, i) => {
+  const blocked_off_html = blocked_off ? blocked_off.map((service, i) => {
     const blocked_off_days_html = blocked_off[i].map((blocked_off_for_day, j) => {
       const blocked_off_intervals_html = blocked_off[i][j][1].map((interval, k) => {
         const from_to = blocked_off[i][j][1][k][0] === blocked_off[i][j][1][k][1] ? WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][0]) : `${WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][0])} to ${WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][1])}`;
@@ -206,7 +206,7 @@ const BlockOffComp = ({
           </Paper>
       </Grid>
     );
-  })
+  }) : "";
   const start_options = selected_date ?
     TrimOptionsBeforeCurrentDayAndTime(
       WDateUtils.GetOptionsForDate(blocked_off,
