@@ -49,7 +49,7 @@ const ModifierOptionDeleteContainer = ({ ENDPOINT, modifier_option, onCloseCallb
         Confirm
       </Button>
       ]}
-      name={modifier_option.catalog_item.display_name}
+      name={modifier_option.item.display_name}
     />
   );
 };
