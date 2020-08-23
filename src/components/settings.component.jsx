@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
 
-const WDateUtils = require("@wcp/wcpshared");
+import { WDateUtils } from "@wcp/wcpshared";
 
 const useStyles = makeStyles(theme => ({
   root: {

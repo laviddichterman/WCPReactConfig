@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import { WDateUtils } from "@wcp/wcpshared";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import PACKAGE_JSON from "../package.json";
 import socketIOClient from "socket.io-client";
@@ -65,7 +67,6 @@ const theme = createMuiTheme({
   //   type: 'dark',
   // },
 });
-const WDateUtils = require("@wcp/wcpshared");
 
 //const ENDPOINT = "https://wario.windycitypie.com";
 //const ENDPOINT = "https://wario.breezytownpizza.com";
@@ -103,18 +104,6 @@ const App = () => {
     orphan_products: [],
     version: "NONE"
   });
-
-  // const setCatalogIfNewVersion = useCallback(
-  //   (newCatalog) => {
-  //     if (CATALOG.version !== newCatalog.version) {
-  //       return setCATALOG(newCatalog);
-  //     }
-  //     else {
-  //       console.log("ignoring same version");
-  //     }
-  // },
-  //   [CATALOG.version]
-  // )
 
   useEffect(() => {
     let token;

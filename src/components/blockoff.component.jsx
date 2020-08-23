@@ -23,7 +23,7 @@ import Container from '@material-ui/core/Container';
 import { ListItemText } from "@material-ui/core";
 
 
-const WDateUtils = require("@wcp/wcpshared");
+import { WDateUtils } from "@wcp/wcpshared";
 
 
 const TrimOptionsBeforeDisabled = (opts) => {
