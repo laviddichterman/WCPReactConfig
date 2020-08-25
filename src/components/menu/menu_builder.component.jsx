@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 
-import InterstitialDialog from '../interstitial.dialog.component'
-import DialogContainer from '../dialog.container';
+import InterstitialDialog from "../interstitial.dialog.component";
+import DialogContainer from "../dialog.container";
 import CategoryAddContainer from "./category.add.container";
 import CategoryEditContainer from "./category.edit.container";
 import CategoryDeleteContainer from "./category.delete.container";
@@ -18,9 +18,13 @@ import ProductDeleteContainer from "./product.delete.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
 import ProductInstanceEditContainer from "./product_instance.edit.container";
 import ProductInstanceDeleteContainer from "./product_instance.delete.container";
+import ProductInstanceFunctionAddContainer from "./product_instance_function.add.container";
+import ProductInstanceFunctionEditContainer from "./product_instance_function.edit.container";
+import ProductInstanceFunctionDeleteContainer from "./product_instance_function.delete.container";
 import CategoryTableContainer from "./category_table.container";
 import ModifierTypeTableContainer from "./modifier_type_table.container";
 import ProductTableContainer from "./product_table.container";
+import ProductInstanceFunctionTableContainer from "./product_instance_function_table.container";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -56,23 +60,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MenuBuilderComponent = ({
-  ENDPOINT,
-  catalog
-}) => {
+const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
   const classes = useStyles();
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
   const [isModifierOptionAddOpen, setIsModifierOptionAddOpen] = useState(false);
 
   const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
   const [modifierTypeToEdit, setModifierTypeToEdit] = useState(null);
-  
+
   const [isModifierOptionDeleteOpen, setIsModifierOptionDeleteOpen] = useState(false);
   const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
 
   const [isModifierOptionEditOpen, setIsModifierOptionEditOpen] = useState(false);
   const [modifierOptionToEdit, setModifierOptionToEdit] = useState(null);
-  
+
   const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
   const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
   const [isProductAddOpen, setIsProductAddOpen] = useState(false);
@@ -91,217 +92,334 @@ const MenuBuilderComponent = ({
   const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
   const [productInstanceToEdit, setProductInstanceToEdit] = useState(null);
 
-  const orphanedProducts = useMemo(() => Object.values(catalog.products).filter((x) =>
-    x.product.category_ids.filter(x => x && x.length > 0).length === 0), [catalog.products]);
+  const [isProductInstanceFunctionAddOpen, setIsProductInstanceFunctionAddOpen] = useState(false);
+  const [isProductInstanceFunctionDeleteOpen, setIsProductInstanceFunctionDeleteOpen] = useState(false);
+  const [isProductInstanceFunctionEditOpen, setIsProductInstanceFunctionEditOpen] = useState(false);
+  const [productInstanceFunctionToEdit, setProductInstanceFunctionToEdit] = useState(null);
+
+  const orphanedProducts = useMemo(
+    () =>
+      Object.values(catalog.products).filter(
+        (x) =>
+          x.product.category_ids.filter((x) => x && x.length > 0).length === 0
+      ),
+    [catalog.products]
+  );
 
   console.log(catalog);
   return (
     <div className={classes.root}>
-      <DialogContainer 
+      <DialogContainer
         title={"Edit Category"}
         onClose={() => {
           setIsCategoryEditOpen(false);
-        }} 
-        isOpen={isCategoryEditOpen} 
+        }}
+        isOpen={isCategoryEditOpen}
         inner_component={
-          <CategoryEditContainer 
-            onCloseCallback={() => {setIsCategoryEditOpen(false);}}
+          <CategoryEditContainer
+            onCloseCallback={() => {
+              setIsCategoryEditOpen(false);
+            }}
             categories={catalog.categories}
             ENDPOINT={ENDPOINT}
             category={categoryToEdit}
           />
-        } 
+        }
       />
-      <DialogContainer 
+      <DialogContainer
         title={"Delete Category"}
-        onClose={() => {setIsCategoryDeleteOpen(false);}} 
-        isOpen={isCategoryDeleteOpen} 
+        onClose={() => {
+          setIsCategoryDeleteOpen(false);
+        }}
+        isOpen={isCategoryDeleteOpen}
         inner_component={
-          <CategoryDeleteContainer 
-            onCloseCallback={() => {setIsCategoryDeleteOpen(false);}}   
+          <CategoryDeleteContainer
+            onCloseCallback={() => {
+              setIsCategoryDeleteOpen(false);
+            }}
             ENDPOINT={ENDPOINT}
             category={categoryToEdit}
           />
-        } 
+        }
       />
-      <DialogContainer 
+      <DialogContainer
         title={"Add Modifier Type"}
-        onClose={() => {setIsModifierTypeAddOpen(false);}} 
-        isOpen={isModifierTypeAddOpen} 
+        onClose={() => {
+          setIsModifierTypeAddOpen(false);
+        }}
+        isOpen={isModifierTypeAddOpen}
         inner_component={
-          <ModifierTypeAddContainer 
-            onCloseCallback={() => {setIsModifierTypeAddOpen(false);}} 
-            ENDPOINT={ENDPOINT} />
-        } 
-      />      
-      <DialogContainer 
+          <ModifierTypeAddContainer
+            onCloseCallback={() => {
+              setIsModifierTypeAddOpen(false);
+            }}
+            ENDPOINT={ENDPOINT}
+          />
+        }
+      />
+      <DialogContainer
         title={"Edit Modifier Type"}
         onClose={() => {
           setIsModifierTypeEditOpen(false);
-        }} 
-        isOpen={isModifierTypeEditOpen} 
+        }}
+        isOpen={isModifierTypeEditOpen}
         inner_component={
-          <ModifierTypeEditContainer 
-            onCloseCallback={() => {setIsModifierTypeEditOpen(false);}}
+          <ModifierTypeEditContainer
+            onCloseCallback={() => {
+              setIsModifierTypeEditOpen(false);
+            }}
             modifier_type={modifierTypeToEdit}
             ENDPOINT={ENDPOINT}
           />
-        } 
-      />   
-      <DialogContainer 
+        }
+      />
+      <DialogContainer
         title={"Delete Modifier Type"}
-        onClose={() => {setIsModifierTypeDeleteOpen(false);}} 
-        isOpen={isModifierTypeDeleteOpen} 
+        onClose={() => {
+          setIsModifierTypeDeleteOpen(false);
+        }}
+        isOpen={isModifierTypeDeleteOpen}
         inner_component={
-          <ModifierTypeDeleteContainer 
-            onCloseCallback={() => {setIsModifierTypeDeleteOpen(false);}}   
+          <ModifierTypeDeleteContainer
+            onCloseCallback={() => {
+              setIsModifierTypeDeleteOpen(false);
+            }}
             ENDPOINT={ENDPOINT}
             modifier_type={modifierTypeToEdit}
           />
-        } 
-      />      
-      <DialogContainer 
+        }
+      />
+      <DialogContainer
         maxWidth={"xl"}
-        title={`Add Modifier Option for Type: ${modifierTypeToEdit ? modifierTypeToEdit.name : ""}`}
+        title={`Add Modifier Option for Type: ${
+          modifierTypeToEdit ? modifierTypeToEdit.name : ""
+        }`}
         onClose={() => {
           setIsModifierOptionAddOpen(false);
-        }} 
-        isOpen={isModifierOptionAddOpen} 
+        }}
+        isOpen={isModifierOptionAddOpen}
         inner_component={
-          <ModifierOptionAddContainer 
-                  onCloseCallback={() => {setIsModifierOptionAddOpen(false);}} 
-                  ENDPOINT={ENDPOINT} 
-                  parent={modifierTypeToEdit} />
-        } 
-      />           
-      <DialogContainer 
+          <ModifierOptionAddContainer
+            onCloseCallback={() => {
+              setIsModifierOptionAddOpen(false);
+            }}
+            ENDPOINT={ENDPOINT}
+            parent={modifierTypeToEdit}
+          />
+        }
+      />
+      <DialogContainer
         maxWidth={"xl"}
         title={"Edit Modifier Option"}
         onClose={() => {
           setIsModifierOptionEditOpen(false);
-        }} 
-        isOpen={isModifierOptionEditOpen} 
+        }}
+        isOpen={isModifierOptionEditOpen}
         inner_component={
-          <ModifierOptionEditContainer 
-            onCloseCallback={() => {setIsModifierOptionEditOpen(false);}}
+          <ModifierOptionEditContainer
+            onCloseCallback={() => {
+              setIsModifierOptionEditOpen(false);
+            }}
             modifier_option={modifierOptionToEdit}
             modifier_types={catalog.modifiers}
             ENDPOINT={ENDPOINT}
           />
-        } 
+        }
       />
-      <DialogContainer 
+      <DialogContainer
         title={"Delete Modifier Option"}
-        onClose={() => {setIsModifierOptionDeleteOpen(false);}} 
-        isOpen={isModifierOptionDeleteOpen} 
+        onClose={() => {
+          setIsModifierOptionDeleteOpen(false);
+        }}
+        isOpen={isModifierOptionDeleteOpen}
         inner_component={
-          <ModifierOptionDeleteContainer 
-            onCloseCallback={() => {setIsModifierOptionDeleteOpen(false);}}   
+          <ModifierOptionDeleteContainer
+            onCloseCallback={() => {
+              setIsModifierOptionDeleteOpen(false);
+            }}
             ENDPOINT={ENDPOINT}
             modifier_option={modifierOptionToEdit}
           />
-        } 
-      />           
-      <DialogContainer 
+        }
+      />
+      <DialogContainer
         title={"Edit Product"}
         onClose={() => {
           setIsProductEditOpen(false);
-        }} 
-        isOpen={isProductEditOpen} 
+        }}
+        isOpen={isProductEditOpen}
         inner_component={
-          <ProductEditContainer 
-            onCloseCallback={() => {setIsProductEditOpen(false);}}
-            categories={catalog.categories} 
+          <ProductEditContainer
+            onCloseCallback={() => {
+              setIsProductEditOpen(false);
+            }}
+            categories={catalog.categories}
             modifier_types={catalog.modifiers}
             product={productToEdit}
             ENDPOINT={ENDPOINT}
           />
-        } 
-      />   
-      <DialogContainer 
+        }
+      />
+      <DialogContainer
         title={"Delete Product"}
-        onClose={() => {setIsProductDeleteOpen(false);}} 
-        isOpen={isProductDeleteOpen} 
+        onClose={() => {
+          setIsProductDeleteOpen(false);
+        }}
+        isOpen={isProductDeleteOpen}
         inner_component={
-          <ProductDeleteContainer 
-            onCloseCallback={() => {setIsProductDeleteOpen(false);}}   
+          <ProductDeleteContainer
+            onCloseCallback={() => {
+              setIsProductDeleteOpen(false);
+            }}
             ENDPOINT={ENDPOINT}
             product={productToEdit}
           />
-        } 
-      />          
-      <DialogContainer 
+        }
+      />
+      <DialogContainer
         maxWidth={"xl"}
-        title={`Add Product Instance for: ${productToEdit ? productToEdit.item?.display_name : ""}`}
+        title={`Add Product Instance for: ${
+          productToEdit ? productToEdit.item?.display_name : ""
+        }`}
         onClose={() => {
           setIsProductInstanceAddOpen(false);
-        }} 
-        isOpen={isProductInstanceAddOpen} 
+        }}
+        isOpen={isProductInstanceAddOpen}
         inner_component={
-          <ProductInstanceAddContainer 
-            onCloseCallback={() => {setIsProductInstanceAddOpen(false);}}
+          <ProductInstanceAddContainer
+            onCloseCallback={() => {
+              setIsProductInstanceAddOpen(false);
+            }}
             modifier_types_map={catalog.modifiers}
             parent_product={productToEdit}
             ENDPOINT={ENDPOINT}
           />
-        } 
-      />          
-      <DialogContainer 
+        }
+      />
+      <DialogContainer
         maxWidth={"xl"}
         title={"Edit Product Instance"}
         onClose={() => {
           setIsProductInstanceEditOpen(false);
-        }} 
-        isOpen={isProductInstanceEditOpen} 
+        }}
+        isOpen={isProductInstanceEditOpen}
         inner_component={
-          <ProductInstanceEditContainer 
-            onCloseCallback={() => {setIsProductInstanceEditOpen(false);}} 
+          <ProductInstanceEditContainer
+            onCloseCallback={() => {
+              setIsProductInstanceEditOpen(false);
+            }}
             modifier_types_map={catalog.modifiers}
             parent_product={productToEdit}
             product_instance={productInstanceToEdit}
             ENDPOINT={ENDPOINT}
           />
-        } 
-      />  
-      <DialogContainer 
+        }
+      />
+      <DialogContainer
         title={"Delete Product Instance"}
-        onClose={() => {setIsProductInstanceDeleteOpen(false);}} 
-        isOpen={isProductInstanceDeleteOpen} 
+        onClose={() => {
+          setIsProductInstanceDeleteOpen(false);
+        }}
+        isOpen={isProductInstanceDeleteOpen}
         inner_component={
-          <ProductInstanceDeleteContainer 
-            onCloseCallback={() => {setIsProductInstanceDeleteOpen(false);}}   
+          <ProductInstanceDeleteContainer
+            onCloseCallback={() => {
+              setIsProductInstanceDeleteOpen(false);
+            }}
             ENDPOINT={ENDPOINT}
             product_instance={productInstanceToEdit}
           />
-        } 
-      />                            
+        }
+      />
+      <DialogContainer
+        maxWidth={"xl"}
+        title={"Add Product Instance Function"}
+        onClose={() => {
+          setIsProductInstanceFunctionAddOpen(false);
+        }}
+        isOpen={isProductInstanceFunctionAddOpen}
+        inner_component={
+          <ProductInstanceFunctionAddContainer
+            onCloseCallback={() => {
+              setIsProductInstanceFunctionAddOpen(false);
+            }}
+            modifier_types={catalog.modifiers}
+            ENDPOINT={ENDPOINT}
+          />
+        }
+      />
+      <DialogContainer
+        maxWidth={"xl"}
+        title={"Edit Product Instance Function"}
+        onClose={() => {
+          setIsProductInstanceFunctionEditOpen(false);
+        }}
+        isOpen={isProductInstanceFunctionEditOpen}
+        inner_component={
+          <ProductInstanceFunctionEditContainer
+            onCloseCallback={() => {
+              setIsProductInstanceFunctionEditOpen(false);
+            }}
+            modifier_types={catalog.modifiers}
+            product_instance={productInstanceFunctionToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Delete Product Instance Function"}
+        onClose={() => {
+          setIsProductInstanceFunctionDeleteOpen(false);
+        }}
+        isOpen={isProductInstanceFunctionDeleteOpen}
+        inner_component={
+          <ProductInstanceFunctionDeleteContainer
+            onCloseCallback={() => {
+              setIsProductInstanceFunctionDeleteOpen(false);
+            }}
+            ENDPOINT={ENDPOINT}
+            product_instance={productInstanceFunctionToEdit}
+          />
+        }
+      />
       <Grid container justify="center" spacing={3}>
         <Grid item xs={12}>
-          <InterstitialDialog 
+          <InterstitialDialog
             dialogTitle={"Add new..."}
             options={[
               {
-                title: "Add Category", 
-                cb: () => {setIsCategoryAddOpen(true)}, 
+                title: "Add Category",
+                cb: () => {
+                  setIsCategoryAddOpen(true);
+                },
                 open: isCategoryAddOpen,
                 onClose: () => setIsCategoryAddOpen(false),
-                component: (<CategoryAddContainer 
-                  onCloseCallback={() => {setIsCategoryAddOpen(false);}} 
-                  ENDPOINT={ENDPOINT} 
-                  categories={catalog.categories} 
-                  />)
+                component: (
+                  <CategoryAddContainer
+                    onCloseCallback={() => {
+                      setIsCategoryAddOpen(false);
+                    }}
+                    ENDPOINT={ENDPOINT}
+                    categories={catalog.categories}
+                  />
+                ),
               },
               {
-                title: "Add Product", 
-                cb: () => setIsProductAddOpen(true), 
+                title: "Add Product",
+                cb: () => setIsProductAddOpen(true),
                 open: isProductAddOpen,
                 onClose: () => setIsProductAddOpen(false),
-                component: (<ProductAddContainer
-                  ENDPOINT={ENDPOINT} 
-                  onCloseCallback={() => {setIsProductAddOpen(false);}} 
-                  categories={catalog.categories} 
-                  modifier_types={catalog.modifiers} />)
-              }
+                component: (
+                  <ProductAddContainer
+                    ENDPOINT={ENDPOINT}
+                    onCloseCallback={() => {
+                      setIsProductAddOpen(false);
+                    }}
+                    categories={catalog.categories}
+                    modifier_types={catalog.modifiers}
+                  />
+                ),
+              },
             ]}
             onClose={() => setIsCategoryInterstitialOpen(false)}
             open={isCategoryInterstitialOpen}
@@ -312,35 +430,37 @@ const MenuBuilderComponent = ({
             setIsCategoryDeleteOpen={setIsCategoryDeleteOpen}
             setIsCategoryEditOpen={setIsCategoryEditOpen}
             setCategoryToEdit={setCategoryToEdit}
-            setProductToEdit={setProductToEdit}            
-            setIsProductEditOpen={setIsProductEditOpen}            
+            setProductToEdit={setProductToEdit}
+            setIsProductEditOpen={setIsProductEditOpen}
             setIsProductDeleteOpen={setIsProductDeleteOpen}
             setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
             setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
             setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
-            productInstanceToEdit={productInstanceToEdit}  
+            productInstanceToEdit={productInstanceToEdit}
             setProductInstanceToEdit={setProductInstanceToEdit}
           />
         </Grid>
-        {orphanedProducts.length > 0 ? 
-        <Grid item xs={12}>
-          <ProductTableContainer
-            title="Orphan Products"
-            products={orphanedProducts}
-            catalog={catalog}
-            setProductToEdit={setProductToEdit}            
-            setIsProductEditOpen={setIsProductEditOpen}
-            setIsProductDeleteOpen={setIsProductDeleteOpen}
-            setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
-            setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}  
-            setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen} 
-            setProductInstanceToEdit={setProductInstanceToEdit}
-          />
-        </Grid> : ""
-        }
+        {orphanedProducts.length > 0 ? (
+          <Grid item xs={12}>
+            <ProductTableContainer
+              title="Orphan Products"
+              products={orphanedProducts}
+              catalog={catalog}
+              setProductToEdit={setProductToEdit}
+              setIsProductEditOpen={setIsProductEditOpen}
+              setIsProductDeleteOpen={setIsProductDeleteOpen}
+              setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
+              setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
+              setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
+              setProductInstanceToEdit={setProductInstanceToEdit}
+            />
+          </Grid>
+        ) : (
+          ""
+        )}
         <Grid item xs={12}>
           <ModifierTypeTableContainer
-            modifier_types_map={catalog.modifiers}            
+            modifier_types_map={catalog.modifiers}
             setIsModifierTypeAddOpen={setIsModifierTypeAddOpen}
             setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
             setIsModifierOptionAddOpen={setIsModifierOptionAddOpen}
@@ -348,7 +468,25 @@ const MenuBuilderComponent = ({
             setIsModifierTypeDeleteOpen={setIsModifierTypeDeleteOpen}
             setIsModifierOptionDeleteOpen={setIsModifierOptionDeleteOpen}
             setModifierOptionToEdit={setModifierOptionToEdit}
-            setModifierTypeToEdit={setModifierTypeToEdit}            
+            setModifierTypeToEdit={setModifierTypeToEdit}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <ProductInstanceFunctionTableContainer
+            product_instance_functions={
+              catalog.product_instance_functions ?? []
+            }
+            setIsProductInstanceFunctionEditOpen={
+              setIsProductInstanceFunctionEditOpen
+            }
+            setIsProductInstanceFunctionDeleteOpen={
+              setIsProductInstanceFunctionDeleteOpen
+            }
+            setIsProductInstanceFunctionAddOpen={
+              setIsProductInstanceFunctionAddOpen
+            }
+            productInstanceFunctionToEdit={productInstanceFunctionToEdit}
+            setProductInstanceFunctionToEdit={setProductInstanceFunctionToEdit}
           />
         </Grid>
       </Grid>
