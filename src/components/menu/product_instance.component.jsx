@@ -117,6 +117,7 @@ const ProductInstanceComponent = ({
         // specifically using a == comparison since oidx is likely a string
         return {
           option_id: opt.option_id,
+          // eslint-disable-next-line
           placement: idx == oidx ? "WHOLE" : "NONE",
         };
       }
