@@ -5,13 +5,13 @@ import ModifierOptionComponent from "./modifier_option.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
-const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
+const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, parent, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
   const [price, setPrice] = useState(0);
-  const [enableFunctionName, setEnableFunctionName] = useState("always");
+  const [enableFunction, setEnableFunction] = useState(null);
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
   const [canSplit, setCanSplit] = useState(true);
@@ -40,7 +40,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
             disabled: disabled,
             price: { amount: price * 100, currency: "USD" },
             ordinal: ordinal,
-            enable_function_name: enableFunctionName,
+            enable_function: enableFunction ? enableFunction._id : null,
             flavor_factor: flavorFactor,
             bake_factor: bakeFactor,
             can_split: canSplit,
@@ -54,7 +54,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
           setShortcode("");
           setOrdinal(0);
           setPrice(0);
-          setEnableFunctionName("always");
+          setEnableFunction(null);
           setFlavorFactor(0);
           setBakeFactor(0);
           setCanSplit(true);
@@ -89,6 +89,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
         </Button>
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
+      product_instance_functions={product_instance_functions}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}
@@ -99,8 +100,8 @@ const ModifierOptionAddContainer = ({ ENDPOINT, parent, onCloseCallback }) => {
       setOrdinal={setOrdinal}
       price={price}
       setPrice={setPrice}
-      enableFunctionName={enableFunctionName}
-      setEnableFunctionName={setEnableFunctionName}
+      enableFunction={enableFunction}
+      setEnableFunction={setEnableFunction}
       flavorFactor={flavorFactor}
       setFlavorFactor={setFlavorFactor}
       bakeFactor={bakeFactor}

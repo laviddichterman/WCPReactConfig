@@ -203,6 +203,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             onCloseCallback={() => {
               setIsModifierOptionAddOpen(false);
             }}
+            product_instance_functions={catalog.product_instance_functions}
             ENDPOINT={ENDPOINT}
             parent={modifierTypeToEdit}
           />
@@ -220,6 +221,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             onCloseCallback={() => {
               setIsModifierOptionEditOpen(false);
             }}
+            product_instance_functions={catalog.product_instance_functions}
             modifier_option={modifierOptionToEdit}
             modifier_types={catalog.modifiers}
             ENDPOINT={ENDPOINT}
@@ -361,7 +363,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
               setIsProductInstanceFunctionEditOpen(false);
             }}
             modifier_types={catalog.modifiers}
-            product_instance={productInstanceFunctionToEdit}
+            product_instance_function={productInstanceFunctionToEdit}
             ENDPOINT={ENDPOINT}
           />
         }
@@ -378,7 +380,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
               setIsProductInstanceFunctionDeleteOpen(false);
             }}
             ENDPOINT={ENDPOINT}
-            product_instance={productInstanceFunctionToEdit}
+            product_instance_function={productInstanceFunctionToEdit}
           />
         }
       />
@@ -473,9 +475,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
         </Grid>
         <Grid item xs={12}>
           <ProductInstanceFunctionTableContainer
-            product_instance_functions={
-              catalog.product_instance_functions ?? []
-            }
+            product_instance_functions={catalog.product_instance_functions}
             setIsProductInstanceFunctionEditOpen={
               setIsProductInstanceFunctionEditOpen
             }

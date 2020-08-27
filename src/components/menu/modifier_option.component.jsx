@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckedInputComponent from "../checked_input.component";
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const ModifierOptionComponent = ({
   actions,
   progress,
+  product_instance_functions,
   displayName,
   setDisplayName,
   description,
@@ -47,8 +49,8 @@ const ModifierOptionComponent = ({
   setOrdinal,
   price,
   setPrice,
-  enableFunctionName,
-  setEnableFunctionName,
+  enableFunction,
+  setEnableFunction,
   flavorFactor,
   setFlavorFactor,
   bakeFactor,
@@ -166,13 +168,18 @@ const ModifierOptionComponent = ({
           />
         </Grid>
         <Grid item xs={6}>
-          <TextField
-            label="Enable Function Name"
-            type="text"
-            inputProps={{ size: 40 }}
-            value={enableFunctionName}
-            size="small"
-            onChange={(e) => setEnableFunctionName(e.target.value)}
+          <Autocomplete
+            style={{ width: 200 }}
+            options={product_instance_functions}
+            value={enableFunction}
+            onChange={(e, v) => setEnableFunction(v)}
+            getOptionLabel={(option) => option?.name ?? "CORRUPT DATA" }
+            getOptionSelected={(option, value) =>
+              option &&
+              value &&
+              option._id === value._id
+            }
+            renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
           />
         </Grid>
         <Grid item xs={6}>

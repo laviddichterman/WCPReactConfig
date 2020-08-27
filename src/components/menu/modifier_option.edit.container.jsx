@@ -5,13 +5,13 @@ import ModifierOptionComponent from "./modifier_option.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
-const ModifierOptionEditContainer = ({ ENDPOINT, modifier_option, onCloseCallback }) => {
+const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, modifier_option, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState(modifier_option.item.display_name);
   const [description, setDescription] = useState(modifier_option.item.description);
   const [shortcode, setShortcode] = useState(modifier_option.item.shortcode);
   const [ordinal, setOrdinal] = useState(modifier_option.ordinal);
   const [price, setPrice] = useState(modifier_option.item.price.amount / 100);
-  const [enableFunctionName, setEnableFunctionName] = useState(modifier_option.enable_function_name);
+  const [enableFunction, setEnableFunction] = useState(modifier_option.enable_function ?? null);
   const [flavorFactor, setFlavorFactor] = useState(modifier_option.metadata.flavor_factor);
   const [bakeFactor, setBakeFactor] = useState(modifier_option.metadata.bake_factor);
   const [canSplit, setCanSplit] = useState(modifier_option.metadata.can_split);
@@ -20,7 +20,6 @@ const ModifierOptionEditContainer = ({ ENDPOINT, modifier_option, onCloseCallbac
   const [squareID, setSquareID] = useState(modifier_option.item?.externalIDs?.squareID ?? "");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
-console.log(modifier_option.item.disabled);
   const editModifierOption = async (e) => {
     e.preventDefault();
 
@@ -41,7 +40,7 @@ console.log(modifier_option.item.disabled);
             disabled: disabled,
             price: { amount: price * 100, currency: "USD" },
             ordinal: ordinal,
-            enable_function_name: enableFunctionName,
+            enable_function: enableFunction ? enableFunction._id : null,
             flavor_factor: flavorFactor,
             bake_factor: bakeFactor,
             can_split: canSplit,
@@ -78,6 +77,7 @@ console.log(modifier_option.item.disabled);
         </Button>
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
+      product_instance_functions={product_instance_functions}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}
@@ -88,8 +88,8 @@ console.log(modifier_option.item.disabled);
       setOrdinal={setOrdinal}
       price={price}
       setPrice={setPrice}
-      enableFunctionName={enableFunctionName}
-      setEnableFunctionName={setEnableFunctionName}
+      enableFunction={enableFunction}
+      setEnableFunction={setEnableFunction}
       flavorFactor={flavorFactor}
       setFlavorFactor={setFlavorFactor}
       bakeFactor={bakeFactor}

@@ -18,7 +18,7 @@ const ProductInstanceFunctionEditContainer = ({ ENDPOINT, modifier_types, produc
       try {
         const token = await getAccessTokenSilently();
         const response = await fetch(`${ENDPOINT}/api/v1/query/language/productinstancefunction/${product_instance_function._id}`, {
-          method: "POST",
+          method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -28,9 +28,7 @@ const ProductInstanceFunctionEditContainer = ({ ENDPOINT, modifier_types, produc
             expression: expression
           }),
         });
-        if (response.status === 201) {
-          setFunctionName("");
-          setExpression({});
+        if (response.status === 200) {
           onCloseCallback();
         }
         setIsProcessing(false);

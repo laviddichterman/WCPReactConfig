@@ -51,7 +51,7 @@ const ModifierOptionTableContainer = ({
         { title: "FFactor", field: "metadata.flavor_factor" },
         { title: "BFactor", field: "metadata.bake_factor" },
         { title: "Can Split?", field: "metadata.can_split" },
-        { title: "EnableFxn", field: "enable_function_name" },
+        { title: "EnableFxn", field: "enable_function.name" },
         { title: "Disabled", field: "item.disabled", render: rowData => rowData.item.disabled ? (rowData.item.disabled.start > rowData.item.disabled.end ? "True" : `${moment(rowData.item.disabled.start).format("MMMM DD, Y hh:mm A")} to  ${moment(rowData.item.disabled.end).format("MMMM DD, Y hh:mm A")}`) : "False" },
       ]}
       data={modifier_types_map[modifier_type._id].options}

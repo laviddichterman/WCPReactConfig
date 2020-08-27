@@ -399,17 +399,17 @@ AbstractExpressionFunctionalContainer = ({
   expression,
   setExpression,
 }) => {
-  const [discriminator, setDiscriminator] = useState(expression?.descriminator ?? "");
-  const [constLiteralValue, setConstLiteralValue] = useState(expression && expression.descriminator && expression.descriminator === "ConstLiteral"  && expression.const_literal ? expression.const_literal.value : "" );
-  const [logicalValue, setLogicalValue] = useState(expression && expression.descriminator && expression.descriminator === "Logical"  && expression.logical ? expression.logical : {} );
-  const [ifElseValue, setIfElseValue] = useState(expression && expression.descriminator && expression.descriminator === "IfElse"  && expression.if_else ? expression.if_else : {} );
-  const [modifierPlacementValue, setModifierPlacementValue] = useState(expression && expression.descriminator && expression.descriminator === "ModifierPlacement"  && expression.modifier_placement ? expression.modifier_placement : {} );
+  const [discriminator, setDiscriminator] = useState(expression?.discriminator ?? "");
+  const [constLiteralValue, setConstLiteralValue] = useState(expression && expression.discriminator && expression.discriminator === "ConstLiteral"  && expression.const_literal ? expression.const_literal.value : "" );
+  const [logicalValue, setLogicalValue] = useState(expression && expression.discriminator && expression.discriminator === "Logical"  && expression.logical ? expression.logical : {} );
+  const [ifElseValue, setIfElseValue] = useState(expression && expression.discriminator && expression.discriminator === "IfElse"  && expression.if_else ? expression.if_else : {} );
+  const [modifierPlacementValue, setModifierPlacementValue] = useState(expression && expression.discriminator && expression.discriminator === "ModifierPlacement"  && expression.modifier_placement ? expression.modifier_placement : {} );
   
   const updateDiscriminator = (val) => {
     setDiscriminator(val);
     const newexpr = {};
     Object.assign(newexpr, expression);
-    newexpr.descriminator = val;
+    newexpr.discriminator = val;
     console.log(newexpr);
     setExpression(newexpr);
   }
@@ -423,19 +423,19 @@ AbstractExpressionFunctionalContainer = ({
   };
   const updateLogicalValue = (val) => {
     setLogicalValue(val);
-    const newexpr = { descriminator: expression.descriminator, logical: val };
+    const newexpr = { discriminator: expression.discriminator, logical: val };
     console.log(newexpr);
     setExpression(newexpr);
   };
   const updateModifierPlacementValue = (val) => {
     setModifierPlacementValue(val);
-    const newexpr = { descriminator: expression.descriminator, modifier_placement: val };
+    const newexpr = { discriminator: expression.discriminator, modifier_placement: val };
     console.log(newexpr);
     setExpression(newexpr);
   };
   const updateIfElseValue = (val) => {
     setIfElseValue(val);
-    const newexpr = { descriminator: expression.descriminator, if_else: val };
+    const newexpr = { discriminator: expression.discriminator, if_else: val };
     console.log(newexpr);
     setExpression(newexpr);
   };
