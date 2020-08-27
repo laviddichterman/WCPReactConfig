@@ -46,7 +46,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
             squareID: squareID,
             display_flags: {
               bake_differential: bakeDifferentialMax,
-              show_name_of_base_product: showNameOfBaseProduct,
+              show_name_of_base_product: showNameOfBaseProduct && modifiers.length > 0,
               flavor_max: flavorMax,
               bake_max: bakeMax
             },

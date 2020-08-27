@@ -226,7 +226,8 @@ const ProductComponent = ({
             <FormControlLabel
               control={
                 <Switch
-                  checked={showNameOfBaseProduct}
+                  checked={showNameOfBaseProduct || modifiers.length === 0}
+                  disabled={modifiers.length === 0}
                   onChange={(e) =>
                     setShowNameOfBaseProduct(e.target.checked)
                   }
