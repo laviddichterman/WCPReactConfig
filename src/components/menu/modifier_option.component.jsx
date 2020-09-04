@@ -57,6 +57,8 @@ const ModifierOptionComponent = ({
   setBakeFactor,
   canSplit,
   setCanSplit,
+  omitFromShortname,
+  setOmitFromShortname,
   disabled,
   setDisabled,
   revelID,
@@ -192,6 +194,18 @@ const ModifierOptionComponent = ({
               />
             }
             label="Can Split"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={omitFromShortname}
+                onChange={e => setOmitFromShortname(e.target.checked)}
+                name="Omit from shortname"
+              />
+            }
+            label="Omit from shortname"
           />
         </Grid>
         <Grid item xs={6}>

@@ -15,6 +15,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
   const [canSplit, setCanSplit] = useState(true);
+  const [omitFromShortname, setOmitFromShortname] = useState(false);
   const [disabled, setDisabled] = useState(null);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
@@ -46,6 +47,9 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
             can_split: canSplit,
             revelID: revelID,
             squareID: squareID,
+            display_flags: {
+              omit_from_shortname: omitFromShortname
+            }
           }),
         });
         if (response.status === 201) {
@@ -58,6 +62,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
           setFlavorFactor(0);
           setBakeFactor(0);
           setCanSplit(true);
+          setOmitFromShortname(false);
           setDisabled(null);
           setRevelID("");
           setSquareID("");  
@@ -108,6 +113,8 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
       setBakeFactor={setBakeFactor}
       canSplit={canSplit}
       setCanSplit={setCanSplit}
+      omitFromShortname={omitFromShortname}
+      setOmitFromShortname={setOmitFromShortname}
       disabled={disabled}
       setDisabled={setDisabled}
       revelID={revelID}

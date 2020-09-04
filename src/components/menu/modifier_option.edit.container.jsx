@@ -15,6 +15,7 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
   const [flavorFactor, setFlavorFactor] = useState(modifier_option.metadata.flavor_factor);
   const [bakeFactor, setBakeFactor] = useState(modifier_option.metadata.bake_factor);
   const [canSplit, setCanSplit] = useState(modifier_option.metadata.can_split);
+  const [omitFromShortname, setOmitFromShortname] = useState(modifier_option.display_flags?.omit_from_shortname ?? false);
   const [disabled, setDisabled] = useState(modifier_option.item?.disabled ?? null);
   const [revelID, setRevelID] = useState(modifier_option.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(modifier_option.item?.externalIDs?.squareID ?? "");
@@ -46,6 +47,9 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
             can_split: canSplit,
             revelID: revelID,
             squareID: squareID,
+            display_flags: {
+              omit_from_shortname: omitFromShortname
+            }
           }),
         });
         if (response.status === 200) {
@@ -96,6 +100,8 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
       setBakeFactor={setBakeFactor}
       canSplit={canSplit}
       setCanSplit={setCanSplit}
+      omitFromShortname={omitFromShortname}
+      setOmitFromShortname={setOmitFromShortname}
       disabled={disabled}
       setDisabled={setDisabled}
       revelID={revelID}
