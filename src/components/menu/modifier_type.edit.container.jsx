@@ -7,6 +7,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback }) => {
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
+  const [displayName, setDisplayName] = useState(modifier_type.display_name ?? "");
   const [minSelected, setMinSelected] = useState(modifier_type.min_selected || 0);
   const [maxSelected, setMaxSelected] = useState(modifier_type.max_selected || "");
   const [revelID, setRevelID] = useState(modifier_type.externalIDs?.revelID ?? "");
@@ -14,6 +15,8 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
   const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(modifier_type.display_flags?.omit_options_if_not_available ?? false);
   const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(modifier_type.display_flags?.omit_section_if_no_available_options ?? false);
   const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(modifier_type.display_flags?.use_toggle_if_only_two_options ?? false);
+  const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(modifier_type.display_flags?.hidden ?? false);
+  const [modifierClass, setModifierClass] = useState(modifier_type.display_flags?.modifier_class ?? "ADD");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -32,6 +35,7 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
           },
           body: JSON.stringify({
             name: name,
+            display_name: displayName,
             ordinal: ordinal,
             min_selected: minSelected,
             max_selected: maxSelected || null,
@@ -41,6 +45,8 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
               omit_options_if_not_available: omitOptionIfNotAvailable,
               omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,
               use_toggle_if_only_two_options: (useToggleIfOnlyTwoOptions && minSelected === 1 && maxSelected === 1),
+              hidden: isHiddenDuringCustomization,
+              modifier_class: modifierClass
             }
           }),
         });
@@ -75,6 +81,8 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
       setOrdinal={setOrdinal}
       name={name}
       setName={setName}
+      displayName={displayName}
+      setDisplayName={setDisplayName}
       minSelected={minSelected} 
       setMinSelected={setMinSelected}
       maxSelected={maxSelected} 
@@ -89,6 +97,10 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
       setOmitSectionIfNoAvailableOptions={setOmitSectionIfNoAvailableOptions}
       useToggleIfOnlyTwoOptions={useToggleIfOnlyTwoOptions}
       setUseToggleIfOnlyTwoOptions={setUseToggleIfOnlyTwoOptions}
+      isHiddenDuringCustomization={isHiddenDuringCustomization}
+      setIsHiddenDuringCustomization={setIsHiddenDuringCustomization}
+      modifierClass={modifierClass}
+      setModifierClass={setModifierClass}
     />
   );
 };

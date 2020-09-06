@@ -4,6 +4,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 import CheckedInputComponent from "../checked_input.component";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +43,9 @@ const CategoryComponent = ({
   description, setDescription, 
   ordinal, setOrdinal,
   subheading, setSubheading, 
-  name, setName, 
+  name, setName,
+  callLineName, setCallLineName,
+  callLineDisplay, setCallLineDisplay, 
   parent, setParent }) => {
   const classes = useStyles();
   const actions_html = actions.length === 0 ? "" : 
@@ -108,6 +115,40 @@ const CategoryComponent = ({
             size="small"
             onChange={(e) => setSubheading(e.target.value)}
           />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Call Line Name"
+            type="text"
+            inputProps={{ size: 40 }}
+            value={callLineName}
+            size="small"
+            onChange={(e) => setCallLineName(e.target.value)}
+          />
+        </Grid>
+        <Grid container item xs={6}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Call Line Display</FormLabel>
+            <RadioGroup
+              defaultValue="SHORTNAME"
+              aria-label="call-line-display"
+              name="call-line-display"
+              row
+              value={callLineDisplay}
+              onChange={(e) => setCallLineDisplay(e.target.value)}
+            >
+              <FormControlLabel
+                value="SHORTNAME"
+                control={<Radio />}
+                label="Shortname"
+              />
+              <FormControlLabel
+                value="SHORTCODE"
+                control={<Radio />}
+                label="Shortcode"
+              />
+            </RadioGroup>
+          </FormControl>
         </Grid>
         {actions_html}
       </Grid>

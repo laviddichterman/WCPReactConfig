@@ -18,6 +18,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
   const [bakeMax, setBakeMax] = useState(10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(100);
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(true);
+  const [singularNoun, setSingularNoun] = useState("");
   const [parentCategories, setParentCategories] = useState([]);
   const [modifiers, setModifiers] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -48,7 +49,8 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
               bake_differential: bakeDifferentialMax,
               show_name_of_base_product: showNameOfBaseProduct && modifiers.length > 0,
               flavor_max: flavorMax,
-              bake_max: bakeMax
+              bake_max: bakeMax,
+              singular_noun: singularNoun,
             },
             category_ids: parentCategories.map(x => x.category._id),
             modifiers: modifiers.map(x => x.modifier_type._id),
@@ -68,6 +70,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
           setBakeMax(10);  
           setBakeDifferentialMax(100);
           setShowNameOfBaseProduct(true);
+          setSingularNoun("");
           setModifiers([]);
           setParentCategories([]);
           onCloseCallback();
@@ -124,6 +127,8 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
       setBakeDifferentialMax={setBakeDifferentialMax}
       showNameOfBaseProduct={showNameOfBaseProduct}
       setShowNameOfBaseProduct={setShowNameOfBaseProduct}
+      singularNoun={singularNoun}
+      setSingularNoun={setSingularNoun}
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
       modifiers={modifiers}

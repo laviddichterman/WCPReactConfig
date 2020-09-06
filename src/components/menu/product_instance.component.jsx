@@ -71,7 +71,13 @@ const ProductInstanceComponent = ({
   isBase,
   setIsBase,
   skipCustomization,
-  setSkipCustomization
+  setSkipCustomization,
+  hideFromMenu,
+  setHideFromMenu,
+  menuAdornment,
+  setMenuAdornment,
+  priceDisplay,
+  setPriceDisplay
 }) => {
   const classes = useStyles();
   const actions_html =
@@ -214,7 +220,6 @@ const ProductInstanceComponent = ({
             onChange={(e) => setDescription(e.target.value)}
           />
         </Grid>
-        <Grid item xs={7} container>
           <Grid item xs={4}>
             <CheckedInputComponent
               label="Ordinal"
@@ -244,7 +249,7 @@ const ProductInstanceComponent = ({
               onFinishChanging={(e) => setPrice(e)}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <FormControlLabel
               control={
                 <Switch
@@ -258,7 +263,21 @@ const ProductInstanceComponent = ({
               label="Is Base"
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={hideFromMenu}
+                  onChange={(e) =>
+                    setHideFromMenu(e.target.checked)
+                  }
+                  name="Hide From Menu*"
+                />
+              }
+              label="Hide From Menu*"
+            />
+          </Grid>
+          <Grid item xs={4}>
             <FormControlLabel
               control={
                 <Switch
@@ -272,7 +291,50 @@ const ProductInstanceComponent = ({
               label="Skip Customization"
             />
           </Grid>
-
+          <Grid item xs={6}>
+            <TextField
+              label="Menu Adornment (Optional, HTML allowed)*"
+              type="text"
+              inputProps={{ size: 60 }}
+              value={menuAdornment}
+              size="small"
+              onChange={(e) => setMenuAdornment(e.target.value)}
+            />
+          </Grid>
+          <Grid container item xs={6}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Price Display*</FormLabel>
+              <RadioGroup
+                defaultValue="IF_COMPLETE"
+                aria-label="price-display"
+                name="price-display"
+                row
+                value={priceDisplay}
+                onChange={(e) => setPriceDisplay(e.target.value)}
+              >
+                <FormControlLabel
+                  value="IF_COMPLETE"
+                  control={<Radio />}
+                  label="If Complete"
+                />
+                <FormControlLabel
+                  value="FROM_X"
+                  control={<Radio />}
+                  label="From X"
+                />
+                <FormControlLabel
+                  value="NEVER"
+                  control={<Radio />}
+                  label="Never"
+                />
+                <FormControlLabel
+                  value="ALWAYS"
+                  control={<Radio />}
+                  label="Always"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
           <Grid item xs={6}>
             <TextField
               label="Revel ID"
@@ -293,13 +355,13 @@ const ProductInstanceComponent = ({
               onChange={(e) => setSquareID(e.target.value)}
             />
           </Grid>
-        </Grid>
-        <Grid item xs={5}>
-          <DatetimeBasedDisableComponent
-            disabled={disabled}
-            setDisabled={setDisabled}
-          />
-        </Grid>
+            <Grid item xs={12}>
+            <DatetimeBasedDisableComponent
+              disabled={disabled}
+              setDisabled={setDisabled}
+            />
+          </Grid>
+
         {modifier_html}
         {actions_html}
         {progress}
@@ -378,9 +440,14 @@ const ProductInstanceContainer = ({
   isBase,
   setIsBase,
   skipCustomization,
-  setSkipCustomization
+  setSkipCustomization,
+  hideFromMenu,
+  setHideFromMenu,
+  menuAdornment,
+  setMenuAdornment,
+  priceDisplay,
+  setPriceDisplay
 }) => {
-  console.log(modifiers);
   const [normalizedModifers, setNormalizedModifiers] = useState(
     normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers)
   );
@@ -418,6 +485,12 @@ const ProductInstanceContainer = ({
       setIsBase={setIsBase}
       skipCustomization={skipCustomization}
       setSkipCustomization={setSkipCustomization}
+      hideFromMenu={hideFromMenu}
+      setHideFromMenu={setHideFromMenu}
+      menuAdornment={menuAdornment}
+      setMenuAdornment={setMenuAdornment}
+      priceDisplay={priceDisplay}
+      setPriceDisplay={setPriceDisplay}
     />
   );
 };

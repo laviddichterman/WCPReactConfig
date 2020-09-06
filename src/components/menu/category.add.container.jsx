@@ -10,6 +10,8 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
   const [name, setName] = useState("");
   const [ordinal, setOrdinal] = useState(0);
   const [parent, setParent] = useState(null);
+  const [callLineName, setCallLineName] = useState("");
+  const [callLineDisplay, setCallLineDisplay] = useState("SHORTNAME");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -32,6 +34,10 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
             name: name,
             ordinal: ordinal,
             parent_id: parent ? parent.category._id : "",
+            display_flags: {
+              call_line_name: callLineName,
+              call_line_display: callLineDisplay
+            }
           }),
         });
         if (response.status === 201) {
@@ -40,6 +46,8 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
           setSubheading("");
           setOrdinal(0);
           setParent(null);
+          setCallLineName("");
+          setCallLineDisplay("SHORTNAME");
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -78,6 +86,10 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
       setParent={setParent}
       subheading={subheading}
       setSubheading={setSubheading}
+      callLineName={callLineName}
+      setCallLineName={setCallLineName}
+      callLineDisplay={callLineDisplay}
+      setCallLineDisplay={setCallLineDisplay}
     />
   );
 };

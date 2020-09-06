@@ -26,6 +26,7 @@ const CategoryTableContainer = ({
       }
       columns={[
         { title: "Name", field: "category.name" },
+        { title: "Call Line Name", field: "category.display_flags.call_line_name" },
         { title: "Description", field: "category.description" },
         { title: "Subheading", field: "category.subheading" },
         { title: "Ordinal", field: "category.ordinal", defaultSort: "asc" },

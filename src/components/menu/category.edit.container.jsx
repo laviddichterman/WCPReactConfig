@@ -10,6 +10,8 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
   const [subheading, setSubheading] = useState(category.subheading);
   const [ordinal, setOrdinal] = useState(category.ordinal || 0);
   const [parent, setParent] = useState(category.parent_id ? categories[category.parent_id] : null);
+  const [callLineName, setCallLineName] = useState(category.display_flags?.call_line_name ?? "");
+  const [callLineDisplay, setCallLineDisplay] = useState(category.display_flags?.call_line_display ?? "SHORTNAME");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -33,6 +35,10 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
             ordinal: ordinal,
             subheading: subheading,
             parent_id: parent ? parent.category._id : "",
+            display_flags: {
+              call_line_name: callLineName,
+              call_line_display: callLineDisplay
+            }
           }),
         });
         if (response.status === 200) {
@@ -73,6 +79,10 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
       setParent={setParent}
       subheading={subheading}
       setSubheading={setSubheading}
+      callLineName={callLineName}
+      setCallLineName={setCallLineName}
+      callLineDisplay={callLineDisplay}
+      setCallLineDisplay={setCallLineDisplay}
     />
   );
 };

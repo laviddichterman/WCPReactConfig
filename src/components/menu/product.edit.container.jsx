@@ -18,6 +18,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
   const [bakeMax, setBakeMax] = useState(product.display_flags?.bake_max ?? 10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.display_flags?.bake_differential ?? 100);
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.display_flags?.show_name_of_base_product ?? true);
+  const [singularNoun, setSingularNoun] = useState(product.display_flags?.singular_noun ?? "");
   const [parentCategories, setParentCategories] = useState(Object.values(categories).filter(x => product.category_ids.includes(x.category._id.toString())));
   const [modifiers, setModifiers] = useState(product.modifiers.filter(x=>x).map((v, i) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v)));
 
@@ -49,7 +50,8 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
               bake_differential: bakeDifferentialMax,
               show_name_of_base_product: showNameOfBaseProduct && modifiers.length > 0,
               flavor_max: flavorMax,
-              bake_max: bakeMax
+              bake_max: bakeMax,
+              singular_noun: singularNoun,
             },
             category_ids: parentCategories.map(x => x.category._id),
             modifiers: modifiers.map(x => x.modifier_type._id)
@@ -110,6 +112,8 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
       setBakeDifferentialMax={setBakeDifferentialMax}
       showNameOfBaseProduct={showNameOfBaseProduct}
       setShowNameOfBaseProduct={setShowNameOfBaseProduct}
+      singularNoun={singularNoun}
+      setSingularNoun={setSingularNoun}
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
       modifiers={modifiers}

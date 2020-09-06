@@ -4,6 +4,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 import Switch from "@material-ui/core/Switch";
 import CheckedInputComponent from "../checked_input.component";
 
@@ -43,6 +47,8 @@ const ModifierTypeComponent = ({
   setMaxSelected,
   name,
   setName,
+  displayName,
+  setDisplayName,
   revelID,
   setRevelID,
   squareID,
@@ -52,7 +58,11 @@ const ModifierTypeComponent = ({
   omitSectionIfNoAvailableOptions,
   setOmitSectionIfNoAvailableOptions,
   useToggleIfOnlyTwoOptions,
-  setUseToggleIfOnlyTwoOptions
+  setUseToggleIfOnlyTwoOptions,
+  isHiddenDuringCustomization,
+  setIsHiddenDuringCustomization,
+  modifierClass,
+  setModifierClass,
 }) => {
   const classes = useStyles();
 
@@ -83,6 +93,17 @@ const ModifierTypeComponent = ({
             onChange={(e) => setName(e.target.value)}
           />
         </Grid>
+        <Grid item xs={12}>
+          <TextField
+            label="Display Name (Optional)"
+            type="text"
+            fullWidth
+            inputProps={{ size: 40 }}
+            value={displayName}
+            size="small"
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
+        </Grid>
         <Grid item xs={4}>
           <CheckedInputComponent
             label="Ordinal"
@@ -111,7 +132,7 @@ const ModifierTypeComponent = ({
             onFinishChanging={(e) => setMaxSelected(e)}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <FormControlLabel
             control={
               <Switch
@@ -126,14 +147,12 @@ const ModifierTypeComponent = ({
             label="Omit Section If No Available Options"
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <FormControlLabel
             control={
               <Switch
                 checked={omitOptionIfNotAvailable}
-                onChange={(e) =>
-                  setOmitOptionIfNotAvailable(e.target.checked)
-                }
+                onChange={(e) => setOmitOptionIfNotAvailable(e.target.checked)}
                 name="Omit Option If Not Available"
               />
             }
@@ -141,21 +160,70 @@ const ModifierTypeComponent = ({
             label="Omit Option If Not Available"
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <FormControlLabel
             control={
               <Switch
                 disabled={maxSelected !== 1 || minSelected !== 1}
                 checked={useToggleIfOnlyTwoOptions}
-                onChange={(e) =>
-                  setUseToggleIfOnlyTwoOptions(e.target.checked)
-                }
+                onChange={(e) => setUseToggleIfOnlyTwoOptions(e.target.checked)}
                 name="Use Toggle If Only Two Options"
               />
             }
             labelPlacement="top"
             label="Use Toggle If Only Two Options"
           />
+        </Grid>
+        <Grid item xs={6}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isHiddenDuringCustomization}
+                onChange={(e) =>
+                  setIsHiddenDuringCustomization(e.target.checked)
+                }
+                name="Hide from user customization"
+              />
+            }
+            labelPlacement="top"
+            label="Hide from user customization"
+          />
+        </Grid>
+        <Grid container item xs={12}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Modifier Class</FormLabel>
+            <RadioGroup
+              defaultValue="SINGLE"
+              aria-label="selection-type"
+              name="selection-type"
+              row
+              value={modifierClass}
+              onChange={(e) => setModifierClass(e.target.value)}
+            >
+              <FormControlLabel
+                value="ADD"
+                control={<Radio />}
+                label="Addition"
+              />
+              <FormControlLabel value="SIZE" control={<Radio />} label="Size" />
+              <FormControlLabel
+                value="SUB"
+                control={<Radio />}
+                label="Substitution"
+              />
+              <FormControlLabel
+                value="REMOVAL"
+                control={<Radio />}
+                label="Removal"
+              />
+              <FormControlLabel value="NOTE" control={<Radio />} label="Note" />
+              <FormControlLabel
+                value="PROMPT"
+                control={<Radio />}
+                label="Prompt"
+              />
+            </RadioGroup>
+          </FormControl>
         </Grid>
         <Grid item xs={6}>
           <TextField

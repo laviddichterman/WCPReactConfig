@@ -17,6 +17,9 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   const [modifiers, setModifiers] = useState([]);
   const [isBase, setIsBase] = useState(false);
   const [skipCustomization, setSkipCustomization] = useState(true);
+  const [hideFromMenu, setHideFromMenu] = useState(false);
+  const [menuAdornment, setMenuAdornment] = useState("");
+  const [priceDisplay, setPriceDisplay] = useState("IF_COMPLETE");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const addProductInstance = async (e) => {
@@ -43,7 +46,10 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
             modifiers: modifiers,
             is_base: isBase,
             display_flags: {
-              skip_customization: skipCustomization
+              hide_from_menu: hideFromMenu,
+              skip_customization: skipCustomization,
+              menu_adornment: menuAdornment,
+              price_display: priceDisplay
             }
           }),
         });
@@ -57,6 +63,11 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
           setRevelID("");
           setSquareID("");  
           setModifiers([]);
+          setIsBase(false);
+          setSkipCustomization(false);
+          setHideFromMenu(false);
+          setMenuAdornment("");
+          setPriceDisplay("IF_COMPLETE");
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -109,6 +120,12 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       setIsBase={setIsBase}
       skipCustomization={skipCustomization}
       setSkipCustomization={setSkipCustomization}
+      hideFromMenu={hideFromMenu}
+      setHideFromMenu={setHideFromMenu}
+      menuAdornment={menuAdornment}
+      setMenuAdornment={setMenuAdornment}
+      priceDisplay={priceDisplay}
+      setPriceDisplay={setPriceDisplay}
     />
   );
 };

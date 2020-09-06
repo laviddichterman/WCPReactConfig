@@ -65,6 +65,8 @@ const ProductComponent = ({
   setBakeDifferentialMax,
   showNameOfBaseProduct,
   setShowNameOfBaseProduct,
+  singularNoun,
+  setSingularNoun,
   parentCategories,
   setParentCategories,
   modifiers,
@@ -84,7 +86,6 @@ const ProductComponent = ({
       </Grid>
     );
 
-   
   return (
     <div className={classes.root}>
       <Grid container spacing={3} justify="center">
@@ -114,20 +115,21 @@ const ProductComponent = ({
             onChange={(e) => setDisplayName(e.target.value)}
           />
         </Grid>
-        {suppressNonProductInstanceFields ? "" :
-        <Grid item xs={6}>
-          <TextField
-            label="Description"
-            type="text"
-            inputProps={{ size: 60 }}
-            value={description}
-            size="small"
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </Grid>
-        }
+        {suppressNonProductInstanceFields ? (
+          ""
+        ) : (
+          <Grid item xs={6}>
+            <TextField
+              label="Description"
+              type="text"
+              inputProps={{ size: 60 }}
+              value={description}
+              size="small"
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </Grid>
+        )}
 
-        <Grid container item xs>
         <Grid item xs={4}>
           <CheckedInputComponent
             label="Ordinal"
@@ -137,62 +139,58 @@ const ProductComponent = ({
             onFinishChanging={(e) => setOrdinal(e)}
           />
         </Grid>
-        {suppressNonProductInstanceFields ? "" :
-        (<><Grid item xs={4}>
-          <TextField
-            label="Short Code"
-            type="text"
-            inputProps={{ size: 40 }}
-            value={shortcode}
-            size="small"
-            onChange={(e) => setShortcode(e.target.value)}
-          />
-        </Grid>
+        {suppressNonProductInstanceFields ? (
+          ""
+        ) : (
+          <>
+            <Grid item xs={4}>
+              <TextField
+                label="Short Code"
+                type="text"
+                inputProps={{ size: 40 }}
+                value={shortcode}
+                size="small"
+                onChange={(e) => setShortcode(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <CheckedInputComponent
+                label="Price"
+                fullWidth={false}
+                className="form-control"
+                type="number"
+                size="small"
+                parseFunction={(e) => parseFloat(e).toFixed(2)}
+                value={price}
+                inputProps={{ min: 0.0 }}
+                onFinishChanging={(e) => setPrice(e)}
+              />
+            </Grid>
+            <>
+              <Grid item xs={4}>
+                <TextField
+                  label="Revel ID"
+                  type="text"
+                  inputProps={{ size: 20 }}
+                  value={revelID}
+                  size="small"
+                  onChange={(e) => setRevelID(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label="Square ID"
+                  type="text"
+                  inputProps={{ size: 20 }}
+                  value={squareID}
+                  size="small"
+                  onChange={(e) => setSquareID(e.target.value)}
+                />
+              </Grid>
+            </>
+          </>
+        )}
         <Grid item xs={4}>
-          <CheckedInputComponent
-              label="Price"
-              fullWidth={false}
-              className="form-control"
-              type="number"
-              size="small"
-              parseFunction={(e) => parseFloat(e).toFixed(2)}
-              value={price}
-              inputProps={{min:0.00}}
-              onFinishChanging={(e) => setPrice(e)}
-            />
-        </Grid>
-        <>
-        <Grid item xs={4}>
-          <TextField
-            label="Revel ID"
-            type="text"
-            inputProps={{ size: 20 }}
-            value={revelID}
-            size="small"
-            onChange={(e) => setRevelID(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            label="Square ID"
-            type="text"
-            inputProps={{ size: 20 }}
-            value={squareID}
-            size="small"
-            onChange={(e) => setSquareID(e.target.value)}
-          />
-        </Grid>
-        </>
-        </>) }
-        </Grid>
-        {suppressNonProductInstanceFields ? "" :
-        <Grid item xs={5}>
-          <DatetimeBasedDisableComponent
-            disabled={disabled}
-            setDisabled={setDisabled}
-          />
-        </Grid> }
-        <Grid item xs={3}>
           <CheckedInputComponent
             label="Flavor Max"
             type="number"
@@ -202,7 +200,7 @@ const ProductComponent = ({
             onFinishChanging={(e) => setFlavorMax(e)}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <CheckedInputComponent
             label="Bake Max"
             type="number"
@@ -212,7 +210,7 @@ const ProductComponent = ({
             onFinishChanging={(e) => setBakeMax(e)}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <CheckedInputComponent
             label="Bake Differential Max"
             type="number"
@@ -222,21 +220,29 @@ const ProductComponent = ({
             onFinishChanging={(e) => setBakeDifferentialMax(e)}
           />
         </Grid>
-        <Grid item xs={3}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={showNameOfBaseProduct || modifiers.length === 0}
-                  disabled={modifiers.length === 0}
-                  onChange={(e) =>
-                    setShowNameOfBaseProduct(e.target.checked)
-                  }
-                  name="Show Name of Base Product Instead of Component Modifiers"
-                />
-              }
-              label="Show Name of Base Product Instead of Component Modifiers"
-            />
-          </Grid>
+        <Grid item xs={6}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showNameOfBaseProduct || modifiers.length === 0}
+                disabled={modifiers.length === 0}
+                onChange={(e) => setShowNameOfBaseProduct(e.target.checked)}
+                name="Show Name of Base Product Instead of Component Modifiers"
+              />
+            }
+            labelPlacement="top"
+            label="Show Name of Base Product Instead of Component Modifiers"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Singular Noun"
+            type="text"
+            value={singularNoun}
+            size="small"
+            onChange={(e) => setSingularNoun(e.target.value)}
+          />
+        </Grid>
         <Grid item xs={12}>
           <Autocomplete
             multiple
@@ -250,15 +256,30 @@ const ProductComponent = ({
                 )
               )
             }
-            getOptionLabel={(option) => option ? option.modifier_type.name : "CORRUPT DATA"}
+            getOptionLabel={(option) =>
+              option ? option.modifier_type.name : "CORRUPT DATA"
+            }
             getOptionSelected={(option, value) =>
-              option && value && option.modifier_type._id === value.modifier_type._id
+              option &&
+              value &&
+              option.modifier_type._id === value.modifier_type._id
             }
             renderInput={(params) => (
               <TextField {...params} label="Modifiers" />
             )}
           />
         </Grid>
+        {suppressNonProductInstanceFields ? (
+          ""
+        ) : (
+          <Grid item xs={12}>
+            <DatetimeBasedDisableComponent
+              disabled={disabled}
+              setDisabled={setDisabled}
+            />
+          </Grid>
+        )}
+
         {actions_html}
         {progress}
       </Grid>

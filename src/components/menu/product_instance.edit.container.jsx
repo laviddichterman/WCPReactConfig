@@ -17,6 +17,9 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
   const [modifiers, setModifiers] = useState(product_instance.modifiers);
   const [isBase, setIsBase] = useState(product_instance.is_base ?? false);
   const [skipCustomization, setSkipCustomization] = useState(product_instance.display_flags?.skip_customization ?? false);
+  const [hideFromMenu, setHideFromMenu] = useState(product_instance.display_flags?.hide_from_menu ?? false);
+  const [menuAdornment, setMenuAdornment] = useState(product_instance.display_flags?.menu_adornment ?? "");
+  const [priceDisplay, setPriceDisplay] = useState(product_instance.display_flags?.price_display ?? "IF_COMPLETE");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -45,7 +48,10 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
             modifiers: modifiers,
             is_base: isBase,
             display_flags: {
-              skip_customization: skipCustomization
+              hide_from_menu: hideFromMenu,
+              skip_customization: skipCustomization,
+              menu_adornment: menuAdornment,
+              price_display: priceDisplay
             }
           }),
         });
@@ -102,6 +108,12 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
       setIsBase={setIsBase}
       skipCustomization={skipCustomization}
       setSkipCustomization={setSkipCustomization}
+      hideFromMenu={hideFromMenu}
+      setHideFromMenu={setHideFromMenu}
+      menuAdornment={menuAdornment}
+      setMenuAdornment={setMenuAdornment}
+      priceDisplay={priceDisplay}
+      setPriceDisplay={setPriceDisplay}
     />
   );
 };

@@ -7,6 +7,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [ordinal, setOrdinal] = useState(0);
   const [name, setName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [minSelected, setMinSelected] = useState(0);
   const [maxSelected, setMaxSelected] = useState("");
   const [revelID, setRevelID] = useState("");
@@ -14,6 +15,8 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(false);
   const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(true);
   const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(false);
+  const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(false);
+  const [modifierClass, setModifierClass] = useState("ADD");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -31,20 +34,34 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
           },
           body: JSON.stringify({
             name: name,
+            display_name: displayName,
             ordinal: ordinal,
             min_selected: minSelected,
             max_selected: maxSelected || null,
             revelID: revelID,
             squareID: squareID,
+            display_flags: {
+              omit_options_if_not_available: omitOptionIfNotAvailable,
+              omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,
+              use_toggle_if_only_two_options: (useToggleIfOnlyTwoOptions && minSelected === 1 && maxSelected === 1),
+              hidden: isHiddenDuringCustomization,
+              modifier_class: modifierClass
+            }
           }),
         });
         if (response.status === 201) {
           setOrdinal(0);
           setName("");
+          setDisplayName("");
           setMinSelected(0);
           setMaxSelected("");
           setRevelID("");
           setSquareID("");
+          setOmitOptionIfNotAvailable(false);
+          setOmitSectionIfNoAvailableOptions(false);
+          setUseToggleIfOnlyTwoOptions(false);
+          setIsHiddenDuringCustomization(false);
+          setModifierClass("ADD");
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -76,6 +93,8 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
       setOrdinal={setOrdinal}
       name={name}
       setName={setName}
+      displayName={displayName}
+      setDisplayName={setDisplayName}
       minSelected={minSelected} 
       setMinSelected={setMinSelected}
       maxSelected={maxSelected} 
@@ -90,6 +109,10 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
       setOmitSectionIfNoAvailableOptions={setOmitSectionIfNoAvailableOptions}
       useToggleIfOnlyTwoOptions={useToggleIfOnlyTwoOptions}
       setUseToggleIfOnlyTwoOptions={setUseToggleIfOnlyTwoOptions}
+      isHiddenDuringCustomization={isHiddenDuringCustomization}
+      setIsHiddenDuringCustomization={setIsHiddenDuringCustomization}
+      modifierClass={modifierClass}
+      setModifierClass={setModifierClass}
     />
   );
 };
