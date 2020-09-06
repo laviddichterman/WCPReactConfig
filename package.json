@@ -13,7 +13,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@wcp/wcpshared": "^2.0.5",
     "bootstrap": "^4.5.2",
-    "material-table": "^1.69.0",
+    "material-table": "1.68.1 || >1.69.0",
     "memoize-one": "^5.1.1",
     "moment": "^2.27.0",
     "react": "^16.13.1",
