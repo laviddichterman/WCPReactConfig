@@ -16,6 +16,7 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(true);
   const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(false);
   const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(false);
+  const [emptyDisplayAs, setEmptyDisplayAs] = useState("OMIT");
   const [modifierClass, setModifierClass] = useState("ADD");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
@@ -45,6 +46,7 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
               omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,
               use_toggle_if_only_two_options: (useToggleIfOnlyTwoOptions && minSelected === 1 && maxSelected === 1),
               hidden: isHiddenDuringCustomization,
+              empty_display_as: emptyDisplayAs,
               modifier_class: modifierClass
             }
           }),
@@ -61,6 +63,7 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
           setOmitSectionIfNoAvailableOptions(false);
           setUseToggleIfOnlyTwoOptions(false);
           setIsHiddenDuringCustomization(false);
+          setEmptyDisplayAs("OMIT");
           setModifierClass("ADD");
           onCloseCallback();
         }
@@ -111,6 +114,8 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
       setUseToggleIfOnlyTwoOptions={setUseToggleIfOnlyTwoOptions}
       isHiddenDuringCustomization={isHiddenDuringCustomization}
       setIsHiddenDuringCustomization={setIsHiddenDuringCustomization}
+      emptyDisplayAs={emptyDisplayAs}
+      setEmptyDisplayAs={setEmptyDisplayAs}
       modifierClass={modifierClass}
       setModifierClass={setModifierClass}
     />

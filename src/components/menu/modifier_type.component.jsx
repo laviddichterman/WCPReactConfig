@@ -61,9 +61,17 @@ const ModifierTypeComponent = ({
   setUseToggleIfOnlyTwoOptions,
   isHiddenDuringCustomization,
   setIsHiddenDuringCustomization,
+  emptyDisplayAs,
+  setEmptyDisplayAs,
   modifierClass,
   setModifierClass,
 }) => {
+  const handleSetMaxSelected = (val) => {
+    if (val !== 1 && emptyDisplayAs === "LIST_CHOICES") {
+      setEmptyDisplayAs("YOUR_CHOICE_OF");
+    }
+    setMaxSelected(val);
+  }
   const classes = useStyles();
 
   const actions_html =
@@ -129,7 +137,7 @@ const ModifierTypeComponent = ({
             value={maxSelected}
             allowEmpty
             inputProps={{ size: 10, min: minSelected }}
-            onFinishChanging={(e) => setMaxSelected(e)}
+            onFinishChanging={(e) => handleSetMaxSelected(e)}
           />
         </Grid>
         <Grid item xs={6}>
@@ -221,6 +229,36 @@ const ModifierTypeComponent = ({
                 value="PROMPT"
                 control={<Radio />}
                 label="Prompt"
+              />
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+        <Grid container item xs={12}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Empty modifier display in product name as...</FormLabel>
+            <RadioGroup
+              defaultValue="OMIT"
+              aria-label="empty-display-as"
+              name="empty-display-as"
+              row
+              value={emptyDisplayAs}
+              onChange={(e) => setEmptyDisplayAs(e.target.value)}
+            >
+              <FormControlLabel
+                value="OMIT"
+                control={<Radio />}
+                label="Omit"
+              />
+              <FormControlLabel
+                value="YOUR_CHOICE_OF"
+                control={<Radio />}
+                label="Your Choice Of..."
+              />
+              <FormControlLabel
+                value="LIST_CHOICES"
+                control={<Radio />}
+                label="List Choices"
+                disabled={maxSelected !== 1}
               />
             </RadioGroup>
           </FormControl>
