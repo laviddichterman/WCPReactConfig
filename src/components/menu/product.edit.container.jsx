@@ -48,7 +48,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
             squareID: squareID,
             display_flags: {
               bake_differential: bakeDifferentialMax,
-              show_name_of_base_product: showNameOfBaseProduct && modifiers.length > 0,
+              show_name_of_base_product: showNameOfBaseProduct,
               flavor_max: flavorMax,
               bake_max: bakeMax,
               singular_noun: singularNoun,

@@ -274,7 +274,7 @@ const ProductInstanceComponent = ({
                   name="Hide From Menu*"
                 />
               }
-              label="Hide From Menu*"
+              label="Hide From Menu"
             />
           </Grid>
           <Grid item xs={4}>
@@ -293,7 +293,7 @@ const ProductInstanceComponent = ({
           </Grid>
           <Grid item xs={6}>
             <TextField
-              label="Menu Adornment (Optional, HTML allowed)*"
+              label="Menu Adornment (Optional, HTML allowed)"
               type="text"
               inputProps={{ size: 60 }}
               value={menuAdornment}
@@ -305,7 +305,7 @@ const ProductInstanceComponent = ({
             <FormControl component="fieldset">
               <FormLabel component="legend">Price Display*</FormLabel>
               <RadioGroup
-                defaultValue="IF_COMPLETE"
+                defaultValue="ALWAYS"
                 aria-label="price-display"
                 name="price-display"
                 row
@@ -313,17 +313,12 @@ const ProductInstanceComponent = ({
                 onChange={(e) => setPriceDisplay(e.target.value)}
               >
                 <FormControlLabel
-                  value="IF_COMPLETE"
-                  control={<Radio />}
-                  label="If Complete"
-                />
-                <FormControlLabel
                   value="FROM_X"
                   control={<Radio />}
                   label="From X"
                 />
                 <FormControlLabel
-                  value="NEVER"
+                  value="VARIES"
                   control={<Radio />}
                   label="Never"
                 />

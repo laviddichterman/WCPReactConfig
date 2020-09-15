@@ -73,6 +73,12 @@ const ProductComponent = ({
   setModifiers,
 }) => {
   const classes = useStyles();
+  const handleSetModifiers = (mods) => {
+    if (mods.length === 0 && !showNameOfBaseProduct) {
+      setShowNameOfBaseProduct(true);
+    }
+    setModifiers(mods);
+  }
   const actions_html =
     actions.length === 0 ? (
       ""
@@ -250,7 +256,7 @@ const ProductComponent = ({
             options={Object.values(modifier_types)}
             value={modifiers}
             onChange={(e, v) =>
-              setModifiers(
+              handleSetModifiers(
                 v.sort(
                   (a, b) => a.modifier_type.ordinal - b.modifier_type.ordinal
                 )

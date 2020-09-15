@@ -19,7 +19,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   const [skipCustomization, setSkipCustomization] = useState(true);
   const [hideFromMenu, setHideFromMenu] = useState(false);
   const [menuAdornment, setMenuAdornment] = useState("");
-  const [priceDisplay, setPriceDisplay] = useState("IF_COMPLETE");
+  const [priceDisplay, setPriceDisplay] = useState("ALWAYS");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const addProductInstance = async (e) => {
@@ -67,7 +67,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
           setSkipCustomization(false);
           setHideFromMenu(false);
           setMenuAdornment("");
-          setPriceDisplay("IF_COMPLETE");
+          setPriceDisplay("ALWAYS");
           onCloseCallback();
         }
         setIsProcessing(false);

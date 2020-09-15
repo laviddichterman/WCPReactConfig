@@ -69,6 +69,8 @@ const theme = createMuiTheme({
 });
 
 //const ENDPOINT = "https://wario.windycitypie.com";
+//const ENDPOINT = "https://wdev.windycitypie.com";
+//const ENDPOINT = "https://wstaging.windycitypie.com";
 //const ENDPOINT = "https://wario.breezytownpizza.com";
 const ENDPOINT = "http://localhost:4001";
 
