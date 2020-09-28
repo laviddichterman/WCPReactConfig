@@ -15,6 +15,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -98,7 +99,6 @@ const LogicalFunctionalComponent = ({
   const [operator, setOperator] = useState(value?.operator ?? "AND");
   const [operandA, setOperandA] = useState(value?.operandA ?? {});
   const [operandB, setOperandB] = useState(value?.operandB ?? {});
-
   const updateOperator = (val) => {
     setOperator(val);
     const newValue = {};
@@ -133,6 +133,7 @@ const LogicalFunctionalComponent = ({
                   aria-label="Operator"
                   name="Operator"
                   row
+                  defaultValue={operators[0]}
                   value={operator}
                   onChange={(e) => updateOperator(e.target.value)}
                 >
@@ -344,7 +345,6 @@ const ConstLiteralFunctionalComponent = ({ value, setValue }) => {
 
   const updateLiteralType = (e) => {
     setLiteralType(e);
-    console.log(typeof (local_value.length ? LITERAL_TYPES[e](local_value) : ""));
     setLocalValue(local_value.length ? LITERAL_TYPES[e](local_value) : "");
     onFinishChangingLocal();
   }
@@ -393,6 +393,7 @@ const ConstLiteralFunctionalComponent = ({ value, setValue }) => {
   );
 };
 
+
 // convert this to a ListItem that can be collapsed and returns a text representation of the internal expression when collapsed
 AbstractExpressionFunctionalContainer = ({
   modifier_types,
@@ -401,7 +402,7 @@ AbstractExpressionFunctionalContainer = ({
 }) => {
   const [discriminator, setDiscriminator] = useState(expression?.discriminator ?? "");
   const [constLiteralValue, setConstLiteralValue] = useState(expression && expression.discriminator && expression.discriminator === "ConstLiteral"  && expression.const_literal ? expression.const_literal.value : "" );
-  const [logicalValue, setLogicalValue] = useState(expression && expression.discriminator && expression.discriminator === "Logical"  && expression.logical ? expression.logical : {} );
+  const [logicalValue, setLogicalValue] = useState(expression && expression.discriminator && expression.discriminator === "Logical"  && expression.logical ? expression.logical : { operator: "AND" } );
   const [ifElseValue, setIfElseValue] = useState(expression && expression.discriminator && expression.discriminator === "IfElse"  && expression.if_else ? expression.if_else : {} );
   const [modifierPlacementValue, setModifierPlacementValue] = useState(expression && expression.discriminator && expression.discriminator === "ModifierPlacement"  && expression.modifier_placement ? expression.modifier_placement : {} );
   
@@ -410,7 +411,6 @@ AbstractExpressionFunctionalContainer = ({
     const newexpr = {};
     Object.assign(newexpr, expression);
     newexpr.discriminator = val;
-    console.log(newexpr);
     setExpression(newexpr);
   }
   const updateConstLiteralValue = (val) => {
@@ -418,25 +418,21 @@ AbstractExpressionFunctionalContainer = ({
     const newexpr = {};
     Object.assign(newexpr, expression);
     newexpr.const_literal = { value: val };
-    console.log(newexpr);
     setExpression(newexpr);
   };
   const updateLogicalValue = (val) => {
     setLogicalValue(val);
     const newexpr = { discriminator: expression.discriminator, logical: val };
-    console.log(newexpr);
     setExpression(newexpr);
   };
   const updateModifierPlacementValue = (val) => {
     setModifierPlacementValue(val);
     const newexpr = { discriminator: expression.discriminator, modifier_placement: val };
-    console.log(newexpr);
     setExpression(newexpr);
   };
   const updateIfElseValue = (val) => {
     setIfElseValue(val);
     const newexpr = { discriminator: expression.discriminator, if_else: val };
-    console.log(newexpr);
     setExpression(newexpr);
   };
   const expression_types = {

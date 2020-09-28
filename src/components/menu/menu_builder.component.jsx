@@ -476,17 +476,12 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
         <Grid item xs={12}>
           <ProductInstanceFunctionTableContainer
             product_instance_functions={catalog.product_instance_functions}
-            setIsProductInstanceFunctionEditOpen={
-              setIsProductInstanceFunctionEditOpen
-            }
-            setIsProductInstanceFunctionDeleteOpen={
-              setIsProductInstanceFunctionDeleteOpen
-            }
-            setIsProductInstanceFunctionAddOpen={
-              setIsProductInstanceFunctionAddOpen
-            }
+            setIsProductInstanceFunctionEditOpen={setIsProductInstanceFunctionEditOpen}
+            setIsProductInstanceFunctionDeleteOpen={setIsProductInstanceFunctionDeleteOpen}
+            setIsProductInstanceFunctionAddOpen={setIsProductInstanceFunctionAddOpen}
             productInstanceFunctionToEdit={productInstanceFunctionToEdit}
             setProductInstanceFunctionToEdit={setProductInstanceFunctionToEdit}
+            modifier_types={catalog.modifiers}
           />
         </Grid>
       </Grid>

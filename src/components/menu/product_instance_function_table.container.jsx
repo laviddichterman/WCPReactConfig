@@ -2,9 +2,11 @@ import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
 import { AddBox, Edit, DeleteOutline } from "@material-ui/icons";
+import { WFunctional } from "@wcp/wcpshared";
 
 const ProductInstanceFunctionTableContainer = ({
   product_instance_functions,
+  modifier_types,
   setIsProductInstanceFunctionEditOpen,
   setIsProductInstanceFunctionDeleteOpen,
   setIsProductInstanceFunctionAddOpen,
@@ -15,6 +17,7 @@ const ProductInstanceFunctionTableContainer = ({
       title="Product Instance Functions"
       columns={[
         { title: "Name", field: "name" },
+        { title: "Function", field: "expression", render: rowData => WFunctional.AbstractExpressionStatementToString(rowData.expression, modifier_types) },
       ]}
       options={{
         detailPanelType: "single",
