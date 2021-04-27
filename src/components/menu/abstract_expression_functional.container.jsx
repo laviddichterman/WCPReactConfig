@@ -15,6 +15,8 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 
+// BUG// TODO: https://app.asana.com/0/1184794277483753/1200242818246330/f
+// we need a way to disable saving the abstract expression if it's not fully specified
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -263,6 +265,41 @@ const IfElseFunctionalComponent = ({
   );
 };
 
+const HasAnyOfModifierTypeFunctionalComponent = ({
+  modifier_types,
+  value,
+  setValue,
+}) => {
+  const [modifier, setModifier] = useState(value && value.mtid ? modifier_types[value.mtid] : null);
+  const updateModifier = (val) => {
+    setModifier(val);
+    setValue(val ? { mtid: val.modifier_type._id } : {});
+  };
+  return (
+    <Grid container>
+      <Grid item>
+        <Autocomplete
+          style={{ width: 200 }}
+
+          options={Object.values(modifier_types)}
+          value={modifier}
+          onChange={(e, v) => updateModifier(v)}
+          getOptionLabel={(option) =>
+            option?.modifier_type.name ?? "CORRUPT DATA"
+          }
+          getOptionSelected={(option, value) =>
+            option &&
+            value &&
+            option.modifier_type._id === value.modifier_type._id
+          }
+          renderInput={(params) => <TextField {...params} label="Modifier" />}
+        />
+      </Grid>
+    </Grid>
+  );
+};
+
+
 const ModifierPlacementFunctionalComponent = ({
   modifier_types,
   value,
@@ -270,7 +307,6 @@ const ModifierPlacementFunctionalComponent = ({
 }) => {
   const [modifier, setModifier] = useState(value && value.mtid ? modifier_types[value.mtid] : null);
   const [modifierOption, setModifierOption] = useState(value && value.moid ? modifier_types[value.mtid].options.find(x => x._id === value.moid) : null);
-  const classes = useStyles();
   const updateModifier = (val) => {
     setModifier(val);
     setValue({});
@@ -401,11 +437,11 @@ AbstractExpressionFunctionalContainer = ({
   setExpression,
 }) => {
   const [discriminator, setDiscriminator] = useState(expression?.discriminator ?? "");
-  const [constLiteralValue, setConstLiteralValue] = useState(expression && expression.discriminator && expression.discriminator === "ConstLiteral"  && expression.const_literal ? expression.const_literal.value : "" );
-  const [logicalValue, setLogicalValue] = useState(expression && expression.discriminator && expression.discriminator === "Logical"  && expression.logical ? expression.logical : { operator: "AND" } );
-  const [ifElseValue, setIfElseValue] = useState(expression && expression.discriminator && expression.discriminator === "IfElse"  && expression.if_else ? expression.if_else : {} );
-  const [modifierPlacementValue, setModifierPlacementValue] = useState(expression && expression.discriminator && expression.discriminator === "ModifierPlacement"  && expression.modifier_placement ? expression.modifier_placement : {} );
-  
+  const [constLiteralValue, setConstLiteralValue] = useState(expression && expression.discriminator && expression.discriminator === "ConstLiteral" && expression.const_literal ? expression.const_literal.value : "" );
+  const [logicalValue, setLogicalValue] = useState(expression && expression.discriminator && expression.discriminator === "Logical" && expression.logical ? expression.logical : { operator: "AND" } );
+  const [ifElseValue, setIfElseValue] = useState(expression && expression.discriminator && expression.discriminator === "IfElse" && expression.if_else ? expression.if_else : {} );
+  const [modifierPlacementValue, setModifierPlacementValue] = useState(expression && expression.discriminator && expression.discriminator === "ModifierPlacement" && expression.modifier_placement ? expression.modifier_placement : {} );
+  const [hasAnyOfModifierTypeValue, setHasAnyOfModifierTypeValue] = useState(expression && expression.discriminator && expression.discriminator === "HasAnyOfModifierType" && expression.has_any_of_modifier ? expression.has_any_of_modifier : {} );
   const updateDiscriminator = (val) => {
     setDiscriminator(val);
     const newexpr = {};
@@ -428,6 +464,13 @@ AbstractExpressionFunctionalContainer = ({
   const updateModifierPlacementValue = (val) => {
     setModifierPlacementValue(val);
     const newexpr = { discriminator: expression.discriminator, modifier_placement: val };
+    setExpression(newexpr);
+  };
+  const updateHasAnyOfModifierTypeValue = (val) => {
+    setHasAnyOfModifierTypeValue(val);
+    console.log(val);
+    const newexpr = { discriminator: expression.discriminator, has_any_of_modifier: val };
+    console.log(newexpr);
     setExpression(newexpr);
   };
   const updateIfElseValue = (val) => {
@@ -461,6 +504,13 @@ AbstractExpressionFunctionalContainer = ({
         modifier_types={modifier_types} 
         value={modifierPlacementValue}
         setValue={updateModifierPlacementValue}
+      />
+    ),
+    HasAnyOfModifierType: (
+      <HasAnyOfModifierTypeFunctionalComponent 
+        modifier_types={modifier_types} 
+        value={hasAnyOfModifierTypeValue}
+        setValue={updateHasAnyOfModifierTypeValue}
       />
     ),
   };
