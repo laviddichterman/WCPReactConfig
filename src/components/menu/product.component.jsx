@@ -4,6 +4,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Switch from "@material-ui/core/Switch";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckedInputComponent from "../checked_input.component";
@@ -35,11 +39,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const ProductComponent = ({
   actions,
   progress,
   modifier_types,
   categories,
+  product_instance_functions,
   suppressNonProductInstanceFields,
   displayName,
   setDisplayName,
@@ -71,14 +77,26 @@ const ProductComponent = ({
   setParentCategories,
   modifiers,
   setModifiers,
+  // Object mapping MTID to enable function
+  modifierEnableFunctions,
+  setModifierEnableFunctions
 }) => {
   const classes = useStyles();
   const handleSetModifiers = (mods) => {
-    if (mods.length === 0 && !showNameOfBaseProduct) {
+    const sorted = mods.sort((a, b) => a.modifier_type.ordinal - b.modifier_type.ordinal);
+    if (sorted.length === 0 && !showNameOfBaseProduct) {
       setShowNameOfBaseProduct(true);
     }
-    setModifiers(mods);
+    setModifiers(sorted);
   }
+
+  const handleSetModifierEnableFunction = (mtid, enable) => {
+    const newValue = {};
+    Object.assign(newValue, modifierEnableFunctions);
+    newValue[mtid] = enable;
+    setModifierEnableFunctions(newValue);
+  }
+  
   const actions_html =
     actions.length === 0 ? (
       ""
@@ -91,6 +109,30 @@ const ProductComponent = ({
         ))}
       </Grid>
     );
+
+  const modifierEnableFunctionSpecificationList = modifiers.map((modifier, idx) => (
+      <Grid item xs={6} key={idx}>
+        <Card>
+          <CardContent>
+            <FormControl component="fieldset">
+              <FormLabel>Modifier Details: {modifier.modifier_type.name}</FormLabel>
+              <Autocomplete
+                style={{ width: 225 }}
+                options={product_instance_functions}
+                value={ modifierEnableFunctions[modifier.modifier_type._id] || null }
+                onChange={(e, v) => handleSetModifierEnableFunction(modifier.modifier_type._id, v) }
+                getOptionLabel={(option) => option?.name ?? "CORRUPT DATA"}
+                getOptionSelected={(option, value) => option && value && option._id === value._id }
+                renderInput={(params) => (
+                  <TextField {...params} label="Enable Function Name" />
+                )}
+              />
+            </FormControl>
+          </CardContent>
+        </Card>
+      </Grid>
+    )
+  );
 
   return (
     <div className={classes.root}>
@@ -255,13 +297,7 @@ const ProductComponent = ({
             filterSelectedOptions
             options={Object.values(modifier_types)}
             value={modifiers}
-            onChange={(e, v) =>
-              handleSetModifiers(
-                v.sort(
-                  (a, b) => a.modifier_type.ordinal - b.modifier_type.ordinal
-                )
-              )
-            }
+            onChange={(e, v) => handleSetModifiers(v) }
             getOptionLabel={(option) =>
               option ? option.modifier_type.name : "CORRUPT DATA"
             }
@@ -275,6 +311,7 @@ const ProductComponent = ({
             )}
           />
         </Grid>
+        {modifierEnableFunctionSpecificationList}
         {suppressNonProductInstanceFields ? (
           ""
         ) : (

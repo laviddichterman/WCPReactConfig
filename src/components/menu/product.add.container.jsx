@@ -5,7 +5,7 @@ import ProductComponent from "./product.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
-const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCallback }) => {
+const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
@@ -21,6 +21,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
   const [singularNoun, setSingularNoun] = useState("");
   const [parentCategories, setParentCategories] = useState([]);
   const [modifiers, setModifiers] = useState([]);
+  const [modifierEnableFunctions, setModifierEnableFunctions] = useState({});
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -53,7 +54,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
               singular_noun: singularNoun,
             },
             category_ids: parentCategories.map(x => x.category._id),
-            modifiers: modifiers.map(x => x.modifier_type._id),
+            modifiers: modifiers.map(x => { return { mtid: x.modifier_type._id, enable: modifierEnableFunctions.hasOwnProperty(x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }; } ),
             create_product_instance: true
           }),
         });
@@ -72,6 +73,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
           setShowNameOfBaseProduct(true);
           setSingularNoun("");
           setModifiers([]);
+          setModifierEnableFunctions({});
           setParentCategories([]);
           onCloseCallback();
         }
@@ -102,6 +104,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
       modifier_types={modifier_types}
+      product_instance_functions={product_instance_functions}
       categories={categories}
       displayName={displayName}
       setDisplayName={setDisplayName}
@@ -133,6 +136,8 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, categories, onCloseCall
       setParentCategories={setParentCategories}
       modifiers={modifiers}
       setModifiers={setModifiers}
+      modifierEnableFunctions={modifierEnableFunctions}
+      setModifierEnableFunctions={setModifierEnableFunctions}
     />
   );
 };

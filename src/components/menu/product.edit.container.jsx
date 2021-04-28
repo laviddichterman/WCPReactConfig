@@ -5,7 +5,7 @@ import ProductComponent from "./product.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
-const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, onCloseCallback }) => {
+const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, product, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState(product.item?.display_name ?? "");
   const [description, setDescription] = useState(product.item?.description ?? "");
   const [shortcode, setShortcode] = useState(product.item?.shortcode ?? "");
@@ -20,8 +20,9 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.display_flags?.show_name_of_base_product ?? true);
   const [singularNoun, setSingularNoun] = useState(product.display_flags?.singular_noun ?? "");
   const [parentCategories, setParentCategories] = useState(Object.values(categories).filter(x => product.category_ids.includes(x.category._id.toString())));
-  const [modifiers, setModifiers] = useState(product.modifiers.filter(x=>x).map((v, i) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v)));
-
+  const [modifiers, setModifiers] = useState(product.modifiers2.map((v) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v.mtid)));
+  // create an Object mapping MTID to enable function object
+  const [modifierEnableFunctions, setModifierEnableFunctions] = useState(product.modifiers2.reduce((o, entry) => Object.assign(o, {[entry.mtid]: entry.enable ?? null }), {}));
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async (e) => {
@@ -54,7 +55,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
               singular_noun: singularNoun,
             },
             category_ids: parentCategories.map(x => x.category._id),
-            modifiers: modifiers.map(x => x.modifier_type._id)
+            modifiers: modifiers.map(x => { return { mtid: x.modifier_type._id, enable: modifierEnableFunctions.hasOwnProperty(x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }; } ),
           }),
         });
         if (response.status === 200) {
@@ -86,6 +87,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
       ]}
       progress={isProcessing ? <LinearProgress /> : "" }
       modifier_types={modifier_types}
+      product_instance_functions={product_instance_functions}
       categories={categories}
       suppressNonProductInstanceFields
       displayName={displayName}
@@ -117,7 +119,9 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, categories, product, o
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
       modifiers={modifiers}
-      setModifiers={setModifiers} 
+      setModifiers={setModifiers}
+      modifierEnableFunctions={modifierEnableFunctions}
+      setModifierEnableFunctions={setModifierEnableFunctions}
     />
   );
 };

@@ -257,6 +257,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             }}
             categories={catalog.categories}
             modifier_types={catalog.modifiers}
+            product_instance_functions={catalog.product_instance_functions}
             product={productToEdit}
             ENDPOINT={ENDPOINT}
           />
@@ -419,6 +420,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
                     }}
                     categories={catalog.categories}
                     modifier_types={catalog.modifiers}
+                    product_instance_functions={catalog.product_instance_functions}
                   />
                 ),
               },
