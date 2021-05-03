@@ -59,6 +59,8 @@ const ModifierOptionComponent = ({
   setCanSplit,
   omitFromShortname,
   setOmitFromShortname,
+  omitFromName,
+  setOmitFromName,
   disabled,
   setDisabled,
   revelID,
@@ -104,7 +106,7 @@ const ModifierOptionComponent = ({
             onChange={(e) => setDescription(e.target.value)}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <TextField
             label="Short Code"
             type="text"
@@ -114,7 +116,7 @@ const ModifierOptionComponent = ({
             onChange={(e) => setShortcode(e.target.value)}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <CheckedInputComponent
               label="Price"
               fullWidth={false}
@@ -127,35 +129,13 @@ const ModifierOptionComponent = ({
               onFinishChanging={(e) => setPrice(e)}
             />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={4}>
           <CheckedInputComponent
             label="Ordinal"
             type="number"
             value={ordinal}
             inputProps={{ min: 0 }}
             onFinishChanging={(e) => setOrdinal(e)}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <CheckedInputComponent
-            label="Flavor Factor"
-            type="number"
-            fullWidth
-            value={flavorFactor}
-            parseFunction={parseFloat}
-            inputProps={{ min: 0, max: 63 }}
-            onFinishChanging={(e) => setFlavorFactor(e)}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <CheckedInputComponent
-            label="Bake Factor"
-            type="number"
-            fullWidth
-            value={bakeFactor}
-            parseFunction={parseFloat}
-            inputProps={{ min: 0, max: 63 }}
-            onFinishChanging={(e) => setBakeFactor(e)}
           />
         </Grid>
         <Grid item xs={6}>
@@ -174,6 +154,28 @@ const ModifierOptionComponent = ({
           />
         </Grid>
         <Grid item xs={3}>
+          <CheckedInputComponent
+            label="Flavor Factor"
+            type="number"
+            fullWidth
+            value={flavorFactor}
+            parseFunction={parseFloat}
+            inputProps={{ min: 0, max: 63 }}
+            onFinishChanging={(e) => setFlavorFactor(e)}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <CheckedInputComponent
+            label="Bake Factor"
+            type="number"
+            fullWidth
+            value={bakeFactor}
+            parseFunction={parseFloat}
+            inputProps={{ min: 0, max: 63 }}
+            onFinishChanging={(e) => setBakeFactor(e)}
+          />
+        </Grid>
+        <Grid item xs={4}>
           <FormControlLabel
             control={
               <Switch
@@ -185,7 +187,7 @@ const ModifierOptionComponent = ({
             label="Can Split"
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <FormControlLabel
             control={
               <Switch
@@ -195,6 +197,18 @@ const ModifierOptionComponent = ({
               />
             }
             label="Omit from shortname"
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={omitFromName}
+                onChange={e => setOmitFromName(e.target.checked)}
+                name="Omit from name"
+              />
+            }
+            label="Omit from name"
           />
         </Grid>
         <Grid item xs={6}>
