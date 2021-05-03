@@ -131,7 +131,8 @@ const ProductInstanceComponent = ({
     setModifiers(new_normalized_mod);
   };
 
-  const modifier_html = parent_product.modifiers.map((mtid, mtidx) => {
+  const modifier_html = parent_product.modifiers.map((modifier_entry, mtidx) => {
+    const mtid = modifier_entry.mtid;
     const mt = modifier_types_map[mtid].modifier_type;
     const mt_options = modifier_types_map[mtid].options;
     var mt_options_html;
@@ -371,7 +372,8 @@ const normalizeModifiersAndOptions = (
   modifiers
 ) => {
   var normalized_modifiers = [];
-  parent_product.modifiers.forEach((mtid) => {
+  parent_product.modifiers.forEach((modifier_entry) => {
+    const mtid = modifier_entry.mtid;
     const options = modifier_types_map[mtid].options.map((option, idx) => {
       return {
         option_id: option._id,

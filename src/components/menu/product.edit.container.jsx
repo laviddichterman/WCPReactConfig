@@ -20,9 +20,9 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.display_flags?.show_name_of_base_product ?? true);
   const [singularNoun, setSingularNoun] = useState(product.display_flags?.singular_noun ?? "");
   const [parentCategories, setParentCategories] = useState(Object.values(categories).filter(x => product.category_ids.includes(x.category._id.toString())));
-  const [modifiers, setModifiers] = useState(product.modifiers2.map((v) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v.mtid)));
+  const [modifiers, setModifiers] = useState(product.modifiers.map((v) => Object.values(modifier_types).find(x => x.modifier_type._id.toString() === v.mtid)));
   // create an Object mapping MTID to enable function object
-  const [modifierEnableFunctions, setModifierEnableFunctions] = useState(product.modifiers2.reduce((o, entry) => Object.assign(o, {[entry.mtid]: entry.enable ?? null }), {}));
+  const [modifierEnableFunctions, setModifierEnableFunctions] = useState(product.modifiers.reduce((o, entry) => Object.assign(o, {[entry.mtid]: entry.enable ?? null }), {}));
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async (e) => {

@@ -58,7 +58,7 @@ const ProductTableContainer = ({
       ]}
       columns={[
         { title: "Name", field: "product.item.display_name", defaultSort: "asc"},
-        { title: "Modifiers", field: "product.modifiers", render: rowData => rowData.product.modifiers ? rowData.product.modifiers.map(x=>catalog.modifiers[x].modifier_type.name).join(", ") : "" },
+        { title: "Modifiers", field: "product.modifiers", render: rowData => rowData.product.modifiers ? rowData.product.modifiers.map(x=>catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "" },
       ]}
       data={products}
       onRowClick={(event, rowData, togglePanel) => togglePanel()}
