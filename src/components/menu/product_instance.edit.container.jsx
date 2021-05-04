@@ -20,6 +20,8 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
   const [hideFromMenu, setHideFromMenu] = useState(product_instance.display_flags?.hide_from_menu ?? false);
   const [menuAdornment, setMenuAdornment] = useState(product_instance.display_flags?.menu_adornment ?? "");
   const [priceDisplay, setPriceDisplay] = useState(product_instance.display_flags?.price_display ?? "IF_COMPLETE");
+  const [suppressExhaustiveModifierList, setSuppressExhaustiveModifierList] = useState(product_instance.display_flags?.suppress_exhaustive_modifier_list ?? false);
+  
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -51,7 +53,8 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
               hide_from_menu: hideFromMenu,
               skip_customization: skipCustomization,
               menu_adornment: menuAdornment,
-              price_display: priceDisplay
+              price_display: priceDisplay,
+              suppress_exhaustive_modifier_list: suppressExhaustiveModifierList
             }
           }),
         });
@@ -114,6 +117,8 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
       setMenuAdornment={setMenuAdornment}
       priceDisplay={priceDisplay}
       setPriceDisplay={setPriceDisplay}
+      suppressExhaustiveModifierList={suppressExhaustiveModifierList}
+      setSuppressExhaustiveModifierList={setSuppressExhaustiveModifierList}
     />
   );
 };

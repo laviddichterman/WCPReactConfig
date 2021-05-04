@@ -18,6 +18,10 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
   const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(modifier_type.display_flags?.hidden ?? false);
   const [modifierClass, setModifierClass] = useState(modifier_type.display_flags?.modifier_class ?? "ADD");
   const [emptyDisplayAs, setEmptyDisplayAs] = useState(modifier_type.display_flags?.empty_display_as ?? "OMIT");
+  const [templateString, setTemplateString] = useState(modifier_type.display_flags?.template_string ?? "");
+  const [multipleItemSeparator, setMultipleItemSeparator] = useState(modifier_type.display_flags?.multiple_item_separator ?? "");
+  const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState(modifier_type.display_flags?.non_empty_group_prefix ?? "");
+  const [nonEmptyGroupSuffix, setNonEmptyGroupSuffix] = useState(modifier_type.display_flags?.non_empty_group_suffix ?? "");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -48,7 +52,11 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
               use_toggle_if_only_two_options: (useToggleIfOnlyTwoOptions && minSelected === 1 && maxSelected === 1),
               empty_display_as: emptyDisplayAs,
               hidden: isHiddenDuringCustomization,
-              modifier_class: modifierClass
+              modifier_class: modifierClass,
+              template_string: templateString || "",
+              multiple_item_separator: multipleItemSeparator || "",
+              non_empty_group_prefix: nonEmptyGroupPrefix || "",
+              non_empty_group_suffix: nonEmptyGroupSuffix || ""
             }
           }),
         });
@@ -105,6 +113,14 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
       setEmptyDisplayAs={setEmptyDisplayAs}
       modifierClass={modifierClass}
       setModifierClass={setModifierClass}
+      templateString={templateString}
+      setTemplateString={setTemplateString}
+      multipleItemSeparator={multipleItemSeparator}
+      setMultipleItemSeparator={setMultipleItemSeparator}
+      nonEmptyGroupPrefix={nonEmptyGroupPrefix}
+      setNonEmptyGroupPrefix={setNonEmptyGroupPrefix}
+      nonEmptyGroupSuffix={nonEmptyGroupSuffix}
+      setNonEmptyGroupSuffix={setNonEmptyGroupSuffix}
     />
   );
 };

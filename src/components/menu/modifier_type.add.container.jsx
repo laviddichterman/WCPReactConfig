@@ -18,6 +18,10 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(false);
   const [emptyDisplayAs, setEmptyDisplayAs] = useState("OMIT");
   const [modifierClass, setModifierClass] = useState("ADD");
+  const [templateString, setTemplateString] = useState("");
+  const [multipleItemSeparator, setMultipleItemSeparator] = useState(" + ");
+  const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState("");
+  const [nonEmptyGroupSuffix, setNonEmptyGroupSuffix] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -47,7 +51,11 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
               use_toggle_if_only_two_options: (useToggleIfOnlyTwoOptions && minSelected === 1 && maxSelected === 1),
               hidden: isHiddenDuringCustomization,
               empty_display_as: emptyDisplayAs,
-              modifier_class: modifierClass
+              modifier_class: modifierClass,
+              template_string: templateString || "",
+              multiple_item_separator: multipleItemSeparator || "",
+              non_empty_group_prefix: nonEmptyGroupPrefix || "",
+              non_empty_group_suffix: nonEmptyGroupSuffix || ""
             }
           }),
         });
@@ -65,6 +73,10 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
           setIsHiddenDuringCustomization(false);
           setEmptyDisplayAs("OMIT");
           setModifierClass("ADD");
+          setTemplateString("");
+          setMultipleItemSeparator(" + ");
+          setNonEmptyGroupPrefix("");
+          setNonEmptyGroupSuffix("");
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -102,6 +114,14 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
       setMinSelected={setMinSelected}
       maxSelected={maxSelected} 
       setMaxSelected={setMaxSelected}
+      templateString={templateString}
+      setTemplateString={setTemplateString}
+      multipleItemSeparator={multipleItemSeparator}
+      setMultipleItemSeparator={setMultipleItemSeparator}
+      nonEmptyGroupPrefix={nonEmptyGroupPrefix}
+      setNonEmptyGroupPrefix={setNonEmptyGroupPrefix}
+      nonEmptyGroupSuffix={nonEmptyGroupSuffix}
+      setNonEmptyGroupSuffix={setNonEmptyGroupSuffix}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID} 

@@ -21,6 +21,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   const [menuAdornment, setMenuAdornment] = useState("");
   const [priceDisplay, setPriceDisplay] = useState("ALWAYS");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [suppressExhaustiveModifierList, setSuppressExhaustiveModifierList] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const addProductInstance = async (e) => {
     e.preventDefault();
@@ -49,7 +50,8 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
               hide_from_menu: hideFromMenu,
               skip_customization: skipCustomization,
               menu_adornment: menuAdornment,
-              price_display: priceDisplay
+              price_display: priceDisplay,
+              suppress_exhaustive_modifier_list: suppressExhaustiveModifierList
             }
           }),
         });
@@ -68,6 +70,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
           setHideFromMenu(false);
           setMenuAdornment("");
           setPriceDisplay("ALWAYS");
+          setSuppressExhaustiveModifierList(false);
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -126,6 +129,8 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       setMenuAdornment={setMenuAdornment}
       priceDisplay={priceDisplay}
       setPriceDisplay={setPriceDisplay}
+      suppressExhaustiveModifierList={suppressExhaustiveModifierList}
+      setSuppressExhaustiveModifierList={setSuppressExhaustiveModifierList}
     />
   );
 };

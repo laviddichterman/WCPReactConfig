@@ -49,6 +49,14 @@ const ModifierTypeComponent = ({
   setName,
   displayName,
   setDisplayName,
+  templateString,
+  setTemplateString,
+  multipleItemSeparator,
+  setMultipleItemSeparator,
+  nonEmptyGroupPrefix,
+  setNonEmptyGroupPrefix,
+  nonEmptyGroupSuffix,
+  setNonEmptyGroupSuffix,
   revelID,
   setRevelID,
   squareID,
@@ -262,6 +270,50 @@ const ModifierTypeComponent = ({
               />
             </RadioGroup>
           </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Template String"
+            type="text"
+            fullWidth
+            inputProps={{ size: 40 }}
+            value={templateString}
+            size="small"
+            onChange={(e) => setTemplateString(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Multiple Item Separator"
+            type="text"
+            fullWidth
+            inputProps={{ size: 40 }}
+            value={multipleItemSeparator}
+            size="small"
+            onChange={(e) => setMultipleItemSeparator(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Non-Empty Group Prefix"
+            type="text"
+            fullWidth
+            inputProps={{ size: 40 }}
+            value={nonEmptyGroupPrefix}
+            size="small"
+            onChange={(e) => setNonEmptyGroupPrefix(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Non-Empty Group Suffix"
+            type="text"
+            fullWidth
+            inputProps={{ size: 40 }}
+            value={nonEmptyGroupSuffix}
+            size="small"
+            onChange={(e) => setNonEmptyGroupSuffix(e.target.value)}
+          />
         </Grid>
         <Grid item xs={6}>
           <TextField

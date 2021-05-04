@@ -77,7 +77,9 @@ const ProductInstanceComponent = ({
   menuAdornment,
   setMenuAdornment,
   priceDisplay,
-  setPriceDisplay
+  setPriceDisplay,
+  suppressExhaustiveModifierList,
+  setSuppressExhaustiveModifierList
 }) => {
   const classes = useStyles();
   const actions_html =
@@ -250,7 +252,7 @@ const ProductInstanceComponent = ({
               onFinishChanging={(e) => setPrice(e)}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <FormControlLabel
               control={
                 <Switch
@@ -264,7 +266,7 @@ const ProductInstanceComponent = ({
               label="Is Base"
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <FormControlLabel
               control={
                 <Switch
@@ -272,13 +274,27 @@ const ProductInstanceComponent = ({
                   onChange={(e) =>
                     setHideFromMenu(e.target.checked)
                   }
-                  name="Hide From Menu*"
+                  name="Hide From Menu"
                 />
               }
               label="Hide From Menu"
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={suppressExhaustiveModifierList}
+                  onChange={(e) =>
+                    setSuppressExhaustiveModifierList(e.target.checked)
+                  }
+                  name="Suppress Exhaustive Modifier List"
+                />
+              }
+              label="Suppress Exhaustive Modifier List"
+            />
+          </Grid>
+          <Grid item xs={3}>
             <FormControlLabel
               control={
                 <Switch
@@ -304,7 +320,7 @@ const ProductInstanceComponent = ({
           </Grid>
           <Grid container item xs={6}>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Price Display*</FormLabel>
+              <FormLabel component="legend">Price Display</FormLabel>
               <RadioGroup
                 defaultValue="ALWAYS"
                 aria-label="price-display"
@@ -443,7 +459,9 @@ const ProductInstanceContainer = ({
   menuAdornment,
   setMenuAdornment,
   priceDisplay,
-  setPriceDisplay
+  setPriceDisplay,
+  suppressExhaustiveModifierList,
+  setSuppressExhaustiveModifierList
 }) => {
   const [normalizedModifers, setNormalizedModifiers] = useState(
     normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers)
@@ -488,6 +506,8 @@ const ProductInstanceContainer = ({
       setMenuAdornment={setMenuAdornment}
       priceDisplay={priceDisplay}
       setPriceDisplay={setPriceDisplay}
+      suppressExhaustiveModifierList={suppressExhaustiveModifierList}
+      setSuppressExhaustiveModifierList={setSuppressExhaustiveModifierList}
     />
   );
 };
