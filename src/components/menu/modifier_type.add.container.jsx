@@ -99,7 +99,7 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
         <Button
           className="btn btn-light"
           onClick={addModifierType}
-          disabled={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || isProcessing}
+          disabled={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || (useToggleIfOnlyTwoOptions && (maxSelected!==1 && minSelected !== 1)) || isProcessing}
         >
           Add
         </Button>

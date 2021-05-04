@@ -75,10 +75,23 @@ const ModifierTypeComponent = ({
   setModifierClass,
 }) => {
   const handleSetMaxSelected = (val) => {
-    if (val !== 1 && emptyDisplayAs === "LIST_CHOICES") {
-      setEmptyDisplayAs("YOUR_CHOICE_OF");
+    if (val !== 1) {
+      if (emptyDisplayAs === "LIST_CHOICES") {
+        setEmptyDisplayAs("YOUR_CHOICE_OF");
+      }
+      setUseToggleIfOnlyTwoOptions(false);
     }
     setMaxSelected(val);
+  }
+
+  const handleSetMinSelected = (val) => {
+    if (val !== 1) {
+      setUseToggleIfOnlyTwoOptions(false);
+    }
+    if (maxSelected < val) {
+      setMaxSelected(val);
+    }
+    setMinSelected(val);
   }
   const classes = useStyles();
 
@@ -135,7 +148,7 @@ const ModifierTypeComponent = ({
             type="number"
             value={minSelected}
             inputProps={{ min: 0, size: 10 }}
-            onFinishChanging={(e) => setMinSelected(e)}
+            onFinishChanging={(e) => handleSetMinSelected(e)}
           />
         </Grid>
         <Grid item xs={4}>
