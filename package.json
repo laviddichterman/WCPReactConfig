@@ -11,7 +11,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "@wcp/wcpshared": "^2.1.7",
+    "@wcp/wcpshared": "^2.1.8",
     "bootstrap": "^4.6.0",
     "material-table": "^1.69.3",
     "memoize-one": "^5.2.1",
