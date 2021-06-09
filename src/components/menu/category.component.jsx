@@ -43,6 +43,7 @@ const CategoryComponent = ({
   description, setDescription, 
   ordinal, setOrdinal,
   subheading, setSubheading, 
+  footer, setFooter,
   name, setName,
   callLineName, setCallLineName,
   callLineDisplay, setCallLineDisplay, 
@@ -114,6 +115,18 @@ const CategoryComponent = ({
             value={subheading}
             size="small"
             onChange={(e) => setSubheading(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            multiline
+            fullWidth
+            label="Footer (Optional, HTML allowed)"
+            type="text"
+            inputProps={{ size: 100 }}
+            value={footer}
+            size="small"
+            onChange={(e) => setFooter(e.target.value)}
           />
         </Grid>
         <Grid item xs={6}>

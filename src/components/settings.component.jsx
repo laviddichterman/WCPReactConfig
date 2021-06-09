@@ -136,6 +136,20 @@ const SettingsComponent = ({
     console.log(new_intervals[service_index][day_index]);
   }
 
+  const timestep_html = settings.time_step2 ? SERVICES.map((_, i) => {
+    return (
+      <Grid item xs={Math.floor(12/SERVICES.length)} key={i}>
+        <CheckedInputComponent
+          label={`${SERVICES[i]} Time Step (minutes)`}
+          className="form-control"
+          type="number"
+          inputProps={{min: 1, max: 1440}}
+          value={settings.time_step2[i]}
+          onFinishChanging={(e) => onChangeTimeStep(e, i)}
+          />
+      </Grid>
+    );
+  }) : "";
 
   const operating_hours_service_html = settings.operating_hours.map((operating_hours_week, h) => {
     const operating_hours_week_html = operating_hours_week.map((operating_hours_day, i) => {
@@ -208,7 +222,7 @@ const SettingsComponent = ({
           <Grid item xs={12}>
             {operating_hours_service_html}
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={2}>
             <CheckedInputComponent
               type="number"
               label="Additional lead time per pizza beyond the first"
@@ -218,15 +232,10 @@ const SettingsComponent = ({
               inputProps={{min: 0, max: 64}}
             />
           </Grid>
-          <Grid item xs={5}>
-            <CheckedInputComponent
-              type="number"
-              label="Time Step (minutes)"
-              className="form-control"
-              value={settings.time_step}
-              onFinishChanging={onChangeTimeStep}
-              inputProps={{min: 1, max: 1440}}
-            />
+          <Grid item xs={8}>
+            <Grid container spacing={3}>
+              {timestep_html}
+            </Grid>
           </Grid>
           <Grid item xs={2}>
             <Button onClick={onSubmit}>Push Changes</Button>

@@ -7,6 +7,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
   const [description, setDescription] = useState("");
   const [subheading, setSubheading] = useState("");
+  const [footer, setFooter] = useState("");
   const [name, setName] = useState("");
   const [ordinal, setOrdinal] = useState(0);
   const [parent, setParent] = useState(null);
@@ -31,6 +32,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
           body: JSON.stringify({
             description: description,
             subheading: subheading,
+            footer: footer,
             name: name,
             ordinal: ordinal,
             parent_id: parent ? parent.category._id : "",
@@ -44,6 +46,7 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
           setDescription("");
           setName("");
           setSubheading("");
+          setFooter("");
           setOrdinal(0);
           setParent(null);
           setCallLineName("");
@@ -86,6 +89,8 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
       setParent={setParent}
       subheading={subheading}
       setSubheading={setSubheading}
+      footer={footer}
+      setFooter={setFooter}
       callLineName={callLineName}
       setCallLineName={setCallLineName}
       callLineDisplay={callLineDisplay}

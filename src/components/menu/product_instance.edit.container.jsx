@@ -16,12 +16,18 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
   const [squareID, setSquareID] = useState(product_instance.item?.externalIDs?.squareID ?? "");
   const [modifiers, setModifiers] = useState(product_instance.modifiers);
   const [isBase, setIsBase] = useState(product_instance.is_base ?? false);
-  const [skipCustomization, setSkipCustomization] = useState(product_instance.display_flags?.skip_customization ?? false);
-  const [hideFromMenu, setHideFromMenu] = useState(product_instance.display_flags?.hide_from_menu ?? false);
-  const [menuAdornment, setMenuAdornment] = useState(product_instance.display_flags?.menu_adornment ?? "");
-  const [priceDisplay, setPriceDisplay] = useState(product_instance.display_flags?.price_display ?? "IF_COMPLETE");
-  const [suppressExhaustiveModifierList, setSuppressExhaustiveModifierList] = useState(product_instance.display_flags?.suppress_exhaustive_modifier_list ?? false);
-  
+  const [menuOrdinal, setMenuOrdinal] = useState(product_instance.display_flags?.menu?.ordinal || 0);
+  const [menuHide, setMenuHide] = useState(product_instance.display_flags?.menu?.hide ?? false);
+  const [menuPriceDisplay, setMenuPriceDisplay] = useState(product_instance.display_flags?.menu?.price_display ?? "IF_COMPLETE");
+  const [menuAdornment, setMenuAdornment] = useState(product_instance.display_flags?.menu?.adornment ?? "");
+  const [menuSuppressExhaustiveModifierList, setMenuSuppressExhaustiveModifierList] = useState(product_instance.display_flags?.menu?.suppress_exhaustive_modifier_list ?? false);
+  const [menuShowModifierOptions, setMenuShowModifierOptions] = useState(product_instance.display_flags?.menu?.show_modifier_options ?? false);
+  const [orderOrdinal, setOrderOrdinal] = useState(product_instance.display_flags?.order?.ordinal || 0);
+  const [orderMenuHide, setOrderMenuHide] = useState(product_instance.display_flags?.order?.hide ?? false);
+  const [skipCustomization, setSkipCustomization] = useState(product_instance.display_flags?.order?.skip_customization ?? false);
+  const [orderPriceDisplay, setOrderPriceDisplay] = useState(product_instance.display_flags?.order?.price_display ?? "IF_COMPLETE");
+  const [orderAdornment, setOrderAdornment] = useState(product_instance.display_flags?.order?.adornment ?? "");
+  const [orderSuppressExhaustiveModifierList, setOrderSuppressExhaustiveModifierList] = useState(product_instance.display_flags?.order?.suppress_exhaustive_modifier_list ?? false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -50,11 +56,22 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
             modifiers: modifiers,
             is_base: isBase,
             display_flags: {
-              hide_from_menu: hideFromMenu,
-              skip_customization: skipCustomization,
-              menu_adornment: menuAdornment,
-              price_display: priceDisplay,
-              suppress_exhaustive_modifier_list: suppressExhaustiveModifierList
+              menu: {
+                ordinal: menuOrdinal,
+                hide: menuHide,
+                price_display: menuPriceDisplay,
+                adornment: menuAdornment,
+                suppress_exhaustive_modifier_list: menuSuppressExhaustiveModifierList,
+                show_modifier_options: menuShowModifierOptions
+              },
+              order: {
+                ordinal: orderOrdinal,
+                hide: orderMenuHide,
+                skip_customization: skipCustomization,
+                price_display: orderPriceDisplay,
+                adornment: orderAdornment,
+                suppress_exhaustive_modifier_list: orderSuppressExhaustiveModifierList
+              }
             }
           }),
         });
@@ -109,16 +126,33 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
       setModifiers={setModifiers}
       isBase={isBase}
       setIsBase={setIsBase}
-      skipCustomization={skipCustomization}
-      setSkipCustomization={setSkipCustomization}
-      hideFromMenu={hideFromMenu}
-      setHideFromMenu={setHideFromMenu}
+      
+      // menu
+      menuOrdinal={menuOrdinal}
+      setMenuOrdinal={setMenuOrdinal}
+      menuHide={menuHide}
+      setMenuHide={setMenuHide}
+      menuPriceDisplay={menuPriceDisplay}
+      setMenuPriceDisplay={setMenuPriceDisplay}
       menuAdornment={menuAdornment}
       setMenuAdornment={setMenuAdornment}
-      priceDisplay={priceDisplay}
-      setPriceDisplay={setPriceDisplay}
-      suppressExhaustiveModifierList={suppressExhaustiveModifierList}
-      setSuppressExhaustiveModifierList={setSuppressExhaustiveModifierList}
+      menuSuppressExhaustiveModifierList={menuSuppressExhaustiveModifierList}
+      setMenuSuppressExhaustiveModifierList={setMenuSuppressExhaustiveModifierList}
+      menuShowModifierOptions={menuShowModifierOptions}
+      setMenuShowModifierOptions={setMenuShowModifierOptions}
+      // order
+      orderOrdinal={orderOrdinal}
+      setOrderOrdinal={setOrderOrdinal}
+      orderMenuHide={orderMenuHide}
+      setOrderMenuHide={setOrderMenuHide}
+      skipCustomization={skipCustomization}
+      setSkipCustomization={setSkipCustomization}
+      orderPriceDisplay={orderPriceDisplay}
+      setOrderPriceDisplay={setOrderPriceDisplay}
+      orderAdornment={orderAdornment}
+      setOrderAdornment={setOrderAdornment}
+      orderSuppressExhaustiveModifierList={orderSuppressExhaustiveModifierList}
+      setOrderSuppressExhaustiveModifierList={setOrderSuppressExhaustiveModifierList}      
     />
   );
 };

@@ -70,16 +70,32 @@ const ProductInstanceComponent = ({
   setModifiers,
   isBase,
   setIsBase,
-  skipCustomization,
-  setSkipCustomization,
-  hideFromMenu,
-  setHideFromMenu,
+  // menu
+  menuOrdinal,
+  setMenuOrdinal,
+  menuHide,
+  setMenuHide,
+  menuPriceDisplay,
+  setMenuPriceDisplay,
   menuAdornment,
   setMenuAdornment,
-  priceDisplay,
-  setPriceDisplay,
-  suppressExhaustiveModifierList,
-  setSuppressExhaustiveModifierList
+  menuSuppressExhaustiveModifierList,
+  setMenuSuppressExhaustiveModifierList,
+  menuShowModifierOptions,
+  setMenuShowModifierOptions,
+  // order
+  orderOrdinal,
+  setOrderOrdinal,
+  orderMenuHide,
+  setOrderMenuHide,
+  skipCustomization,
+  setSkipCustomization,
+  orderPriceDisplay,
+  setOrderPriceDisplay,
+  orderAdornment,
+  setOrderAdornment,
+  orderSuppressExhaustiveModifierList,
+  setOrderSuppressExhaustiveModifierList
 }) => {
   const classes = useStyles();
   const actions_html =
@@ -127,6 +143,7 @@ const ProductInstanceComponent = ({
           option_id: opt.option_id,
           // eslint-disable-next-line
           placement: idx == oidx ? "WHOLE" : "NONE",
+          qualifier: "REGULAR"
         };
       }
     );
@@ -223,7 +240,7 @@ const ProductInstanceComponent = ({
             onChange={(e) => setDescription(e.target.value)}
           />
         </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={2}>
             <CheckedInputComponent
               label="Ordinal"
               type="number"
@@ -237,11 +254,12 @@ const ProductInstanceComponent = ({
               label="Short Code"
               type="text"
               value={shortcode}
+              inputProps={{ size: 40 }}
               size="small"
               onChange={(e) => setShortcode(e.target.value)}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <CheckedInputComponent
               label="Price"
               className="form-control"
@@ -266,87 +284,6 @@ const ProductInstanceComponent = ({
               label="Is Base"
             />
           </Grid>
-          <Grid item xs={3}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={hideFromMenu}
-                  onChange={(e) =>
-                    setHideFromMenu(e.target.checked)
-                  }
-                  name="Hide From Menu"
-                />
-              }
-              label="Hide From Menu"
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={suppressExhaustiveModifierList}
-                  onChange={(e) =>
-                    setSuppressExhaustiveModifierList(e.target.checked)
-                  }
-                  name="Suppress Exhaustive Modifier List"
-                />
-              }
-              label="Suppress Exhaustive Modifier List"
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={skipCustomization}
-                  onChange={(e) =>
-                    setSkipCustomization(e.target.checked)
-                  }
-                  name="Skip Customization"
-                />
-              }
-              label="Skip Customization"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Menu Adornment (Optional, HTML allowed)"
-              type="text"
-              inputProps={{ size: 60 }}
-              value={menuAdornment}
-              size="small"
-              onChange={(e) => setMenuAdornment(e.target.value)}
-            />
-          </Grid>
-          <Grid container item xs={6}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Price Display</FormLabel>
-              <RadioGroup
-                defaultValue="ALWAYS"
-                aria-label="price-display"
-                name="price-display"
-                row
-                value={priceDisplay}
-                onChange={(e) => setPriceDisplay(e.target.value)}
-              >
-                <FormControlLabel
-                  value="FROM_X"
-                  control={<Radio />}
-                  label="From X"
-                />
-                <FormControlLabel
-                  value="VARIES"
-                  control={<Radio />}
-                  label="Never"
-                />
-                <FormControlLabel
-                  value="ALWAYS"
-                  control={<Radio />}
-                  label="Always"
-                />
-              </RadioGroup>
-            </FormControl>
-          </Grid>
           <Grid item xs={6}>
             <TextField
               label="Revel ID"
@@ -367,7 +304,207 @@ const ProductInstanceComponent = ({
               onChange={(e) => setSquareID(e.target.value)}
             />
           </Grid>
-            <Grid item xs={12}>
+          <Grid item xs={3}>
+            <CheckedInputComponent
+              label="Menu Ordinal"
+              type="number"
+              value={menuOrdinal}
+              inputProps={{ min: 0 }}
+              onFinishChanging={(e) => setMenuOrdinal(e)}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={menuHide}
+                  onChange={(e) =>
+                    setMenuHide(e.target.checked)
+                  }
+                  name="Hide From Menu"
+                />
+              }
+              label="Hide From Menu"
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={menuSuppressExhaustiveModifierList}
+                  onChange={(e) =>
+                    setMenuSuppressExhaustiveModifierList(e.target.checked)
+                  }
+                  name="Menu Suppress Exhaustive Modifier List"
+                />
+              }
+              label="Menu Suppress Exhaustive Modifier List"
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={menuShowModifierOptions}
+                  onChange={(e) =>
+                    setMenuShowModifierOptions(e.target.checked)
+                  }
+                  name="Show Modifier Options in Menu Display"
+                />
+              }
+              label="Show Modifier Options in Menu Display"
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Menu Adornment (Optional, HTML allowed)"
+              type="text"
+              inputProps={{ size: 60 }}
+              value={menuAdornment}
+              size="small"
+              onChange={(e) => setMenuAdornment(e.target.value)}
+            />
+          </Grid>
+          <Grid container item xs={6}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Menu Price Display</FormLabel>
+              <RadioGroup
+                defaultValue="ALWAYS"
+                aria-label="menu-price-display"
+                name="menu-price-display"
+                row
+                value={menuPriceDisplay}
+                onChange={(e) => setMenuPriceDisplay(e.target.value)}
+              >
+                <FormControlLabel
+                  value="FROM_X"
+                  control={<Radio />}
+                  label="From X"
+                />
+                <FormControlLabel
+                  value="VARIES"
+                  control={<Radio />}
+                  label="Never"
+                />
+                <FormControlLabel
+                  value="ALWAYS"
+                  control={<Radio />}
+                  label="Always"
+                />
+                <FormControlLabel
+                  value="MIN_TO_MAX"
+                  control={<Radio />}
+                  label="Min To Max"
+                />      
+                <FormControlLabel
+                  value="LIST"
+                  control={<Radio />}
+                  label="List"
+                />                          
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid item xs={3}>
+            <CheckedInputComponent
+              label="Order Ordinal"
+              type="number"
+              value={orderOrdinal}
+              inputProps={{ min: 0 }}
+              onFinishChanging={(e) => setOrderOrdinal(e)}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={orderMenuHide}
+                  onChange={(e) =>
+                    setOrderMenuHide(e.target.checked)
+                  }
+                  name="Hide From Order Menu"
+                />
+              }
+              label="Hide From Order Menu"
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={orderSuppressExhaustiveModifierList}
+                  onChange={(e) =>
+                    setOrderSuppressExhaustiveModifierList(e.target.checked)
+                  }
+                  name="Order Menu Suppress Exhaustive Modifier List"
+                />
+              }
+              label="Order Menu Suppress Exhaustive Modifier List"
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={skipCustomization}
+                  onChange={(e) =>
+                    setSkipCustomization(e.target.checked)
+                  }
+                  name="Skip Customization"
+                />
+              }
+              label="Skip Customization"
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Order Menu Adornment (Optional, HTML allowed)"
+              type="text"
+              inputProps={{ size: 60 }}
+              value={orderAdornment}
+              size="small"
+              onChange={(e) => setOrderAdornment(e.target.value)}
+            />
+          </Grid>
+          <Grid container item xs={6}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Order Menu Price Display</FormLabel>
+              <RadioGroup
+                defaultValue="ALWAYS"
+                aria-label="order-menu-price-display"
+                name="order-menu-price-display"
+                row
+                value={orderPriceDisplay}
+                onChange={(e) => setOrderPriceDisplay(e.target.value)}
+              >
+                <FormControlLabel
+                  value="FROM_X"
+                  control={<Radio />}
+                  label="From X"
+                />
+                <FormControlLabel
+                  value="VARIES"
+                  control={<Radio />}
+                  label="Never"
+                />
+                <FormControlLabel
+                  value="ALWAYS"
+                  control={<Radio />}
+                  label="Always"
+                />
+                <FormControlLabel
+                  value="MIN_TO_MAX"
+                  control={<Radio />}
+                  label="Min To Max"
+                />      
+                <FormControlLabel
+                  value="LIST"
+                  control={<Radio />}
+                  label="List"
+                />                          
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
             <DatetimeBasedDisableComponent
               disabled={disabled}
               setDisabled={setDisabled}
@@ -451,17 +588,33 @@ const ProductInstanceContainer = ({
   modifiers,
   setModifiers,
   isBase,
-  setIsBase,
-  skipCustomization,
-  setSkipCustomization,
-  hideFromMenu,
-  setHideFromMenu,
+  setIsBase,  
+  // menu
+  menuOrdinal,
+  setMenuOrdinal,
+  menuHide,
+  setMenuHide,
+  menuPriceDisplay,
+  setMenuPriceDisplay,
   menuAdornment,
   setMenuAdornment,
-  priceDisplay,
-  setPriceDisplay,
-  suppressExhaustiveModifierList,
-  setSuppressExhaustiveModifierList
+  menuSuppressExhaustiveModifierList,
+  setMenuSuppressExhaustiveModifierList,
+  menuShowModifierOptions,
+  setMenuShowModifierOptions,
+  // order
+  orderOrdinal,
+  setOrderOrdinal,
+  orderMenuHide,
+  setOrderMenuHide,
+  skipCustomization,
+  setSkipCustomization,
+  orderPriceDisplay,
+  setOrderPriceDisplay,
+  orderAdornment,
+  setOrderAdornment,
+  orderSuppressExhaustiveModifierList,
+  setOrderSuppressExhaustiveModifierList
 }) => {
   const [normalizedModifers, setNormalizedModifiers] = useState(
     normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers)
@@ -498,16 +651,32 @@ const ProductInstanceContainer = ({
       setModifiers={setNormalizedModifiersIntermediate}
       isBase={isBase}
       setIsBase={setIsBase}
-      skipCustomization={skipCustomization}
-      setSkipCustomization={setSkipCustomization}
-      hideFromMenu={hideFromMenu}
-      setHideFromMenu={setHideFromMenu}
+      // menu
+      menuOrdinal={menuOrdinal}
+      setMenuOrdinal={setMenuOrdinal}
+      menuHide={menuHide}
+      setMenuHide={setMenuHide}
+      menuPriceDisplay={menuPriceDisplay}
+      setMenuPriceDisplay={setMenuPriceDisplay}
       menuAdornment={menuAdornment}
       setMenuAdornment={setMenuAdornment}
-      priceDisplay={priceDisplay}
-      setPriceDisplay={setPriceDisplay}
-      suppressExhaustiveModifierList={suppressExhaustiveModifierList}
-      setSuppressExhaustiveModifierList={setSuppressExhaustiveModifierList}
+      menuSuppressExhaustiveModifierList={menuSuppressExhaustiveModifierList}
+      setMenuSuppressExhaustiveModifierList={setMenuSuppressExhaustiveModifierList}
+      menuShowModifierOptions={menuShowModifierOptions}
+      setMenuShowModifierOptions={setMenuShowModifierOptions}
+      // order
+      orderOrdinal={orderOrdinal}
+      setOrderOrdinal={setOrderOrdinal}
+      orderMenuHide={orderMenuHide}
+      setOrderMenuHide={setOrderMenuHide}
+      skipCustomization={skipCustomization}
+      setSkipCustomization={setSkipCustomization}
+      orderPriceDisplay={orderPriceDisplay}
+      setOrderPriceDisplay={setOrderPriceDisplay}
+      orderAdornment={orderAdornment}
+      setOrderAdornment={setOrderAdornment}
+      orderSuppressExhaustiveModifierList={orderSuppressExhaustiveModifierList}
+      setOrderSuppressExhaustiveModifierList={setOrderSuppressExhaustiveModifierList}
     />
   );
 };

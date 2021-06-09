@@ -69,10 +69,10 @@ const theme = createMuiTheme({
 });
 
 //const ENDPOINT = "https://wario.windycitypie.com";
-//const ENDPOINT = "https://wdev.windycitypie.com";
+const ENDPOINT = "https://wdev.windycitypie.com";
 //const ENDPOINT = "https://wstaging.windycitypie.com";
 //const ENDPOINT = "https://wario.breezytownpizza.com";
-const ENDPOINT = "http://localhost:4001";
+//const ENDPOINT = "http://localhost:4001";
 
 const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, { autoConnect: false, secure: true, cookie: false });
 const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false });
@@ -185,9 +185,9 @@ const App = () => {
     setSETTINGS(new_settings);
   }
 
-  const onChangeTimeStep = (e) => {
+  const onChangeTimeStep = (e, service_idx) => {
     const new_settings = JSON.parse(JSON.stringify(SETTINGS));
-    new_settings.time_step = parseInt(e);
+    new_settings.time_step2[service_idx] = parseInt(e);
     setSETTINGS(new_settings);
   }
 
@@ -206,7 +206,7 @@ const App = () => {
   }
 
   const removeBlockedOffInterval = (service_index, day_index, interval_index) => {
-    const new_blocked_off = WDateUtils.RemoveInterval(
+    const new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
       service_index,
       day_index,
       interval_index,
@@ -246,7 +246,6 @@ const App = () => {
     new_dict[key] = value;
     setKEYVALUES(new_dict);
   }
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -283,6 +282,7 @@ const App = () => {
             blocked_off={BLOCKED_OFF}
             addBlockedOffInterval={addBlockedOffInterval}
             RemoveInterval={removeBlockedOffInterval}
+            LEAD_TIME={LEADTIME}
             SETTINGS={SETTINGS}
           />
         </TabPanel>

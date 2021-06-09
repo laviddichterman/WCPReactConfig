@@ -16,12 +16,23 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   const [squareID, setSquareID] = useState("");
   const [modifiers, setModifiers] = useState([]);
   const [isBase, setIsBase] = useState(false);
-  const [skipCustomization, setSkipCustomization] = useState(true);
-  const [hideFromMenu, setHideFromMenu] = useState(false);
+  // menu
+  const [menuOrdinal, setMenuOrdinal] = useState(0);
+  const [menuHide, setMenuHide] = useState(false);
+  const [menuPriceDisplay, setMenuPriceDisplay] = useState("ALWAYS");
   const [menuAdornment, setMenuAdornment] = useState("");
-  const [priceDisplay, setPriceDisplay] = useState("ALWAYS");
+  const [menuSuppressExhaustiveModifierList, setMenuSuppressExhaustiveModifierList] = useState(false);
+  const [menuShowModifierOptions, setMenuShowModifierOptions] = useState(false);
+
+  // order
+  const [orderOrdinal, setOrderOrdinal] = useState(0);
+  const [orderMenuHide, setOrderMenuHide] = useState(false);        
+  const [skipCustomization, setSkipCustomization] = useState(true);
+  const [orderPriceDisplay, setOrderPriceDisplay] = useState("ALWAYS");
+  const [orderAdornment, setOrderAdornment] = useState("");
+  const [orderSuppressExhaustiveModifierList, setOrderSuppressExhaustiveModifierList] = useState(false);
+
   const [isProcessing, setIsProcessing] = useState(false);
-  const [suppressExhaustiveModifierList, setSuppressExhaustiveModifierList] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const addProductInstance = async (e) => {
     e.preventDefault();
@@ -47,11 +58,22 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
             modifiers: modifiers,
             is_base: isBase,
             display_flags: {
-              hide_from_menu: hideFromMenu,
-              skip_customization: skipCustomization,
-              menu_adornment: menuAdornment,
-              price_display: priceDisplay,
-              suppress_exhaustive_modifier_list: suppressExhaustiveModifierList
+              menu: {
+                ordinal: menuOrdinal,
+                hide: menuHide,
+                price_display: menuPriceDisplay,
+                adornment: menuAdornment,
+                suppress_exhaustive_modifier_list: menuSuppressExhaustiveModifierList,
+                show_modifier_options: menuShowModifierOptions
+              },
+              order: {
+                ordinal: orderOrdinal,
+                hide: orderMenuHide,
+                skip_customization: skipCustomization,
+                price_display: orderPriceDisplay,
+                adornment: orderAdornment,
+                suppress_exhaustive_modifier_list: orderSuppressExhaustiveModifierList
+              }
             }
           }),
         });
@@ -66,11 +88,18 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
           setSquareID("");  
           setModifiers([]);
           setIsBase(false);
-          setSkipCustomization(false);
-          setHideFromMenu(false);
+          setMenuOrdinal(0);
+          setMenuHide(false);
+          setMenuPriceDisplay("ALWAYS");
           setMenuAdornment("");
-          setPriceDisplay("ALWAYS");
-          setSuppressExhaustiveModifierList(false);
+          setMenuSuppressExhaustiveModifierList(false);
+          setMenuShowModifierOptions(false);
+          setOrderOrdinal(0);
+          setOrderMenuHide(false);
+          setSkipCustomization(false);
+          setOrderPriceDisplay("ALWAYS");
+          setOrderAdornment("");
+          setOrderSuppressExhaustiveModifierList(false);
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -121,16 +150,33 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       setModifiers={setModifiers}
       isBase={isBase}
       setIsBase={setIsBase}
-      skipCustomization={skipCustomization}
-      setSkipCustomization={setSkipCustomization}
-      hideFromMenu={hideFromMenu}
-      setHideFromMenu={setHideFromMenu}
+
+      // menu
+      menuOrdinal={menuOrdinal}
+      setMenuOrdinal={setMenuOrdinal}
+      menuHide={menuHide}
+      setMenuHide={setMenuHide}
+      menuPriceDisplay={menuPriceDisplay}
+      setMenuPriceDisplay={setMenuPriceDisplay}
       menuAdornment={menuAdornment}
       setMenuAdornment={setMenuAdornment}
-      priceDisplay={priceDisplay}
-      setPriceDisplay={setPriceDisplay}
-      suppressExhaustiveModifierList={suppressExhaustiveModifierList}
-      setSuppressExhaustiveModifierList={setSuppressExhaustiveModifierList}
+      menuSuppressExhaustiveModifierList={menuSuppressExhaustiveModifierList}
+      setMenuSuppressExhaustiveModifierList={setMenuSuppressExhaustiveModifierList}
+      menuShowModifierOptions={menuShowModifierOptions}
+      setMenuShowModifierOptions={setMenuShowModifierOptions}
+      // order
+      orderOrdinal={orderOrdinal}
+      setOrderOrdinal={setOrderOrdinal}
+      orderMenuHide={orderMenuHide}
+      setOrderMenuHide={setOrderMenuHide}
+      skipCustomization={skipCustomization}
+      setSkipCustomization={setSkipCustomization}
+      orderPriceDisplay={orderPriceDisplay}
+      setOrderPriceDisplay={setOrderPriceDisplay}
+      orderAdornment={orderAdornment}
+      setOrderAdornment={setOrderAdornment}
+      orderSuppressExhaustiveModifierList={orderSuppressExhaustiveModifierList}
+      setOrderSuppressExhaustiveModifierList={setOrderSuppressExhaustiveModifierList}
     />
   );
 };

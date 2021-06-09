@@ -31,13 +31,6 @@ const TrimOptionsBeforeDisabled = (opts) => {
   return idx === -1 ? opts : opts.slice(0, idx);
 }
 
-const TrimOptionsBeforeCurrentDayAndTime = (opts, selected_date) => {
-  const now = new moment();
-  const now_minutes = now.minute() + (now.hour() * 60);
-  return selected_date.isSame(now, "day") ? 
-    opts.filter(x => x.value > now_minutes) : opts;
-}
-
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -84,7 +77,8 @@ const BlockOffComp = ({
   addBlockedOffInterval,
   blocked_off,
   SETTINGS,
-  RemoveInterval
+  RemoveInterval,
+  LEAD_TIME
 }) => {
   const classes = useStyles();
   const [ upper_time, setUpperTime ] = useState(null);
@@ -93,13 +87,14 @@ const BlockOffComp = ({
   const [ parsed_date, setParsedDate ] = useState(moment().format(WDateUtils.DATE_STRING_INTERNAL_FORMAT));
   const [ service_selection, setServiceSelection ] = useState(Array(SERVICES.length).fill(true));
   const [ can_submit, setCanSubmit ] = useState(false);
-
   const HasOptionsForDate = (date) => {
-    return TrimOptionsBeforeCurrentDayAndTime(WDateUtils.GetOptionsForDate(blocked_off,
-      SETTINGS.operating_hours,
+    return WDateUtils.GetOptionsForDate(blocked_off,
+      SETTINGS,
+      LEAD_TIME,
+      moment(date),
       service_selection,
-      moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT),
-      SETTINGS.time_step), moment(date)).filter(x => !x.disabled).length
+      {},
+      moment()).filter(x => !x.disabled).length
   }
 
   const onChangeServiceSelection = (e, i) => {
@@ -208,13 +203,13 @@ const BlockOffComp = ({
     );
   }) : "";
   const start_options = selected_date ?
-    TrimOptionsBeforeCurrentDayAndTime(
-      WDateUtils.GetOptionsForDate(blocked_off,
-        SETTINGS.operating_hours,
-        service_selection,
-        parsed_date,
-        SETTINGS.time_step),
-      selected_date) : [];
+    WDateUtils.GetOptionsForDate(blocked_off,
+      SETTINGS,
+      LEAD_TIME,
+      selected_date,
+      service_selection,
+      {},
+      moment()) : [];
   const end_options = start_options.length && lower_time ?
     TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
   return (
@@ -255,7 +250,7 @@ const BlockOffComp = ({
           onChange={e => onChangeLowerBound(e)}
           value={lower_time}
           optionCaption={"Start"}
-          options={start_options.filter((elt) => !elt.disabled)}
+          options={start_options.filter((elt) => !elt.disabled).map(x=>({...x, label: WDateUtils.MinutesToPrintTime(x.value)}))}
           disabled={!selected_date}
           className="col"
           />
@@ -265,7 +260,7 @@ const BlockOffComp = ({
           onChange={e => onChangeUpperBound(e)}
           value={upper_time}
           optionCaption={"End"}
-          options={end_options}
+          options={end_options.map(x=>({...x, label: WDateUtils.MinutesToPrintTime(x.value)}))}
           disabled={!(selected_date && lower_time)}
           className="col"
           />
