@@ -88,13 +88,8 @@ const BlockOffComp = ({
   const [ service_selection, setServiceSelection ] = useState(Array(SERVICES.length).fill(true));
   const [ can_submit, setCanSubmit ] = useState(false);
   const HasOptionsForDate = (date) => {
-    return WDateUtils.GetOptionsForDate(blocked_off,
-      SETTINGS,
-      LEAD_TIME,
-      moment(date),
-      service_selection,
-      {},
-      moment()).filter(x => !x.disabled).length
+    const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(blocked_off, SETTINGS, LEAD_TIME, date, service_selection, {});
+    return WDateUtils.GetOptionsForDate(INFO, date, moment()).filter(x => !x.disabled).length
   }
 
   const onChangeServiceSelection = (e, i) => {
@@ -203,12 +198,9 @@ const BlockOffComp = ({
     );
   }) : "";
   const start_options = selected_date ?
-    WDateUtils.GetOptionsForDate(blocked_off,
-      SETTINGS,
-      LEAD_TIME,
+    WDateUtils.GetOptionsForDate(
+      WDateUtils.GetInfoMapForAvailabilityComputation(blocked_off, SETTINGS, LEAD_TIME, selected_date, service_selection, {}), 
       selected_date,
-      service_selection,
-      {},
       moment()) : [];
   const end_options = start_options.length && lower_time ?
     TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
