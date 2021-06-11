@@ -14,6 +14,7 @@ import ModifierOptionDeleteContainer from "./modifier_option.delete.container";
 import ProductAddContainer from "./product.add.container";
 //import ProductImportContainer from "./product.import.container";
 import ProductEditContainer from "./product.edit.container";
+import ProductCopyContainer from "./product.copy.container";
 import ProductDeleteContainer from "./product.delete.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
 import ProductInstanceEditContainer from "./product_instance.edit.container";
@@ -77,6 +78,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
   const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
   const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
   const [isProductAddOpen, setIsProductAddOpen] = useState(false);
+  const [isProductCopyOpen, setIsProductCopyOpen] = useState(false);
   const [isProductDeleteOpen, setIsProductDeleteOpen] = useState(false);
 
   const [isProductInstanceAddOpen, setIsProductInstanceAddOpen] = useState(false);
@@ -264,6 +266,28 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
         }
       />
       <DialogContainer
+        title={`Make copy of: ${
+          productToEdit ? productToEdit.item.display_name : ""
+        }`}
+        onClose={() => {
+          setIsProductCopyOpen(false);
+        }}
+        isOpen={isProductCopyOpen}
+        inner_component={
+          <ProductCopyContainer
+            onCloseCallback={() => {
+              setIsProductCopyOpen(false);
+            }}
+            categories={catalog.categories}
+            modifier_types={catalog.modifiers}
+            product_instance_functions={catalog.product_instance_functions}
+            products={catalog.products}
+            product={productToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        }
+      />      
+      <DialogContainer
         title={"Delete Product"}
         onClose={() => {
           setIsProductDeleteOpen(false);
@@ -436,6 +460,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             setCategoryToEdit={setCategoryToEdit}
             setProductToEdit={setProductToEdit}
             setIsProductEditOpen={setIsProductEditOpen}
+            setIsProductCopyOpen={setIsProductCopyOpen}
             setIsProductDeleteOpen={setIsProductDeleteOpen}
             setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
             setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
@@ -452,6 +477,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
               catalog={catalog}
               setProductToEdit={setProductToEdit}
               setIsProductEditOpen={setIsProductEditOpen}
+              setIsProductCopyOpen={setIsProductCopyOpen}
               setIsProductDeleteOpen={setIsProductDeleteOpen}
               setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
               setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}

@@ -43,7 +43,7 @@ const CategoryComponent = ({
   description, setDescription, 
   ordinal, setOrdinal,
   subheading, setSubheading, 
-  footer, setFooter,
+  footnotes, setFootnotes,
   name, setName,
   callLineName, setCallLineName,
   callLineDisplay, setCallLineDisplay, 
@@ -121,12 +121,12 @@ const CategoryComponent = ({
           <TextField
             multiline
             fullWidth
-            label="Footer (Optional, HTML allowed)"
+            label="Footnotes (Optional, HTML allowed)"
             type="text"
             inputProps={{ size: 100 }}
-            value={footer}
+            value={footnotes}
             size="small"
-            onChange={(e) => setFooter(e.target.value)}
+            onChange={(e) => setFootnotes(e.target.value)}
           />
         </Grid>
         <Grid item xs={6}>

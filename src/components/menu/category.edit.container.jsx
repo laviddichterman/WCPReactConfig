@@ -8,7 +8,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
   const [subheading, setSubheading] = useState(category.subheading);
-  const [footer, setFooter] = useState(category.footer);
+  const [footnotes, setFootnotes] = useState(category.footnotes);
   const [ordinal, setOrdinal] = useState(category.ordinal || 0);
   const [parent, setParent] = useState(category.parent_id ? categories[category.parent_id] : null);
   const [callLineName, setCallLineName] = useState(category.display_flags?.call_line_name ?? "");
@@ -20,7 +20,6 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
     e.preventDefault();
 
     if (!isProcessing) {
-      console.log(parent);
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently();
@@ -80,8 +79,8 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
       setParent={setParent}
       subheading={subheading}
       setSubheading={setSubheading}
-      footer={footer}
-      setFooter={setFooter}
+      footnotes={footnotes}
+      setFootnotes={setFootnotes}
       callLineName={callLineName}
       setCallLineName={setCallLineName}
       callLineDisplay={callLineDisplay}

@@ -12,6 +12,7 @@ const CategoryTableContainer = ({
   setCategoryToEdit,
   setProductToEdit,
   setIsProductEditOpen,
+  setIsProductCopyOpen,
   setIsProductDeleteOpen,
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
@@ -74,7 +75,8 @@ const CategoryTableContainer = ({
               )}
               catalog={catalog}
               setProductToEdit={setProductToEdit}            
-              setIsProductEditOpen={setIsProductEditOpen}            
+              setIsProductEditOpen={setIsProductEditOpen}      
+              setIsProductCopyOpen={setIsProductCopyOpen}      
               setIsProductDeleteOpen={setIsProductDeleteOpen}
               setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}   
               setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}   

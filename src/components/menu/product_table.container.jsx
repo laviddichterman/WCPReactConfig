@@ -2,7 +2,7 @@ import React from "react";
 import moment from 'moment';
 
 import TableWrapperComponent from "../table_wrapper.component";
-import { AddBox, DeleteOutline, Edit } from "@material-ui/icons";
+import { AddBox, DeleteOutline, Edit, LibraryAdd } from "@material-ui/icons";
 
 const ProductTableContainer = ({
   tableTitle,
@@ -10,6 +10,7 @@ const ProductTableContainer = ({
   catalog,
   setProductToEdit,
   setIsProductEditOpen,
+  setIsProductCopyOpen,
   setIsProductDeleteOpen,
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
@@ -36,6 +37,14 @@ const ProductTableContainer = ({
           tooltip: "Add Product Instance",
           onClick: (event, rowData) => {
             setIsProductInstanceAddOpen(true);
+            setProductToEdit(rowData.product);
+          },
+        },
+        {
+          icon: LibraryAdd,
+          tooltip: "Copy Product",
+          onClick: (event, rowData) => {
+            setIsProductCopyOpen(true);
             setProductToEdit(rowData.product);
           },
         },
