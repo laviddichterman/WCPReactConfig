@@ -197,7 +197,7 @@ const BlockOffComp = ({
       </Grid>
     );
   }) : "";
-  const start_options = selected_date ?
+  const start_options = selected_date && SETTINGS && LEAD_TIME ?
     WDateUtils.GetOptionsForDate(
       WDateUtils.GetInfoMapForAvailabilityComputation(blocked_off, SETTINGS, LEAD_TIME, selected_date, service_selection, {}), 
       selected_date,
