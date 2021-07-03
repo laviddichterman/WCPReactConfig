@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StoreCreditIssueComponent = ({ ENDPOINT }) => {
+const StoreCreditComponent = ({ ENDPOINT }) => {
   const classes = useStyles();
   const [amount, setAmount] = useState(5.00);
   const [addedBy, setAddedBy] = useState("");
@@ -86,13 +86,11 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
         });  
         console.log(JSON.stringify(response));
         setAddedBy("");
-        setAmount(5.00);
         setReason("");
         setFirstName("");
         setLastName("");
         setRecipientEmail("");
         setRecipientEmailError(false);
-        setExpiration(moment().add(60, "days"))
         setIsProcessing(false);
       } catch (error) {
         console.error(error);
@@ -108,14 +106,13 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
             <AppBar position="static">
               <Toolbar>
                 <Typography variant="h5" className={classes.title}>
-                  Issue a store credit for a customer
+                  Redeem Store Credit
                 </Typography>
               </Toolbar>
-              <Typography variant="subtitle1">Note: purchased store credit MUST be done through our website!</Typography>
-              <Typography variant="subtitle1">People kept on giving out discounts that didn't expire, so now they all have to expire.</Typography>
+              <Typography variant="subtitle1">THIS DOESN'T DO ANYTHING YET</Typography>
             </AppBar>
           </Grid>
-          <Grid item xs={3}>
+          {/* <Grid item xs={3}>
             <TextField
               label="First Name"
               type="text"
@@ -168,20 +165,13 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
                 placeholder={"Select Date"}
                 disableToolbar
                 disablePast
+                disabled
                 minDate={moment().add(30, "days")}
                 label="Expiration"
                 value={expiration}
                 onChange={(date) => setExpiration(date)}
                 format="dddd, MMMM DD, Y"
               />
-              {/* <IconButton
-                edge="end"
-                size="medium"
-                aria-label="delete"
-                onClick={() => setExpiration(null)}
-              >
-                <HighlightOffIcon />
-              </IconButton> */}
             </MuiPickersUtilsProvider>
           </Grid>
           <Grid item xs={2}>
@@ -213,7 +203,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
             >
               Generate
             </Button>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Paper>
       <br />
@@ -221,4 +211,4 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
   );
 };
 
-export default StoreCreditIssueComponent;
+export default StoreCreditComponent;
