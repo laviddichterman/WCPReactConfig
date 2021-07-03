@@ -34,6 +34,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
             name: name,
             ordinal: ordinal,
             subheading: subheading,
+            footnotes: footnotes,
             parent_id: parent ? parent.category._id : "",
             display_flags: {
               call_line_name: callLineName,
