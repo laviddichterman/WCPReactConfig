@@ -53,6 +53,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
             },
             category_ids: parentCategories.map(x => x.category._id),
             modifiers: product.modifiers,
+            disabled: null,
             create_product_instance: false
           }),
         });
