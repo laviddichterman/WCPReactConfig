@@ -1,23 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CheckedInputComponent from "./checked_input.component";
-import { useAuth0 } from '@auth0/auth0-react';
+import DialogContainer from "./dialog.container";
+
+import QrScanner from 'qr-scanner'; 
+import { OneOffQrScanner } from "react-webcam-qr-scanner.ts";
 
 import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
-import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import IconButton from "@material-ui/core/IconButton";
+import ErrorOutline from "@material-ui/icons/ErrorOutline";
+import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import Toolbar from "@material-ui/core/Toolbar";
-import moment from "moment";
-import MomentUtils from "@date-io/moment";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 
-import { WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
-
+const US_MONEY_FORMATTER = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,60 +49,102 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(4),
   },
 }));
-
-const StoreCreditComponent = ({ ENDPOINT }) => {
+const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
   const classes = useStyles();
-  const [amount, setAmount] = useState(5.00);
-  const [addedBy, setAddedBy] = useState("");
-  const [reason, setReason] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [recipientEmail, setRecipientEmail] = useState("");
-  const [recipientEmailError, setRecipientEmailError] = useState(false);
-  const [expiration, setExpiration] = useState(moment().add(60, "days"));
+  const [creditCode, setCreditCode] = useState("");
+  const [scanCode, setScanCode] = useState(false);
+  const [hasCamera, setHasCamera] = useState(false);
+  const [validationResponse, setValidationResponse] = useState(null);
+  const [amount, setAmount] = useState(0);
+  const [processedBy, setProcessedBy] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getAccessTokenSilently } = useAuth0();
+  const [debitResponse, setDebitResponse] = useState(null);
 
+  useEffect(() => {
+    const CheckForCamera = async () => {
+      const cam = await QrScanner.hasCamera();
+      setHasCamera(cam);
+    };
+    CheckForCamera();
+  }, []);
+  const onScanned = (qrCode) => {
+      setCreditCode(qrCode);
+      setScanCode(false);
+  };
 
-  const validateRecipientEmail = () => {
-    setRecipientEmailError(recipientEmail.length >= 1 && !EMAIL_REGEX.test(recipientEmail))
-  }
-
-  const handleSubmit = async () => {
+  const clearLookup = () => {
+    setIsProcessing(true);
+    setCreditCode("");
+    setScanCode(false);
+    setValidationResponse(null);
+    setAmount(0);
+    setProcessedBy("");
+    setIsProcessing(false);
+    setDebitResponse(null);
+  };
+  const validateCode = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
-        const response = await fetch(`${ENDPOINT}/api/v1/payments/storecredit/discount`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ 
-            amount: amount,
-            recipient_name_first: firstName,
-            recipient_name_last: lastName,
-            recipient_email: recipientEmail,
-            added_by: addedBy,
-            reason: reason,
-            expiration: expiration && expiration.isValid() ? expiration.format(WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
-          })
-        });  
-        console.log(JSON.stringify(response));
-        setAddedBy("");
-        setReason("");
-        setFirstName("");
-        setLastName("");
-        setRecipientEmail("");
-        setRecipientEmailError(false);
+        //const token = await getAccessTokenSilently();
+        const response = await fetch(
+          `${ENDPOINT}/api/v1/payments/storecredit/validate/?code=${encodeURIComponent(
+            creditCode
+          )}`,
+          {
+            method: "GET",
+            // headers: {
+            //   Authorization: `Bearer ${token}`,
+            //   'Content-Type': 'application/json'
+            // },
+          }
+        );
+        if (response.status === 200) {
+          const response_data = await response.json();
+          setValidationResponse(response_data);
+        } else {
+        }
         setIsProcessing(false);
       } catch (error) {
         console.error(error);
         setIsProcessing(false);
       }
     }
-  }
+  };
+
+  const processDebit = async () => {
+    if (!isProcessing) {
+      setIsProcessing(true);
+      try {
+        //const token = await getAccessTokenSilently();
+        const response = await fetch(
+          `${ENDPOINT}/api/v1/payments/storecredit/spend`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              code: creditCode,
+              amount: amount,
+              lock: {
+                iv: validationResponse.iv,
+                enc: validationResponse.enc,
+                auth: validationResponse.auth,
+              },
+              processed_by: processedBy,
+            }),
+          }
+        );
+        const response_data = await response.json();
+        setDebitResponse(response_data);
+        setIsProcessing(false);
+      } catch (error) {
+        console.error(error);
+        setIsProcessing(false);
+      }
+    }
+  };
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -109,101 +156,191 @@ const StoreCreditComponent = ({ ENDPOINT }) => {
                   Redeem Store Credit
                 </Typography>
               </Toolbar>
-              <Typography variant="subtitle1">THIS DOESN'T DO ANYTHING YET</Typography>
+              <Typography variant="subtitle1">
+                Tool to debit store credit with instructions
+              </Typography>
             </AppBar>
-          </Grid>
-          {/* <Grid item xs={3}>
-            <TextField
-              label="First Name"
-              type="text"
-              inputProps={{ size: 30 }}
-              value={firstName}
-              size="small"
-              onChange={e => setFirstName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              label="Last Name"
-              type="text"
-              inputProps={{ size: 30 }}
-              value={lastName}
-              size="small"
-              onChange={e => setLastName(e.target.value)}
-            />
           </Grid>
           <Grid item xs={6}>
             <TextField
-              label="Customer E-mail"
-              type="email"
-              error={recipientEmailError}
-              inputProps={{ size: 60 }}
-              value={recipientEmail}
-              size="small"
-              onChange={e => { setRecipientEmail(e.target.value); } }
-              onBlur={e => validateRecipientEmail()}
-            />
-          </Grid>
-          <Grid item xs={2}>
-            <CheckedInputComponent
-              label="Dollar Amount"
-              className="form-control"
-              type="number"
+              label="Credit Code"
+              type="text"
               fullWidth
-              parseFunction={(e) => parseFloat(e).toFixed(2)}
-              value={amount}
-              inputProps={{min:1.00, max:500.00}}
-              onFinishChanging={(e) => setAmount(e)}
+              inputProps={{ size: 19 }}
+              disabled={isProcessing || validationResponse !== null}
+              value={creditCode}
+              size="small"
+              onChange={(e) => setCreditCode(e.target.value)}
             />
           </Grid>
-          <Grid item xs={4}>
-            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
-              <DatePicker
-                inputProps={{ size: 28 }}
-                variant="inline"
-                autoOk
-                placeholder={"Select Date"}
-                disableToolbar
-                disablePast
-                disabled
-                minDate={moment().add(30, "days")}
-                label="Expiration"
-                value={expiration}
-                onChange={(date) => setExpiration(date)}
-                format="dddd, MMMM DD, Y"
+          {hasCamera ? (<>
+          <DialogContainer
+            title={"Scan Store Credit Code"}
+            onClose={() => {
+              setScanCode(false);
+            }}
+            isOpen={scanCode}
+            inner_component={
+              <OneOffQrScanner
+                onQrCode={onScanned}
+                hidden={false}
               />
-            </MuiPickersUtilsProvider>
+            }
+          />
+          <Grid item xs={3}>
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="span"
+              onClick={() => setScanCode(true)}
+              disabled={isProcessing || validationResponse !== null}>
+              <PhotoCamera />
+            </IconButton>
+          </Grid></>) : "" }
+          <Grid item xs={hasCamera ? 3 : 6}>
+            {validationResponse !== null ? (
+              <Button
+                className="btn btn-light"
+                onClick={clearLookup}
+                disabled={isProcessing}
+              >
+                Clear
+              </Button>
+            ) : (
+              <Button
+                className="btn btn-light"
+                onClick={validateCode}
+                disabled={
+                  isProcessing ||
+                  validationResponse !== null ||
+                  creditCode.length !== 19
+                }
+              >
+                Validate
+              </Button>
+            )}
           </Grid>
-          <Grid item xs={2}>
-            <TextField
-              label="Added by"
-              type="text"
-              inputProps={{ size: 5 }}
-              //className={className}
-              value={addedBy}
-              size="small"
-              onChange={e => setAddedBy(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Reason"
-              type="text"
-              fullWidth
-              value={reason}
-              size="small"
-              onChange={e => setReason(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={2}>
-            <Button
-              className="btn btn-light"
-              onClick={handleSubmit}
-              disabled={!(!isProcessing && amount >= 1 && addedBy.length >= 2 && firstName.length >= 2 && lastName.length >= 2 && reason.length > 2 && recipientEmail.length > 3 && EMAIL_REGEX.test(recipientEmail))}
-            >
-              Generate
-            </Button>
-          </Grid> */}
+
+          {validationResponse !== null ? (
+            <>
+              <Grid item xs={12}>
+                <Typography variant="h5">
+                  Found a credit code of type {validationResponse.credit_type}{" "}
+                  with balance{" "}
+                  {US_MONEY_FORMATTER.format(validationResponse.amount)}
+                </Typography>
+                {validationResponse.credit_type === "MONEY" ? (
+                  <List>
+                    <ListItem>
+                      Redeem this credit against the AFTER-TAX total of the
+                      order.
+                    </ListItem>
+                    <ListItem>
+                      If the after-tax total of the order is less than{" "}
+                      {US_MONEY_FORMATTER.format(validationResponse.amount)},
+                      ask the customer how much of their credit they would like
+                      to apply as tip. Enter the sum of their after-tax total
+                      and the applied tip below to debit the credit code. Apply
+                      their after-tax total to the order on the POS as store
+                      credit. Enter the tip into the tip log spreadsheet under
+                      "In person GC redeem"
+                    </ListItem>
+                    <ListItem>
+                      If the after-tax total of the order is greater than{" "}
+                      {US_MONEY_FORMATTER.format(validationResponse.amount)},
+                      split the order into two payments: the first for{" "}
+                      {US_MONEY_FORMATTER.format(validationResponse.amount)}{" "}
+                      paid with store credit, and the second for the remainder.
+                      Enter{" "}
+                      {US_MONEY_FORMATTER.format(validationResponse.amount)}{" "}
+                      below to debit the full amount of the credit.
+                    </ListItem>
+                  </List>
+                ) : (
+                  <List>
+                    <ListItem>
+                      Before closing, we need to apply a discount to the order.
+                    </ListItem>
+                    <ListItem>
+                      So, if the pre-tax total of the order is less than{" "}
+                      {US_MONEY_FORMATTER.format(validationResponse.amount)},
+                      enter the pre-tax total below to debit that amount.
+                    </ListItem>
+                    <ListItem>
+                      If the pre-tax total of the order is greater than or equal
+                      to {US_MONEY_FORMATTER.format(validationResponse.amount)},
+                      enter{" "}
+                      {US_MONEY_FORMATTER.format(validationResponse.amount)}{" "}
+                      below.
+                    </ListItem>
+                    <ListItem>
+                      Apply the debited amount to the order as a discount.
+                    </ListItem>
+                  </List>
+                )}
+              </Grid>
+              <Grid item xs={4}>
+                <CheckedInputComponent
+                  label="Amount to debit"
+                  className="form-control"
+                  type="number"
+                  fullWidth
+                  disabled={isProcessing || debitResponse !== null}
+                  parseFunction={(e) => parseFloat(e).toFixed(2)}
+                  value={amount}
+                  inputProps={{ min: 0.01, max: validationResponse.amount }}
+                  onFinishChanging={(e) => setAmount(e)}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label="Debited by"
+                  type="text"
+                  disabled={isProcessing || debitResponse !== null}
+                  inputProps={{ size: 10 }}
+                  //className={className}
+                  value={processedBy}
+                  size="small"
+                  onChange={(e) => setProcessedBy(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  className="btn btn-light"
+                  onClick={processDebit}
+                  disabled={
+                    isProcessing ||
+                    debitResponse !== null ||
+                    processedBy.length === 0 ||
+                    amount <= 0
+                  }
+                >
+                  Debit {US_MONEY_FORMATTER.format(amount)}
+                </Button>
+              </Grid>
+            </>
+          ) : (
+            ""
+          )}
+          {debitResponse !== null ? (
+            debitResponse.success ? (
+              <Grid item xs={12}>
+                Successfully debited {US_MONEY_FORMATTER.format(amount)}.
+                Balance remaining:{" "}
+                {US_MONEY_FORMATTER.format(debitResponse.balance)}
+              </Grid>
+            ) : (
+              <Grid item xs={12}>
+                <ErrorOutline />
+                FAILED TO DEBIT
+                <ErrorOutline />
+                <br />
+                This generally means there was some shenannigans.
+              </Grid>
+            )
+          ) : (
+            ""
+          )}
         </Grid>
       </Paper>
       <br />
@@ -211,4 +348,4 @@ const StoreCreditComponent = ({ ENDPOINT }) => {
   );
 };
 
-export default StoreCreditComponent;
+export default StoreCreditValidateAndSpendComponent;

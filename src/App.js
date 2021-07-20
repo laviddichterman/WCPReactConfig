@@ -15,7 +15,7 @@ import FooterComponent from "./components/footer.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
 import PropTypes from 'prop-types';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -62,7 +62,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const theme = createMuiTheme({
+const theme = createTheme({
   // palette: {
   //   type: 'dark',
   // },
@@ -79,24 +79,14 @@ const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, se
 
 const App = () => {
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = React.useState(0);
+  const [currentTab, setCurrentTab] = useState(0);
   const { isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [socketAuth] = useState(IO_CLIENT_AUTH);
   const [socketRo] = useState(IO_CLIENT_RO);
   const [SERVICES, setSERVICES] = useState([]);
   const [BLOCKED_OFF, setBLOCKED_OFF] = useState();
   const [LEADTIME, setLEADTIME] = useState();
-  const [SETTINGS, setSETTINGS] = useState({
-    additional_pizza_lead_time: 5, //to deprecate
-    time_step: 15,
-    pipeline_info: {
-      baking_pipeline: [{ slots: 3, time: 3 }, { slots: 12, time: 11 }, { slots: 10, time: 12.5 }],
-      transfer_padding: .5
-    },
-    operating_hours: [
-      [[], [], [], [], [], [], []], [[], [], [], [], [], [], []], [[], [], [], [], [], [], []]
-    ]
-  });
+  const [SETTINGS, setSETTINGS] = useState();
   const [DELIVERY_AREA, setDELIVERY_AREA] = useState({});
   const [KEYVALUES, setKEYVALUES] = useState({});
   const [CATALOG, setCATALOG] = useState({ 
