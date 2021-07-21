@@ -161,7 +161,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
               </Typography>
             </AppBar>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={hasCamera ? 6 : 9}>
             <TextField
               label="Credit Code"
               type="text"
@@ -197,7 +197,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
               <PhotoCamera />
             </IconButton>
           </Grid></>) : "" }
-          <Grid item xs={hasCamera ? 3 : 6}>
+          <Grid item xs={3}>
             {validationResponse !== null ? (
               <Button
                 className="btn btn-light"
