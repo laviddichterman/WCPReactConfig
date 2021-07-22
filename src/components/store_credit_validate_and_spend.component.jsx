@@ -67,9 +67,13 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
     };
     CheckForCamera();
   }, []);
-  const onScanned = (qrCode) => {
-      setCreditCode(qrCode);
-      setScanCode(false);
+  
+  const onScanned = async (qrCode) => {
+    setCreditCode(qrCode);
+    setScanCode(false);
+    if (qrCode.length === 19) {
+      await validateCode(qrCode);
+    }
   };
 
   const clearLookup = () => {
@@ -82,28 +86,19 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
     setIsProcessing(false);
     setDebitResponse(null);
   };
-  const validateCode = async () => {
+  const validateCode = async (code) => {
     if (!isProcessing) {
+      setValidationResponse(null);
       setIsProcessing(true);
       try {
-        //const token = await getAccessTokenSilently();
         const response = await fetch(
           `${ENDPOINT}/api/v1/payments/storecredit/validate/?code=${encodeURIComponent(
-            creditCode
+            code
           )}`,
-          {
-            method: "GET",
-            // headers: {
-            //   Authorization: `Bearer ${token}`,
-            //   'Content-Type': 'application/json'
-            // },
-          }
+          { method: "GET" }
         );
-        if (response.status === 200) {
-          const response_data = await response.json();
-          setValidationResponse(response_data);
-        } else {
-        }
+        const response_data = await response.json();
+        setValidationResponse(response_data);
         setIsProcessing(false);
       } catch (error) {
         console.error(error);
@@ -116,7 +111,6 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        //const token = await getAccessTokenSilently();
         const response = await fetch(
           `${ENDPOINT}/api/v1/payments/storecredit/spend`,
           {
@@ -167,7 +161,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
               type="text"
               fullWidth
               inputProps={{ size: 19 }}
-              disabled={isProcessing || validationResponse !== null}
+              disabled={isProcessing || (validationResponse !== null && validationResponse.validated)}
               value={creditCode}
               size="small"
               onChange={(e) => setCreditCode(e.target.value)}
@@ -193,7 +187,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
               aria-label="upload picture"
               component="span"
               onClick={() => setScanCode(true)}
-              disabled={isProcessing || validationResponse !== null}>
+              disabled={isProcessing || (validationResponse !== null && validationResponse.validated)}>
               <PhotoCamera />
             </IconButton>
           </Grid></>) : "" }
@@ -209,10 +203,9 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
             ) : (
               <Button
                 className="btn btn-light"
-                onClick={validateCode}
+                onClick={() => validateCode(creditCode)}
                 disabled={
                   isProcessing ||
-                  validationResponse !== null ||
                   creditCode.length !== 19
                 }
               >
@@ -222,6 +215,14 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
           </Grid>
 
           {validationResponse !== null ? (
+             !validationResponse.validated ? 
+             (<Grid item xs={12}>
+                <ErrorOutline />
+                FAILED TO FIND
+                <ErrorOutline />
+                <br />
+                This generally means the code was mis-entered, has expired, or was already redeemed.
+             </Grid>) : (
             <>
               <Grid item xs={12}>
                 <Typography variant="h5">
@@ -319,9 +320,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
                 </Button>
               </Grid>
             </>
-          ) : (
-            ""
-          )}
+          )) : ("")}
           {debitResponse !== null ? (
             debitResponse.success ? (
               <Grid item xs={12}>
