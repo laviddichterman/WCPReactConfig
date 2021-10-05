@@ -112,25 +112,24 @@ const ProductInstanceComponent = ({
     );
 
   const handleToggle = (mtid, oidx) => {
-    var newval = "NONE";
-    switch (modifiers[mtid].options[oidx].placement) {
-      case "WHOLE":
-        newval = "NONE";
-        break;
-      case "NONE":
-        newval = "WHOLE";
-        break;
-      default:
-        alert("messed up option value!");
-    }
-
     const new_normalized_mod = modifiers.slice();
     new_normalized_mod[mtid].options = modifiers[mtid].options.slice();
     Object.assign(
       new_normalized_mod[mtid].options[oidx],
       modifiers[mtid].options[oidx]
     );
-    new_normalized_mod[mtid].options[oidx].placement = newval;
+
+    switch (modifiers[mtid].options[oidx].placement) {
+      case "WHOLE":
+        new_normalized_mod[mtid].options[oidx].placement = "NONE";
+        break;
+      case "NONE":
+        new_normalized_mod[mtid].options[oidx].placement = "WHOLE";
+        new_normalized_mod[mtid].options[oidx].qualifier = "REGULAR";
+        break;
+      default:
+        alert("messed up option value!");
+    }
     setModifiers(new_normalized_mod);
   };
 
@@ -542,9 +541,11 @@ const normalizeModifiersAndOptions = (
     );
     mod.options.forEach((opt) => {
       if (opt.placement !== "NONE") {
-        normalized_modifier.options.find(
+        const found_modifier_option = normalized_modifier.options.find(
           (x) => x.option_id === opt.option_id
-        ).placement = opt.placement;
+        );
+        found_modifier_option.placement = opt.placement;
+        found_modifier_option.qualifier = opt.qualifier;
       }
     });
   });
