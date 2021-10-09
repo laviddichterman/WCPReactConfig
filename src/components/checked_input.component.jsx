@@ -36,6 +36,7 @@ const CheckedInputComponent = ({onFinishChanging, className, parseFunction, allo
       className={className}
       value={dirty ? local_value : value}
       size="small"
+      //helperText={dirty && local_value != value ? "Modified" : ""}
       inputProps={inputProps}
       onChange={onChangeLocal}
       onBlur={onFinishChangingLocal}

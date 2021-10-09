@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { WDateUtils } from "@wcp/wcpshared";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import PACKAGE_JSON from "../package.json";
@@ -74,21 +73,26 @@ const ENDPOINT = "https://wdev.windycitypie.com";
 //const ENDPOINT = "https://wario.breezytownpizza.com";
 //const ENDPOINT = "http://localhost:4001";
 
-const IO_CLIENT_AUTH = socketIOClient(`${ENDPOINT}/nsAuth`, { autoConnect: false, secure: true, cookie: false });
-const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false });
+const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false,     
+  transports: ["websocket", "polling"], 
+  allowEIO3: true,
+  cors: {
+    origin: [/.+$/, /https:\/\/.*\.breezytownpizza\.com$/, `http://localhost`],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+ });
 
 const App = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState(0);
   const { isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const [socketAuth] = useState(IO_CLIENT_AUTH);
   const [socketRo] = useState(IO_CLIENT_RO);
   const [SERVICES, setSERVICES] = useState([]);
   const [BLOCKED_OFF, setBLOCKED_OFF] = useState();
   const [LEADTIME, setLEADTIME] = useState();
   const [SETTINGS, setSETTINGS] = useState();
   const [DELIVERY_AREA, setDELIVERY_AREA] = useState({});
-  const [KEYVALUES, setKEYVALUES] = useState({});
   const [CATALOG, setCATALOG] = useState({ 
     modifiers: {},
     categories: {},
@@ -98,35 +102,28 @@ const App = () => {
   });
 
   useEffect(() => {
-    let token;
-    const getToken = async () => {
-      token = await getAccessTokenSilently();
-      socketAuth.open();
-      socketAuth.on("connect", () => {
-        socketAuth.emit("authenticate", { token: token })
-          .on("authenticated", () => {
-            socketAuth.on("AUTH_KEYVALUES", data => setKEYVALUES(data));
-          })
-          .on("unauthorized", (msg) => {
-            console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
-            logout();
-          });
-      });
-    }
-
     if (!isLoading && isAuthenticated) {
-      getToken();
+      getAccessTokenSilently();
     }
     if (!isLoading && !isAuthenticated) {
       loginWithRedirect();
     }
-  }, [isLoading, getAccessTokenSilently, socketAuth, isAuthenticated, loginWithRedirect, logout]);
+  }, [isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout]);
 
   useEffect(() => {
     socketRo.open();
     socketRo.on("connect", () => {
       socketRo.on("WCP_SERVICES", data => setSERVICES(data));
-      socketRo.on("WCP_BLOCKED_OFF", data => setBLOCKED_OFF(data));
+      socketRo.on("WCP_BLOCKED_OFF", data => {
+        data.forEach(function(svc_block, i) {
+          svc_block.forEach(function(day_block, j) {
+            day_block[1].forEach(function(interval, k) {
+              data[i][j][1][k] = [Number(data[i][j][1][k][0]), Number(data[i][j][1][k][1])];
+            })
+          })
+        })
+        setBLOCKED_OFF(data)
+      });
       socketRo.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
       socketRo.on("WCP_SETTINGS", data => setSETTINGS(data));
       socketRo.on("WCP_DELIVERY_AREA", data => setDELIVERY_AREA(data));
@@ -137,105 +134,11 @@ const App = () => {
     };
   }, [socketRo]);
 
-  // const onSubmitServices = () => {
-  //   socket.emit("WCP_SERVICES", SERVICES);
-  // }
-
-  const onSubmitSettings = () => {
-    socketAuth.emit("AUTH_SETTINGS", SETTINGS);
-  }
-
-  const onSubmitDeliveryArea = () => {
-    socketAuth.emit("AUTH_DELIVERY_AREA", DELIVERY_AREA);
-  }
-
-  const onSubmitKeyValues = () => {
-    socketAuth.emit("AUTH_KEYVALUES", KEYVALUES);
-  }
-
-  const onSubmitLeadTimes = (e) => {
-    e.preventDefault();
-    socketAuth.emit("AUTH_LEAD_TIMES", LEADTIME);
-  }
-
   const handleChangeTab = (event, newTab) => {
     event.preventDefault();
     setCurrentTab(newTab);
   };
 
-  const onChangeLeadTimes = (i, e) => {
-    const leadtimes = LEADTIME.slice();
-    leadtimes[i] = e;
-    setLEADTIME(leadtimes);
-  }
-
-  const onChangeAdditionalPizzaLeadTime = (e) => {
-    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
-    new_settings.additional_pizza_lead_time = e;
-    setSETTINGS(new_settings);
-  }
-
-  const onChangeTimeStep = (e, service_idx) => {
-    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
-    new_settings.time_step2[service_idx] = parseInt(e);
-    setSETTINGS(new_settings);
-  }
-
-
-  const addBlockedOffInterval = (parsed_date, interval, service_selection) => {
-    const new_blocked_off = BLOCKED_OFF.slice();
-    // iterate over services
-    for (var service_index in service_selection) {
-      if (service_selection[service_index]) {
-        //iterate over days
-        WDateUtils.AddIntervalToService(service_index, parsed_date, interval, new_blocked_off);
-      }
-    }
-    setBLOCKED_OFF(new_blocked_off);
-    socketAuth.emit("AUTH_BLOCKED_OFF", new_blocked_off);
-  }
-
-  const removeBlockedOffInterval = (service_index, day_index, interval_index) => {
-    const new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
-      service_index,
-      day_index,
-      interval_index,
-      BLOCKED_OFF);
-    setBLOCKED_OFF(new_blocked_off);
-    socketAuth.emit("AUTH_BLOCKED_OFF", new_blocked_off);
-  }
-
-  const addOperatingHours = (service_index, day_index, interval) => {
-    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
-    WDateUtils.AddIntervalToOperatingHours(
-      service_index,
-      day_index,
-      interval,
-      new_settings.operating_hours);
-    setSETTINGS(new_settings);
-  }
-
-  const removeOperatingHours = (service_index, day_index, interval_index) => {
-    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
-    const new_operating_hours = WDateUtils.RemoveIntervalFromOperatingHours(
-      service_index,
-      day_index,
-      interval_index,
-      new_settings.operating_hours);
-    new_settings.operating_hours = new_operating_hours;
-    setSETTINGS(new_settings);
-  }
-
-  const removeKeyValuePair = (key) => {
-    const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
-    delete new_dict[key];
-    setKEYVALUES(new_dict);
-  }
-  const addNewKeyValuePair = (key, value) => {
-    const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
-    new_dict[key] = value;
-    setKEYVALUES(new_dict);
-  }
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -262,16 +165,16 @@ const App = () => {
         </AppBar>
         <TabPanel value={currentTab} index={0}>
           <LeadTimesComp
-            leadtimes={LEADTIME}
+            ENDPOINT={ENDPOINT}
+            LEADTIME={LEADTIME}
             SERVICES={SERVICES}
-            onChange={onChangeLeadTimes}
-            onSubmit={onSubmitLeadTimes}
+            setLEADTIME={setLEADTIME}
           />
           <BlockOffComp
+            ENDPOINT={ENDPOINT}
             SERVICES={SERVICES}
-            blocked_off={BLOCKED_OFF}
-            addBlockedOffInterval={addBlockedOffInterval}
-            RemoveInterval={removeBlockedOffInterval}
+            BLOCKED_OFF={BLOCKED_OFF}
+            setBLOCKED_OFF={setBLOCKED_OFF}
             LEAD_TIME={LEADTIME}
             SETTINGS={SETTINGS}
           />
@@ -289,24 +192,18 @@ const App = () => {
         </TabPanel>
         <TabPanel value={currentTab} index={3}>
           <SettingsComp
+            ENDPOINT={ENDPOINT}
             SERVICES={SERVICES}
-            settings={SETTINGS}
-            onChangeTimeStep={onChangeTimeStep}
-            onChangeAdditionalPizzaLeadTime={onChangeAdditionalPizzaLeadTime}
-            onAddOperatingHours={addOperatingHours}
-            onRemoveOperatingHours={removeOperatingHours}
-            onSubmit={onSubmitSettings}
+            SETTINGS={SETTINGS}
+            setSETTINGS={setSETTINGS}
           />
           <DeliveryAreaComp
+            ENDPOINT={ENDPOINT}
             DELIVERY_AREA={DELIVERY_AREA}
             onChange={e => setDELIVERY_AREA(e)}
-            onSubmit={onSubmitDeliveryArea}
           />
           <KeyValuesComponent
-            KEYVALUES={KEYVALUES}
-            onRemoveKeyValuePair={removeKeyValuePair}
-            onAddNewKeyValuePair={addNewKeyValuePair}
-            onSubmit={onSubmitKeyValues}
+            ENDPOINT={ENDPOINT}
           />
         </TabPanel>
       </div>

@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React, { useState } from 'react';
 import CheckedInputComponent from "./checked_input.component";
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,6 +8,8 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,13 +32,43 @@ const useStyles = makeStyles(theme => ({
 
 
 const LeadTimesComp = ({
-  leadtimes,
-  SERVICES,
-  onChange,
-  onSubmit
+  ENDPOINT,
+  LEADTIME,
+  setLEADTIME,
+  SERVICES
 }) => {
   const classes = useStyles();
-  const leadtime_html = leadtimes ? leadtimes.map((x, i) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { getAccessTokenSilently } = useAuth0();
+  const onChangeLeadTimes = (i, e) => {
+    const leadtimes = LEADTIME.slice();
+    leadtimes[i] = e;
+    setLEADTIME(leadtimes);
+  };
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!isProcessing) {
+      setIsProcessing(true);
+      try {
+        const token = await getAccessTokenSilently();
+        const response = await fetch(`${ENDPOINT}/api/v1/config/timing/leadtime`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(LEADTIME)
+        });
+        if (response.status === 201) {
+          setLEADTIME(await response.json());
+        }
+        setIsProcessing(false);
+      } catch (error) {
+        setIsProcessing(false);
+      }
+    }
+  };
+  const leadtime_html = LEADTIME ? LEADTIME.map((x, i) => {
     return (
       <Grid item xs={4} key={i}>
         <CheckedInputComponent
@@ -45,7 +77,7 @@ const LeadTimesComp = ({
           type="number"
           inputProps={{min: 1, max: 43200}}
           value={x}
-          onFinishChanging={(e) => onChange(i, e)}
+          onFinishChanging={(e) => onChangeLeadTimes(i, e)}
           />
       </Grid>
     );

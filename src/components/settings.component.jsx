@@ -16,6 +16,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
 
 import { WDateUtils } from "@wcp/wcpshared";
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -89,25 +91,85 @@ const OperatingHoursIntervalForm = ({
   )
 }
 
+const GenerateInitialOperatingHoursFormIntervals = (num_services) => {
+  const intervals = Array(num_services).fill();
+  for (var i in intervals) {
+    intervals[i] = Array(7).fill({start: null, end:null});
+  }
+  return intervals;
+}
+
 const SettingsComponent = ({
-  onAddOperatingHours,
-  onChangeAdditionalPizzaLeadTime,
-  onRemoveOperatingHours,
-  onChangeTimeStep,
-  onSubmit,
+  ENDPOINT,
   SERVICES,
-  settings
+  SETTINGS,
+  setSETTINGS
 }) => {
   const classes = useStyles();
-  const GenerateInitialOperatingHoursFormIntervals = (num_services) => {
-    const intervals = Array(num_services).fill();
-    for (var i in intervals) {
-      intervals[i] = Array(7).fill({start: null, end:null});
-    }
-    return intervals;
-  }
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { getAccessTokenSilently } = useAuth0();
   const [operating_hours_form_intervals, setOperatingHoursFormIntervals] = useState(GenerateInitialOperatingHoursFormIntervals(SERVICES.length));
   
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!isProcessing) {
+      setIsProcessing(true);
+      try {
+        const token = await getAccessTokenSilently();
+        const response = await fetch(`${ENDPOINT}/api/v1/config/settings`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(SETTINGS)
+        });
+        if (response.status === 201) {
+          setSETTINGS(await response.json());
+        }
+        setIsProcessing(false);
+      } catch (error) {
+        setIsProcessing(false);
+      }
+    }
+  };
+
+  const onChangeAdditionalPizzaLeadTime = (e) => {
+    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
+    new_settings.additional_pizza_lead_time = e;
+    setSETTINGS(new_settings);
+  }
+
+  const onChangeTimeStep = (e, service_idx) => {
+    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
+    new_settings.time_step2[service_idx] = parseInt(e);
+    setSETTINGS(new_settings);
+  }
+
+  const onAddOperatingHours = (service_index, day_index, interval) => {
+    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
+    WDateUtils.AddIntervalToOperatingHours(
+      service_index,
+      day_index,
+      interval,
+      new_settings.operating_hours);
+    setSETTINGS(new_settings);
+  }
+
+  const onRemoveOperatingHours = (service_index, day_index, interval_index) => {
+    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
+    const new_operating_hours = WDateUtils.RemoveIntervalFromOperatingHours(
+      service_index,
+      day_index,
+      interval_index,
+      new_settings.operating_hours);
+    new_settings.operating_hours = new_operating_hours;
+    setSETTINGS(new_settings);
+  }
+
+
+
+
   const onSetUpperBound = (service_index, day_index, e) => {
     const new_intervals = JSON.parse(JSON.stringify(operating_hours_form_intervals));
     new_intervals[service_index][day_index] = {start: new_intervals[service_index][day_index].start, end: e};
@@ -136,7 +198,7 @@ const SettingsComponent = ({
     console.log(new_intervals[service_index][day_index]);
   }
 
-  const timestep_html = settings.time_step2 ? SERVICES.map((_, i) => {
+  const timestep_html = SETTINGS.time_step2 ? SERVICES.map((_, i) => {
     return (
       <Grid item xs={Math.floor(12/SERVICES.length)} key={i}>
         <CheckedInputComponent
@@ -144,14 +206,14 @@ const SettingsComponent = ({
           className="form-control"
           type="number"
           inputProps={{min: 1, max: 1440}}
-          value={settings.time_step2[i]}
+          value={SETTINGS.time_step2[i]}
           onFinishChanging={(e) => onChangeTimeStep(e, i)}
           />
       </Grid>
     );
   }) : "";
 
-  const operating_hours_service_html = settings.operating_hours.map((operating_hours_week, h) => {
+  const operating_hours_service_html = SETTINGS.operating_hours.map((operating_hours_week, h) => {
     const operating_hours_week_html = operating_hours_week.map((operating_hours_day, i) => {
       const operating_hours_day_intervals_html = operating_hours_day.map((interval, j) => {
         return (
@@ -183,7 +245,7 @@ const SettingsComponent = ({
               onChangeLowerBound={e => onSetLowerBound(h, i, e)}
               onChangeUpperBound={e => onSetUpperBound(h, i, e)}
               onAddOperatingHours={e => AddOperatingHoursInterval(h, i)}
-              settings={settings}
+              settings={SETTINGS}
               />
           </Grid>
         </Grid>
@@ -227,7 +289,7 @@ const SettingsComponent = ({
               type="number"
               label="Additional lead time per pizza beyond the first"
               className="form-control"
-              value={settings.additional_pizza_lead_time}
+              value={SETTINGS.additional_pizza_lead_time}
               onFinishChanging={onChangeAdditionalPizzaLeadTime}
               inputProps={{min: 0, max: 64}}
             />

@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-
+import { useAuth0 } from '@auth0/auth0-react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,12 +31,46 @@ const useStyles = makeStyles(theme => ({
 
 
 const DeliveryAreaComponent = ({
+  ENDPOINT,
   DELIVERY_AREA,
-  onChange,
-  onSubmit
+  setDELIVERY_AREA,
 }) => {
   const [ stringified, setStringified ] = useState(JSON.stringify(DELIVERY_AREA));
+  const [ dirty, setDirty ] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { getAccessTokenSilently } = useAuth0();
   const classes = useStyles();
+
+  const postDeliveryArea = async (e) => {
+    e.preventDefault();
+    if (!isProcessing) {
+      setIsProcessing(true);
+      try {
+        const token = await getAccessTokenSilently();
+        const response = await fetch(`${ENDPOINT}/api/v1/addresses`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: stringified
+        });
+        // if (response.status === 201) {
+        // }
+        setIsProcessing(false);
+      } catch (error) {
+        setIsProcessing(false);
+      }
+    }
+  };
+  const onBlurLocal = (val) => {
+    setDELIVERY_AREA(val);
+  }
+  const onChangeLocal = (val) => {
+    setDirty(true);
+    setStringified(val);
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -51,10 +85,10 @@ const DeliveryAreaComponent = ({
               </AppBar>
             </Grid>
           <Grid item xs={10}>
-          <TextField aria-label="textarea" rows={15} fullWidth={true} multiline={true} value={stringified} onChange={e => setStringified(e.target.value)} onBlur={e => onChange(JSON.parse(stringified))} />
+          <TextField aria-label="textarea" rows={15} fullWidth={true} multiline={true} value={dirty ? stringified : JSON.stringify(DELIVERY_AREA)} onChange={e => onChangeLocal(e.target.value)} onBlur={e => onBlurLocal(JSON.parse(stringified))} />
           </Grid>
           <Grid item xs={2}>
-            <Button onClick={onSubmit}>Push Changes</Button>
+            <Button onClick={postDeliveryArea}>Push Changes</Button>
           </Grid>
           </Grid>
       </Paper>

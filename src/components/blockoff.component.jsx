@@ -21,8 +21,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Container from '@material-ui/core/Container';
 import { ListItemText } from "@material-ui/core";
-
-
+import { useAuth0 } from '@auth0/auth0-react';
 import { WDateUtils } from "@wcp/wcpshared";
 
 
@@ -73,11 +72,11 @@ const ServiceSelectionCheckbox = (props) => {
 }
 
 const BlockOffComp = ({
+  ENDPOINT,
   SERVICES, 
-  addBlockedOffInterval,
-  blocked_off,
+  BLOCKED_OFF,
+  setBLOCKED_OFF,
   SETTINGS,
-  RemoveInterval,
   LEAD_TIME
 }) => {
   const classes = useStyles();
@@ -87,10 +86,130 @@ const BlockOffComp = ({
   const [ parsed_date, setParsedDate ] = useState(moment().format(WDateUtils.DATE_STRING_INTERNAL_FORMAT));
   const [ service_selection, setServiceSelection ] = useState(Array(SERVICES.length).fill(true));
   const [ can_submit, setCanSubmit ] = useState(false);
+  const [ isProcessing, setIsProcessing ] = useState(false);
+  const { getAccessTokenSilently } = useAuth0();
+
   const HasOptionsForDate = (date) => {
-    const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(blocked_off, SETTINGS, LEAD_TIME, date, service_selection, {});
+    const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, date, service_selection, {});
     return WDateUtils.GetOptionsForDate(INFO, date, moment()).filter(x => !x.disabled).length
   }
+
+  const postBlockedOff = async (new_blocked_off) => {
+    try {
+      const token = await getAccessTokenSilently();
+      const response = await fetch(
+        `${ENDPOINT}/api/v1/config/timing/blockoff`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(new_blocked_off),
+        }
+      );
+      if (response.status === 201) {
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+  const addBlockedOffInterval = (parsed_date, interval, service_selection) => {
+    if (!isProcessing) {
+      setIsProcessing(true);
+      const new_blocked_off = BLOCKED_OFF.slice();
+      // iterate over services
+      for (var service_index in service_selection) {
+        if (service_selection[service_index]) {
+          WDateUtils.AddIntervalToService(service_index, parsed_date, interval, new_blocked_off);
+        }
+      }
+      postBlockedOff(new_blocked_off);
+      setBLOCKED_OFF(new_blocked_off);
+      setIsProcessing(false);
+    }
+  }
+  const removeBlockedOffForDate = (service_index, day_index) => {
+    if (!isProcessing) {
+      setIsProcessing(true);
+      let new_blocked_off = BLOCKED_OFF;
+      for (let i = 0; i < BLOCKED_OFF[service_index][day_index][1].length; ++i) {
+        new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
+          service_index,
+          day_index,
+          0,
+          new_blocked_off);
+      }
+      postBlockedOff(new_blocked_off);
+      setBLOCKED_OFF(new_blocked_off);
+      setIsProcessing(false);
+    }
+  }
+
+
+  const removeBlockedOffInterval = (service_index, day_index, interval_index) => {
+    if (!isProcessing) {
+      setIsProcessing(true);
+      const new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
+        service_index,
+        day_index,
+        interval_index,
+        BLOCKED_OFF);
+      postBlockedOff(new_blocked_off);
+      setBLOCKED_OFF(new_blocked_off);
+      setIsProcessing(false);
+    }
+  }
+
+  // const removeBlockedOffIntervalForService = async (service, day_index, interval_index) => {
+  //   // try {
+  //   //   const token = await getAccessTokenSilently();
+  //   //   const response = await fetch(
+  //   //     `${ENDPOINT}/api/v1/config/timing/${service}/${parsed_date}`,
+  //   //     {
+  //   //       method: "DELETE",
+  //   //       headers: {
+  //   //         Authorization: `Bearer ${token}`,
+  //   //         "Content-Type": "application/json",
+  //   //       },
+  //   //       body: JSON.stringify({
+  //   //         min: lower_time.value,
+  //   //         max: upper_time.value,
+  //   //       }),
+  //   //     }
+  //   //   );
+  //   //   if (response.status === 201) {
+  //   //   }
+  //   // } catch (error) {
+  //   //   console.error(error);
+  //   // }
+  // };
+
+  const addBlockedOffIntervalForService = async (service) => {
+    try {
+      const token = await getAccessTokenSilently();
+      const response = await fetch(
+        `${ENDPOINT}/api/v1/config/timing/${service}/${parsed_date}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            min: lower_time.value,
+            max: upper_time.value,
+          }),
+        }
+      );
+      if (response.status === 201) {
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const onChangeServiceSelection = (e, i) => {
     e.preventDefault();
@@ -131,7 +250,6 @@ const BlockOffComp = ({
     setCanSubmit(false);
   }
 
-
   const handleSubmit = e => {
     e.preventDefault();
     if (selected_date) {
@@ -147,6 +265,31 @@ const BlockOffComp = ({
     }
   }
 
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (can_submit) {
+  //     setCanSubmit(false);
+  //     if (selected_date) {
+  //       var promises = [];
+  //       for (var service_index in service_selection) {
+  //         if (service_selection[service_index]) {
+  //           promises.push(addBlockedOffIntervalForService(service_index));
+  //         }
+  //       }
+  //       await Promise.all(promises);
+  //       if (!HasOptionsForDate(selected_date)) {
+  //         setDate(null);
+  //       }
+  //       else {
+  //         setLowerTime(null);
+  //         setUpperTime(null);
+  //       }
+  //     }
+  //     setCanSubmit(true);
+  //   }
+  // }
+
   const services_checkboxes = SERVICES.map((x, i) => {
     return (
       <Grid item xs key={i}>
@@ -158,15 +301,15 @@ const BlockOffComp = ({
       </Grid>
     );
   });
-  const blocked_off_html = blocked_off ? blocked_off.map((service, i) => {
-    const blocked_off_days_html = blocked_off[i].map((blocked_off_for_day, j) => {
-      const blocked_off_intervals_html = blocked_off[i][j][1].map((interval, k) => {
-        const from_to = blocked_off[i][j][1][k][0] === blocked_off[i][j][1][k][1] ? WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][0]) : `${WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][0])} to ${WDateUtils.MinutesToPrintTime(blocked_off[i][j][1][k][1])}`;
+  const blocked_off_html = BLOCKED_OFF ? BLOCKED_OFF.map((service, i) => {
+    const blocked_off_days_html = BLOCKED_OFF[i].map((blocked_off_for_day, j) => {
+      const blocked_off_intervals_html = BLOCKED_OFF[i][j][1].map((interval, k) => {
+        const from_to = BLOCKED_OFF[i][j][1][k][0] === BLOCKED_OFF[i][j][1][k][1] ? WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][0]) : `${WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][0])} to ${WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][1])}`;
         return (
           <ListItem key={k}>
             <ListItemText primary={from_to}></ListItemText>
             <ListItemSecondaryAction>
-              <IconButton edge="end" size="small" aria-label="delete" onClick={() => RemoveInterval(i,j,k)}>
+              <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(i,j,k)}>
                 <HighlightOffIcon />
               </IconButton>
             </ListItemSecondaryAction>
@@ -175,7 +318,12 @@ const BlockOffComp = ({
       })
       return (
         <Container key={j}><ListItem>
-        <Moment format="dddd, MMMM DD, Y" parse={WDateUtils.DATE_STRING_INTERNAL_FORMAT}>{blocked_off[i][j][0]}</Moment>
+        <Moment format="dddd, MMMM DD, Y" parse={WDateUtils.DATE_STRING_INTERNAL_FORMAT}>{BLOCKED_OFF[i][j][0]}</Moment>
+        <ListItemSecondaryAction>
+              <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(i,j)}>
+                <HighlightOffIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
         </ListItem>
         <List component="div" className={classes.listLevel1}>
           {blocked_off_intervals_html}
@@ -199,7 +347,7 @@ const BlockOffComp = ({
   }) : "";
   const start_options = selected_date && SETTINGS && LEAD_TIME ?
     WDateUtils.GetOptionsForDate(
-      WDateUtils.GetInfoMapForAvailabilityComputation(blocked_off, SETTINGS, LEAD_TIME, selected_date, service_selection, {}), 
+      WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, selected_date, service_selection, {}), 
       selected_date,
       moment()) : [];
   const end_options = start_options.length && lower_time ?
@@ -257,7 +405,7 @@ const BlockOffComp = ({
           className="col"
           />
         </Grid>
-        <Grid item xs={2}><Button className="btn btn-light" onClick={handleSubmit} disabled={!can_submit}>Add</Button></Grid>
+        <Grid item xs={2}><Button className="btn btn-light" onClick={handleSubmit} disabled={!can_submit || isProcessing}>Add</Button></Grid>
       </Grid>
       </Paper>
       <Grid container justify="center" spacing={3}>
