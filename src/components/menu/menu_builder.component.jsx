@@ -12,7 +12,7 @@ import ModifierOptionAddContainer from "./modifier_option.add.container";
 import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierOptionDeleteContainer from "./modifier_option.delete.container";
 import ProductAddContainer from "./product.add.container";
-//import ProductImportContainer from "./product.import.container";
+import ProductImportContainer from "./product.import.container";
 import ProductEditContainer from "./product.edit.container";
 import ProductCopyContainer from "./product.copy.container";
 import ProductDeleteContainer from "./product.delete.container";
@@ -78,6 +78,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
   const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
   const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
   const [isProductAddOpen, setIsProductAddOpen] = useState(false);
+  const [isProductImportOpen, setIsProductImportOpen] = useState(false);
   const [isProductCopyOpen, setIsProductCopyOpen] = useState(false);
   const [isProductDeleteOpen, setIsProductDeleteOpen] = useState(false);
 
@@ -441,6 +442,23 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
                     ENDPOINT={ENDPOINT}
                     onCloseCallback={() => {
                       setIsProductAddOpen(false);
+                    }}
+                    categories={catalog.categories}
+                    modifier_types={catalog.modifiers}
+                    product_instance_functions={catalog.product_instance_functions}
+                  />
+                ),
+              },
+              {
+                title: "Import Products",
+                cb: () => setIsProductImportOpen(true),
+                open: isProductImportOpen,
+                onClose: () => setIsProductImportOpen(false),
+                component: (
+                  <ProductImportContainer
+                    ENDPOINT={ENDPOINT}
+                    onCloseCallback={() => {
+                      setIsProductImportOpen(false);
                     }}
                     categories={catalog.categories}
                     modifier_types={catalog.modifiers}

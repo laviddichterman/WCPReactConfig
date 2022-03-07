@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import catalog_import from "../../CATIMPORT.json";
 
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { useCSVReader } from 'react-papaparse';
 
 import Button from "@material-ui/core/Button";
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -37,14 +37,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const InternalCSVReader = ({onAccepted}) => {
+  const { CSVReader } = useCSVReader();
+  return (
+    <CSVReader
+      onUploadAccepted={onAccepted}
+      config={{header:true}}
+    >
+      {({
+        getRootProps,
+        acceptedFile,
+        ProgressBar,
+        getRemoveFileProps,
+      }) => (
+        <Grid container>
+          <Grid item xs={4}>
+            <Button variant="contained" {...getRootProps()} color="primary">
+              Browse for CSV
+            </Button>
+          </Grid>
+          <Grid item xs={5}>
+            {acceptedFile && acceptedFile.name}
+          </Grid>
+          <Grid item xs={3}>
+            <Button variant="contained" {...getRemoveFileProps()} color="primary">
+              Remove
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <ProgressBar />
+          </Grid>
+        </Grid>
+      )}
+    </CSVReader>
+  );
+};
+
 const ProductComponent = ({
   actions,
   progress,
   categories,
   parentCategories,
   setParentCategories,
+  setFileData,
 }) => {
   const classes = useStyles();
+
   const actions_html =
     actions.length === 0 ? (
       ""
@@ -77,6 +115,9 @@ const ProductComponent = ({
             )}
           />
         </Grid>
+        <Grid item xs={12}>
+        <InternalCSVReader onAccepted={(e) => setFileData(e)} />
+        </Grid>
         {actions_html}
         {progress}
       </Grid>
@@ -87,11 +128,12 @@ const ProductComponent = ({
 const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
   const [parentCategories, setParentCategories] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [data, setData] = useState()
   const { getAccessTokenSilently } = useAuth0();
 
   const addProducts = async (e) => {
     e.preventDefault();
-    catalog_import.forEach(async (prod, ordinal) => {
+    data.data.forEach(async (prod, index) => {
       if (!isProcessing) {
         setIsProcessing(true);
         try {
@@ -102,13 +144,27 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
+            /**
+             *               
               display_name: prod[0],
               description: prod[3],
               shortcode: prod[1],
-              disabled: false,
-              ordinal: ordinal,
               price: { amount: prod[2] * 100, currency: "USD" },
+             */
+            body: JSON.stringify({
+              display_name: prod["Name"], //displayName,
+              description: prod["Description"] || "",
+              shortcode: prod["Shortname"],
+              disabled: null,
+              ordinal: index * 10,
+              price: { amount: Number.parseFloat(prod["Price"]) * 100, currency: "USD" },
+              display_flags: {
+                bake_differential: 100,
+                show_name_of_base_product: true,
+                flavor_max: 10,
+                bake_max: 10,
+                singular_noun: "",
+              },
               revelID: "",
               squareID: "",
               category_ids: parentCategories.map(x => x.category._id),
@@ -138,7 +194,7 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
         <Button
           className="btn btn-light"
           onClick={addProducts}
-          disabled={isProcessing}
+          disabled={isProcessing || !data || data.data.length === 0 }
         >
           Add
         </Button>
@@ -147,6 +203,7 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
       categories={categories}
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
+      setFileData={setData}
     />
   );
 };

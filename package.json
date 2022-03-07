@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.2.17",
+  "version": "0.2.18",
   "dependencies": {
     "@auth0/auth0-react": "^1.4.0",
     "@date-io/moment": "^1.3.13",
@@ -20,6 +20,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-moment": "^1.1.1",
+    "react-papaparse": "^4.0.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "5.0.0",
     "react-select": "^3.2.0",
