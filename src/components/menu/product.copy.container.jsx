@@ -52,7 +52,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
               singular_noun: product.display_flags.singular_noun,
             },
             category_ids: parentCategories.map(x => x.category._id),
-            modifiers: product.modifiers,
+            modifiers: modifiers.map(x => { return { mtid: x.modifier_type._id, enable: modifierEnableFunctions.hasOwnProperty(x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }; } ),
             disabled: null,
             create_product_instance: false
           }),
