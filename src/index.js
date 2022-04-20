@@ -26,6 +26,7 @@ ReactDOM.render(
     redirectUri={window.location.origin}
     onRedirectCallback={onRedirectCallback}
     audience={config.audience}
+    scope={"write:order_config read:settings write:settings write:catalog delete:catalog advanced:catalog edit:store_credit advanced:store_credit"}
   >
     <App />
   </Auth0Provider>

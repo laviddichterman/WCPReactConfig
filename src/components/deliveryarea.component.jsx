@@ -46,7 +46,7 @@ const DeliveryAreaComponent = ({
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
+        const token = await getAccessTokenSilently( { scope: "write:order_config"} );
         const response = await fetch(`${ENDPOINT}/api/v1/addresses`, {
           method: "POST",
           headers: {

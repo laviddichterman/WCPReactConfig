@@ -25,6 +25,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { WDateUtils } from "@wcp/wcpshared";
 
 
+
 const TrimOptionsBeforeDisabled = (opts) => {
   const idx = opts.findIndex((elt) => elt.disabled);
   return idx === -1 ? opts : opts.slice(0, idx);
@@ -88,6 +89,7 @@ const BlockOffComp = ({
   const [ can_submit, setCanSubmit ] = useState(false);
   const [ isProcessing, setIsProcessing ] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
+  
 
   const HasOptionsForDate = (date) => {
     const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, date, service_selection, {});
@@ -96,7 +98,7 @@ const BlockOffComp = ({
 
   const postBlockedOff = async (new_blocked_off) => {
     try {
-      const token = await getAccessTokenSilently();
+      const token = await getAccessTokenSilently( { scope: "write:order_config"} );
       const response = await fetch(
         `${ENDPOINT}/api/v1/config/timing/blockoff`,
         {

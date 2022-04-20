@@ -28,7 +28,7 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
+        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
         const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option._id}`, {
           method: "PATCH",
           headers: {

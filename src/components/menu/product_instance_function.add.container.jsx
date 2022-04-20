@@ -16,7 +16,7 @@ const ProductInstanceFunctionAddContainer = ({ ENDPOINT, modifier_types, onClose
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
+        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
         const response = await fetch(`${ENDPOINT}/api/v1/query/language/productinstancefunction/`, {
           method: "POST",
           headers: {

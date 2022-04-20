@@ -28,7 +28,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
+        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
         const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${parent._id}/`, {
           method: "POST",
           headers: {

@@ -67,7 +67,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
+        const token = await getAccessTokenSilently( { scope: "edit:store_credit"} );
         const response = await fetch(`${ENDPOINT}/api/v1/payments/storecredit/discount`, {
           method: "POST",
           headers: {

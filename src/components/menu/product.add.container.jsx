@@ -30,7 +30,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
+        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
         const response = await fetch(`${ENDPOINT}/api/v1/menu/product/`, {
           method: "POST",
           headers: {

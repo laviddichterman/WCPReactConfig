@@ -14,7 +14,7 @@ const CategoryDeleteContainer = ({ ENDPOINT, category, onCloseCallback }) => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
+        const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
         const response = await fetch(`${ENDPOINT}/api/v1/menu/category/${category._id}`, {
           method: "DELETE",
           headers: {

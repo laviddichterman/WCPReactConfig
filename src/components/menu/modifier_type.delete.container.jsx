@@ -14,7 +14,7 @@ const ModifierTypeDeleteContainer = ({ ENDPOINT, modifier_type, onCloseCallback 
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently();
+        const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
         const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${modifier_type._id}`, {
           method: "DELETE",
           headers: {
