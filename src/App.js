@@ -14,13 +14,16 @@ import FooterComponent from "./components/footer.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
 import PropTypes from 'prop-types';
-import { createTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
+import { createTheme, ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import AppBar from '@mui/material/AppBar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 
 function TabPanel(props) {
@@ -63,7 +66,7 @@ const useStyles = makeStyles(theme => ({
 
 const theme = createTheme({
   // palette: {
-  //   type: 'dark',
+  //   mode: 'dark',
   // },
 });
 
@@ -83,7 +86,7 @@ const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, se
   }
  });
 
-const App = () => {
+const AppInner = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState(0);
   const { isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -144,72 +147,82 @@ const App = () => {
   }
   if (!isAuthenticated) {
     return (
-      <ThemeProvider theme={theme}>
-        <div className={classes.root}>
-          <AppBar position="static"><Button onClick={() => loginWithRedirect({})}>Log in</Button></AppBar>
-        </div>
-      </ThemeProvider>
-    )
+          <div className={classes.root}>
+            <AppBar position="static"><Button onClick={() => loginWithRedirect({})}>Log in</Button></AppBar>
+          </div>
+    );
   }
   return (
-    <ThemeProvider theme={theme}>
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
-            <Tab label="Timing Configuration" {...a11yProps(0)} />
-            <Tab label="Store Credit" {...a11yProps(1)} />
-            <Tab label="Menu" {...a11yProps(2)} />
-            <Tab label="Settings" {...a11yProps(3)} />
-            <Tab label="Log Out" component={Button} color="secondary" onClick={() => logout()} />
-          </Tabs>
-        </AppBar>
-        <TabPanel value={currentTab} index={0}>
-          <LeadTimesComp
-            ENDPOINT={ENDPOINT}
-            LEADTIME={LEADTIME}
-            SERVICES={SERVICES}
-            setLEADTIME={setLEADTIME}
-          />
-          <BlockOffComp
-            ENDPOINT={ENDPOINT}
-            SERVICES={SERVICES}
-            BLOCKED_OFF={BLOCKED_OFF}
-            setBLOCKED_OFF={setBLOCKED_OFF}
-            LEAD_TIME={LEADTIME}
-            SETTINGS={SETTINGS}
-          />
-        </TabPanel>
-        <TabPanel value={currentTab} index={1}>
-          <StoreCreditComponent
-            ENDPOINT={ENDPOINT}
-          />
-        </TabPanel>
-        <TabPanel value={currentTab} index={2}>
-          <MenuBuilderComponent
-            catalog={CATALOG}
-            ENDPOINT={ENDPOINT}
-          />
-        </TabPanel>
-        <TabPanel value={currentTab} index={3}>
-          <SettingsComp
-            ENDPOINT={ENDPOINT}
-            SERVICES={SERVICES}
-            SETTINGS={SETTINGS}
-            setSETTINGS={setSETTINGS}
-          />
-          <DeliveryAreaComp
-            ENDPOINT={ENDPOINT}
-            DELIVERY_AREA={DELIVERY_AREA}
-            onChange={e => setDELIVERY_AREA(e)}
-          />
-          <KeyValuesComponent
-            ENDPOINT={ENDPOINT}
-          />
-        </TabPanel>
-      </div>
-      <FooterComponent>WARIO Backend Application version {PACKAGE_JSON.version}</FooterComponent>
-    </ThemeProvider>
+      <>
+        <div className={classes.root}>
+          <AppBar position="static">
+            <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
+              <Tab label="Timing Configuration" {...a11yProps(0)} />
+              <Tab label="Store Credit" {...a11yProps(1)} />
+              <Tab label="Menu" {...a11yProps(2)} />
+              <Tab label="Settings" {...a11yProps(3)} />
+              <Tab label="Log Out" component={Button} color="secondary" onClick={() => logout()} />
+            </Tabs>
+          </AppBar>
+          <TabPanel value={currentTab} index={0}>
+            <LeadTimesComp
+              ENDPOINT={ENDPOINT}
+              LEADTIME={LEADTIME}
+              SERVICES={SERVICES}
+              setLEADTIME={setLEADTIME}
+            />
+            <BlockOffComp
+              ENDPOINT={ENDPOINT}
+              SERVICES={SERVICES}
+              BLOCKED_OFF={BLOCKED_OFF}
+              setBLOCKED_OFF={setBLOCKED_OFF}
+              LEAD_TIME={LEADTIME}
+              SETTINGS={SETTINGS}
+            />
+          </TabPanel>
+          <TabPanel value={currentTab} index={1}>
+            <StoreCreditComponent
+              ENDPOINT={ENDPOINT}
+            />
+          </TabPanel>
+          <TabPanel value={currentTab} index={2}>
+            <MenuBuilderComponent
+              catalog={CATALOG}
+              ENDPOINT={ENDPOINT}
+            />
+          </TabPanel>
+          <TabPanel value={currentTab} index={3}>
+            <SettingsComp
+              ENDPOINT={ENDPOINT}
+              SERVICES={SERVICES}
+              SETTINGS={SETTINGS}
+              setSETTINGS={setSETTINGS}
+            />
+            <DeliveryAreaComp
+              ENDPOINT={ENDPOINT}
+              DELIVERY_AREA={DELIVERY_AREA}
+              onChange={e => setDELIVERY_AREA(e)}
+            />
+            <KeyValuesComponent
+              ENDPOINT={ENDPOINT}
+            />
+          </TabPanel>
+        </div>
+        <FooterComponent>WARIO Backend Application version {PACKAGE_JSON.version}</FooterComponent>
+      </>
   );
+}
+
+const App = () => {
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <AppInner/>
+        </LocalizationProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  )
 }
 
 export default App;

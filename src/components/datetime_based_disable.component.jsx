@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 
-import Grid from "@material-ui/core/Grid";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import Grid from "@mui/material/Grid";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import TextField from '@mui/material/TextField';
+import { DateTimePicker } from "@mui/lab";
 import moment from "moment";
-import MomentUtils from "@date-io/moment";
 
 const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
   const [enabled, setEnabled] = useState(disabled ? false : true);
@@ -84,8 +84,8 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
       {(!enabled && isDatetimeBased) ? (
         <>
           <Grid item xs={6}>
-          <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
               <DateTimePicker
+              renderInput={(props) => <TextField {...props} />}
                 inputVariant="standard"
                 autoOk
                 placeholder={"Disabled Start"}
@@ -95,11 +95,10 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
                 onChange={(date) => updateDisabledStart(date)}
                 format="MMMM DD, Y hh:mm A"
               />
-            </MuiPickersUtilsProvider>
           </Grid>
           <Grid item xs={6}>
-          <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
               <DateTimePicker
+              renderInput={(props) => <TextField {...props} />}
                 inputVariant="standard"
                 autoOk
                 placeholder={"Disabled End"}
@@ -110,7 +109,6 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
                 onChange={(date) => updateDisabledEnd(date)}
                 format="MMMM DD, Y hh:mm A"
               />
-            </MuiPickersUtilsProvider>
           </Grid>
         </>
       ) : (

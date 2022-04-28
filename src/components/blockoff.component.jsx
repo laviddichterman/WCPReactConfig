@@ -2,25 +2,25 @@ import React, { useState } from "react";
 import TimeSelection from "./timepicker.component";
 import Moment from 'react-moment';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Chip from '@material-ui/core/Chip';
-import IconButton from '@material-ui/core/IconButton';
-import DoneIcon from '@material-ui/icons/Done';
-import Button from '@material-ui/core/Button';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import Toolbar from '@material-ui/core/Toolbar';
+import makeStyles from '@mui/styles/makeStyles';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import DoneIcon from '@mui/icons-material/Done';
+import Button from '@mui/material/Button';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import TextField from '@mui/material/TextField';
+import { DatePicker } from '@mui/lab';
+import Toolbar from '@mui/material/Toolbar';
 import moment from 'moment';
-import MomentUtils from "@date-io/moment";
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Container from '@material-ui/core/Container';
-import { ListItemText } from "@material-ui/core";
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import AppBar from '@mui/material/AppBar';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
+import Container from '@mui/material/Container';
+import { ListItemText } from "@mui/material";
 import { useAuth0 } from '@auth0/auth0-react';
 import { WDateUtils } from "@wcp/wcpshared";
 
@@ -357,7 +357,7 @@ const BlockOffComp = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-      <Grid container spacing={3} justify="center">
+      <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12}>
           <AppBar position="static">
             <Toolbar>
@@ -371,8 +371,8 @@ const BlockOffComp = ({
           <Grid container>{services_checkboxes}</Grid>
         </Grid>
         <Grid item xs={4}>
-          <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
-          <DatePicker
+          {/* <DatePicker
+            renderInput={(props) => <TextField {...props} />}
             fullWidth
             variant="inline"
             autoOk
@@ -384,8 +384,7 @@ const BlockOffComp = ({
             value={selected_date}
             onChange={date => setDate(date)}
             format="dddd, MMMM DD, Y"
-          />
-          </MuiPickersUtilsProvider>
+          /> */}
         </Grid>
         <Grid item xs={5}>
           <TimeSelection
@@ -410,12 +409,12 @@ const BlockOffComp = ({
         <Grid item xs={2}><Button className="btn btn-light" onClick={handleSubmit} disabled={!can_submit || isProcessing}>Add</Button></Grid>
       </Grid>
       </Paper>
-      <Grid container justify="center" spacing={3}>
+      <Grid container justifyContent="center" spacing={3}>
       { blocked_off_html }
       </Grid>
     <br />
     </div>
-  )
+  );
 }
 
 export default BlockOffComp;

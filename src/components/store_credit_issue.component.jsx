@@ -2,19 +2,16 @@ import React, { useState } from "react";
 import CheckedInputComponent from "./checked_input.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
-import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import Toolbar from "@material-ui/core/Toolbar";
+import makeStyles from '@mui/styles/makeStyles';
+import Button from "@mui/material/Button";
+import TextField from '@mui/material/TextField';
+import { DatePicker } from "@mui/lab";
+import Toolbar from "@mui/material/Toolbar";
 import moment from "moment";
-import MomentUtils from "@date-io/moment";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import AppBar from "@mui/material/AppBar";
+import Typography from "@mui/material/Typography";
 
 import { WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
 
@@ -103,7 +100,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Grid container spacing={3} justify="center">
+        <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12}>
             <AppBar position="static">
               <Toolbar>
@@ -160,8 +157,8 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
             />
           </Grid>
           <Grid item xs={4}>
-            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
               <DatePicker
+              renderInput={(props) => <TextField {...props} />}
                 inputProps={{ size: 28 }}
                 variant="inline"
                 autoOk
@@ -182,7 +179,6 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
               >
                 <HighlightOffIcon />
               </IconButton> */}
-            </MuiPickersUtilsProvider>
           </Grid>
           <Grid item xs={2}>
             <TextField
