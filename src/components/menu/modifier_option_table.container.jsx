@@ -1,7 +1,7 @@
 import React from "react";
 import moment from 'moment';
 import TableWrapperComponent from "../table_wrapper.component";
-import { Edit, DeleteOutline } from "@material-ui/icons";
+import { Edit, DeleteOutline } from "@mui/icons-material";
 
 const ModifierOptionTableContainer = ({
   modifier_type,

@@ -2,7 +2,7 @@ import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
 import ModifierOptionTableContainer from "./modifier_option_table.container";
-import { AddBox, Edit, DeleteOutline } from "@material-ui/icons";
+import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 
 const ModifierTypeTableContainer = ({
   modifier_types_map,

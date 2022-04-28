@@ -5,19 +5,19 @@ import DialogContainer from "./dialog.container";
 import QrScanner from 'qr-scanner'; 
 import { OneOffQrScanner } from "react-webcam-qr-scanner.ts";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import ErrorOutline from "@material-ui/icons/ErrorOutline";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
-import Toolbar from "@material-ui/core/Toolbar";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import makeStyles from '@mui/styles/makeStyles';
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import ErrorOutline from "@mui/icons-material/ErrorOutline";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import Toolbar from "@mui/material/Toolbar";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import AppBar from "@mui/material/AppBar";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 
 const US_MONEY_FORMATTER = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -142,7 +142,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Grid container spacing={3} justify="center">
+        <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12}>
             <AppBar position="static">
               <Toolbar>
@@ -187,7 +187,8 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
               aria-label="upload picture"
               component="span"
               onClick={() => setScanCode(true)}
-              disabled={isProcessing || (validationResponse !== null && validationResponse.validated)}>
+              disabled={isProcessing || (validationResponse !== null && validationResponse.validated)}
+              size="large">
               <PhotoCamera />
             </IconButton>
           </Grid></>) : "" }

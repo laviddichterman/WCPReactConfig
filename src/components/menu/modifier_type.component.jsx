@@ -1,14 +1,14 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import Switch from "@material-ui/core/Switch";
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Switch from "@mui/material/Switch";
 import CheckedInputComponent from "../checked_input.component";
 
 const useStyles = makeStyles((theme) => ({
@@ -99,7 +99,7 @@ const ModifierTypeComponent = ({
     actions.length === 0 ? (
       ""
     ) : (
-      <Grid container justify="flex-end" item xs={12}>
+      <Grid container justifyContent="flex-end" item xs={12}>
         {actions.map((action, idx) => (
           <Grid item key={idx}>
             {action}
@@ -110,7 +110,7 @@ const ModifierTypeComponent = ({
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} justify="center">
+      <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12}>
           <TextField
             label="Modifier Type Name"

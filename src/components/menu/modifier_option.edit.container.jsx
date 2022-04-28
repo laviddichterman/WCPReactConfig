@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 import ModifierOptionComponent from "./modifier_option.component";
-import LinearProgress from '@material-ui/core/LinearProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, modifier_option, onCloseCallback }) => {

@@ -5,15 +5,15 @@ import memoizeOne from 'memoize-one';
 import TimeSelection from "./timepicker.component";
 import CheckedInputComponent from "./checked_input.component";
 
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import Paper from '@material-ui/core/Paper';
-import AppBar from '@material-ui/core/AppBar';
-import Typography from '@material-ui/core/Typography';
-import Toolbar from '@material-ui/core/Toolbar';
-import Grid from '@material-ui/core/Grid';
+import makeStyles from '@mui/styles/makeStyles';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import Paper from '@mui/material/Paper';
+import AppBar from '@mui/material/AppBar';
+import Typography from '@mui/material/Typography';
+import Toolbar from '@mui/material/Toolbar';
+import Grid from '@mui/material/Grid';
 
 import { WDateUtils } from "@wcp/wcpshared";
 import { useAuth0 } from '@auth0/auth0-react';
@@ -59,7 +59,7 @@ const OperatingHoursIntervalForm = ({
   const end_options = interval.start ?
     start_options.filter(x => x.value >= interval.start.value) : [];
   return (
-    <Grid container spacing={3} justify="center">
+    <Grid container spacing={3} justifyContent="center">
       <Grid item xs={5}>
         <TimeSelection
           onChange={e => onChangeLowerBound(e)}
@@ -88,7 +88,7 @@ const OperatingHoursIntervalForm = ({
           onClick={onAddOperatingHours}>Add</Button>
       </Grid>
     </Grid>
-  )
+  );
 }
 
 const GenerateInitialOperatingHoursFormIntervals = (num_services) => {
@@ -271,7 +271,7 @@ const SettingsComponent = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Grid container spacing={3} justify="center">
+        <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12}>
             <AppBar position="static">
               <Toolbar>
@@ -305,7 +305,7 @@ const SettingsComponent = ({
         </Grid>
       </Paper>
     </div>
-  )
+  );
 }
 
 

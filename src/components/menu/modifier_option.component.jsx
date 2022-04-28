@@ -1,11 +1,11 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import Autocomplete from '@mui/material/Autocomplete';
 import CheckedInputComponent from "../checked_input.component";
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 
@@ -73,7 +73,7 @@ const ModifierOptionComponent = ({
     actions.length === 0 ? (
       ""
     ) : (
-      <Grid container justify="flex-end" item xs={12}>
+      <Grid container justifyContent="flex-end" item xs={12}>
         {actions.map((action, idx) => (
           <Grid item key={idx}>
             {action}
@@ -84,7 +84,7 @@ const ModifierOptionComponent = ({
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} justify="center">
+      <Grid container spacing={3} justifyContent="center">
         <Grid item xs={6}>
           <TextField
             label="Display Name"
@@ -145,7 +145,7 @@ const ModifierOptionComponent = ({
             value={enableFunction}
             onChange={(e, v) => setEnableFunction(v)}
             getOptionLabel={(option) => option?.name ?? "CORRUPT DATA" }
-            getOptionSelected={(option, value) =>
+            isOptionEqualToValue={(option, value) =>
               option &&
               value &&
               option._id === value._id

@@ -1,8 +1,8 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import AbstractExpressionFunctionalContainer from './abstract_expression_functional.container';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +45,7 @@ const ProductInstanceFunctionComponent = ({
     actions.length === 0 ? (
       ""
     ) : (
-      <Grid container justify="flex-end" item xs={12}>
+      <Grid container justifyContent="flex-end" item xs={12}>
         {actions.map((action, idx) => (
           <Grid item key={idx}>
             {action}
@@ -56,7 +56,7 @@ const ProductInstanceFunctionComponent = ({
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} justify="center">
+      <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12}>
           <TextField
             label="Function Name"

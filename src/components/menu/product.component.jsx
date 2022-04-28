@@ -1,15 +1,15 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Switch from "@material-ui/core/Switch";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Switch from "@mui/material/Switch";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Autocomplete from '@mui/material/Autocomplete';
 import CheckedInputComponent from "../checked_input.component";
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 
@@ -102,7 +102,7 @@ const ProductComponent = ({
     actions.length === 0 ? (
       ""
     ) : (
-      <Grid container justify="flex-end" item xs={12}>
+      <Grid container justifyContent="flex-end" item xs={12}>
         {actions.map((action, idx) => (
           <Grid item key={idx}>
             {action}
@@ -190,7 +190,7 @@ const ProductComponent = ({
                 value={ modifierEnableFunctions[modifier.modifier_type._id] || null }
                 onChange={(e, v) => handleSetModifierEnableFunction(modifier.modifier_type._id, v) }
                 getOptionLabel={(option) => option?.name ?? "CORRUPT DATA"}
-                getOptionSelected={(option, value) => option && value && option._id === value._id }
+                isOptionEqualToValue={(option, value) => option && value && option._id === value._id }
                 renderInput={(params) => (
                   <TextField {...params} label="Enable Function Name" />
                 )}
@@ -215,7 +215,7 @@ const ProductComponent = ({
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} justify="center">
+      <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12}>
           <Autocomplete
             multiple
@@ -224,7 +224,7 @@ const ProductComponent = ({
             value={parentCategories.filter((x) => x)}
             onChange={(e, v) => setParentCategories(v)}
             getOptionLabel={(option) => option.category.name}
-            getOptionSelected={(option, value) =>
+            isOptionEqualToValue={(option, value) =>
               option.category._id === value.category._id
             }
             renderInput={(params) => (
@@ -317,7 +317,7 @@ const ProductComponent = ({
             getOptionLabel={(option) =>
               option ? option.modifier_type.name : "CORRUPT DATA"
             }
-            getOptionSelected={(option, value) =>
+            isOptionEqualToValue={(option, value) =>
               option &&
               value &&
               option.modifier_type._id === value.modifier_type._id

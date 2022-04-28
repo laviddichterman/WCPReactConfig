@@ -1,7 +1,7 @@
 import React from 'react';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import Divider from '@material-ui/core/Divider';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import Divider from '@mui/material/Divider';
 
 function DialogContainer({ onClose, title, inner_component, isOpen, ...other }) {
   return (

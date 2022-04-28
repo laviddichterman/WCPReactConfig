@@ -2,7 +2,7 @@ import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
 import ProductTableContainer from "./product_table.container";
-import { AddBox, DeleteOutline, Edit } from "@material-ui/icons";
+import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 
 const CategoryTableContainer = ({
   catalog,

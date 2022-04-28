@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 import ModifierTypeComponent from "./modifier_type.component";
 import { useAuth0 } from '@auth0/auth0-react';
 

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Toolbar from '@material-ui/core/Toolbar';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
+import makeStyles from '@mui/styles/makeStyles';
+import Button from '@mui/material/Button';
+import Toolbar from '@mui/material/Toolbar';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import AppBar from '@mui/material/AppBar';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const useStyles = makeStyles(theme => ({
@@ -74,7 +74,7 @@ const DeliveryAreaComponent = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Grid container spacing={3} justify="center">
+        <Grid container spacing={3} justifyContent="center">
             <Grid item xs={12}>
               <AppBar position="static">
                 <Toolbar>
@@ -93,6 +93,6 @@ const DeliveryAreaComponent = ({
           </Grid>
       </Paper>
     </div>
-    )
+  );
 }
 export default DeliveryAreaComponent;

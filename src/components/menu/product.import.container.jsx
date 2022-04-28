@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete from '@mui/material/Autocomplete';
 import { useCSVReader } from 'react-papaparse';
 
-import Button from "@material-ui/core/Button";
-import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from "@mui/material/Button";
+import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const useStyles = makeStyles((theme) => ({
@@ -87,7 +87,7 @@ const ProductComponent = ({
     actions.length === 0 ? (
       ""
     ) : (
-      <Grid container justify="flex-end" item xs={12}>
+      <Grid container justifyContent="flex-end" item xs={12}>
         {actions.map((action, idx) => (
           <Grid item key={idx}>
             {action}
@@ -98,7 +98,7 @@ const ProductComponent = ({
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} justify="center">
+      <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12}>
           <Autocomplete
             multiple
@@ -107,7 +107,7 @@ const ProductComponent = ({
             value={parentCategories.filter((x) => x)}
             onChange={(e, v) => setParentCategories(v)}
             getOptionLabel={(option) => option.category.name}
-            getOptionSelected={(option, value) =>
+            isOptionEqualToValue={(option, value) =>
               option.category._id === value.category._id
             }
             renderInput={(params) => (

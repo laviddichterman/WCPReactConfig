@@ -1,7 +1,7 @@
 import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
-import { AddBox, Edit, DeleteOutline } from "@material-ui/icons";
+import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import { WFunctional } from "@wcp/wcpshared";
 
 const ProductInstanceFunctionTableContainer = ({

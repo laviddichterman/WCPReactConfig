@@ -27,8 +27,8 @@ import ModifierTypeTableContainer from "./modifier_type_table.container";
 import ProductTableContainer from "./product_table.container";
 import ProductInstanceFunctionTableContainer from "./product_instance_function_table.container";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from "@mui/material/Grid";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -410,7 +410,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
           />
         }
       />
-      <Grid container justify="center" spacing={3}>
+      <Grid container justifyContent="center" spacing={3}>
         <Grid item xs={12}>
           <InterstitialDialog
             dialogTitle={"Add new..."}

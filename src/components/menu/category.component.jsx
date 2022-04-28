@@ -1,14 +1,14 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Autocomplete from '@mui/material/Autocomplete';
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import CheckedInputComponent from "../checked_input.component";
 
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +50,7 @@ const CategoryComponent = ({
   parent, setParent }) => {
   const classes = useStyles();
   const actions_html = actions.length === 0 ? "" : 
-    (<Grid container justify="flex-end" item xs={12}>
+    (<Grid container justifyContent="flex-end" item xs={12}>
       {actions.map((action, idx) => (
         <Grid item key={idx}>
           {action}
@@ -60,7 +60,7 @@ const CategoryComponent = ({
     
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} justify="center">
+      <Grid container spacing={3} justifyContent="center">
         <Grid item xs={6}>
           <TextField
             label="Category Name"
@@ -77,7 +77,7 @@ const CategoryComponent = ({
             value={parent}
             onChange={(e, v) => setParent(v)}
             getOptionLabel={(option) => option.category.name}
-            getOptionSelected={(option, value) => option.category._id === value.category._id}
+            isOptionEqualToValue={(option, value) => option.category._id === value.category._id}
             renderInput={(params) => (
               <TextField {...params} label="Parent Category (Optional)" />
             )}

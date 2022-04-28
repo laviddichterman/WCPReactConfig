@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Autocomplete from '@mui/material/Autocomplete';
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 
 // BUG// TODO: https://app.asana.com/0/1184794277483753/1200242818246330/f
 // we need a way to disable saving the abstract expression if it's not fully specified
@@ -287,7 +287,7 @@ const HasAnyOfModifierTypeFunctionalComponent = ({
           getOptionLabel={(option) =>
             option?.modifier_type.name ?? "CORRUPT DATA"
           }
-          getOptionSelected={(option, value) =>
+          isOptionEqualToValue={(option, value) =>
             option &&
             value &&
             option.modifier_type._id === value.modifier_type._id
@@ -327,7 +327,7 @@ const ModifierPlacementFunctionalComponent = ({
           getOptionLabel={(option) =>
             option?.modifier_type.name ?? "CORRUPT DATA"
           }
-          getOptionSelected={(option, value) =>
+          isOptionEqualToValue={(option, value) =>
             option &&
             value &&
             option.modifier_type._id === value.modifier_type._id
@@ -347,7 +347,7 @@ const ModifierPlacementFunctionalComponent = ({
             getOptionLabel={(option) =>
               option?.item.display_name ?? "CORRUPT DATA"
             }
-            getOptionSelected={(option, value) =>
+            isOptionEqualToValue={(option, value) =>
               option && value && option._id === value._id
             }
             renderInput={(params) => <TextField {...params} label="Option" />}

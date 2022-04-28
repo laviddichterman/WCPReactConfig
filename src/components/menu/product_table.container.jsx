@@ -2,7 +2,7 @@ import React from "react";
 import moment from 'moment';
 
 import TableWrapperComponent from "../table_wrapper.component";
-import { AddBox, DeleteOutline, Edit, LibraryAdd } from "@material-ui/icons";
+import { AddBox, DeleteOutline, Edit, LibraryAdd } from "@mui/icons-material";
 
 const ProductTableContainer = ({
   tableTitle,
