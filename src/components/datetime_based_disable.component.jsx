@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from '@mui/material/TextField';
-import { DateTimePicker } from "@mui/lab";
+import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from "moment";
 
 const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {

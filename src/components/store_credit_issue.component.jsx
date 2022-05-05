@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
-import { DatePicker } from "@mui/lab";
+import { DatePicker } from '@mui/x-date-pickers';
 import Toolbar from "@mui/material/Toolbar";
 import moment from "moment";
 import Paper from "@mui/material/Paper";
