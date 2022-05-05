@@ -9,7 +9,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import Button from '@mui/material/Button';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TextField from '@mui/material/TextField';
-import { DatePicker } from '@mui/lab';
+import { MobileDatePicker } from '@mui/lab';
 import Toolbar from '@mui/material/Toolbar';
 import moment from 'moment';
 import Paper from '@mui/material/Paper';
@@ -347,7 +347,7 @@ const BlockOffComp = ({
       </Grid>
     );
   }) : "";
-  const start_options = selected_date && SETTINGS && LEAD_TIME ?
+  const start_options = selected_date ?
     WDateUtils.GetOptionsForDate(
       WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, selected_date, service_selection, {}), 
       selected_date,
@@ -371,20 +371,19 @@ const BlockOffComp = ({
           <Grid container>{services_checkboxes}</Grid>
         </Grid>
         <Grid item xs={4}>
-          {/* <DatePicker
+          <MobileDatePicker
             renderInput={(props) => <TextField {...props} />}
             fullWidth
-            variant="inline"
             autoOk
             placeholder={"Select Date"}
-            disableToolbar
-            disablePast
+            showToolbar={false}
+            minDate={moment()}
             maxDate={moment().add(60, 'days')}
             shouldDisableDate={e => !HasOptionsForDate(e)}
             value={selected_date}
             onChange={date => setDate(date)}
-            format="dddd, MMMM DD, Y"
-          /> */}
+            inputFormat="dddd, MMMM DD, Y"
+          />
         </Grid>
         <Grid item xs={5}>
           <TimeSelection

@@ -3,6 +3,8 @@ import CheckedInputComponent from "./checked_input.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
 import makeStyles from '@mui/styles/makeStyles';
+import IconButton from "@mui/material/IconButton";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import { DatePicker } from "@mui/lab";
@@ -109,7 +111,6 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
                 </Typography>
               </Toolbar>
               <Typography variant="subtitle1">Note: purchased store credit MUST be done through our website!</Typography>
-              <Typography variant="subtitle1">People kept on giving out discounts that didn't expire, so now they all have to expire.</Typography>
             </AppBar>
           </Grid>
           <Grid item xs={3}>
@@ -160,25 +161,23 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
               <DatePicker
               renderInput={(props) => <TextField {...props} />}
                 inputProps={{ size: 28 }}
-                variant="inline"
-                autoOk
+                allowSameDateSelection
                 placeholder={"Select Date"}
-                disableToolbar
-                disablePast
+                showToolbar={false}
                 minDate={moment().add(30, "days")}
                 label="Expiration"
                 value={expiration}
-                onChange={(date) => setExpiration(date)}
-                format="dddd, MMMM DD, Y"
+                onChange={(date) => { setExpiration(date); /*setValue(date);*/ } }
+                inputFormat="dddd, MMMM DD, Y"
               />
-              {/* <IconButton
+              { <IconButton
                 edge="end"
                 size="medium"
                 aria-label="delete"
                 onClick={() => setExpiration(null)}
               >
                 <HighlightOffIcon />
-              </IconButton> */}
+              </IconButton> }
           </Grid>
           <Grid item xs={2}>
             <TextField

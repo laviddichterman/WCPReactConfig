@@ -22,7 +22,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import AdapterMoment from '@mui/lab/AdapterMoment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 
@@ -92,10 +92,15 @@ const AppInner = () => {
   const { isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [socketRo] = useState(IO_CLIENT_RO);
   const [SERVICES, setSERVICES] = useState([]);
-  const [BLOCKED_OFF, setBLOCKED_OFF] = useState();
+  const [hasLoadedSERVICES, setHasLoadedSERVICES] = useState(false);
+  const [BLOCKED_OFF, setBLOCKED_OFF] = useState([]);
+  const [hasLoadedBLOCKED_OFF, setHasLoadedBLOCKED_OFF] = useState(false);
   const [LEADTIME, setLEADTIME] = useState();
+  const [hasLoadedLEADTIME, setHasLoadedLEADTIME] = useState(false);
   const [SETTINGS, setSETTINGS] = useState();
+  const [hasLoadedSETTINGS, setHasLoadedSETTINGS] = useState(false);
   const [DELIVERY_AREA, setDELIVERY_AREA] = useState({});
+  const [hasLoadedDELIVERY_AREA, setHasLoadedDELIVERY_AREA] = useState(false);
   const [CATALOG, setCATALOG] = useState({ 
     modifiers: {},
     categories: {},
@@ -103,6 +108,7 @@ const AppInner = () => {
     orphan_products: [],
     version: "NONE"
   });
+  const [hasLoadedCATALOG, setHasLoadedCATALOG] = useState(false);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -116,7 +122,7 @@ const AppInner = () => {
   useEffect(() => {
     socketRo.open();
     socketRo.on("connect", () => {
-      socketRo.on("WCP_SERVICES", data => setSERVICES(data));
+      socketRo.on("WCP_SERVICES", data => { setSERVICES(data); setHasLoadedSERVICES(true); } );
       socketRo.on("WCP_BLOCKED_OFF", data => {
         data.forEach(function(svc_block, i) {
           svc_block.forEach(function(day_block, j) {
@@ -125,12 +131,13 @@ const AppInner = () => {
             })
           })
         })
-        setBLOCKED_OFF(data)
+        setBLOCKED_OFF(data);
+        setHasLoadedBLOCKED_OFF(true);
       });
-      socketRo.on("WCP_LEAD_TIMES", data => setLEADTIME(data));
-      socketRo.on("WCP_SETTINGS", data => setSETTINGS(data));
-      socketRo.on("WCP_DELIVERY_AREA", data => setDELIVERY_AREA(data));
-      socketRo.on("WCP_CATALOG", data => setCATALOG(data));
+      socketRo.on("WCP_LEAD_TIMES", data => { setLEADTIME(data); setHasLoadedLEADTIME(true); } );
+      socketRo.on("WCP_SETTINGS", data => { setSETTINGS(data); setHasLoadedSETTINGS(true); } );
+      socketRo.on("WCP_DELIVERY_AREA", data => { setDELIVERY_AREA(data); setHasLoadedDELIVERY_AREA(true); } );
+      socketRo.on("WCP_CATALOG", data => { setCATALOG(data); setHasLoadedCATALOG(true); } );
     });
     return function() {
       socketRo.disconnect();
@@ -143,7 +150,7 @@ const AppInner = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading Application...</div>;
   }
   if (!isAuthenticated) {
     return (
@@ -151,6 +158,9 @@ const AppInner = () => {
             <AppBar position="static"><Button onClick={() => loginWithRedirect({})}>Log in</Button></AppBar>
           </div>
     );
+  }
+  if (!hasLoadedBLOCKED_OFF || !hasLoadedCATALOG || !hasLoadedDELIVERY_AREA || !hasLoadedSETTINGS || !hasLoadedLEADTIME || !hasLoadedSERVICES) {
+    return <div>Loading Configuration...</div>;
   }
   return (
       <>
@@ -217,7 +227,7 @@ const App = () => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
           <AppInner/>
         </LocalizationProvider>
       </ThemeProvider>
