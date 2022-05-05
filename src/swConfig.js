@@ -1,4 +1,4 @@
-export default {
+const REGISTRATION = {
   onUpdate: registration => {
     registration.unregister().then(() => {
     window.location.reload()
@@ -8,4 +8,6 @@ export default {
    console.info('service worker on success state')
    console.log(registration)
   },
- }
+ };
+
+ export default REGISTRATION;
