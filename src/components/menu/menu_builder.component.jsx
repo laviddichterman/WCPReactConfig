@@ -27,42 +27,9 @@ import ModifierTypeTableContainer from "./modifier_type_table.container";
 import ProductTableContainer from "./product_table.container";
 import ProductInstanceFunctionTableContainer from "./product_instance_function_table.container";
 
-import makeStyles from '@mui/styles/makeStyles';
 import Grid from "@mui/material/Grid";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-  category_tree: {
-    height: 110,
-    flexGrow: 1,
-    maxWidth: 400,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  listLevel0: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  listLevel1: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
-
 const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
-  const classes = useStyles();
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
   const [isModifierOptionAddOpen, setIsModifierOptionAddOpen] = useState(false);
 
@@ -111,7 +78,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
 
   console.log(catalog);
   return (
-    <div className={classes.root}>
+    <div>
       <DialogContainer
         title={"Edit Category"}
         onClose={() => {

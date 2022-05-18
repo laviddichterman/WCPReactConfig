@@ -1,35 +1,9 @@
 import React from "react";
 
-import makeStyles from '@mui/styles/makeStyles';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import AbstractExpressionFunctionalContainer from './abstract_expression_functional.container';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  listLevel0: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  listLevel1: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
 
 const ProductInstanceFunctionComponent = ({
   modifier_types,
@@ -40,7 +14,6 @@ const ProductInstanceFunctionComponent = ({
   expression,
   setExpression,
 }) => {
-  const classes = useStyles();
   const actions_html =
     actions.length === 0 ? (
       ""
@@ -55,7 +28,7 @@ const ProductInstanceFunctionComponent = ({
     );
 
   return (
-    <div className={classes.root}>
+    <div>
       <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12}>
           <TextField

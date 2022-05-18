@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import makeStyles from '@mui/styles/makeStyles';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -18,41 +17,14 @@ import ListItem from "@mui/material/ListItem";
 // BUG// TODO: https://app.asana.com/0/1184794277483753/1200242818246330/f
 // we need a way to disable saving the abstract expression if it's not fully specified
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  listLevel0: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  listLevel1: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
-
 const AbstractExpressionFunctionalComponent = ({
   expression_types,
   discriminator,
   setDiscriminator,
 }) => {
-  const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <List className={classes.listLevel0}>
+    <div>
+      <List>
         <ListItem>
           <Card>
             <CardContent>
@@ -81,7 +53,7 @@ const AbstractExpressionFunctionalComponent = ({
           </Card>
         </ListItem>
         <ListItem>
-          <List className={classes.listLevel1}>
+          <List>
             {expression_types[discriminator]}
           </List>
         </ListItem>
@@ -122,10 +94,9 @@ const LogicalFunctionalComponent = ({
     newValue.operandB = val;
     setValue(newValue);
   };
-  const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <List className={classes.listLevel0}>
+    <div>
+      <List>
         <ListItem>
           <Card>
             <CardContent>
@@ -199,7 +170,6 @@ const IfElseFunctionalComponent = ({
   const [falseBranchExpr, setFalseBranchExpr] = useState(
     value?.false_branch ?? {}
   );
-  const classes = useStyles();
   const updateTestExpr = (val) => {
     setTestExpr(val);
     const newValue = {};
@@ -222,8 +192,8 @@ const IfElseFunctionalComponent = ({
     setValue(newValue);
   };
   return (
-    <div className={classes.root}>
-      <List className={classes.listLevel0}>
+    <div>
+      <List>
         <ListItem>
           <Card>
             <CardHeader title="Test Expression"></CardHeader>

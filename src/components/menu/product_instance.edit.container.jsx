@@ -89,13 +89,11 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
     <ProductInstanceComponent 
       actions={[  
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,                  
         <Button
-          className="btn btn-light"
           onClick={editProductInstance}
           disabled={displayName.length === 0 || shortcode.length === 0 ||
             price < 0 || isProcessing}

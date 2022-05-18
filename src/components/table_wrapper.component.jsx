@@ -1,6 +1,12 @@
 import React, { forwardRef } from "react";
-
-import MaterialTable from "material-table";
+import { DataGridPro } from '@mui/x-data-grid-pro';
+import config from "../auth_config.json";
+import {
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarDensitySelector,
+} from '@mui/x-data-grid';
+import { LicenseInfo } from '@mui/x-license-pro';
 
 import {
   AddBox,
@@ -47,15 +53,39 @@ const tableIcons = {
   ExpandMore: forwardRef((props, ref) => <ExpandMore {...props} ref={ref} />),
 };
 
+LicenseInfo.setLicenseKey(
+  config.muilicense
+);
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+    </GridToolbarContainer>
+  );
+}
+
+
 const TableWrapperComponent = ({
   ...forwardParams
 }) => {
-
   return (
-    <MaterialTable
+  <div style={{ display: 'flex', height: '100%' }}>
+    <div style={{ flexGrow: 1 }}>
+    <DataGridPro
+      components={{
+        Toolbar: CustomToolbar,
+      }}
+      autoHeight
+      density="compact"
+      hideFooter
+      disableColumnReorder={true}
       {...forwardParams}
       icons={tableIcons}
-    />
+      />
+    </div>
+  </div>    
   );
 };
 

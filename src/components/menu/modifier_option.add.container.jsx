@@ -82,13 +82,11 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
     <ModifierOptionComponent 
       actions={[ 
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,                  
         <Button
-          className="btn btn-light"
           onClick={addModifierOption}
           disabled={displayName.length === 0 || shortcode.length === 0 ||
             price < 0 || flavorFactor < 0 || bakeFactor < 0 || isProcessing}

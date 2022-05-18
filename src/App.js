@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-import "bootstrap/dist/css/bootstrap.min.css";
 import PACKAGE_JSON from "../package.json";
 import socketIOClient from "socket.io-client";
 import BlockOffComp from "./components/blockoff.component";
@@ -15,7 +14,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 import PropTypes from 'prop-types';
 import { createTheme, ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -25,6 +23,67 @@ import Button from '@mui/material/Button';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+const themeOptions = createTheme( {
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#3f51b5',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+  spacing: 4,
+  shape: {
+    borderRadius: 4,
+  },
+  props: {
+    MuiList: {
+      dense: true,
+    },
+    MuiMenuItem: {
+      dense: true,
+    },
+    MuiTable: {
+      size: 'small',
+    },
+    MuiTooltip: {
+      arrow: true,
+    },
+  },
+  overrides: {
+    MuiSwitch: {
+      root: {
+        width: 42,
+        height: 26,
+        padding: 0,
+        margin: 8,
+      },
+      switchBase: {
+        padding: 1,
+        '&$checked, &$colorPrimary$checked, &$colorSecondary$checked': {
+          transform: 'translateX(16px)',
+          color: '#fff',
+          '& + $track': {
+            opacity: 1,
+            border: 'none',
+          },
+        },
+      },
+      thumb: {
+        width: 24,
+        height: 24,
+      },
+      track: {
+        borderRadius: 13,
+        border: '1px solid #bdbdbd',
+        backgroundColor: '#fafafa',
+        opacity: 1,
+        transition: 'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+      },
+    },
+  },
+});
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,25 +115,11 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.yellow,
-  },
-}));
-
-
-const theme = createTheme({
-  // palette: {
-  //   mode: 'dark',
-  // },
-});
-
 //const ENDPOINT = "https://wario.windycitypie.com";
-const ENDPOINT = "https://wdev.windycitypie.com";
+//const ENDPOINT = "https://wdev.windycitypie.com";
 //const ENDPOINT = "https://wstaging.windycitypie.com";
 //const ENDPOINT = "https://wario.breezytownpizza.com";
-//const ENDPOINT = "http://localhost:4001";
+const ENDPOINT = "http://localhost:4001";
 
 const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false,     
   transports: ["websocket", "polling"], 
@@ -87,7 +132,6 @@ const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, se
  });
 
 const AppInner = () => {
-  const classes = useStyles();
   const [currentTab, setCurrentTab] = useState(0);
   const { isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [socketRo] = useState(IO_CLIENT_RO);
@@ -154,8 +198,8 @@ const AppInner = () => {
   }
   if (!isAuthenticated) {
     return (
-          <div className={classes.root}>
-            <AppBar position="static"><Button onClick={() => loginWithRedirect({})}>Log in</Button></AppBar>
+          <div>
+            <AppBar color="primary" position="static"><Button onClick={() => loginWithRedirect({})}>Log in</Button></AppBar>
           </div>
     );
   }
@@ -164,9 +208,10 @@ const AppInner = () => {
   }
   return (
       <>
-        <div className={classes.root}>
-          <AppBar position="static">
-            <Tabs value={currentTab} onChange={handleChangeTab} aria-label="backend config">
+        <div>
+          <AppBar color="primary" position="static">
+            <Tabs textColor="secondary"
+  indicatorColor="secondary" value={currentTab} onChange={handleChangeTab} aria-label="backend config">
               <Tab label="Timing Configuration" {...a11yProps(0)} />
               <Tab label="Store Credit" {...a11yProps(1)} />
               <Tab label="Menu" {...a11yProps(2)} />
@@ -226,7 +271,7 @@ const AppInner = () => {
 const App = () => {
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={themeOptions}>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <AppInner/>
         </LocalizationProvider>

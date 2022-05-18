@@ -1,7 +1,9 @@
 import React from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
+import {GridActionsCellItem}  from "@mui/x-data-grid";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
+import Tooltip from '@mui/material/Tooltip';
 import { WFunctional } from "@wcp/wcpshared";
 
 const ProductInstanceFunctionTableContainer = ({
@@ -12,18 +14,19 @@ const ProductInstanceFunctionTableContainer = ({
   setIsProductInstanceFunctionAddOpen,
   setProductInstanceFunctionToEdit,
 }) => {
+  const editProductFunction = (row) => () => {
+    setIsProductInstanceFunctionEditOpen(true);
+    setProductInstanceFunctionToEdit(row);
+  };
+
+  const deleteProductFunction = (row) => () => {
+    setIsProductInstanceFunctionDeleteOpen(true);
+    setProductInstanceFunctionToEdit(row);
+  };
   return (
     <TableWrapperComponent
       title="Product Instance Functions"
-      columns={[
-        { title: "Name", field: "name" },
-        { title: "Function", field: "expression", render: rowData => WFunctional.AbstractExpressionStatementToString(rowData.expression, modifier_types) },
-      ]}
-      options={{
-        detailPanelType: "single",
-        draggable: false,
-        paging: false,
-      }}
+
       actions={[
         {
           icon: AddBox,
@@ -32,25 +35,31 @@ const ProductInstanceFunctionTableContainer = ({
             setIsProductInstanceFunctionAddOpen(true);
           },
           isFreeAction: true,
-        },
-        {
-          icon: Edit,
-          tooltip: "Edit Product Function",
-          onClick: (event, rowData) => {
-            setIsProductInstanceFunctionEditOpen(true);
-            setProductInstanceFunctionToEdit(rowData);
-          },
-        },
-        {
-          icon: DeleteOutline,
-          tooltip: 'Delete Product Function',
-          onClick: (event, rowData) => {
-            setIsProductInstanceFunctionDeleteOpen(true);
-            setProductInstanceFunctionToEdit(rowData);
-          },
         }
       ]}
-      data={product_instance_functions}
+      rows={product_instance_functions}
+      getRowId={(row) => row._id}
+      columns={[
+        {
+          headerName: "Actions",
+          field: 'actions',
+          type: 'actions',
+          getActions: (params) => [
+            <GridActionsCellItem
+              icon={<Tooltip title="Edit Product Function"><Edit/></Tooltip>}
+              label="Edit Product Function"
+              onClick={editProductFunction(params.row)}
+            />,
+            <GridActionsCellItem
+              icon={<Tooltip title="Delete Product Function"><DeleteOutline/></Tooltip>}
+              label="Delete Product Function"
+              onClick={deleteProductFunction(params.row)}
+            />
+          ]
+        },
+        { headerName: "Name", field: "name", valueGetter: v => v.row.name, defaultSort: "asc"},
+        { headerName: "Function", field: "expression", valueGetter: v => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifier_types)},
+      ]}
     />
   );
 };

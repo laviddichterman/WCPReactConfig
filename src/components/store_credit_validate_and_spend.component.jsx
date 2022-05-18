@@ -5,7 +5,6 @@ import DialogContainer from "./dialog.container";
 import QrScanner from 'qr-scanner'; 
 import { OneOffQrScanner } from "react-webcam-qr-scanner.ts";
 
-import makeStyles from '@mui/styles/makeStyles';
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
@@ -24,33 +23,8 @@ const US_MONEY_FORMATTER = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  listLevel0: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  listLevel1: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
+
 const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
-  const classes = useStyles();
   const [creditCode, setCreditCode] = useState("");
   const [scanCode, setScanCode] = useState(false);
   const [hasCamera, setHasCamera] = useState(false);
@@ -140,13 +114,13 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
     }
   };
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <div>
+      <Paper>
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12}>
             <AppBar position="static">
               <Toolbar>
-                <Typography variant="h5" className={classes.title}>
+                <Typography variant="h5">
                   Redeem Store Credit
                 </Typography>
               </Toolbar>
@@ -195,7 +169,6 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
           <Grid item xs={3}>
             {validationResponse !== null ? (
               <Button
-                className="btn btn-light"
                 onClick={clearLookup}
                 disabled={isProcessing}
               >
@@ -203,7 +176,6 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
               </Button>
             ) : (
               <Button
-                className="btn btn-light"
                 onClick={() => validateCode(creditCode)}
                 disabled={
                   isProcessing ||
@@ -300,7 +272,6 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
                   type="text"
                   disabled={isProcessing || debitResponse !== null}
                   inputProps={{ size: 10 }}
-                  //className={className}
                   value={processedBy}
                   size="small"
                   onChange={(e) => setProcessedBy(e.target.value)}

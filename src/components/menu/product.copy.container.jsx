@@ -115,13 +115,11 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
     <ProductComponent 
       actions={[ 
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,                 
         <Button
-          className="btn btn-light"
           onClick={copyProduct}
           disabled={displayName.length === 0 || isProcessing}
         >

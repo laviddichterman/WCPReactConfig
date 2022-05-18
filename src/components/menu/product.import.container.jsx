@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import makeStyles from '@mui/styles/makeStyles';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 
@@ -10,32 +9,6 @@ import { useCSVReader } from 'react-papaparse';
 import Button from "@mui/material/Button";
 import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  listLevel0: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  listLevel1: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
 
 const InternalCSVReader = ({onAccepted}) => {
   const { CSVReader } = useCSVReader();
@@ -81,7 +54,6 @@ const ProductComponent = ({
   setParentCategories,
   setFileData,
 }) => {
-  const classes = useStyles();
 
   const actions_html =
     actions.length === 0 ? (
@@ -97,7 +69,7 @@ const ProductComponent = ({
     );
 
   return (
-    <div className={classes.root}>
+    <div>
       <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12}>
           <Autocomplete
@@ -186,13 +158,11 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
     <ProductComponent 
       actions={[ 
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,                 
         <Button
-          className="btn btn-light"
           onClick={addProducts}
           disabled={isProcessing || !data || data.data.length === 0 }
         >

@@ -37,13 +37,11 @@ const ModifierTypeDeleteContainer = ({ ENDPOINT, modifier_type, onCloseCallback 
     <ElementDeleteComponent 
       actions={[
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,
         <Button
-        className="btn btn-light"
         onClick={deleteModifierType}
         disabled={isProcessing}>
         Confirm

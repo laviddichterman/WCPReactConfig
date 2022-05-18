@@ -44,13 +44,11 @@ const ProductInstanceFunctionAddContainer = ({ ENDPOINT, modifier_types, onClose
     <ProductInstanceFunctionComponent 
       actions={[ 
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,                 
         <Button
-          className="btn btn-light"
           onClick={addProductInstanceFunction}
           disabled={functionName.length === 0 || isProcessing}
         >

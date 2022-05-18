@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TimeSelection from "./timepicker.component";
 import Moment from 'react-moment';
 
-import makeStyles from '@mui/styles/makeStyles';
+import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import DoneIcon from '@mui/icons-material/Done';
@@ -31,32 +31,6 @@ const TrimOptionsBeforeDisabled = (opts) => {
   return idx === -1 ? opts : opts.slice(0, idx);
 }
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  listLevel0: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  listLevel1: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
-
 
 const ServiceSelectionCheckbox = (props) => {
   const { selected, onChange, service_name } = props;
@@ -80,7 +54,6 @@ const BlockOffComp = ({
   SETTINGS,
   LEAD_TIME
 }) => {
-  const classes = useStyles();
   const [ upper_time, setUpperTime ] = useState(null);
   const [ lower_time, setLowerTime ] = useState(null);
   const [ selected_date, setSelectedDate ] = useState(new moment());
@@ -327,7 +300,7 @@ const BlockOffComp = ({
               </IconButton>
             </ListItemSecondaryAction>
         </ListItem>
-        <List component="div" className={classes.listLevel1}>
+        <List component="div">
           {blocked_off_intervals_html}
         </List>
         </Container>
@@ -335,12 +308,12 @@ const BlockOffComp = ({
     })
     return (
       <Grid key={i} item xs={Math.floor(12/SERVICES.length)}>
-        <Paper className={classes.paper} >
+        <Paper>
             <AppBar position="static">
-            <Toolbar><Typography variant="subtitle1" className={classes.title}>
+            <Toolbar><Typography variant="subtitle1">
             {SERVICES[i]}</Typography></Toolbar>
             </AppBar>
-            <List component="nav" className={classes.listLevel0}>
+            <List component="nav">
               {blocked_off_days_html}
             </List>
           </Paper>
@@ -355,13 +328,13 @@ const BlockOffComp = ({
   const end_options = start_options.length && lower_time ?
     TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <Box>
+      <Paper>
       <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12}>
           <AppBar position="static">
             <Toolbar>
-              <Typography variant="subtitle1" className={classes.title}>
+              <Typography variant="subtitle1">
                 Add blocked off time:
               </Typography>
             </Toolbar>
@@ -405,14 +378,13 @@ const BlockOffComp = ({
           className="col"
           />
         </Grid>
-        <Grid item xs={2}><Button className="btn btn-light" onClick={handleSubmit} disabled={!can_submit || isProcessing}>Add</Button></Grid>
+        <Grid item xs={2}><Button onClick={handleSubmit} disabled={!can_submit || isProcessing}>Add</Button></Grid>
       </Grid>
       </Paper>
       <Grid container justifyContent="center" spacing={3}>
       { blocked_off_html }
       </Grid>
-    <br />
-    </div>
+      </Box>
   );
 }
 

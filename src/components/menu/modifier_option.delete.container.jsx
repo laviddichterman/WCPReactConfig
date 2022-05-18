@@ -37,17 +37,13 @@ const ModifierOptionDeleteContainer = ({ ENDPOINT, modifier_option, onCloseCallb
     <ElementDeleteComponent 
       actions={[
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,
-        <Button
-        className="btn btn-light"
-        onClick={deleteModifierOption}
-        disabled={isProcessing}>
+        <Button onClick={deleteModifierOption} disabled={isProcessing}>
         Confirm
-      </Button>
+        </Button>
       ]}
       name={modifier_option.item.display_name}
     />

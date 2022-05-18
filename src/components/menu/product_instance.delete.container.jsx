@@ -37,13 +37,11 @@ const ProductInstanceDeleteContainer = ({ ENDPOINT, product_instance, onCloseCal
     <ElementDeleteComponent 
       actions={[
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,
         <Button
-        className="btn btn-light"
         onClick={deleteProductInstance}
         disabled={isProcessing}>
         Confirm

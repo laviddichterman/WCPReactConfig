@@ -88,13 +88,11 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
     <ProductComponent 
       actions={[ 
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,                 
         <Button
-          className="btn btn-light"
           onClick={addProduct}
           disabled={displayName.length === 0 || shortcode.length === 0 ||
             price < 0 || isProcessing}

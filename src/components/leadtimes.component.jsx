@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+
 import CheckedInputComponent from "./checked_input.component";
 
-import makeStyles from '@mui/styles/makeStyles';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import Paper from '@mui/material/Paper';
@@ -10,34 +10,12 @@ import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
 import { useAuth0 } from '@auth0/auth0-react';
 
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  }
-}));
-
-
 const LeadTimesComp = ({
   ENDPOINT,
   LEADTIME,
   setLEADTIME,
   SERVICES
 }) => {
-  const classes = useStyles();
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const onChangeLeadTimes = (i, e) => {
@@ -83,13 +61,13 @@ const LeadTimesComp = ({
     );
   }) : "";
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <div>
+      <Paper>
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12}>
             <AppBar position="static">
               <Toolbar>
-                <Typography variant="subtitle1" className={classes.title}>
+                <Typography variant="subtitle1">
                   Single pizza lead time:
                 </Typography>
               </Toolbar>

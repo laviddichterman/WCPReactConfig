@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import makeStyles from '@mui/styles/makeStyles';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import Paper from '@mui/material/Paper';
@@ -9,26 +8,6 @@ import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { useAuth0 } from '@auth0/auth0-react';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  }
-}));
-
 
 const DeliveryAreaComponent = ({
   ENDPOINT,
@@ -39,7 +18,6 @@ const DeliveryAreaComponent = ({
   const [ dirty, setDirty ] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
-  const classes = useStyles();
 
   const postDeliveryArea = async (e) => {
     e.preventDefault();
@@ -72,13 +50,13 @@ const DeliveryAreaComponent = ({
   }
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <div>
+      <Paper>
         <Grid container spacing={3} justifyContent="center">
             <Grid item xs={12}>
               <AppBar position="static">
                 <Toolbar>
-                  <Typography variant="subtitle1" className={classes.title}>
+                  <Typography variant="subtitle1">
                     Delivery Area GeoJSON (polygon)
                   </Typography>
                 </Toolbar>

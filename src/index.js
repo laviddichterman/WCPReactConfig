@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import { render } from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
@@ -19,7 +19,7 @@ const onRedirectCallback = (appState) => {
 };
 
 const rootElement = document.getElementById("root");
-createRoot(rootElement).render(
+render(
   <React.StrictMode>
   <Auth0Provider
     domain={config.domain}
@@ -31,7 +31,7 @@ createRoot(rootElement).render(
   >
     <App />
   </Auth0Provider>
-  </React.StrictMode>
+  </React.StrictMode>, rootElement
 );
 
 

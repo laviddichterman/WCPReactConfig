@@ -74,13 +74,11 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
     <ModifierTypeComponent 
       actions={[ 
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,                  
         <Button
-          className="btn btn-light"
           onClick={editModifierType}
           disabled={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || (useToggleIfOnlyTwoOptions && (maxSelected!==1 && minSelected !== 1)) || isProcessing}
         >

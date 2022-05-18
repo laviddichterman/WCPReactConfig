@@ -57,13 +57,11 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
     <CategoryComponent 
       actions={[
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,
         <Button
-          className="btn btn-light"
           onClick={editCategory}
           disabled={name.length === 0 || ordinal < 0 || isProcessing}>
           Save

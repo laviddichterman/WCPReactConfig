@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import CheckedInputComponent from "./checked_input.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
-import makeStyles from '@mui/styles/makeStyles';
 import IconButton from "@mui/material/IconButton";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Button from "@mui/material/Button";
@@ -18,34 +17,7 @@ import Typography from "@mui/material/Typography";
 import { WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
 
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  listLevel0: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  listLevel1: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
-
 const StoreCreditIssueComponent = ({ ENDPOINT }) => {
-  const classes = useStyles();
   const [amount, setAmount] = useState(5.00);
   const [addedBy, setAddedBy] = useState("");
   const [reason, setReason] = useState("");
@@ -100,13 +72,13 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
     }
   }
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <div>
+      <Paper>
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12}>
             <AppBar position="static">
               <Toolbar>
-                <Typography variant="h5" className={classes.title}>
+                <Typography variant="h5">
                   Issue a store credit for a customer
                 </Typography>
               </Toolbar>
@@ -162,6 +134,8 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
               renderInput={(props) => <TextField {...props} />}
                 inputProps={{ size: 28 }}
                 allowSameDateSelection
+                disableMaskedInput
+                clearable
                 placeholder={"Select Date"}
                 showToolbar={false}
                 minDate={moment().add(30, "days")}
@@ -184,7 +158,6 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
               label="Added by"
               type="text"
               inputProps={{ size: 5 }}
-              //className={className}
               value={addedBy}
               size="small"
               onChange={e => setAddedBy(e.target.value)}
@@ -202,7 +175,6 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
           </Grid>
           <Grid item xs={2}>
             <Button
-              className="btn btn-light"
               onClick={handleSubmit}
               disabled={!(!isProcessing && amount >= 1 && addedBy.length >= 2 && firstName.length >= 2 && lastName.length >= 2 && reason.length > 2 && recipientEmail.length > 3 && EMAIL_REGEX.test(recipientEmail))}
             >

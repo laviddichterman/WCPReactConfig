@@ -1,25 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import makeStyles from '@mui/styles/makeStyles';
 import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import AddIcon from '@mui/icons-material/Add';
-import { blue } from '@mui/material/colors';
 
 import DialogContainer from './dialog.container';
 
-const useStyles = makeStyles({
-  avatar: {
-    backgroundColor: blue[100],
-    color: blue[600],
-  },
-});
-
 function InterstitialDialog(props) {
-  const classes = useStyles();
   const { onClose, dialogTitle, options, open } = props;
 
   const handleListItemClick = (cb) => {
@@ -48,7 +38,7 @@ function InterstitialDialog(props) {
             {options.map((option) => (
               <ListItem button onClick={() => handleListItemClick(option.cb)} key={option.title}>
                 <ListItemAvatar>
-                  <Avatar className={classes.avatar}>
+                  <Avatar>
                     <AddIcon />
                   </Avatar>
                 </ListItemAvatar>

@@ -5,7 +5,6 @@ import memoizeOne from 'memoize-one';
 import TimeSelection from "./timepicker.component";
 import CheckedInputComponent from "./checked_input.component";
 
-import makeStyles from '@mui/styles/makeStyles';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -17,26 +16,6 @@ import Grid from '@mui/material/Grid';
 
 import { WDateUtils } from "@wcp/wcpshared";
 import { useAuth0 } from '@auth0/auth0-react';
-
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(0.5),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flexGrow: 1,
-  }
-}));
 
 const OperatingHoursIntervalForm = ({
   settings, 
@@ -105,7 +84,6 @@ const SettingsComponent = ({
   SETTINGS,
   setSETTINGS
 }) => {
-  const classes = useStyles();
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const [operating_hours_form_intervals, setOperatingHoursFormIntervals] = useState(GenerateInitialOperatingHoursFormIntervals(SERVICES.length));
@@ -256,7 +234,7 @@ const SettingsComponent = ({
         <Grid item xs={12}>
           <AppBar position="static">
             <Toolbar>
-              <Typography variant="subtitle2" className={classes.title}>
+              <Typography variant="subtitle2">
                 {SERVICES[h]}:
               </Typography>
             </Toolbar>
@@ -269,13 +247,13 @@ const SettingsComponent = ({
     );
   });
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
+    <div>
+      <Paper>
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12}>
             <AppBar position="static">
               <Toolbar>
-                <Typography variant="subtitle1" className={classes.title}>
+                <Typography variant="subtitle1">
                   Dangerous settings (requires PUSH CHANGES to take effect):
                 </Typography>
               </Toolbar>

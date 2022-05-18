@@ -65,13 +65,11 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
     <CategoryComponent 
       actions={[
         <Button
-          className="btn btn-light"
           onClick={onCloseCallback}
           disabled={isProcessing}>
           Cancel
         </Button>,
         <Button
-          className="btn btn-light"
           onClick={addCategory}
           disabled={name.length === 0 || ordinal < 0 || isProcessing}
         >
