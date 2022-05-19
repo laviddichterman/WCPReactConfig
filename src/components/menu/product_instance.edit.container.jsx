@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ProductInstanceComponent from "./product_instance.component";
-import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_product, product_instance, onCloseCallback}) => {
@@ -48,7 +46,6 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
             display_name: displayName,
             description: description,
             shortcode: shortcode,
-            disabled: disabled,
             ordinal: ordinal,
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
@@ -87,21 +84,10 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
 
   return (
     <ProductInstanceComponent 
-      actions={[  
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,                  
-        <Button
-          onClick={editProductInstance}
-          disabled={displayName.length === 0 || shortcode.length === 0 ||
-            price < 0 || isProcessing}
-        >
-          Save
-        </Button>
-      ]}
-      progress={isProcessing ? <LinearProgress /> : "" }
+      confirmText="Save"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={editProductInstance}
+      isProcessing={isProcessing}
       modifier_types_map={modifier_types_map}
       parent_product={parent_product}
       displayName={displayName}

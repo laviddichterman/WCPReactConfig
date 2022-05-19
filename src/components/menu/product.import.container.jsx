@@ -7,7 +7,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useCSVReader } from 'react-papaparse';
 
 import Button from "@mui/material/Button";
-import LinearProgress from '@mui/material/LinearProgress';
+import { ElementActionComponent } from "./element.action.component";
+
 import { useAuth0 } from '@auth0/auth0-react';
 
 const InternalCSVReader = ({onAccepted}) => {
@@ -47,30 +48,25 @@ const InternalCSVReader = ({onAccepted}) => {
 };
 
 const ProductComponent = ({
-  actions,
-  progress,
+  confirmText,
+  onCloseCallback,
+  onConfirmClick,
+  isProcessing,
+  disableConfirmOn,
   categories,
   parentCategories,
   setParentCategories,
   setFileData,
 }) => {
-
-  const actions_html =
-    actions.length === 0 ? (
-      ""
-    ) : (
-      <Grid container justifyContent="flex-end" item xs={12}>
-        {actions.map((action, idx) => (
-          <Grid item key={idx}>
-            {action}
-          </Grid>
-        ))}
-      </Grid>
-    );
-
   return (
-    <div>
-      <Grid container spacing={3} justifyContent="center">
+    <ElementActionComponent 
+    onCloseCallback={onCloseCallback}
+    onConfirmClick={onConfirmClick}
+    isProcessing={isProcessing}
+    disableConfirmOn={disableConfirmOn}
+    confirmText={confirmText}
+    body={
+    <>
         <Grid item xs={12}>
           <Autocomplete
             multiple
@@ -90,10 +86,8 @@ const ProductComponent = ({
         <Grid item xs={12}>
         <InternalCSVReader onAccepted={(e) => setFileData(e)} />
         </Grid>
-        {actions_html}
-        {progress}
-      </Grid>
-    </div>
+    </>}
+    />
   );
 };
 
@@ -156,20 +150,11 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
 
   return (
     <ProductComponent 
-      actions={[ 
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,                 
-        <Button
-          onClick={addProducts}
-          disabled={isProcessing || !data || data.data.length === 0 }
-        >
-          Add
-        </Button>
-      ]}
-      progress={isProcessing ? <LinearProgress /> : "" }
+      confirmText="Import"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={addProducts}
+      isProcessing={isProcessing}
+      disableConfirmOn={isProcessing || !data || data.data.length === 0}
       categories={categories}
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}

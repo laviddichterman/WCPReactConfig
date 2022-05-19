@@ -138,7 +138,7 @@ const ProductTableContainer = ({
               onClick={deleteProduct(params.row)}
               showInMenu
             />);
-            return params.row.disabled ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
+            return params.row.product.disabled ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           } 
         },
         { headerName: "Name", field: "product.item.display_name", valueGetter: v => v.row.product.item.display_name, defaultSort: "asc" },

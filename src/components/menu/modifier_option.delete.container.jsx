@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ElementDeleteComponent from "./element.delete.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -35,17 +34,10 @@ const ModifierOptionDeleteContainer = ({ ENDPOINT, modifier_option, onCloseCallb
 
   return (
     <ElementDeleteComponent 
-      actions={[
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,
-        <Button onClick={deleteModifierOption} disabled={isProcessing}>
-        Confirm
-        </Button>
-      ]}
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={deleteModifierOption}
       name={modifier_option.item.display_name}
+      isProcessing={isProcessing}
     />
   );
 };

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ElementDeleteComponent from "./element.delete.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -35,19 +34,10 @@ const ProductDeleteContainer = ({ ENDPOINT, product, onCloseCallback }) => {
 
   return (
     <ElementDeleteComponent 
-      actions={[
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,
-        <Button
-        onClick={deleteProduct}
-        disabled={isProcessing}>
-        Confirm
-      </Button>
-      ]}
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={deleteProduct}
       name={product?.item?.display_name}
+      isProcessing={isProcessing}
     />
   );
 };

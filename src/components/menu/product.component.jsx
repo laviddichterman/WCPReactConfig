@@ -11,10 +11,14 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckedInputComponent from "../checked_input.component";
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
+import { ElementActionComponent } from "./element.action.component";
 
 const ProductComponent = ({
-  actions,
-  progress,
+  confirmText,
+  onCloseCallback,
+  onConfirmClick,
+  isProcessing,
+  disableConfirmOn,
   modifier_types,
   categories,
   product_instance_functions,
@@ -30,6 +34,8 @@ const ProductComponent = ({
   setPrice,
   disabled,
   setDisabled,
+  serviceDisabled,
+  setServiceDisabled,
   ordinal,
   setOrdinal,
   revelID,
@@ -68,19 +74,6 @@ const ProductComponent = ({
     newValue[mtid] = enable;
     setModifierEnableFunctions(newValue);
   }
-  
-  const actions_html =
-    actions.length === 0 ? (
-      ""
-    ) : (
-      <Grid container justifyContent="flex-end" item xs={12}>
-        {actions.map((action, idx) => (
-          <Grid item key={idx}>
-            {action}
-          </Grid>
-        ))}
-      </Grid>
-    );
 
   const descriptionField = suppressNonProductInstanceFields ? (
     ""
@@ -173,138 +166,136 @@ const ProductComponent = ({
     )
   );
 
-  const disableField = suppressNonProductInstanceFields ? (
-    ""
-  ) : (
-    <Grid item xs={12}>
-      <DatetimeBasedDisableComponent
-        disabled={disabled}
-        setDisabled={setDisabled}
-      />
-    </Grid>
-  );
-
   return (
-    <div>
-      <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12}>
-          <Autocomplete
-            multiple
-            filterSelectedOptions
-            options={Object.values(categories)}
-            value={parentCategories.filter((x) => x)}
-            onChange={(e, v) => setParentCategories(v)}
-            getOptionLabel={(option) => option.category.name}
-            isOptionEqualToValue={(option, value) =>
-              option.category._id === value.category._id
-            }
-            renderInput={(params) => (
-              <TextField {...params} label="Categories" />
-            )}
-          />
-        </Grid>
-        {productCopyMode ? "" : (<>
-        <Grid item xs={6}>
-          <TextField
-            label="Display Name"
-            type="text"
-            inputProps={{ size: 60 }}
-            value={displayName}
-            size="small"
-            onChange={(e) => setDisplayName(e.target.value)}
-          />
-        </Grid>
-        {descriptionField}
-        <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Ordinal"
-            type="number"
-            value={ordinal}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setOrdinal(e)}
-          />
-        </Grid>
-        {shortCodePriceRIDSID}
-        <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Flavor Max"
-            type="number"
-            value={flavorMax}
-            parseFunction={parseFloat}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setFlavorMax(e)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Bake Max"
-            type="number"
-            value={bakeMax}
-            parseFunction={parseFloat}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setBakeMax(e)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Bake Differential Max"
-            type="number"
-            value={bakeDifferentialMax}
-            parseFunction={parseFloat}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setBakeDifferentialMax(e)}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={showNameOfBaseProduct || modifiers.length === 0}
-                disabled={modifiers.length === 0}
-                onChange={(e) => setShowNameOfBaseProduct(e.target.checked)}
-                name="Show Name of Base Product Instead of Component Modifiers"
-              />
-            }
-            labelPlacement="top"
-            label="Show Name of Base Product Instead of Component Modifiers"
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Singular Noun"
-            type="text"
-            value={singularNoun}
-            size="small"
-            onChange={(e) => setSingularNoun(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Autocomplete
-            multiple
-            filterSelectedOptions
-            options={Object.values(modifier_types)}
-            value={modifiers}
-            onChange={(e, v) => handleSetModifiers(v) }
-            getOptionLabel={(option) =>
-              option ? option.modifier_type.name : "CORRUPT DATA"
-            }
-            isOptionEqualToValue={(option, value) =>
-              option &&
-              value &&
-              option.modifier_type._id === value.modifier_type._id
-            }
-            renderInput={(params) => (
-              <TextField {...params} label="Modifiers" />
-            )}
-          />
-        </Grid>
-        {modifierEnableFunctionSpecificationList}
-        {disableField}
-            </>)}
-        {actions_html}
-        {progress}
-      </Grid>
-    </div>
+    <ElementActionComponent 
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={onConfirmClick}
+      isProcessing={isProcessing}
+      disableConfirmOn={disableConfirmOn}
+      confirmText={confirmText}
+      body={
+      <>
+          <Grid item xs={12}>
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              options={Object.values(categories)}
+              value={parentCategories.filter((x) => x)}
+              onChange={(e, v) => setParentCategories(v)}
+              getOptionLabel={(option) => option.category.name}
+              isOptionEqualToValue={(option, value) =>
+                option.category._id === value.category._id
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="Categories" />
+              )}
+            />
+          </Grid>
+          {productCopyMode ? "" : (<>
+          <Grid item xs={6}>
+            <TextField
+              label="Display Name"
+              type="text"
+              inputProps={{ size: 60 }}
+              value={displayName}
+              size="small"
+              onChange={(e) => setDisplayName(e.target.value)}
+            />
+          </Grid>
+          {descriptionField}
+          <Grid item xs={4}>
+            <CheckedInputComponent
+              label="Ordinal"
+              type="number"
+              value={ordinal}
+              inputProps={{ min: 0 }}
+              onFinishChanging={(e) => setOrdinal(e)}
+            />
+          </Grid>
+          {shortCodePriceRIDSID}
+          <Grid item xs={4}>
+            <CheckedInputComponent
+              label="Flavor Max"
+              type="number"
+              value={flavorMax}
+              parseFunction={parseFloat}
+              inputProps={{ min: 0 }}
+              onFinishChanging={(e) => setFlavorMax(e)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <CheckedInputComponent
+              label="Bake Max"
+              type="number"
+              value={bakeMax}
+              parseFunction={parseFloat}
+              inputProps={{ min: 0 }}
+              onFinishChanging={(e) => setBakeMax(e)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <CheckedInputComponent
+              label="Bake Differential Max"
+              type="number"
+              value={bakeDifferentialMax}
+              parseFunction={parseFloat}
+              inputProps={{ min: 0 }}
+              onFinishChanging={(e) => setBakeDifferentialMax(e)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showNameOfBaseProduct || modifiers.length === 0}
+                  disabled={modifiers.length === 0}
+                  onChange={(e) => setShowNameOfBaseProduct(e.target.checked)}
+                  name="Show Name of Base Product Instead of Component Modifiers"
+                />
+              }
+              labelPlacement="top"
+              label="Show Name of Base Product Instead of Component Modifiers"
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Singular Noun"
+              type="text"
+              value={singularNoun}
+              size="small"
+              onChange={(e) => setSingularNoun(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              options={Object.values(modifier_types)}
+              value={modifiers}
+              onChange={(e, v) => handleSetModifiers(v) }
+              getOptionLabel={(option) =>
+                option ? option.modifier_type.name : "CORRUPT DATA"
+              }
+              isOptionEqualToValue={(option, value) =>
+                option &&
+                value &&
+                option.modifier_type._id === value.modifier_type._id
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="Modifiers" />
+              )}
+            />
+          </Grid>
+          {modifierEnableFunctionSpecificationList}
+          <Grid item xs={12}>
+            <DatetimeBasedDisableComponent
+              disabled={disabled}
+              setDisabled={setDisabled}
+            />
+          </Grid>
+              </>)}
+        </>}
+    />
   );
 };
 

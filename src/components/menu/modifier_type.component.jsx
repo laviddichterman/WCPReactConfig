@@ -9,9 +9,13 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Switch from "@mui/material/Switch";
 import CheckedInputComponent from "../checked_input.component";
+import { ElementActionComponent } from "./element.action.component";
 
 const ModifierTypeComponent = ({
-  actions,
+  confirmText,
+  onCloseCallback,
+  onConfirmClick,
+  isProcessing,
   ordinal,
   setOrdinal,
   minSelected,
@@ -67,22 +71,15 @@ const ModifierTypeComponent = ({
     setMinSelected(val);
   }
 
-  const actions_html =
-    actions.length === 0 ? (
-      ""
-    ) : (
-      <Grid container justifyContent="flex-end" item xs={12}>
-        {actions.map((action, idx) => (
-          <Grid item key={idx}>
-            {action}
-          </Grid>
-        ))}
-      </Grid>
-    );
-
   return (
-    <div>
-      <Grid container spacing={3} justifyContent="center">
+    <ElementActionComponent 
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={onConfirmClick}
+      isProcessing={isProcessing}
+      disableConfirmOn={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || (useToggleIfOnlyTwoOptions && (maxSelected!==1 && minSelected !== 1)) || isProcessing}
+      confirmText={confirmText}
+      body={
+      <>
         <Grid item xs={12}>
           <TextField
             label="Modifier Type Name"
@@ -320,9 +317,8 @@ const ModifierTypeComponent = ({
             onChange={(e) => setSquareID(e.target.value)}
           />
         </Grid>
-        {actions_html}
-      </Grid>
-    </div>
+      </>}
+    />
   );
 };
 

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ModifierOptionComponent from "./modifier_option.component";
-import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, parent, onCloseCallback }) => {
@@ -80,21 +78,10 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
 
   return (
     <ModifierOptionComponent 
-      actions={[ 
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,                  
-        <Button
-          onClick={addModifierOption}
-          disabled={displayName.length === 0 || shortcode.length === 0 ||
-            price < 0 || flavorFactor < 0 || bakeFactor < 0 || isProcessing}
-        >
-          Add
-        </Button>
-      ]}
-      progress={isProcessing ? <LinearProgress /> : "" }
+      confirmText="Add"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={addModifierOption}
+      isProcessing={isProcessing}
       product_instance_functions={product_instance_functions}
       displayName={displayName}
       setDisplayName={setDisplayName}

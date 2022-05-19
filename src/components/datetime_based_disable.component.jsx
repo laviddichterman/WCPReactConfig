@@ -24,7 +24,13 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
   const toggleEnabled = () => {
     if (enabled) {
       setEnabled(false);
-      setDisabled(isDatetimeBased ? { start: disabledStart.valueOf(), end: disabledEnd.valueOf() } : { start: 1, end: 0 });
+      if (isDatetimeBased) {
+        setDisabled({ start: disabledStart.valueOf(), end: disabledEnd.valueOf() });
+      }
+      else {
+        setDisabled({ start: 1, end: 0 });
+      }
+      
     }
     else {
       setEnabled(true);
@@ -84,31 +90,31 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
       {(!enabled && isDatetimeBased) ? (
         <>
           <Grid item xs={6}>
-              <DateTimePicker
+            <DateTimePicker
               renderInput={(props) => <TextField {...props} />}
-                inputVariant="standard"
-                autoOk
-                placeholder={"Disabled Start"}
-                label={"Disabled Start"}
-                disablePast
-                value={disabledStart}
-                onChange={(date) => updateDisabledStart(date)}
-                format="MMMM DD, Y hh:mm A"
-              />
+              fullWidth
+              placeholder={"Disabled Start"}
+              label={"Disabled Start"}
+              disablePast
+              value={disabledStart}
+              onChange={(date) => updateDisabledStart(date)}
+              inputFormat="MMMM DD, Y hh:mm A"
+              disableMaskedInput
+            />
           </Grid>
           <Grid item xs={6}>
-              <DateTimePicker
+            <DateTimePicker
               renderInput={(props) => <TextField {...props} />}
-                inputVariant="standard"
-                autoOk
-                placeholder={"Disabled End"}
-                label={"Disabled End"}
-                disablePast
-                minDate={disabledStart}
-                value={disabledEnd}
-                onChange={(date) => updateDisabledEnd(date)}
-                format="MMMM DD, Y hh:mm A"
-              />
+              fullWidth
+              placeholder={"Disabled End"}
+              label={"Disabled End"}
+              disablePast
+              minDateTime={disabledStart}
+              value={disabledEnd}
+              onChange={(date) => updateDisabledEnd(date)}
+              inputFormat="MMMM DD, Y hh:mm A"
+              disableMaskedInput
+            />
           </Grid>
         </>
       ) : (

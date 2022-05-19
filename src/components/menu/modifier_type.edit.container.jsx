@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ModifierTypeComponent from "./modifier_type.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -72,19 +71,10 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
 
   return (
     <ModifierTypeComponent 
-      actions={[ 
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,                  
-        <Button
-          onClick={editModifierType}
-          disabled={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || (useToggleIfOnlyTwoOptions && (maxSelected!==1 && minSelected !== 1)) || isProcessing}
-        >
-          Save
-        </Button>
-      ]}
+      confirmText="Save"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={editModifierType}
+      isProcessing={isProcessing}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       name={name}

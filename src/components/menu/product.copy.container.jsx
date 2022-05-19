@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ProductComponent from "./product.component";
-import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, products, product, onCloseCallback }) => {
@@ -113,20 +111,11 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
 
   return (
     <ProductComponent 
-      actions={[ 
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,                 
-        <Button
-          onClick={copyProduct}
-          disabled={displayName.length === 0 || isProcessing}
-        >
-          Save
-        </Button>
-      ]}
-      progress={isProcessing ? <LinearProgress /> : "" }
+      confirmText="Save"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={copyProduct}
+      isProcessing={isProcessing}
+      disableConfirmOn={displayName.length === 0 || isProcessing}
       modifier_types={modifier_types}
       product_instance_functions={product_instance_functions}
       categories={categories}

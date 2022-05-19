@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ProductComponent from "./product.component";
-import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, onCloseCallback }) => {
@@ -11,6 +9,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
   const [shortcode, setShortcode] = useState("");
   const [price, setPrice] = useState(0);
   const [disabled, setDisabled] = useState(null);
+  const [serviceDisabled, setServiceDisabled] = useState([]);
   const [ordinal, setOrdinal] = useState(0);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
@@ -42,6 +41,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
             description: description,
             shortcode: shortcode,
             disabled: disabled,
+            service_disable: serviceDisabled,
             ordinal: ordinal,
             price: { amount: price * 100, currency: "USD" },
             revelID: revelID,
@@ -64,6 +64,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
           setShortcode("");
           setPrice(0);
           setDisabled(null);
+          setServiceDisabled([]);
           setOrdinal(0);
           setRevelID("");
           setSquareID("");
@@ -86,21 +87,11 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
 
   return (
     <ProductComponent 
-      actions={[ 
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,                 
-        <Button
-          onClick={addProduct}
-          disabled={displayName.length === 0 || shortcode.length === 0 ||
-            price < 0 || isProcessing}
-        >
-          Add
-        </Button>
-      ]}
-      progress={isProcessing ? <LinearProgress /> : "" }
+      confirmText="Add"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={addProduct}
+      isProcessing={isProcessing}
+      disableConfirmOn={displayName.length === 0 || shortcode.length === 0 || price < 0 || isProcessing}
       modifier_types={modifier_types}
       product_instance_functions={product_instance_functions}
       categories={categories}
@@ -114,6 +105,8 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
       setPrice={setPrice}
       disabled={disabled}
       setDisabled={setDisabled}
+      serviceDisabled={serviceDisabled}
+      setServiceDisabled={setServiceDisabled}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       revelID={revelID}

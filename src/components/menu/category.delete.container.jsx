@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ElementDeleteComponent from "./element.delete.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -8,7 +7,7 @@ const CategoryDeleteContainer = ({ ENDPOINT, category, onCloseCallback }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const editCategory = async (e) => {
+  const deleteCategory = async (e) => {
     e.preventDefault();
 
     if (!isProcessing) {
@@ -33,21 +32,13 @@ const CategoryDeleteContainer = ({ ENDPOINT, category, onCloseCallback }) => {
     }
   };
 
+  
   return (
     <ElementDeleteComponent 
-      actions={[
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,
-        <Button
-        onClick={editCategory}
-        disabled={isProcessing}>
-        Confirm
-      </Button>
-      ]}
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={deleteCategory}
       name={category.name}
+      isProcessing={isProcessing}
     />
   );
 };

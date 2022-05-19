@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ProductInstanceFunctionComponent from "./product_instance_function.component";
-import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const ProductInstanceFunctionEditContainer = ({ ENDPOINT, modifier_types, product_instance_function, onCloseCallback }) => {
@@ -40,20 +38,10 @@ const ProductInstanceFunctionEditContainer = ({ ENDPOINT, modifier_types, produc
 
   return (
     <ProductInstanceFunctionComponent 
-      actions={[  
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,                  
-        <Button
-          onClick={editProductInstanceFunction}
-          disabled={functionName.length === 0 || isProcessing}
-        >
-          Save
-        </Button>
-      ]}
-      progress={isProcessing ? <LinearProgress /> : "" }
+      confirmText="Save"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={editProductInstanceFunction}
+      isProcessing={isProcessing}
       modifier_types={modifier_types}
       functionName={functionName}
       setFunctionName={setFunctionName}

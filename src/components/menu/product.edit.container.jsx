@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import ProductComponent from "./product.component";
-import LinearProgress from '@mui/material/LinearProgress';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, product, onCloseCallback }) => {
@@ -10,7 +8,8 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
   const [description, setDescription] = useState(product.item?.description ?? "");
   const [shortcode, setShortcode] = useState(product.item?.shortcode ?? "");
   const [price, setPrice] = useState((product.item?.price.amount ?? 0) / 100);
-  const [disabled, setDisabled] = useState(product.item?.disabled);
+  const [disabled, setDisabled] = useState(product.disabled);
+  const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
   const [ordinal, setOrdinal] = useState(product.ordinal || 0);
   const [revelID, setRevelID] = useState(product.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(product.item?.externalIDs?.squareID ?? "");
@@ -43,6 +42,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
             description: description,
             shortcode: shortcode,
             disabled: disabled,
+            service_disable: serviceDisabled,
             ordinal: ordinal,
             price: { amount: price  * 100, currency: "USD" },
             revelID: revelID,
@@ -70,20 +70,11 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
 
   return (
     <ProductComponent 
-      actions={[ 
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,                 
-        <Button
-          onClick={editProduct}
-          disabled={displayName.length === 0 || isProcessing}
-        >
-          Save
-        </Button>
-      ]}
-      progress={isProcessing ? <LinearProgress /> : "" }
+      confirmText="Save"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={editProduct}
+      isProcessing={isProcessing}
+      disableConfirmOn={displayName.length === 0 || isProcessing}
       modifier_types={modifier_types}
       product_instance_functions={product_instance_functions}
       categories={categories}
@@ -98,6 +89,8 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
       setPrice={setPrice}
       disabled={disabled}
       setDisabled={setDisabled}
+      serviceDisabled={serviceDisabled}
+      setServiceDisabled={setServiceDisabled}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       revelID={revelID}
