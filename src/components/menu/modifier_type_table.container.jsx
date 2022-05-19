@@ -4,6 +4,7 @@ import TableWrapperComponent from "../table_wrapper.component";
 import ModifierOptionTableContainer from "./modifier_option_table.container";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import {GridActionsCellItem}  from "@mui/x-data-grid";
+import {useGridApiRef} from "@mui/x-data-grid-pro";
 import Tooltip from '@mui/material/Tooltip';
 
 const ModifierTypeTableContainer = ({
@@ -17,7 +18,7 @@ const ModifierTypeTableContainer = ({
   setModifierOptionToEdit,
   setIsModifierOptionEditOpen
 }) => {
-  //const apiRef = useGridApiContext();
+  const apiRef = useGridApiRef();
 
   const editModifierType = (id) => () => {
     setIsModifierTypeEditOpen(true);
@@ -49,7 +50,7 @@ const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
   return (
     <TableWrapperComponent
       title="Modifier Types / Modifier Type Option"
-      disableSelectionOnClick
+      apiRef={apiRef}
       getRowId={(row) => row.modifier_type._id}
       columns={[
         {
@@ -93,7 +94,7 @@ const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
         }
       ]}
       rows={Object.values(modifier_types_map)}
-      onRowClick={(row, event, details) => {console.log(row); /*apiRef.current.toggleDetailPanel(row)*/}}
+      onRowClick={(params, _event, _details) => apiRef.current.toggleDetailPanel(params.id)}
       getDetailPanelContent={getDetailPanelContent}
     />
   );

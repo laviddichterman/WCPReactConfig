@@ -2,6 +2,7 @@ import React, {useCallback} from "react";
 
 import TableWrapperComponent from "../table_wrapper.component";
 import {GridActionsCellItem}  from "@mui/x-data-grid";
+import {useGridApiRef} from "@mui/x-data-grid-pro";
 import ProductTableContainer from "./product_table.container";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
@@ -21,6 +22,8 @@ const CategoryTableContainer = ({
   setIsProductInstanceDeleteOpen,
   setProductInstanceToEdit
 }) => {
+  const apiRef = useGridApiRef();
+
   const getDetailPanelContent = useCallback(({ row }) => catalog.categories[row.category._id].products.length ? (
     <ProductTableContainer
       products={Object.values(catalog.products).filter((x) =>
@@ -55,6 +58,7 @@ const CategoryTableContainer = ({
   return (
     <TableWrapperComponent
       title="Catalog Tree View"
+      apiRef={apiRef}
       treeData
       getTreeDataPath={(row) => DeriveTreePath(row)}
       columns={[
@@ -93,6 +97,12 @@ const CategoryTableContainer = ({
       rows={Object.values(catalog.categories)}
       getRowId={(row) => row.category._id}
       getDetailPanelContent={getDetailPanelContent}
+      onRowClick={(params, _event, _details) => {
+        // if there are children categories and this row's children are not expanded, then expand the children, 
+        // otherwise if there are products in this category, toggle the detail panel, else collapse the children categories
+        params.row.children.length && !apiRef.current.getCellParams(params.id, "ordinal").rowNode.childrenExpanded ? apiRef.current.setRowChildrenExpansion(params.id, true) : 
+          (catalog.categories[params.id].products.length ? apiRef.current.toggleDetailPanel(params.id) : apiRef.current.setRowChildrenExpansion(params.id, false));
+      }}
     />
   );
 };

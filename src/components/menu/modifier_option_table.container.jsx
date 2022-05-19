@@ -2,7 +2,7 @@ import React from "react";
 import moment from 'moment';
 import TableWrapperComponent from "../table_wrapper.component";
 import {GridActionsCellItem}  from "@mui/x-data-grid";
-import { Edit, DeleteOutline } from "@mui/icons-material";
+import { Edit, DeleteOutline, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
 
 const ModifierOptionTableContainer = ({
@@ -23,34 +23,57 @@ const ModifierOptionTableContainer = ({
     setModifierOptionToEdit(row);
   };
 
+  const disableOptionUntilEOD = (row) => () => { 
+
+  };
+  const disableOption = (row) => () => { 
+
+  };
+  const enableOption = (row) => () => { 
+
+  };
+
   return (
     <TableWrapperComponent
-      // options={{
-      //   showTitle: false,
-      //   showEmptyDataSourceMessage: false,
-      //   sorting: false,
-      //   search: false,
-      //   rowStyle: {
-      //     padding: 0,
-      //   },
-      // }}
+      disableToolbar
       columns={[
         {
           headerName: "Actions",
           field: 'actions',
           type: 'actions',
-          getActions: (params) => [
-            <GridActionsCellItem
-              icon={<Tooltip title="Edit Modifier Option"><Edit/></Tooltip>}
-              label="Edit Modifier Option"
+          getActions: (params) => {
+            const title = params.row.item.display_name ? params.row.item.display_name : "Modifier Option";
+            const EDIT_MODIFIER_OPTION = (<GridActionsCellItem
+              icon={<Tooltip title={`Edit ${title}`}><Edit/></Tooltip>}
+              label={`Edit ${title}`}
               onClick={editModifierOption(params.row)}
-            />,
-            <GridActionsCellItem
-              icon={<Tooltip title="Delete Modifier Option"><DeleteOutline/></Tooltip>}
-              label="Delete Modifier Option"
+            />);
+            const DELETE_MODIFIER_OPTION = (<GridActionsCellItem
+              icon={<Tooltip title={`Delete ${title}`}><DeleteOutline/></Tooltip>}
+              label={`Delete ${title}`}
               onClick={deleteModifierOption(params.row)}
-            />
-          ]
+              showInMenu
+            />);
+            const ENABLE_MODIFIER_OPTION = (<GridActionsCellItem
+              icon={<Tooltip title={`Enable ${title}`}><CheckCircle/></Tooltip>}
+              label={`Enable ${title}`}
+              onClick={enableOption(params.row)}
+              showInMenu
+            />);
+            const DISABLE_MODIFIER_OPTION_UNTIL_EOD = (<GridActionsCellItem
+              icon={<Tooltip title={`Disable ${title} Until End-of-Day`}><BedtimeOff /></Tooltip>}
+              label={`Disable ${title} Until EOD`}
+              onClick={disableOptionUntilEOD(params.row)}
+              showInMenu
+            />)
+            const DISABLE_MODIFIER_OPTION = (<GridActionsCellItem
+              icon={<Tooltip title={`Disable ${title}`}><Cancel /></Tooltip>}
+              label={`Disable ${title}`}
+              onClick={disableOption(params.row)}
+              showInMenu
+            />)
+            return params.row.item.disabled ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
+          }
         },
         { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name },
         { headerName: "Price", field: "item.price.amount", valueGetter: v => `$${Number(v.row.item.price.amount / 100).toFixed(2)}`},

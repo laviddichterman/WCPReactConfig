@@ -68,13 +68,14 @@ function CustomToolbar() {
 
 
 const TableWrapperComponent = ({
+  disableToolbar,
   ...forwardParams
 }) => {
   return (
   <div style={{ display: 'flex', height: '100%' }}>
     <div style={{ flexGrow: 1 }}>
     <DataGridPro
-      components={{
+      components={disableToolbar ? {} : {
         Toolbar: CustomToolbar,
       }}
       autoHeight
