@@ -15,7 +15,6 @@ const ProductDisableUntilEodContainer = ({ ENDPOINT, product, onCloseCallback })
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-        console.log("honk!")
         const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${product._id}`, {
           method: "PATCH",
           headers: {
