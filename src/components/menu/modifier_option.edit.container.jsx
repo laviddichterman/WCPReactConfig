@@ -57,6 +57,7 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
         }
         setIsProcessing(false);
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

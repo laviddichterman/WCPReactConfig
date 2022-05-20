@@ -77,6 +77,7 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
         }
         setIsProcessing(false);
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

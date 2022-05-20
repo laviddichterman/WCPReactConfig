@@ -17,6 +17,10 @@ const CategoryTableContainer = ({
   setIsProductEditOpen,
   setIsProductCopyOpen,
   setIsProductDeleteOpen,
+  setIsProductDisableOpen,
+  setIsProductDisableUntilEodOpen,
+  setIsProductEnableOpen,
+  setIsProductImportOpen,
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
   setIsProductInstanceDeleteOpen,
@@ -34,12 +38,15 @@ const CategoryTableContainer = ({
       setIsProductEditOpen={setIsProductEditOpen}      
       setIsProductCopyOpen={setIsProductCopyOpen}      
       setIsProductDeleteOpen={setIsProductDeleteOpen}
+      setIsProductDisableOpen={setIsProductDisableOpen}
+      setIsProductDisableUntilEodOpen={setIsProductDisableUntilEodOpen}
+      setIsProductEnableOpen={setIsProductEnableOpen}
       setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}   
       setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}   
       setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
       setProductInstanceToEdit={setProductInstanceToEdit}
       
-       />) : "", [catalog, setIsProductCopyOpen, setIsProductDeleteOpen, setIsProductEditOpen, setIsProductInstanceAddOpen, setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
+       />) : "", [catalog, setIsProductCopyOpen, setIsProductDeleteOpen, setIsProductDisableOpen, setIsProductDisableUntilEodOpen, setIsProductEditOpen, setIsProductEnableOpen, setIsProductInstanceAddOpen, setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
   
   const DeriveTreePath = useCallback(
     (row) => row.category.parent_id ? [...DeriveTreePath(catalog.categories[row.category.parent_id]), row.category.name] : [row.category.name], 

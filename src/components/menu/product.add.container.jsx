@@ -80,6 +80,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
         }
         setIsProcessing(false);
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

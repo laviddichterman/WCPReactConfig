@@ -15,6 +15,9 @@ const ProductTableContainer = ({
   setIsProductEditOpen,
   setIsProductCopyOpen,
   setIsProductDeleteOpen,
+  setIsProductDisableOpen,
+  setIsProductDisableUntilEodOpen,
+  setIsProductEnableOpen,
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
   setIsProductInstanceDeleteOpen,
@@ -39,13 +42,16 @@ const ProductTableContainer = ({
     setProductToEdit(row.product);
   };
   const enableProduct = (row) => () => { 
-
+    setIsProductEnableOpen(true);
+    setProductToEdit(row.product);
   };
   const disableProductUntilEOD = (row) => () => { 
-
+    setIsProductDisableUntilEodOpen(true);
+    setProductToEdit(row.product);
   };
   const disableProduct = (row) => () => { 
-
+    setIsProductDisableOpen(true);
+    setProductToEdit(row.product);
   };
 
   const getDetailPanelContent = useCallback(({ row }) => catalog.products[row.product._id].instances.length ? (

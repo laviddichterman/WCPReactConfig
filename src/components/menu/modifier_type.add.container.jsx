@@ -81,6 +81,7 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
         setIsProcessing(false);
           
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

@@ -71,6 +71,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
         }
         setIsProcessing(false);
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

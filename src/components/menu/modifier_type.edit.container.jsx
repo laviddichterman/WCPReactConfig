@@ -64,6 +64,7 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
         }
         setIsProcessing(false);
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

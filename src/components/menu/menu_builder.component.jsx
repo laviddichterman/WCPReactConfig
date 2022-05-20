@@ -16,6 +16,9 @@ import ProductImportContainer from "./product.import.container";
 import ProductEditContainer from "./product.edit.container";
 import ProductCopyContainer from "./product.copy.container";
 import ProductDeleteContainer from "./product.delete.container";
+import ProductDisableUntilEodContainer from "./product.disable_until_eod.container";
+import ProductDisableContainer from "./product.disable.container";
+import ProductEnableContainer from "./product.enable.container";
 import ProductInstanceAddContainer from "./product_instance.add.container";
 import ProductInstanceEditContainer from "./product_instance.edit.container";
 import ProductInstanceDeleteContainer from "./product_instance.delete.container";
@@ -57,6 +60,9 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
   const [categoryToEdit, setCategoryToEdit] = useState(null);
 
   const [isProductEditOpen, setIsProductEditOpen] = useState(false);
+  const [isProductDisableUntilEodOpen, setIsProductDisableUntilEodOpen] = useState(false);
+  const [isProductDisableOpen, setIsProductDisableOpen] = useState(false);
+  const [isProductEnableOpen, setIsProductEnableOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
 
   const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
@@ -233,6 +239,54 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
           />
         }
       />
+      <DialogContainer
+        title={"Disable Product Until End-of-Day"}
+        onClose={() => {
+          setIsProductDisableUntilEodOpen(false);
+        }}
+        isOpen={isProductDisableUntilEodOpen}
+        inner_component={
+          <ProductDisableUntilEodContainer
+            onCloseCallback={() => {
+              setIsProductDisableUntilEodOpen(false);
+            }}
+            product={productToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Disable Product"}
+        onClose={() => {
+          setIsProductDisableOpen(false);
+        }}
+        isOpen={isProductDisableOpen}
+        inner_component={
+          <ProductDisableContainer
+            onCloseCallback={() => {
+              setIsProductDisableOpen(false);
+            }}
+            product={productToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Enable Product"}
+        onClose={() => {
+          setIsProductEnableOpen(false);
+        }}
+        isOpen={isProductEnableOpen}
+        inner_component={
+          <ProductEnableContainer
+            onCloseCallback={() => {
+              setIsProductEnableOpen(false);
+            }}
+            product={productToEdit}
+            ENDPOINT={ENDPOINT}
+          />
+        }
+      />                      
       <DialogContainer
         title={`Make copy of: ${
           productToEdit ? productToEdit.item.display_name : ""
@@ -447,6 +501,10 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             setIsProductEditOpen={setIsProductEditOpen}
             setIsProductCopyOpen={setIsProductCopyOpen}
             setIsProductDeleteOpen={setIsProductDeleteOpen}
+            setIsProductDisableOpen={setIsProductDisableOpen}
+            setIsProductDisableUntilEodOpen={setIsProductDisableUntilEodOpen}
+            setIsProductEnableOpen={setIsProductEnableOpen}
+            setIsProductImportOpen={setIsProductImportOpen}
             setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
             setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
             setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
@@ -464,6 +522,10 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
               setIsProductEditOpen={setIsProductEditOpen}
               setIsProductCopyOpen={setIsProductCopyOpen}
               setIsProductDeleteOpen={setIsProductDeleteOpen}
+              setIsProductDisableOpen={setIsProductDisableOpen}
+              setIsProductDisableUntilEodOpen={setIsProductDisableUntilEodOpen}
+              setIsProductEnableOpen={setIsProductEnableOpen}
+              setIsProductImportOpen={setIsProductImportOpen}              
               setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
               setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
               setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}

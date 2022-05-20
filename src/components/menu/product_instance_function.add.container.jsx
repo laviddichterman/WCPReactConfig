@@ -33,6 +33,7 @@ const ProductInstanceFunctionAddContainer = ({ ENDPOINT, modifier_types, onClose
         }
         setIsProcessing(false);
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

@@ -142,6 +142,7 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
           }
           setIsProcessing(false);
         } catch (error) {
+          console.error(error);
           setIsProcessing(false);
         }
       }

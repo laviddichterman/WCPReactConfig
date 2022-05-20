@@ -63,6 +63,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
         }
         setIsProcessing(false);
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

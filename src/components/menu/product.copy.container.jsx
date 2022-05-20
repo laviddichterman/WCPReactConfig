@@ -40,8 +40,8 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
             description: product.item.description,
             shortcode: product.item.shortcode + "cpy",
             price: product.item.price,
-            revelID: product.item.externalIDs.revelID,
-            squareID: product.item.externalIDs.squareID,
+            revelID: product.item.externalIDs?.revelID,
+            squareID: product.item.externalIDs?.squareID,
             display_flags: {
               bake_differential: product.display_flags.bake_differential,
               show_name_of_base_product: product.display_flags.show_name_of_base_product,
@@ -104,6 +104,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
         setIsProcessing(false);
         onCloseCallback();
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }

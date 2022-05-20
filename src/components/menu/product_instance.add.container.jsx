@@ -102,6 +102,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
         }
         setIsProcessing(false);
       } catch (error) {
+        console.error(error);
         setIsProcessing(false);
       }
     }
