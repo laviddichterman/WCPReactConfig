@@ -347,7 +347,7 @@ const BlockOffComp = ({
           <MobileDatePicker
             renderInput={(props) => <TextField {...props} />}
             fullWidth
-            autoOk
+            closeOnSelect
             placeholder={"Select Date"}
             showToolbar={false}
             minDate={moment()}
