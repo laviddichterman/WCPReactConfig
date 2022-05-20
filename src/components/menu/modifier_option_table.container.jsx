@@ -10,7 +10,10 @@ const ModifierOptionTableContainer = ({
   modifier_types_map,
   setModifierOptionToEdit,
   setIsModifierOptionEditOpen,
-  setIsModifierOptionDeleteOpen
+  setIsModifierOptionDeleteOpen,
+  setIsModifierOptionEnableOpen,
+  setIsModifierOptionDisableOpen,
+  setIsModifierOptionDisableUntilEodOpen
 }) => {
 
   const editModifierOption = (row) => () => {
@@ -24,13 +27,16 @@ const ModifierOptionTableContainer = ({
   };
 
   const disableOptionUntilEOD = (row) => () => { 
-
+    setIsModifierOptionDisableUntilEodOpen(true);
+    setModifierOptionToEdit(row);
   };
   const disableOption = (row) => () => { 
-
+    setIsModifierOptionDisableOpen(true);
+    setModifierOptionToEdit(row);
   };
   const enableOption = (row) => () => { 
-
+    setIsModifierOptionEnableOpen(true);
+    setModifierOptionToEdit(row);
   };
 
   return (

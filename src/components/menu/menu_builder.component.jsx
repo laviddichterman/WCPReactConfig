@@ -11,6 +11,9 @@ import ModifierTypeDeleteContainer from "./modifier_type.delete.container";
 import ModifierOptionAddContainer from "./modifier_option.add.container";
 import ModifierOptionEditContainer from "./modifier_option.edit.container";
 import ModifierOptionDeleteContainer from "./modifier_option.delete.container";
+import ModifierOptionEnableContainer from "./modifier_option.enable.container";
+import ModifierOptionDisableContainer from "./modifier_option.disable.container";
+import ModifierOptionDisableUntilEodContainer from "./modifier_option.disable_until_eod.container";
 import ProductAddContainer from "./product.add.container";
 import ProductImportContainer from "./product.import.container";
 import ProductEditContainer from "./product.edit.container";
@@ -34,15 +37,17 @@ import Grid from "@mui/material/Grid";
 
 const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
-  const [isModifierOptionAddOpen, setIsModifierOptionAddOpen] = useState(false);
-
   const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
-  const [modifierTypeToEdit, setModifierTypeToEdit] = useState(null);
-
-  const [isModifierOptionDeleteOpen, setIsModifierOptionDeleteOpen] = useState(false);
   const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
 
+  const [isModifierOptionAddOpen, setIsModifierOptionAddOpen] = useState(false);
   const [isModifierOptionEditOpen, setIsModifierOptionEditOpen] = useState(false);
+  const [isModifierOptionDeleteOpen, setIsModifierOptionDeleteOpen] = useState(false);
+  const [isModifierOptionEnableOpen, setIsModifierOptionEnableOpen] = useState(false);
+  const [isModifierOptionDisableOpen, setIsModifierOptionDisableOpen] = useState(false);
+  const [isModifierOptionDisableUntilEodOpen, setIsModifierOptionDisableUntilEodOpen] = useState(false);
+  
+  const [modifierTypeToEdit, setModifierTypeToEdit] = useState(null);
   const [modifierOptionToEdit, setModifierOptionToEdit] = useState(null);
 
   const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
@@ -204,6 +209,54 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
           />
         }
       />
+      <DialogContainer
+        title={"Disable Modifier Option Until End-of-Day"}
+        onClose={() => {
+          setIsModifierOptionDisableUntilEodOpen(false);
+        }}
+        isOpen={isModifierOptionDisableUntilEodOpen}
+        inner_component={
+          <ModifierOptionDisableUntilEodContainer
+            onCloseCallback={() => {
+              setIsModifierOptionDisableUntilEodOpen(false);
+            }}
+            ENDPOINT={ENDPOINT}
+            modifier_option={modifierOptionToEdit}
+          />
+        }
+      />  
+      <DialogContainer
+        title={"Disable Modifier Option"}
+        onClose={() => {
+          setIsModifierOptionDisableOpen(false);
+        }}
+        isOpen={isModifierOptionDisableOpen}
+        inner_component={
+          <ModifierOptionDisableContainer
+            onCloseCallback={() => {
+              setIsModifierOptionDisableOpen(false);
+            }}
+            ENDPOINT={ENDPOINT}
+            modifier_option={modifierOptionToEdit}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Enable Modifier Option"}
+        onClose={() => {
+          setIsModifierOptionEnableOpen(false);
+        }}
+        isOpen={isModifierOptionEnableOpen}
+        inner_component={
+          <ModifierOptionEnableContainer
+            onCloseCallback={() => {
+              setIsModifierOptionEnableOpen(false);
+            }}
+            ENDPOINT={ENDPOINT}
+            modifier_option={modifierOptionToEdit}
+          />
+        }
+      />        
       <DialogContainer
         title={"Delete Modifier Option"}
         onClose={() => {
@@ -542,6 +595,9 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
             setIsModifierOptionAddOpen={setIsModifierOptionAddOpen}
             setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
+            setIsModifierOptionEnableOpen={setIsModifierOptionEnableOpen}
+            setIsModifierOptionDisableOpen={setIsModifierOptionDisableOpen}
+            setIsModifierOptionDisableUntilEodOpen={setIsModifierOptionDisableUntilEodOpen}
             setIsModifierTypeDeleteOpen={setIsModifierTypeDeleteOpen}
             setIsModifierOptionDeleteOpen={setIsModifierOptionDeleteOpen}
             setModifierOptionToEdit={setModifierOptionToEdit}

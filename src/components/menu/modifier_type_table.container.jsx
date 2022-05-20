@@ -13,10 +13,13 @@ const ModifierTypeTableContainer = ({
   setIsModifierTypeDeleteOpen,
   setModifierTypeToEdit,
   setIsModifierTypeAddOpen,
+  setModifierOptionToEdit,
   setIsModifierOptionAddOpen,
   setIsModifierOptionDeleteOpen,
-  setModifierOptionToEdit,
-  setIsModifierOptionEditOpen
+  setIsModifierOptionEditOpen,
+  setIsModifierOptionEnableOpen,
+  setIsModifierOptionDisableOpen,
+  setIsModifierOptionDisableUntilEodOpen
 }) => {
   const apiRef = useGridApiRef();
 
@@ -42,10 +45,13 @@ const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
     setModifierOptionToEdit={setModifierOptionToEdit}
     setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
     setIsModifierOptionDeleteOpen={setIsModifierOptionDeleteOpen}
+    setIsModifierOptionEnableOpen={setIsModifierOptionEnableOpen}
+    setIsModifierOptionDisableOpen={setIsModifierOptionDisableOpen}
+    setIsModifierOptionDisableUntilEodOpen={setIsModifierOptionDisableUntilEodOpen}
   />
 ) : (
   ""
-), [modifier_types_map, setIsModifierOptionDeleteOpen, setIsModifierOptionEditOpen, setModifierOptionToEdit]);
+), [modifier_types_map, setIsModifierOptionDeleteOpen, setIsModifierOptionDisableOpen, setIsModifierOptionDisableUntilEodOpen, setIsModifierOptionEditOpen, setIsModifierOptionEnableOpen, setModifierOptionToEdit]);
     
   return (
     <TableWrapperComponent
