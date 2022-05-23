@@ -1,7 +1,7 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useState} from "react";
 
 import {GridActionsCellItem}  from "@mui/x-data-grid";
-import {useGridApiRef} from "@mui/x-data-grid-pro";
+import {useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD} from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
 import ProductTableContainer from "./product_table.container";
@@ -20,7 +20,6 @@ const CategoryTableContainer = ({
   setIsProductDisableOpen,
   setIsProductDisableUntilEodOpen,
   setIsProductEnableOpen,
-  setIsProductImportOpen,
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
   setIsProductInstanceDeleteOpen,
@@ -28,6 +27,16 @@ const CategoryTableContainer = ({
 }) => {
   const apiRef = useGridApiRef();
 
+  const [ panelsExpandedSize, setPanelsExpandedSize ] = useState({});
+
+  const setPanelsExpandedSizeForRow = (row) => (size) => {
+    const obj = JSON.parse(JSON.stringify(panelsExpandedSize));
+    obj[row] = size;
+    setPanelsExpandedSize(obj)
+  }
+
+  const getDetailPanelHeight = useCallback(({ row }) => catalog.categories[row.category._id].products.length ? ((Object.hasOwn(panelsExpandedSize, row.category._id) ? panelsExpandedSize[row.category._id] : 0)  + 39 + (catalog.categories[row.category._id].products.length * 36)) : 0, [catalog, panelsExpandedSize]);
+  
   const getDetailPanelContent = useCallback(({ row }) => catalog.categories[row.category._id].products.length ? (
     <ProductTableContainer
       products={Object.values(catalog.products).filter((x) =>
@@ -45,8 +54,9 @@ const CategoryTableContainer = ({
       setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}   
       setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
       setProductInstanceToEdit={setProductInstanceToEdit}
-      
-       />) : "", [catalog, setIsProductCopyOpen, setIsProductDeleteOpen, setIsProductDisableOpen, setIsProductDisableUntilEodOpen, setIsProductEditOpen, setIsProductEnableOpen, setIsProductInstanceAddOpen, setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
+      setPanelsExpandedSize={setPanelsExpandedSizeForRow(row.category._id)}
+    />) : "", 
+    [catalog, setPanelsExpandedSizeForRow, setIsProductCopyOpen, setIsProductDeleteOpen, setIsProductDisableOpen, setIsProductDisableUntilEodOpen, setIsProductEditOpen, setIsProductEnableOpen, setIsProductInstanceAddOpen, setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
   
   const DeriveTreePath = useCallback(
     (row) => row.category.parent_id ? [...DeriveTreePath(catalog.categories[row.category.parent_id]), row.category.name] : [row.category.name], 
@@ -78,32 +88,39 @@ const CategoryTableContainer = ({
               icon={<Tooltip title="Edit Category"><Edit/></Tooltip>}
               label="Edit Category"
               onClick={editCategory(params.row)}
+              key={`EDIT${params.row._id}`}
             />,
             <GridActionsCellItem
               icon={<Tooltip title="Delete Category"><DeleteOutline/></Tooltip>}
               label="Delete Category"
               onClick={deleteCategory(params.row)}
+              key={`DELETE${params.row._id}`}
             />
           ]
         },
-        { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.category.ordinal, defaultSort: "asc"},
+        {
+          field: GRID_TREE_DATA_GROUPING_FIELD,
+          minWidth: 400,
+          flex: 400
+        },
+        { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.category.ordinal, defaultSort: "asc", width: 30},
         { headerName: "Call Line Name", field: "category.display_flags.call_line_name", valueGetter: v => v.row.category.display_flags.call_line_name},
         { headerName: "Description", field: "category.description", valueGetter: v => v.row.category.description, },
         { headerName: "Subheading", field: "category.ordinal", valueGetter: v => v.row.category.subheading, },
       ]}
-      actions={[
-        {
-          icon: AddBox,
-          tooltip: 'Add new...',
-          onClick: () => {
-            setIsCategoryInterstitialOpen(true);
-          },
-          isFreeAction: true
-        }
+      toolbarActions={[
+        <GridActionsCellItem
+          icon={<Tooltip title="Add new..."><AddBox/></Tooltip>}
+          label="Add new..."
+          onClick={() => setIsCategoryInterstitialOpen(true)}
+          key="ADDNEW"
+        />
       ]}
       rows={Object.values(catalog.categories)}
       getRowId={(row) => row.category._id}
       getDetailPanelContent={getDetailPanelContent}
+      getDetailPanelHeight={getDetailPanelHeight}
+      rowThreshold={0}
       onRowClick={(params, ) => {
         // if there are children categories and this row's children are not expanded, then expand the children, 
         // otherwise if there are products in this category, toggle the detail panel, else collapse the children categories

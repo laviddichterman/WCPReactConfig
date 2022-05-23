@@ -73,21 +73,18 @@ const TableWrapperComponent = ({
   disableToolbar,
   ...forwardParams
 }) => (
-  <div style={{ display: 'flex', height: '100%' }}>
-    <div style={{ flexGrow: 1 }}>
     <DataGridPro
       components={disableToolbar ? {} : {
         Toolbar: CustomToolbar,
       }}
-      autoHeight
       density="compact"
       hideFooter
+      autoHeight
       disableColumnReorder
       {...forwardParams}
       icons={tableIcons}
       />
-    </div>
-  </div>    
+  
   );
 
 export default TableWrapperComponent;

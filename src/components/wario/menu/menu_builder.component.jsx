@@ -557,7 +557,6 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             setIsProductDisableOpen={setIsProductDisableOpen}
             setIsProductDisableUntilEodOpen={setIsProductDisableUntilEodOpen}
             setIsProductEnableOpen={setIsProductEnableOpen}
-            setIsProductImportOpen={setIsProductImportOpen}
             setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
             setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
             setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
@@ -578,11 +577,11 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
               setIsProductDisableOpen={setIsProductDisableOpen}
               setIsProductDisableUntilEodOpen={setIsProductDisableUntilEodOpen}
               setIsProductEnableOpen={setIsProductEnableOpen}
-              setIsProductImportOpen={setIsProductImportOpen}              
               setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
               setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
               setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
               setProductInstanceToEdit={setProductInstanceToEdit}
+              setPanelsExpandedSize={() => (0)} // no need for the panels expanded size here... i don't think
             />
           </Grid>
         ) : (

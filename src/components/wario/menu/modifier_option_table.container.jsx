@@ -42,6 +42,8 @@ const ModifierOptionTableContainer = ({
   return (
     <TableWrapperComponent
       disableToolbar
+      autoHeight={false}
+      rowThreshold={0}
       columns={[
         {
           headerName: "Actions",
@@ -81,7 +83,7 @@ const ModifierOptionTableContainer = ({
             return params.row.item.disabled ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
           }
         },
-        { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name },
+        { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name, flex: 1 },
         { headerName: "Price", field: "item.price.amount", valueGetter: v => `$${Number(v.row.item.price.amount / 100).toFixed(2)}`},
         { headerName: "Shortcode", field: "item.shortcode", valueGetter: v => v.row.item.shortcode, },
         { headerName: "Description", field: "item.description", valueGetter: v => v.row.item.description, },

@@ -21,7 +21,8 @@ const ProductTableContainer = ({
   setIsProductInstanceAddOpen,
   setIsProductInstanceEditOpen,
   setIsProductInstanceDeleteOpen,
-  setProductInstanceToEdit
+  setProductInstanceToEdit,
+  setPanelsExpandedSize
 }) => {
   const apiRef = useGridApiRef();
 
@@ -54,6 +55,8 @@ const ProductTableContainer = ({
     setProductToEdit(row.product);
   };
 
+  const getDetailPanelHeight = useCallback(({ row }) => catalog.products[row.product._id].instances.length ? (39 + (catalog.products[row.product._id].instances.length * 36) ) : 0, [catalog]);
+
   const getDetailPanelContent = useCallback(({ row }) => catalog.products[row.product._id].instances.length ? (
     <TableWrapperComponent
       disableToolbar
@@ -82,11 +85,14 @@ const ProductTableContainer = ({
             />
           ]
         },
-        { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name },
+        { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name, flex: 1 },
+        { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.ordinal, defaultSort: "asc" },
+        { headerName: "Menu Ordinal", field: "menuOrdinal", valueGetter: v => v.row.display_flags?.menu?.ordinal || 0},
+        { headerName: "Order Ordinal", field: "orderOrdinal", valueGetter: v => v.row.display_flags?.order?.ordinal || 0 },
         { headerName: "Price", field: "item.price.amount", valueGetter: v => `$${Number(v.row.item.price.amount / 100).toFixed(2)}` },
         { headerName: "Shortcode", field: "item.shortcode", valueGetter: v => v.row.item.shortcode },
         { headerName: "Description", field: "item.description", valueGetter: v => v.row.item.description },
-        { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.ordinal, defaultSort: "asc" },
+
       ]}
       rows={catalog.products[row.product._id].instances}
       getRowId={(row_inner) => row_inner._id}
@@ -95,6 +101,7 @@ const ProductTableContainer = ({
     [catalog.products, setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
       
   return (
+    <div style={{ height: "100%", overflow: "auto" }}>
     <TableWrapperComponent
       disableToolbar
       apiRef={apiRef}
@@ -147,15 +154,19 @@ const ProductTableContainer = ({
             return params.row.product.disabled ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           } 
         },
-        { headerName: "Name", field: "product.item.display_name", valueGetter: v => v.row.product.item.display_name, defaultSort: "asc" },
+        { headerName: "Name", field: "product.item.display_name", valueGetter: v => v.row.product.item.display_name, defaultSort: "asc", flex: 1 },
         { headerName: "Modifiers", field: "product.modifiers", valueGetter: v => v.row.product.modifiers ? v.row.product.modifiers.map(x=>catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "" },
         { headerName: "Disabled", field: "product.disabled", valueGetter: v => v.row.product.disabled ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${moment(v.row.product.disabled.start).format("MMMM DD, Y hh:mm A")} to ${moment(v.row.product.disabled.end).format("MMMM DD, Y hh:mm A")}`) : "False" },
       ]}
       rows={products}
       getRowId={(row) => row.product._id}
       getDetailPanelContent={getDetailPanelContent}
+      getDetailPanelHeight={getDetailPanelHeight}
+      onDetailPanelExpandedRowIdsChange={(ids) => setPanelsExpandedSize(ids.reduce((acc, rid) => acc + 39 + (catalog.products[rid].instances.length * 36), 0))}
+      rowThreshold={0}
       onRowClick={(params, ) => apiRef.current.toggleDetailPanel(params.id)}
     />
+    </div>
   );
 };
 

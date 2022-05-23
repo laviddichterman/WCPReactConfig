@@ -38,21 +38,23 @@ const ModifierTypeTableContainer = ({
     setModifierTypeToEdit(modifier_types_map[id].modifier_type);
   };
 
-const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
-  <ModifierOptionTableContainer
-    modifier_type={row.modifier_type}
-    modifier_types_map={modifier_types_map}
-    setModifierOptionToEdit={setModifierOptionToEdit}
-    setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
-    setIsModifierOptionDeleteOpen={setIsModifierOptionDeleteOpen}
-    setIsModifierOptionEnableOpen={setIsModifierOptionEnableOpen}
-    setIsModifierOptionDisableOpen={setIsModifierOptionDisableOpen}
-    setIsModifierOptionDisableUntilEodOpen={setIsModifierOptionDisableUntilEodOpen}
-  />
-) : (
-  ""
-), [modifier_types_map, setIsModifierOptionDeleteOpen, setIsModifierOptionDisableOpen, setIsModifierOptionDisableUntilEodOpen, setIsModifierOptionEditOpen, setIsModifierOptionEnableOpen, setModifierOptionToEdit]);
-    
+  const getDetailPanelHeight = useCallback(({ row }) => row.options.length ? (54 + (row.options.length * 35)) : 0, []);
+
+  const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
+    <ModifierOptionTableContainer
+      modifier_type={row.modifier_type}
+      modifier_types_map={modifier_types_map}
+      setModifierOptionToEdit={setModifierOptionToEdit}
+      setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
+      setIsModifierOptionDeleteOpen={setIsModifierOptionDeleteOpen}
+      setIsModifierOptionEnableOpen={setIsModifierOptionEnableOpen}
+      setIsModifierOptionDisableOpen={setIsModifierOptionDisableOpen}
+      setIsModifierOptionDisableUntilEodOpen={setIsModifierOptionDisableUntilEodOpen}
+    />
+  ) : (
+    ""
+  ), [modifier_types_map, setIsModifierOptionDeleteOpen, setIsModifierOptionDisableOpen, setIsModifierOptionDisableUntilEodOpen, setIsModifierOptionEditOpen, setIsModifierOptionEnableOpen, setModifierOptionToEdit]);
+      
   return (
     <TableWrapperComponent
       title="Modifier Types / Modifier Type Option"
@@ -83,7 +85,7 @@ const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
             />
           ]
         },
-        { headerName: "Name", field: "modifier_type.name", valueGetter: v => v.row.modifier_type.name },
+        { headerName: "Name", field: "modifier_type.name", valueGetter: v => v.row.modifier_type.name, flex: 1 },
         { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.modifier_type.ordinal,  defaultSort: "asc" },
         { headerName: "Min Selected", field: "min_selected", valueGetter: v => v.row.modifier_type.min_selected, },
         { headerName: "Max Selected", field: "max_selected", valueGetter: v => v.row.modifier_type.max_selected  },
@@ -102,6 +104,7 @@ const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
       rows={Object.values(modifier_types_map)}
       onRowClick={(params, ) => apiRef.current.toggleDetailPanel(params.id)}
       getDetailPanelContent={getDetailPanelContent}
+      getDetailPanelHeight={getDetailPanelHeight}
     />
   );
 };
