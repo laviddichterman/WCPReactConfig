@@ -93,14 +93,14 @@ const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
         {
           icon: AddBox,
           tooltip: "Add Modifier Type",
-          onClick: (event, rowData) => {
+          onClick: () => {
             setIsModifierTypeAddOpen(true);
           },
           isFreeAction: true,
         }
       ]}
       rows={Object.values(modifier_types_map)}
-      onRowClick={(params, _event, _details) => apiRef.current.toggleDetailPanel(params.id)}
+      onRowClick={(params, ) => apiRef.current.toggleDetailPanel(params.id)}
       getDetailPanelContent={getDetailPanelContent}
     />
   );

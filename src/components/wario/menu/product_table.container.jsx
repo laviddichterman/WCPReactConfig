@@ -154,7 +154,7 @@ const ProductTableContainer = ({
       rows={products}
       getRowId={(row) => row.product._id}
       getDetailPanelContent={getDetailPanelContent}
-      onRowClick={(params, _event, _details) => apiRef.current.toggleDetailPanel(params.id)}
+      onRowClick={(params, ) => apiRef.current.toggleDetailPanel(params.id)}
     />
   );
 };
