@@ -95,7 +95,7 @@ const CategoryTableContainer = ({
         {
           icon: AddBox,
           tooltip: 'Add new...',
-          onClick: (event, rowData) => {
+          onClick: () => {
             setIsCategoryInterstitialOpen(true);
           },
           isFreeAction: true
@@ -104,11 +104,16 @@ const CategoryTableContainer = ({
       rows={Object.values(catalog.categories)}
       getRowId={(row) => row.category._id}
       getDetailPanelContent={getDetailPanelContent}
-      onRowClick={(params, _event, _details) => {
+      onRowClick={(params, ) => {
         // if there are children categories and this row's children are not expanded, then expand the children, 
         // otherwise if there are products in this category, toggle the detail panel, else collapse the children categories
-        params.row.children.length && !apiRef.current.getCellParams(params.id, "ordinal").rowNode.childrenExpanded ? apiRef.current.setRowChildrenExpansion(params.id, true) : 
-          (catalog.categories[params.id].products.length ? apiRef.current.toggleDetailPanel(params.id) : apiRef.current.setRowChildrenExpansion(params.id, false));
+        if (params.row.children.length && !apiRef.current.getCellParams(params.id, "ordinal").rowNode.childrenExpanded) {
+          apiRef.current.setRowChildrenExpansion(params.id, true);
+        } else if (catalog.categories[params.id].products.length) {
+          apiRef.current.toggleDetailPanel(params.id);
+        } else {
+          apiRef.current.setRowChildrenExpansion(params.id, false);
+        }
       }}
     />
   );
