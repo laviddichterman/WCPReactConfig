@@ -1,11 +1,11 @@
 import React, {useCallback} from "react";
 
-import TableWrapperComponent from "../table_wrapper.component";
 import {GridActionsCellItem}  from "@mui/x-data-grid";
 import {useGridApiRef} from "@mui/x-data-grid-pro";
-import ProductTableContainer from "./product_table.container";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
+import ProductTableContainer from "./product_table.container";
+import TableWrapperComponent from "../table_wrapper.component";
 
 const CategoryTableContainer = ({
   catalog,

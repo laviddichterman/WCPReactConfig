@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import CheckedInputComponent from "./checked_input.component";
 import { useAuth0 } from '@auth0/auth0-react';
 
 import IconButton from "@mui/material/IconButton";
@@ -15,6 +14,7 @@ import AppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
 
 import { WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
+import CheckedInputComponent from "./checked_input.component";
 
 
 const StoreCreditIssueComponent = ({ ENDPOINT }) => {
@@ -46,12 +46,12 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ 
-            amount: amount,
+            amount,
             recipient_name_first: firstName,
             recipient_name_last: lastName,
             recipient_email: recipientEmail,
             added_by: addedBy,
-            reason: reason,
+            reason,
             expiration: expiration && expiration.isValid() ? expiration.format(WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
           })
         });  
@@ -141,7 +141,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
                 minDate={moment().add(30, "days")}
                 label="Expiration"
                 value={expiration}
-                onChange={(date) => { setExpiration(date); /*setValue(date);*/ } }
+                onChange={(date) => { setExpiration(date); /* setValue(date); */ } }
                 inputFormat="dddd, MMMM DD, Y"
               />
               { <IconButton

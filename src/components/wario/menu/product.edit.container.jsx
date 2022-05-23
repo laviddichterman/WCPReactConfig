@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ProductComponent from "./product.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import ProductComponent from "./product.component";
 
 const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, product, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState(product.item?.display_name ?? "");
@@ -39,14 +39,14 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
           },
           body: JSON.stringify({
             display_name: displayName,
-            description: description,
-            shortcode: shortcode,
-            disabled: disabled,
+            description,
+            shortcode,
+            disabled,
             service_disable: serviceDisabled,
-            ordinal: ordinal,
+            ordinal,
             price: { amount: price  * 100, currency: "USD" },
-            revelID: revelID,
-            squareID: squareID,
+            revelID,
+            squareID,
             display_flags: {
               bake_differential: bakeDifferentialMax,
               show_name_of_base_product: showNameOfBaseProduct,
@@ -55,7 +55,7 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
               singular_noun: singularNoun,
             },
             category_ids: parentCategories.map(x => x.category._id),
-            modifiers: modifiers.map(x => { return { mtid: x.modifier_type._id, enable: modifierEnableFunctions.hasOwnProperty(x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }; } ),
+            modifiers: modifiers.map(x => ({ mtid: x.modifier_type._id, enable: modifierEnableFunctions.hasOwnProperty(x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }) ),
           }),
         });
         if (response.status === 200) {

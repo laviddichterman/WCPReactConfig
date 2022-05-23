@@ -43,8 +43,7 @@ const ModifierOptionComponent = ({
   setRevelID,
   squareID,
   setSquareID,
-}) => {
-  return (
+}) => (
     <ElementActionComponent 
       onCloseCallback={onCloseCallback}
       onConfirmClick={onConfirmClick}
@@ -209,6 +208,5 @@ const ModifierOptionComponent = ({
       }
     />
   );
-};
 
 export default ModifierOptionComponent;

@@ -1,9 +1,9 @@
 import React from "react";
 import moment from 'moment';
-import TableWrapperComponent from "../table_wrapper.component";
 import {GridActionsCellItem}  from "@mui/x-data-grid";
 import { Edit, DeleteOutline, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
+import TableWrapperComponent from "../table_wrapper.component";
 
 const ModifierOptionTableContainer = ({
   modifier_type,

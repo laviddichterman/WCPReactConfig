@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ModifierTypeComponent from "./modifier_type.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import ModifierTypeComponent from "./modifier_type.component";
 
 const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback }) => {
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
@@ -38,13 +38,13 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: name,
+            name,
             display_name: displayName,
-            ordinal: ordinal,
+            ordinal,
             min_selected: minSelected,
             max_selected: maxSelected || null,
-            revelID: revelID,
-            squareID: squareID,
+            revelID,
+            squareID,
             display_flags: {
               omit_options_if_not_available: omitOptionIfNotAvailable,
               omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,

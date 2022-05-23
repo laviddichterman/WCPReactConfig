@@ -39,9 +39,24 @@
     "workbox-streams": "^6.5.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/eslint-parser": "^7.17.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^14.1.1",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-config-react-app": "^7.0.0",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "prettier": "^2.5.1",
     "react-scripts": "5.0.1"
   },
   "repository": {
@@ -59,6 +74,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "lint": "eslint --ext .js,.jsx ./src",
+    "lint:fix": "eslint --fix --ext .js,.jsx ./src",
     "deploy:prodbtp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.breezytownpizza.com/",
     "deploy:prodwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.windycitypie.com/",
     "deploy:devwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wdev.windycitypie.com/",
@@ -66,8 +83,12 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-react"
     ]
   },
   "browserslist": {

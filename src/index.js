@@ -1,13 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
 import './index.css';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { createBrowserHistory } from "history";
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import swConfig from './swConfig'
 import reportWebVitals from './reportWebVitals';
-import { Auth0Provider } from '@auth0/auth0-react';
 import config from "./auth_config.json";
-import { createBrowserHistory } from "history";
 
 export const history = createBrowserHistory();
 

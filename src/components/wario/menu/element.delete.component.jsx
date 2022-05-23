@@ -10,9 +10,7 @@ const ElementDeleteComponent = ({
   onCloseCallback,
   onConfirmClick,
   isProcessing
-  }) => {
-
-  return (
+  }) => (
     <ElementActionComponent 
       onCloseCallback={onCloseCallback}
       onConfirmClick={onConfirmClick}
@@ -26,6 +24,5 @@ const ElementDeleteComponent = ({
       }
     />
   );
-};
 
 export default ElementDeleteComponent;

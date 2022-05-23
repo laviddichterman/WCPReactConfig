@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import CheckedInputComponent from "./checked_input.component";
 
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
 import { useAuth0 } from '@auth0/auth0-react';
+import CheckedInputComponent from "./checked_input.component";
 
 const LeadTimesComp = ({
   ENDPOINT,
@@ -46,8 +46,7 @@ const LeadTimesComp = ({
       }
     }
   };
-  const leadtime_html = LEADTIME ? LEADTIME.map((x, i) => {
-    return (
+  const leadtime_html = LEADTIME ? LEADTIME.map((x, i) => (
       <Grid item xs={4} key={i}>
         <CheckedInputComponent
           label={SERVICES[i]}
@@ -58,8 +57,7 @@ const LeadTimesComp = ({
           onFinishChanging={(e) => onChangeLeadTimes(i, e)}
           />
       </Grid>
-    );
-  }) : "";
+    )) : "";
   return (
     <div>
       <Paper>

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 
+import Grid from "@mui/material/Grid";
 import InterstitialDialog from "../interstitial.dialog.component";
 import DialogContainer from "../dialog.container";
 import CategoryAddContainer from "./category.add.container";
@@ -33,7 +34,6 @@ import ModifierTypeTableContainer from "./modifier_type_table.container";
 import ProductTableContainer from "./product_table.container";
 import ProductInstanceFunctionTableContainer from "./product_instance_function_table.container";
 
-import Grid from "@mui/material/Grid";
 
 const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);

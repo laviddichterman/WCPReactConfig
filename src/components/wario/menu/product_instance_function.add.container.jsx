@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ProductInstanceFunctionComponent from "./product_instance_function.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import ProductInstanceFunctionComponent from "./product_instance_function.component";
 
 const ProductInstanceFunctionAddContainer = ({ ENDPOINT, modifier_types, onCloseCallback }) => {
   const [functionName, setFunctionName] = useState("");
@@ -23,7 +23,7 @@ const ProductInstanceFunctionAddContainer = ({ ENDPOINT, modifier_types, onClose
           },
           body: JSON.stringify({
             name: functionName,
-            expression: expression
+            expression
           }),
         });
         if (response.status === 201) {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ProductComponent from "./product.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import ProductComponent from "./product.component";
 
 const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, products, product, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState(product.item?.display_name ?? "");
@@ -38,7 +38,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
           body: JSON.stringify({
             display_name: product.item.display_name,
             description: product.item.description,
-            shortcode: product.item.shortcode + "cpy",
+            shortcode: `${product.item.shortcode  }cpy`,
             price: product.item.price,
             revelID: product.item.externalIDs?.revelID,
             squareID: product.item.externalIDs?.squareID,
@@ -50,7 +50,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
               singular_noun: product.display_flags.singular_noun,
             },
             category_ids: parentCategories.map(x => x.category._id),
-            modifiers: modifiers.map(x => { return { mtid: x.modifier_type._id, enable: modifierEnableFunctions.hasOwnProperty(x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }; } ),
+            modifiers: modifiers.map(x => ({ mtid: x.modifier_type._id, enable: modifierEnableFunctions.hasOwnProperty(x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }) ),
             disabled: null,
             create_product_instance: false
           }),
@@ -67,7 +67,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
               body: JSON.stringify({
                 display_name: child_instance.item.display_name,
                 description: child_instance.item.description,
-                shortcode: child_instance.item.shortcode+"cpy",
+                shortcode: `${child_instance.item.shortcode}cpy`,
                 disabled: child_instance.item.disabled,
                 ordinal: child_instance.ordinal,
                 price: child_instance.item.price,

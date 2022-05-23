@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ModifierOptionComponent from "./modifier_option.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import ModifierOptionComponent from "./modifier_option.component";
 
 const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, modifier_option, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState(modifier_option.item.display_name);
@@ -35,17 +35,17 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
           },
           body: JSON.stringify({
             display_name: displayName,
-            description: description,
-            shortcode: shortcode,
-            disabled: disabled,
+            description,
+            shortcode,
+            disabled,
             price: { amount: price * 100, currency: "USD" },
-            ordinal: ordinal,
+            ordinal,
             enable_function: enableFunction ? enableFunction._id : null,
             flavor_factor: flavorFactor,
             bake_factor: bakeFactor,
             can_split: canSplit,
-            revelID: revelID,
-            squareID: squareID,
+            revelID,
+            squareID,
             display_flags: {
               omit_from_shortname: omitFromShortname,
               omit_from_name: omitFromName

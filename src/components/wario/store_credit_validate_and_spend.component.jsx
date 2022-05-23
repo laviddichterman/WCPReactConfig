@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import CheckedInputComponent from "./checked_input.component";
-import DialogContainer from "./dialog.container";
 
 import QrScanner from 'qr-scanner'; 
 import { OneOffQrScanner } from "react-webcam-qr-scanner.ts";
@@ -17,6 +15,8 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import DialogContainer from "./dialog.container";
+import CheckedInputComponent from "./checked_input.component";
 
 const US_MONEY_FORMATTER = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -94,7 +94,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
             },
             body: JSON.stringify({
               code: creditCode,
-              amount: amount,
+              amount,
               lock: {
                 iv: validationResponse.iv,
                 enc: validationResponse.enc,

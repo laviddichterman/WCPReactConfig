@@ -1,6 +1,5 @@
 import React, { forwardRef } from "react";
 import { DataGridPro } from '@mui/x-data-grid-pro';
-import config from "../auth_config.json";
 import {
   GridToolbarContainer,
   GridToolbarFilterButton,
@@ -27,6 +26,9 @@ import {
   ExpandLess,
   ExpandMore,
 } from "@mui/icons-material";
+
+import config from '../../auth_config.json';
+
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -70,8 +72,7 @@ function CustomToolbar() {
 const TableWrapperComponent = ({
   disableToolbar,
   ...forwardParams
-}) => {
-  return (
+}) => (
   <div style={{ display: 'flex', height: '100%' }}>
     <div style={{ flexGrow: 1 }}>
     <DataGridPro
@@ -81,13 +82,12 @@ const TableWrapperComponent = ({
       autoHeight
       density="compact"
       hideFooter
-      disableColumnReorder={true}
+      disableColumnReorder
       {...forwardParams}
       icons={tableIcons}
       />
     </div>
   </div>    
   );
-};
 
 export default TableWrapperComponent;

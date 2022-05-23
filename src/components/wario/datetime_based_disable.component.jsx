@@ -8,7 +8,7 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from "moment";
 
 const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
-  const [enabled, setEnabled] = useState(disabled ? false : true);
+  const [enabled, setEnabled] = useState(!disabled);
   const [isDatetimeBased, setIsDatetimeBased] = useState(
     disabled && disabled.start <= disabled.end
   );

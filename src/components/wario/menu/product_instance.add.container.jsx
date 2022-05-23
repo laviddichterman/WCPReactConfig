@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ProductInstanceContainer from "./product_instance.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import ProductInstanceContainer from "./product_instance.component";
 
 const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_product, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState("");
@@ -46,14 +46,14 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
           },
           body: JSON.stringify({
             display_name: displayName,
-            description: description,
-            shortcode: shortcode,
-            disabled: disabled,
-            ordinal: ordinal,
+            description,
+            shortcode,
+            disabled,
+            ordinal,
             price: { amount: price * 100, currency: "USD" },
-            revelID: revelID,
-            squareID: squareID,
-            modifiers: modifiers,
+            revelID,
+            squareID,
+            modifiers,
             is_base: isBase,
             display_flags: {
               menu: {

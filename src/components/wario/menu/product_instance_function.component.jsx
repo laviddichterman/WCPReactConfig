@@ -15,8 +15,7 @@ const ProductInstanceFunctionComponent = ({
   setFunctionName,
   expression,
   setExpression,
-}) => {
-  return (
+}) => (
     <ElementActionComponent 
       onCloseCallback={onCloseCallback}
       onConfirmClick={onConfirmClick}
@@ -45,6 +44,5 @@ const ProductInstanceFunctionComponent = ({
       </>}
     />
   );
-};
 
 export default ProductInstanceFunctionComponent;

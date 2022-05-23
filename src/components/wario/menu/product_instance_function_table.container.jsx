@@ -1,10 +1,10 @@
 import React from "react";
 
-import TableWrapperComponent from "../table_wrapper.component";
 import {GridActionsCellItem}  from "@mui/x-data-grid";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
 import { WFunctional } from "@wcp/wcpshared";
+import TableWrapperComponent from "../table_wrapper.component";
 
 const ProductInstanceFunctionTableContainer = ({
   product_instance_functions,

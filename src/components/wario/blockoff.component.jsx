@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import TimeSelection from "./timepicker.component";
 import Moment from 'react-moment';
 
 import Box from '@mui/material/Box';
@@ -23,6 +22,7 @@ import Container from '@mui/material/Container';
 import { ListItemText } from "@mui/material";
 import { useAuth0 } from '@auth0/auth0-react';
 import { WDateUtils } from "@wcp/wcpshared";
+import TimeSelection from "./timepicker.component";
 
 
 
@@ -96,7 +96,7 @@ const BlockOffComp = ({
       setIsProcessing(true);
       const new_blocked_off = BLOCKED_OFF.slice();
       // iterate over services
-      for (var service_index in service_selection) {
+      for (const service_index in service_selection) {
         if (service_selection[service_index]) {
           WDateUtils.AddIntervalToService(service_index, parsed_date, interval, new_blocked_off);
         }
@@ -265,8 +265,7 @@ const BlockOffComp = ({
   //   }
   // }
 
-  const services_checkboxes = SERVICES.map((x, i) => {
-    return (
+  const services_checkboxes = SERVICES.map((x, i) => (
       <Grid item xs key={i}>
         <ServiceSelectionCheckbox
           service_name={x}
@@ -274,15 +273,14 @@ const BlockOffComp = ({
           onChange={(e) => onChangeServiceSelection(e, i)}
         />
       </Grid>
-    );
-  });
+    ));
   const blocked_off_html = BLOCKED_OFF ? BLOCKED_OFF.map((service, i) => {
     const blocked_off_days_html = BLOCKED_OFF[i].map((blocked_off_for_day, j) => {
       const blocked_off_intervals_html = BLOCKED_OFF[i][j][1].map((interval, k) => {
         const from_to = BLOCKED_OFF[i][j][1][k][0] === BLOCKED_OFF[i][j][1][k][1] ? WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][0]) : `${WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][0])} to ${WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][1])}`;
         return (
           <ListItem key={k}>
-            <ListItemText primary={from_to}></ListItemText>
+            <ListItemText primary={from_to} />
             <ListItemSecondaryAction>
               <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(i,j,k)}>
                 <HighlightOffIcon />

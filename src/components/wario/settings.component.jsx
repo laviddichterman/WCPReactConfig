@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import Moment from 'react-moment';
 import memoizeOne from 'memoize-one';
 
-import TimeSelection from "./timepicker.component";
-import CheckedInputComponent from "./checked_input.component";
 
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -16,6 +14,8 @@ import Grid from '@mui/material/Grid';
 
 import { WDateUtils } from "@wcp/wcpshared";
 import { useAuth0 } from '@auth0/auth0-react';
+import CheckedInputComponent from "./checked_input.component";
+import TimeSelection from "./timepicker.component";
 
 const OperatingHoursIntervalForm = ({
   settings, 
@@ -26,7 +26,7 @@ const OperatingHoursIntervalForm = ({
   onAddOperatingHours
 }) => {
   const generateOptions = (earliest, latest, step) => {
-    var retval = [];
+    const retval = [];
     while (earliest <= latest) {
       retval.push({ value: earliest, label: WDateUtils.MinutesToPrintTime(earliest)});
       earliest += step;
@@ -45,7 +45,7 @@ const OperatingHoursIntervalForm = ({
           value={interval.start}
           optionCaption={"Start"}
           disabled={disabled}
-          //className="col-2"
+          // className="col-2"
           options={start_options}
           isOptionDisabled={x => false}
         />
@@ -56,7 +56,7 @@ const OperatingHoursIntervalForm = ({
           value={interval.end}
           optionCaption={"End"}
           disabled={!interval.start || disabled}
-          //className="col-2"
+          // className="col-2"
           options={end_options}
           isOptionDisabled={x => false}
         />
@@ -72,7 +72,7 @@ const OperatingHoursIntervalForm = ({
 
 const GenerateInitialOperatingHoursFormIntervals = (num_services) => {
   const intervals = Array(num_services).fill();
-  for (var i in intervals) {
+  for (const i in intervals) {
     intervals[i] = Array(7).fill({start: null, end:null});
   }
   return intervals;
@@ -176,8 +176,7 @@ const SettingsComponent = ({
     console.log(new_intervals[service_index][day_index]);
   }
 
-  const timestep_html = SETTINGS.time_step2 ? SERVICES.map((_, i) => {
-    return (
+  const timestep_html = SETTINGS.time_step2 ? SERVICES.map((_, i) => (
       <Grid item xs={Math.floor(12/SERVICES.length)} key={i}>
         <CheckedInputComponent
           label={`${SERVICES[i]} Time Step (minutes)`}
@@ -188,13 +187,11 @@ const SettingsComponent = ({
           onFinishChanging={(e) => onChangeTimeStep(e, i)}
           />
       </Grid>
-    );
-  }) : "";
+    )) : "";
 
   const operating_hours_service_html = SETTINGS.operating_hours.map((operating_hours_week, h) => {
     const operating_hours_week_html = operating_hours_week.map((operating_hours_day, i) => {
-      const operating_hours_day_intervals_html = operating_hours_day.map((interval, j) => {
-        return (
+      const operating_hours_day_intervals_html = operating_hours_day.map((interval, j) => (
           <Grid item xs={2} container key={j}>
             <Grid item xs={10}>
               {WDateUtils.MinutesToPrintTime(interval[0])}
@@ -207,15 +204,14 @@ const SettingsComponent = ({
               </IconButton>
             </Grid>
           </Grid>
-        );
-      });
+        ));
       return (
         <Grid container item xs={12} spacing={1} key={i}>
           <Grid item xs={1}>
             <Moment format="dddd" parse="e">{i}</Moment>:
           </Grid>
           {operating_hours_day_intervals_html}
-          <Grid item xs></Grid>
+          <Grid item xs />
           <Grid item xs={4}>
             <OperatingHoursIntervalForm
               disabled={false}

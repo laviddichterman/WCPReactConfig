@@ -7,9 +7,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useCSVReader } from 'react-papaparse';
 
 import Button from "@mui/material/Button";
+import { useAuth0 } from '@auth0/auth0-react';
 import { ElementActionComponent } from "./element.action.component";
 
-import { useAuth0 } from '@auth0/auth0-react';
 
 const InternalCSVReader = ({onAccepted}) => {
   const { CSVReader } = useCSVReader();
@@ -57,8 +57,7 @@ const ProductComponent = ({
   parentCategories,
   setParentCategories,
   setFileData,
-}) => {
-  return (
+}) => (
     <ElementActionComponent 
     onCloseCallback={onCloseCallback}
     onConfirmClick={onConfirmClick}
@@ -89,7 +88,6 @@ const ProductComponent = ({
     </>}
     />
   );
-};
 
 const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
   const [parentCategories, setParentCategories] = useState([]);
@@ -118,12 +116,12 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
               price: { amount: prod[2] * 100, currency: "USD" },
              */
             body: JSON.stringify({
-              display_name: prod["Name"], //displayName,
-              description: prod["Description"] || "",
-              shortcode: prod["Shortname"],
+              display_name: prod.Name, // displayName,
+              description: prod.Description || "",
+              shortcode: prod.Shortname,
               disabled: null,
               ordinal: index * 10,
-              price: { amount: Number.parseFloat(prod["Price"]) * 100, currency: "USD" },
+              price: { amount: Number.parseFloat(prod.Price) * 100, currency: "USD" },
               display_flags: {
                 bake_differential: 100,
                 show_name_of_base_product: true,

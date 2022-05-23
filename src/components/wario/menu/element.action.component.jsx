@@ -3,16 +3,14 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
-const GenerateActionsHtmlFromList = (actions) => {
-  return actions.length === 0 ? "" : 
+const GenerateActionsHtmlFromList = (actions) => actions.length === 0 ? "" : 
     (<Grid container justifyContent="flex-end" item xs={12}>
       {actions.map((action, idx) => (
         <Grid item key={idx}>
           {action}
         </Grid>
       ))}
-    </Grid>);
-}
+    </Grid>)
 const ElementActionComponent = ({ 
   body,
   onCloseCallback,

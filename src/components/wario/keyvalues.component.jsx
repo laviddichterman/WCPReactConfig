@@ -107,7 +107,7 @@ const KeyValuesComponent = ({
           </Grid>
           <Grid item xs={6}>
             <TextField
-              fullWidth={true}
+              fullWidth
               label="Value"
               type="text"
               value={newvalue}
@@ -119,8 +119,7 @@ const KeyValuesComponent = ({
             <Button onClick={onAddNewKeyValuePairLocal}>Add</Button>
           </Grid>
         </Grid>
-        {Object.keys(KEYVALUES).map((k, i) => {
-    return (
+        {Object.keys(KEYVALUES).map((k, i) => (
       <Paper key={i} spacing={3}>
         <Grid container>
           <Grid item xs={3}>
@@ -141,8 +140,7 @@ const KeyValuesComponent = ({
           </Grid>
         </Grid>
       </Paper>
-    );
-  })}
+    ))}
         <Button onClick={onSubmit}>PUSH CHANGES</Button>
       </Paper>
     </div>

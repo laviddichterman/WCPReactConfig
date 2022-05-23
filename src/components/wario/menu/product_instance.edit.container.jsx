@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ProductInstanceComponent from "./product_instance.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import ProductInstanceComponent from "./product_instance.component";
 
 const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_product, product_instance, onCloseCallback}) => {
   const [displayName, setDisplayName] = useState(product_instance.item.display_name);
@@ -44,13 +44,13 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
           },
           body: JSON.stringify({
             display_name: displayName,
-            description: description,
-            shortcode: shortcode,
-            ordinal: ordinal,
+            description,
+            shortcode,
+            ordinal,
             price: { amount: price * 100, currency: "USD" },
-            revelID: revelID,
-            squareID: squareID,
-            modifiers: modifiers,
+            revelID,
+            squareID,
+            modifiers,
             is_base: isBase,
             display_flags: {
               menu: {

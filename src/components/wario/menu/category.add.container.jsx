@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 import Button from "@mui/material/Button";
-import CategoryComponent from "./category.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import CategoryComponent from "./category.component";
 
 const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
   const [description, setDescription] = useState("");
@@ -30,11 +30,11 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            description: description,
-            subheading: subheading,
-            footnotes: footnotes,
-            name: name,
-            ordinal: ordinal,
+            description,
+            subheading,
+            footnotes,
+            name,
+            ordinal,
             parent_id: parent ? parent.category._id : "",
             display_flags: {
               call_line_name: callLineName,

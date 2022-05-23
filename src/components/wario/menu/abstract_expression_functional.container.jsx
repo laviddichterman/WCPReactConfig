@@ -21,8 +21,7 @@ const AbstractExpressionFunctionalComponent = ({
   expression_types,
   discriminator,
   setDiscriminator,
-}) => {
-  return (
+}) => (
     <div>
       <List>
         <ListItem>
@@ -37,16 +36,14 @@ const AbstractExpressionFunctionalComponent = ({
                   value={discriminator}
                   onChange={(e) => setDiscriminator(e.target.value)}
                 >
-                  {Object.keys(expression_types).map((val, idx) => {
-                    return (
+                  {Object.keys(expression_types).map((val, idx) => (
                       <FormControlLabel
                         key={idx}
                         control={<Radio disableRipple />}
                         value={val}
                         label={val}
                       />
-                    );
-                  })}
+                    ))}
                 </RadioGroup>
               </FormControl>
             </CardContent>
@@ -60,7 +57,6 @@ const AbstractExpressionFunctionalComponent = ({
       </List>
     </div>
   );
-};
 
 let AbstractExpressionFunctionalContainer;
 
@@ -110,16 +106,14 @@ const LogicalFunctionalComponent = ({
                   value={operator}
                   onChange={(e) => updateOperator(e.target.value)}
                 >
-                  {operators.map((val, idx) => {
-                    return (
+                  {operators.map((val, idx) => (
                       <FormControlLabel
                         key={idx}
                         control={<Radio disableRipple />}
                         value={val}
                         label={val}
                       />
-                    );
-                  })}
+                    ))}
                 </RadioGroup>
               </FormControl>
             </CardContent>
@@ -127,7 +121,7 @@ const LogicalFunctionalComponent = ({
         </ListItem>
         <ListItem>
           <Card>
-            <CardHeader title="Left Operand"></CardHeader>
+            <CardHeader title="Left Operand" />
             <CardContent>
               <AbstractExpressionFunctionalContainer
                 modifier_types={modifier_types}
@@ -141,7 +135,7 @@ const LogicalFunctionalComponent = ({
       {operator !== "NOT" ? (
           <ListItem>
             <Card>
-              <CardHeader title="Right Operand"></CardHeader>
+              <CardHeader title="Right Operand" />
               <CardContent>
                 <AbstractExpressionFunctionalContainer
                   modifier_types={modifier_types}
@@ -196,7 +190,7 @@ const IfElseFunctionalComponent = ({
       <List>
         <ListItem>
           <Card>
-            <CardHeader title="Test Expression"></CardHeader>
+            <CardHeader title="Test Expression" />
             <CardContent>
               <AbstractExpressionFunctionalContainer
                 modifier_types={modifier_types}
@@ -208,7 +202,7 @@ const IfElseFunctionalComponent = ({
         </ListItem>
         <ListItem>
           <Card>
-            <CardHeader title="True Branch Expression"></CardHeader>
+            <CardHeader title="True Branch Expression" />
             <CardContent>
               <AbstractExpressionFunctionalContainer
                 modifier_types={modifier_types}
@@ -220,7 +214,7 @@ const IfElseFunctionalComponent = ({
         </ListItem>
         <ListItem>
           <Card>
-            <CardHeader title="False Branch Expression"></CardHeader>
+            <CardHeader title="False Branch Expression" />
             <CardContent>
               <AbstractExpressionFunctionalContainer
                 modifier_types={modifier_types}
@@ -368,16 +362,14 @@ const ConstLiteralFunctionalComponent = ({ value, setValue }) => {
             value={literalType}
             onChange={(e) => updateLiteralType(e.target.value)}
           >
-            {Object.keys(LITERAL_TYPES).map((val, idx) => {
-              return (
+            {Object.keys(LITERAL_TYPES).map((val, idx) => (
                 <FormControlLabel
                   key={idx}
                   control={<Radio disableRipple />}
                   value={val}
                   label={val}
                 />
-              );
-            })}
+              ))}
           </RadioGroup>
         </FormControl>
         </Grid>

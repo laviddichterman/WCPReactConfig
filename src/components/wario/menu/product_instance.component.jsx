@@ -4,8 +4,6 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Switch from "@mui/material/Switch";
 
-import CheckedInputComponent from "../checked_input.component";
-import { ElementActionComponent } from "./element.action.component";
 
 // related to modifiers
 import Card from "@mui/material/Card";
@@ -17,6 +15,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import { ElementActionComponent } from "./element.action.component";
+import CheckedInputComponent from "../checked_input.component";
 
 const ProductInstanceComponent = ({
   confirmText,
@@ -95,24 +95,24 @@ const ProductInstanceComponent = ({
   const handleRadioChange = (mtidx, oidx) => {
     const new_normalized_mod = modifiers.slice();
     new_normalized_mod[mtidx].options = modifiers[mtidx].options.map(
-      (opt, idx) => {
+      (opt, idx) => 
         // specifically using a == comparison since oidx is likely a string
-        return {
+         ({
           option_id: opt.option_id,
           // eslint-disable-next-line
           placement: idx == oidx ? "WHOLE" : "NONE",
           qualifier: "REGULAR"
-        };
-      }
+        })
+      
     );
     setModifiers(new_normalized_mod);
   };
 
   const modifier_html = parent_product.modifiers.map((modifier_entry, mtidx) => {
-    const mtid = modifier_entry.mtid;
+    const {mtid} = modifier_entry;
     const mt = modifier_types_map[mtid].modifier_type;
     const mt_options = modifier_types_map[mtid].options;
-    var mt_options_html;
+    let mt_options_html;
     if (mt.min_selected === 1 && mt.max_selected === 1) {
       mt_options_html = (
         <RadioGroup
@@ -124,23 +124,20 @@ const ProductInstanceComponent = ({
           )}
           onChange={(e) => handleRadioChange(mtidx, e.target.value)}
         >
-          {mt_options.map((option, oidx) => {
-            return (
+          {mt_options.map((option, oidx) => (
               <FormControlLabel
                 key={oidx}
                 control={<Radio disableRipple />}
                 value={oidx}
                 label={mt_options[oidx].item.display_name}
               />
-            );
-          })}
+            ))}
         </RadioGroup>
       );
     } else {
       mt_options_html = (
         <FormGroup row>
-          {mt_options.map((option, oidx) => {
-            return (
+          {mt_options.map((option, oidx) => (
               <FormControlLabel
                 key={oidx}
                 control={
@@ -155,8 +152,7 @@ const ProductInstanceComponent = ({
                 }
                 label={mt_options[oidx].item.display_name}
               />
-            );
-          })}
+            ))}
         </FormGroup>
       );
     }
@@ -479,16 +475,14 @@ const normalizeModifiersAndOptions = (
   modifier_types_map,
   modifiers
 ) => {
-  var normalized_modifiers = [];
+  const normalized_modifiers = [];
   parent_product.modifiers.forEach((modifier_entry) => {
-    const mtid = modifier_entry.mtid;
-    const options = modifier_types_map[mtid].options.map((option, idx) => {
-      return {
+    const {mtid} = modifier_entry;
+    const options = modifier_types_map[mtid].options.map((option, idx) => ({
         option_id: option._id,
         placement: "NONE",
-      };
-    });
-    normalized_modifiers.push({ modifier_type_id: mtid, options: options });
+      }));
+    normalized_modifiers.push({ modifier_type_id: mtid, options });
   });
   // copy the selected modifiers over to the normalized
   modifiers.forEach((mod) => {
@@ -508,8 +502,7 @@ const normalizeModifiersAndOptions = (
   return normalized_modifiers;
 };
 
-const minimizeModifiers = (normalized_modifiers) => {
-  return normalized_modifiers
+const minimizeModifiers = (normalized_modifiers) => normalized_modifiers
     .map((mod, idx) => {
       const filtered_options = mod.options.filter(
         (x) => x.placement !== "NONE"
@@ -519,7 +512,6 @@ const minimizeModifiers = (normalized_modifiers) => {
         : null;
     })
     .filter((x) => x != null);
-};
 
 const ProductInstanceContainer = ({
   confirmText,

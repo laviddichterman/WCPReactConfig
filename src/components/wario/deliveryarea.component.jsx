@@ -63,7 +63,7 @@ const DeliveryAreaComponent = ({
               </AppBar>
             </Grid>
           <Grid item xs={10}>
-          <TextField aria-label="textarea" rows={15} fullWidth={true} multiline={true} value={dirty ? stringified : JSON.stringify(DELIVERY_AREA)} onChange={e => onChangeLocal(e.target.value)} onBlur={e => onBlurLocal(JSON.parse(stringified))} />
+          <TextField aria-label="textarea" rows={15} fullWidth multiline value={dirty ? stringified : JSON.stringify(DELIVERY_AREA)} onChange={e => onChangeLocal(e.target.value)} onBlur={e => onBlurLocal(JSON.parse(stringified))} />
           </Grid>
           <Grid item xs={2}>
             <Button onClick={postDeliveryArea}>Push Changes</Button>

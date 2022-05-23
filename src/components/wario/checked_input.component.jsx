@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 
-const CheckFunctionGenerator = (inputProps, parseFunction, allowEmpty) => {
-  return (e) => {
+const CheckFunctionGenerator = (inputProps, parseFunction, allowEmpty) => (e) => {
     const parsed = parseFunction(e);
-    if (isNaN(parsed)) {
-      return allowEmpty ? "" : (Number.isFinite(inputProps.min) ? inputProps.min : "");
+    if (Number.isNaN(parsed)) {
+      if (!allowEmpty && Number.isFinite(inputProps.min)) {
+        return inputProps.min;
+      }
+      return "";
     }
-    else {
-      return Number.isFinite(inputProps.min) && parsed < inputProps.min ? inputProps.min : (Number.isFinite(inputProps.max) && parsed > inputProps.max ? inputProps.max : parsed);
+    
+    if (Number.isFinite(inputProps.min) && parsed < inputProps.min) {
+      return inputProps.min;
+    } 
+    if (Number.isFinite(inputProps.max) && parsed > inputProps.max) {
+      return inputProps.max;
     }
+    return parsed;
+    
   }
-}
 
 const CheckedInputComponent = ({onFinishChanging, className, parseFunction, allowEmpty, inputProps, label, type, value, ...forwardParams}) => {
   const [ local_value, setLocalValue ] = useState(value);
@@ -36,7 +43,7 @@ const CheckedInputComponent = ({onFinishChanging, className, parseFunction, allo
       className={className}
       value={dirty ? local_value : value}
       size="small"
-      //helperText={dirty && local_value != value ? "Modified" : ""}
+      // helperText={dirty && local_value != value ? "Modified" : ""}
       inputProps={inputProps}
       onChange={onChangeLocal}
       onBlur={onFinishChangingLocal}

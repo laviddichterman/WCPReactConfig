@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ElementDeleteComponent from "./element.delete.component";
 import { useAuth0 } from '@auth0/auth0-react';
+import ElementDeleteComponent from "./element.delete.component";
 
 
 const ProductInstanceFunctionDeleteContainer = ({ ENDPOINT, product_instance_function, onCloseCallback }) => {

@@ -18,6 +18,7 @@ export default class TimeSelection extends Component {
     optionCaption: "Time",
     isOptionDisabled: x => x.disabled,
   }
+
   render() {
     return (
       <Select

@@ -1,15 +1,7 @@
 import { useState, useEffect } from "react";
 
-import PACKAGE_JSON from "../package.json";
 import socketIOClient from "socket.io-client";
-import BlockOffComp from "./components/blockoff.component";
-import LeadTimesComp from "./components/leadtimes.component";
-import MenuBuilderComponent from "./components/menu/menu_builder.component";
-import StoreCreditComponent from "./components/store_credit.component";
-import SettingsComp from "./components/settings.component";
-import DeliveryAreaComp from "./components/deliveryarea.component";
-import KeyValuesComponent from "./components/keyvalues.component";
-import FooterComponent from "./components/footer.component";
+
 import { useAuth0 } from '@auth0/auth0-react';
 
 import PropTypes from 'prop-types';
@@ -22,6 +14,16 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+import BlockOffComp from "./components/wario/blockoff.component";
+import LeadTimesComp from "./components/wario/leadtimes.component";
+import MenuBuilderComponent from "./components/wario/menu/menu_builder.component";
+import StoreCreditComponent from "./components/wario/store_credit.component";
+import SettingsComp from "./components/wario/settings.component";
+import DeliveryAreaComp from "./components/wario/deliveryarea.component";
+import KeyValuesComponent from "./components/wario/keyvalues.component";
+import FooterComponent from "./components/wario/footer.component";
+import PACKAGE_JSON from "../package.json";
 
 const themeOptions = createTheme( {
   palette: {
@@ -115,10 +117,10 @@ function a11yProps(index) {
   };
 }
 
-//const ENDPOINT = "https://wario.windycitypie.com";
-//const ENDPOINT = "https://wdev.windycitypie.com";
-//const ENDPOINT = "https://wstaging.windycitypie.com";
-//const ENDPOINT = "https://wario.breezytownpizza.com";
+// const ENDPOINT = "https://wario.windycitypie.com";
+// const ENDPOINT = "https://wdev.windycitypie.com";
+// const ENDPOINT = "https://wstaging.windycitypie.com";
+// const ENDPOINT = "https://wario.breezytownpizza.com";
 const ENDPOINT = "http://localhost:4001";
 
 const IO_CLIENT_RO = socketIOClient(`${ENDPOINT}/nsRO`, { autoConnect: false, secure: true, cookie: false,     
@@ -168,9 +170,9 @@ const AppInner = () => {
     socketRo.on("connect", () => {
       socketRo.on("WCP_SERVICES", data => { setSERVICES(data); setHasLoadedSERVICES(true); } );
       socketRo.on("WCP_BLOCKED_OFF", data => {
-        data.forEach(function(svc_block, i) {
-          svc_block.forEach(function(day_block, j) {
-            day_block[1].forEach(function(interval, k) {
+        data.forEach((svc_block, i) => {
+          svc_block.forEach((day_block, j) => {
+            day_block[1].forEach((interval, k) => {
               data[i][j][1][k] = [Number(data[i][j][1][k][0]), Number(data[i][j][1][k][1])];
             })
           })
@@ -268,8 +270,7 @@ const AppInner = () => {
   );
 }
 
-const App = () => {
-  return (
+const App = () => (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={themeOptions}>
         <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -278,6 +279,5 @@ const App = () => {
       </ThemeProvider>
     </StyledEngineProvider>
   )
-}
 
 export default App;
