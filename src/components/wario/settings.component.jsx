@@ -47,7 +47,7 @@ const OperatingHoursIntervalForm = ({
           disabled={disabled}
           // className="col-2"
           options={start_options}
-          isOptionDisabled={x => false}
+          isOptionDisabled={() => false}
         />
       </Grid>
       <Grid item xs={5}>
@@ -58,7 +58,7 @@ const OperatingHoursIntervalForm = ({
           disabled={!interval.start || disabled}
           // className="col-2"
           options={end_options}
-          isOptionDisabled={x => false}
+          isOptionDisabled={() => false}
         />
       </Grid>
       <Grid item xs={2}>
@@ -120,7 +120,7 @@ const SettingsComponent = ({
 
   const onChangeTimeStep = (e, service_idx) => {
     const new_settings = JSON.parse(JSON.stringify(SETTINGS));
-    new_settings.time_step2[service_idx] = parseInt(e);
+    new_settings.time_step2[service_idx] = parseInt(e, 10);
     setSETTINGS(new_settings);
   }
 
@@ -218,7 +218,7 @@ const SettingsComponent = ({
               interval={operating_hours_form_intervals[h][i]}
               onChangeLowerBound={e => onSetLowerBound(h, i, e)}
               onChangeUpperBound={e => onSetUpperBound(h, i, e)}
-              onAddOperatingHours={e => AddOperatingHoursInterval(h, i)}
+              onAddOperatingHours={() => AddOperatingHoursInterval(h, i)}
               settings={SETTINGS}
               />
           </Grid>

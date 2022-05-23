@@ -87,7 +87,7 @@ const ProductInstanceComponent = ({
         new_normalized_mod[mtid].options[oidx].qualifier = "REGULAR";
         break;
       default:
-        alert("messed up option value!");
+        console.error("messed up option value!");
     }
     setModifiers(new_normalized_mod);
   };

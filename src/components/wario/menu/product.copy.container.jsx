@@ -50,14 +50,14 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
               singular_noun: product.display_flags.singular_noun,
             },
             category_ids: parentCategories.map(x => x.category._id),
-            modifiers: modifiers.map(x => ({ mtid: x.modifier_type._id, enable: modifierEnableFunctions.hasOwnProperty(x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }) ),
+            modifiers: modifiers.map(x => ({ mtid: x.modifier_type._id, enable: Object.hasOwn(modifierEnableFunctions, x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }) ),
             disabled: null,
             create_product_instance: false
           }),
         });
         if (response.status === 201) {
           const json_response = await response.json();
-          for (const child_instance of products[product._id].instances) {
+          products[product._id].instances.forEach(async (child_instance) => {
             const add_child_response = await fetch(`${ENDPOINT}/api/v1/menu/product/${json_response._id}`, {
               method: "POST",
               headers: {
@@ -98,8 +98,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, product_instance_funct
             if (add_child_response.status !== 201) {
               console.log("ERROR in creating child instance");
             }
-          }
-          
+          });
         }
         setIsProcessing(false);
         onCloseCallback();

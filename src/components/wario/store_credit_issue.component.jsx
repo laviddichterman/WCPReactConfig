@@ -114,7 +114,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
               value={recipientEmail}
               size="small"
               onChange={e => { setRecipientEmail(e.target.value); } }
-              onBlur={e => validateRecipientEmail()}
+              onBlur={() => validateRecipientEmail()}
             />
           </Grid>
           <Grid item xs={2}>

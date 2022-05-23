@@ -110,6 +110,7 @@ const BlockOffComp = ({
     if (!isProcessing) {
       setIsProcessing(true);
       let new_blocked_off = BLOCKED_OFF;
+      // eslint-disable-next-line no-plusplus
       for (let i = 0; i < BLOCKED_OFF[service_index][day_index][1].length; ++i) {
         new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
           service_index,

@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import Select from 'react-select';
 
 const groupStyles = {
@@ -13,26 +12,19 @@ const Group = data => (
   </div>
 );
 
-export default class TimeSelection extends Component {
-  static defaultProps = {
-    optionCaption: "Time",
-    isOptionDisabled: x => x.disabled,
-  }
+const TimeSelection = ({value, disabled, onChange, className, options, optionCaption="Time", isOptionDisabled=(x) => x.disabled}) => (
+  <Select
+    options={[{
+      label: optionCaption,
+      options
+    }]}
+    className={className}
+    formatGroupLabel={Group}
+    onChange={onChange}
+    value={value}
+    isDisabled={disabled}
+    isOptionDisabled={isOptionDisabled}
+    />
+);
 
-  render() {
-    return (
-      <Select
-        options={[{
-          label: this.props.optionCaption,
-          options: this.props.options
-        }]}
-        className={this.props.className}
-        formatGroupLabel={Group}
-        onChange={this.props.onChange}
-        value={this.props.value}
-        isDisabled={this.props.disabled}
-        isOptionDisabled={this.props.isOptionDisabled}
-        />
-    );
-  };
-}
+export default TimeSelection;

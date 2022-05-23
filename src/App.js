@@ -185,7 +185,7 @@ const AppInner = () => {
       socketRo.on("WCP_DELIVERY_AREA", data => { setDELIVERY_AREA(data); setHasLoadedDELIVERY_AREA(true); } );
       socketRo.on("WCP_CATALOG", data => { setCATALOG(data); setHasLoadedCATALOG(true); } );
     });
-    return function() {
+    return () => {
       socketRo.disconnect();
     };
   }, [socketRo]);
