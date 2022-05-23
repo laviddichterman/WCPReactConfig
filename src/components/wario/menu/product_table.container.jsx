@@ -8,7 +8,6 @@ import Tooltip from '@mui/material/Tooltip';
 import TableWrapperComponent from "../table_wrapper.component";
 
 const ProductTableContainer = ({
-  tableTitle,
   products,
   catalog,
   setProductToEdit,

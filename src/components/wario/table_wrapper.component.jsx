@@ -2,10 +2,9 @@ import React, { forwardRef } from "react";
 import { DataGridPro } from '@mui/x-data-grid-pro';
 import {
   GridToolbarContainer,
-  GridToolbarFilterButton,
-  GridToolbarDensitySelector,
+  GridToolbarQuickFilter
 } from '@mui/x-data-grid';
-import { LicenseInfo } from '@mui/x-license-pro';
+import Grid from "@mui/material/Grid";
 
 import {
   AddBox,
@@ -26,6 +25,7 @@ import {
   ExpandLess,
   ExpandMore,
 } from "@mui/icons-material";
+import { LicenseInfo } from '@mui/x-license-pro';
 
 import config from '../../auth_config.json';
 
@@ -59,11 +59,18 @@ LicenseInfo.setLicenseKey(
   config.muilicense
 );
 
-function CustomToolbar() {
+function CustomToolbar({quickFilterProps, title, actions, ...forwardParams}) {
   return (
-    <GridToolbarContainer>
-      <GridToolbarFilterButton />
-      <GridToolbarDensitySelector />
+    <GridToolbarContainer >
+      <Grid container  item xs={12}>
+        <Grid item xs={6}>{title}</Grid>
+        <Grid item container xs={6}>
+          <Grid item xs={12-actions?.length} >
+            <GridToolbarQuickFilter {...quickFilterProps} />
+          </Grid>
+          {actions.length ? actions.map((action, idx)=>(<Grid item xs={1} key={idx}>{action}</Grid>)) : ""}
+        </Grid>
+      </Grid>
     </GridToolbarContainer>
   );
 }
@@ -71,9 +78,19 @@ function CustomToolbar() {
 
 const TableWrapperComponent = ({
   disableToolbar,
+  title,
+  toolbarActions,
   ...forwardParams
 }) => (
     <DataGridPro
+      componentsProps={{
+        toolbar: {
+          title: title,
+          actions: toolbarActions || [],
+          showQuickFilter: true,
+          quickFilterProps: { debounceMs: 500 },
+        },
+      }}
       components={disableToolbar ? {} : {
         Toolbar: CustomToolbar,
       }}

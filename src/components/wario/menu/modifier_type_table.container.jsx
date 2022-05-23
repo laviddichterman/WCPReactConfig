@@ -91,15 +91,13 @@ const ModifierTypeTableContainer = ({
         { headerName: "Max Selected", field: "max_selected", valueGetter: v => v.row.modifier_type.max_selected  },
         { headerName: "Display Name", field: "display_name", valueGetter: v => v.row.modifier_type.display_name},
       ]}
-      actions={[
-        {
-          icon: AddBox,
-          tooltip: "Add Modifier Type",
-          onClick: () => {
-            setIsModifierTypeAddOpen(true);
-          },
-          isFreeAction: true,
-        }
+      toolbarActions={[
+        <GridActionsCellItem
+          icon={<Tooltip title="Add Modifier Type"><AddBox/></Tooltip>}
+          label="Add Modifier Type"
+          onClick={() => setIsModifierTypeAddOpen(true)}
+          key="ADDNEW"
+        />
       ]}
       rows={Object.values(modifier_types_map)}
       onRowClick={(params, ) => apiRef.current.toggleDetailPanel(params.id)}

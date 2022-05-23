@@ -26,16 +26,13 @@ const ProductInstanceFunctionTableContainer = ({
   return (
     <TableWrapperComponent
       title="Product Instance Functions"
-
-      actions={[
-        {
-          icon: AddBox,
-          tooltip: "Add Product Function",
-          onClick: (event, rowData) => {
-            setIsProductInstanceFunctionAddOpen(true);
-          },
-          isFreeAction: true,
-        }
+      toolbarActions={[
+        <GridActionsCellItem
+          icon={<Tooltip title="Add Product Function"><AddBox/></Tooltip>}
+          label="Add Product Function"
+          onClick={() => setIsProductInstanceFunctionAddOpen(true)}
+          key="ADDNEW"
+        />
       ]}
       rows={product_instance_functions}
       getRowId={(row) => row._id}
@@ -57,8 +54,8 @@ const ProductInstanceFunctionTableContainer = ({
             />
           ]
         },
-        { headerName: "Name", field: "name", valueGetter: v => v.row.name, defaultSort: "asc"},
-        { headerName: "Function", field: "expression", valueGetter: v => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifier_types)},
+        { headerName: "Name", field: "name", valueGetter: v => v.row.name, defaultSort: "asc", flex: 1},
+        { headerName: "Function", field: "expression", valueGetter: v => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifier_types), flex: 3},
       ]}
     />
   );
