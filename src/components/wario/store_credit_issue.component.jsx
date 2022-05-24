@@ -6,12 +6,8 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import { DatePicker } from '@mui/x-date-pickers';
-import Toolbar from "@mui/material/Toolbar";
 import moment from "moment";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
-import AppBar from "@mui/material/AppBar";
-import Typography from "@mui/material/Typography";
+import {Grid, Card, CardHeader, Divider} from "@mui/material";
 
 import { WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
 import CheckedInputComponent from "./checked_input.component";
@@ -72,19 +68,13 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
     }
   }
   return (
-    <div>
-      <Paper>
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="h5">
-                  Issue a store credit for a customer
-                </Typography>
-              </Toolbar>
-              <Typography variant="subtitle1">Note: purchased store credit MUST be done through our website!</Typography>
-            </AppBar>
-          </Grid>
+    <Card>
+      <CardHeader title="Issue a store credit for a customer" 
+        subheader="Note: purchased store credit MUST be done through our website!"
+         sx={{ mb: 3, mt: -3, pt: 1 }} />
+               <Divider />
+
+                <Grid container spacing={3} justifyContent="center">
           <Grid item xs={3}>
             <TextField
               label="First Name"
@@ -182,9 +172,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
             </Button>
           </Grid>
         </Grid>
-      </Paper>
-      <br />
-    </div>
+    </Card>
   );
 };
 

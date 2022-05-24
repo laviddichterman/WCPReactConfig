@@ -92,6 +92,7 @@ const ModifierOptionTableContainer = ({
         { headerName: "BFactor", field: "metadata.bake_factor", valueGetter: v => v.row.metadata.bake_factor},
         { headerName: "Can Split?", field: "metadata.can_split", valueGetter: v => v.row.metadata.can_split},
         { headerName: "EnableFxn", field: "enable_function.name", valueGetter: v => v.row.enable_function ? v.row.enable_function.name : ""},
+        // eslint-disable-next-line no-nested-ternary
         { headerName: "Disabled", field: "item.disabled", valueGetter: v => (v.row.item.disabled ? (v.row.item.disabled.start > v.row.item.disabled.end ? "True" : `${moment(v.row.item.disabled.start).format("MMMM DD, Y hh:mm A")} to  ${moment(v.row.item.disabled.end).format("MMMM DD, Y hh:mm A")}`) : "False" )},
       ]}
       getRowId={(row) => row._id}

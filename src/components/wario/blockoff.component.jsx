@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Moment from 'react-moment';
-
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
@@ -56,7 +54,7 @@ const BlockOffComp = ({
 }) => {
   const [ upper_time, setUpperTime ] = useState(null);
   const [ lower_time, setLowerTime ] = useState(null);
-  const [ selected_date, setSelectedDate ] = useState(new moment());
+  const [ selected_date, setSelectedDate ] = useState(moment());
   const [ parsed_date, setParsedDate ] = useState(moment().format(WDateUtils.DATE_STRING_INTERNAL_FORMAT));
   const [ service_selection, setServiceSelection ] = useState(Array(SERVICES.length).fill(true));
   const [ can_submit, setCanSubmit ] = useState(false);
@@ -83,6 +81,7 @@ const BlockOffComp = ({
           body: JSON.stringify(new_blocked_off),
         }
       );
+      // eslint-disable-next-line no-empty
       if (response.status === 201) {
       }
     } catch (error) {
@@ -96,6 +95,7 @@ const BlockOffComp = ({
       setIsProcessing(true);
       const new_blocked_off = BLOCKED_OFF.slice();
       // iterate over services
+      // eslint-disable-next-line no-restricted-syntax
       for (const service_index in service_selection) {
         if (service_selection[service_index]) {
           WDateUtils.AddIntervalToService(service_index, parsed_date, interval, new_blocked_off);
@@ -163,29 +163,29 @@ const BlockOffComp = ({
   //   // }
   // };
 
-  const addBlockedOffIntervalForService = async (service) => {
-    try {
-      const token = await getAccessTokenSilently();
-      const response = await fetch(
-        `${ENDPOINT}/api/v1/config/timing/${service}/${parsed_date}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            min: lower_time.value,
-            max: upper_time.value,
-          }),
-        }
-      );
-      if (response.status === 201) {
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const addBlockedOffIntervalForService = async (service) => {
+  //   try {
+  //     const token = await getAccessTokenSilently();
+  //     const response = await fetch(
+  //       `${ENDPOINT}/api/v1/config/timing/${service}/${parsed_date}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           min: lower_time.value,
+  //           max: upper_time.value,
+  //         }),
+  //       }
+  //     );
+  //     if (response.status === 201) {
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const onChangeServiceSelection = (e, i) => {
     e.preventDefault();
@@ -292,7 +292,7 @@ const BlockOffComp = ({
       })
       return (
         <Container key={j}><ListItem>
-        <Moment format="dddd, MMMM DD, Y" parse={WDateUtils.DATE_STRING_INTERNAL_FORMAT}>{BLOCKED_OFF[i][j][0]}</Moment>
+        {moment(BLOCKED_OFF[i][j][0], WDateUtils.DATE_STRING_INTERNAL_FORMAT).format('dddd, MMMM DD, Y')}
         <ListItemSecondaryAction>
               <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(i,j)}>
                 <HighlightOffIcon />

@@ -29,13 +29,13 @@ const CategoryTableContainer = ({
 
   const [ panelsExpandedSize, setPanelsExpandedSize ] = useState({});
 
-  const setPanelsExpandedSizeForRow = (row) => (size) => {
+  const setPanelsExpandedSizeForRow = useCallback((row) => (size) => {
     const obj = JSON.parse(JSON.stringify(panelsExpandedSize));
     obj[row] = size;
     setPanelsExpandedSize(obj)
-  }
+  }, [panelsExpandedSize]);
 
-  const getDetailPanelHeight = useCallback(({ row }) => catalog.categories[row.category._id].products.length ? ((Object.hasOwn(panelsExpandedSize, row.category._id) ? panelsExpandedSize[row.category._id] : 0)  + 39 + (catalog.categories[row.category._id].products.length * 36)) : 0, [catalog, panelsExpandedSize]);
+  const getDetailPanelHeight = useCallback(({ row }) => catalog.categories[row.category._id].products.length ? ((Object.hasOwn(panelsExpandedSize, row.category._id) ? panelsExpandedSize[row.category._id] : 0)  + 41 + (catalog.categories[row.category._id].products.length * 36)) : 0, [catalog, panelsExpandedSize]);
   
   const getDetailPanelContent = useCallback(({ row }) => catalog.categories[row.category._id].products.length ? (
     <ProductTableContainer

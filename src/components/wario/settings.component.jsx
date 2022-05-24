@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import Moment from 'react-moment';
-import memoizeOne from 'memoize-one';
-
+import React, { useState, useMemo } from 'react';
+import moment from 'moment';
 
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -14,6 +12,7 @@ import Grid from '@mui/material/Grid';
 
 import { WDateUtils } from "@wcp/wcpshared";
 import { useAuth0 } from '@auth0/auth0-react';
+import useSocketIo from '../../hooks/useSocketIo';
 import CheckedInputComponent from "./checked_input.component";
 import TimeSelection from "./timepicker.component";
 
@@ -25,16 +24,16 @@ const OperatingHoursIntervalForm = ({
   disabled,
   onAddOperatingHours
 }) => {
-  const generateOptions = (earliest, latest, step) => {
+  const generateOptions = useMemo((earliest, latest, step) => {
     const retval = [];
     while (earliest <= latest) {
       retval.push({ value: earliest, label: WDateUtils.MinutesToPrintTime(earliest)});
       earliest += step;
     }
     return retval;
-  }
-  const memoizedGenerateOptions = memoizeOne(generateOptions);
-  const start_options = memoizedGenerateOptions(0, 1440-settings.time_step, settings.time_step);
+  }, []);
+  
+  const start_options = generateOptions(0, 1440-settings.time_step, settings.time_step);
   const end_options = interval.start ?
     start_options.filter(x => x.value >= interval.start.value) : [];
   return (
@@ -72,22 +71,20 @@ const OperatingHoursIntervalForm = ({
 
 const GenerateInitialOperatingHoursFormIntervals = (num_services) => {
   const intervals = Array(num_services).fill();
-  for (const i in intervals) {
-    intervals[i] = Array(7).fill({start: null, end:null});
-  }
+  intervals.forEach((v, idx) => {
+    intervals[idx] = Array(7).fill({start: null, end:null})});
   return intervals;
 }
 
 const SettingsComponent = ({
   ENDPOINT,
-  SERVICES,
-  SETTINGS,
-  setSETTINGS
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const { services, settings } = useSocketIo();
+  const [ localSettings, setLocalSettings ] = useState(settings);
   const { getAccessTokenSilently } = useAuth0();
-  const [operating_hours_form_intervals, setOperatingHoursFormIntervals] = useState(GenerateInitialOperatingHoursFormIntervals(SERVICES.length));
-  
+  const [operating_hours_form_intervals, setOperatingHoursFormIntervals] = useState(GenerateInitialOperatingHoursFormIntervals(services?.length || 0));
+  console.log(services);
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!isProcessing) {
@@ -100,10 +97,11 @@ const SettingsComponent = ({
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(SETTINGS)
+          body: JSON.stringify(localSettings)
         });
         if (response.status === 201) {
-          setSETTINGS(await response.json());
+          await response.json()
+          setLocalSettings(settings);
         }
         setIsProcessing(false);
       } catch (error) {
@@ -113,36 +111,36 @@ const SettingsComponent = ({
   };
 
   const onChangeAdditionalPizzaLeadTime = (e) => {
-    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
+    const new_settings = JSON.parse(JSON.stringify(localSettings));
     new_settings.additional_pizza_lead_time = e;
-    setSETTINGS(new_settings);
+    setLocalSettings(new_settings);
   }
 
   const onChangeTimeStep = (e, service_idx) => {
-    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
+    const new_settings = JSON.parse(JSON.stringify(localSettings));
     new_settings.time_step2[service_idx] = parseInt(e, 10);
-    setSETTINGS(new_settings);
+    setLocalSettings(new_settings);
   }
 
   const onAddOperatingHours = (service_index, day_index, interval) => {
-    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
+    const new_settings = JSON.parse(JSON.stringify(localSettings));
     WDateUtils.AddIntervalToOperatingHours(
       service_index,
       day_index,
       interval,
       new_settings.operating_hours);
-    setSETTINGS(new_settings);
+    setLocalSettings(new_settings);
   }
 
   const onRemoveOperatingHours = (service_index, day_index, interval_index) => {
-    const new_settings = JSON.parse(JSON.stringify(SETTINGS));
+    const new_settings = JSON.parse(JSON.stringify(localSettings));
     const new_operating_hours = WDateUtils.RemoveIntervalFromOperatingHours(
       service_index,
       day_index,
       interval_index,
       new_settings.operating_hours);
     new_settings.operating_hours = new_operating_hours;
-    setSETTINGS(new_settings);
+    setLocalSettings(new_settings);
   }
 
 
@@ -176,20 +174,20 @@ const SettingsComponent = ({
     console.log(new_intervals[service_index][day_index]);
   }
 
-  const timestep_html = SETTINGS.time_step2 ? SERVICES.map((_, i) => (
-      <Grid item xs={Math.floor(12/SERVICES.length)} key={i}>
+  const timestep_html = settings.time_step2 ? services.map((_, i) => (
+      <Grid item xs={Math.floor(12/services.length)} key={i}>
         <CheckedInputComponent
-          label={`${SERVICES[i]} Time Step (minutes)`}
+          label={`${services[i]} Time Step (minutes)`}
           className="form-control"
           type="number"
           inputProps={{min: 1, max: 1440}}
-          value={SETTINGS.time_step2[i]}
+          value={services.time_step2[i]}
           onFinishChanging={(e) => onChangeTimeStep(e, i)}
           />
       </Grid>
     )) : "";
 
-  const operating_hours_service_html = SETTINGS.operating_hours.map((operating_hours_week, h) => {
+  const operating_hours_service_html = localSettings.operating_hours.map((operating_hours_week, h) => {
     const operating_hours_week_html = operating_hours_week.map((operating_hours_day, i) => {
       const operating_hours_day_intervals_html = operating_hours_day.map((interval, j) => (
           <Grid item xs={2} container key={j}>
@@ -208,7 +206,7 @@ const SettingsComponent = ({
       return (
         <Grid container item xs={12} spacing={1} key={i}>
           <Grid item xs={1}>
-            <Moment format="dddd" parse="e">{i}</Moment>:
+            {moment(i, 'e').format('dddd')}:
           </Grid>
           {operating_hours_day_intervals_html}
           <Grid item xs />
@@ -219,7 +217,7 @@ const SettingsComponent = ({
               onChangeLowerBound={e => onSetLowerBound(h, i, e)}
               onChangeUpperBound={e => onSetUpperBound(h, i, e)}
               onAddOperatingHours={() => AddOperatingHoursInterval(h, i)}
-              settings={SETTINGS}
+              settings={localSettings}
               />
           </Grid>
         </Grid>
@@ -231,7 +229,7 @@ const SettingsComponent = ({
           <AppBar position="static">
             <Toolbar>
               <Typography variant="subtitle2">
-                {SERVICES[h]}:
+                {services[h]}:
               </Typography>
             </Toolbar>
           </AppBar>
@@ -263,7 +261,7 @@ const SettingsComponent = ({
               type="number"
               label="Additional lead time per pizza beyond the first"
               className="form-control"
-              value={SETTINGS.additional_pizza_lead_time}
+              value={localSettings.additional_pizza_lead_time}
               onFinishChanging={onChangeAdditionalPizzaLeadTime}
               inputProps={{min: 0, max: 64}}
             />

@@ -136,6 +136,7 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
               create_product_instance: true
             }),
           });
+          // eslint-disable-next-line no-empty
           if (response.status === 201) {
           }
           setIsProcessing(false);

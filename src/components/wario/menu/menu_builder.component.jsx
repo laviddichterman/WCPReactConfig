@@ -86,8 +86,6 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
       ),
     [catalog.products]
   );
-
-  console.log(catalog);
   return (
     <div>
       <DialogContainer

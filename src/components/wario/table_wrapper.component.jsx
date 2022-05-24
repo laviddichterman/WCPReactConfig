@@ -27,7 +27,7 @@ import {
 } from "@mui/icons-material";
 import { LicenseInfo } from '@mui/x-license-pro';
 
-import config from '../../auth_config.json';
+import { MUI_LICENSE } from '../../config';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -55,11 +55,9 @@ const tableIcons = {
   ExpandMore: forwardRef((props, ref) => <ExpandMore {...props} ref={ref} />),
 };
 
-LicenseInfo.setLicenseKey(
-  config.muilicense
-);
+LicenseInfo.setLicenseKey(MUI_LICENSE);
 
-function CustomToolbar({quickFilterProps, title, actions, ...forwardParams}) {
+function CustomToolbar({quickFilterProps, title, actions}) {
   return (
     <GridToolbarContainer >
       <Grid container  item xs={12}>
@@ -85,7 +83,7 @@ const TableWrapperComponent = ({
     <DataGridPro
       componentsProps={{
         toolbar: {
-          title: title,
+          title,
           actions: toolbarActions || [],
           showQuickFilter: true,
           quickFilterProps: { debounceMs: 500 },
