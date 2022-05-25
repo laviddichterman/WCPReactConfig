@@ -1,14 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import moment from 'moment';
 
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import Paper from '@mui/material/Paper';
-import AppBar from '@mui/material/AppBar';
-import Typography from '@mui/material/Typography';
-import Toolbar from '@mui/material/Toolbar';
-import Grid from '@mui/material/Grid';
+import { Paper, Card, CardHeader, Grid, Toolbar, Button, IconButton } from '@mui/material';
 
 import { WDateUtils } from "@wcp/wcpshared";
 import { useAuth0 } from '@auth0/auth0-react';
@@ -17,14 +11,14 @@ import CheckedInputComponent from "./checked_input.component";
 import TimeSelection from "./timepicker.component";
 
 const OperatingHoursIntervalForm = ({
-  settings, 
+  time_step, 
   interval, 
   onChangeLowerBound, 
   onChangeUpperBound,
   disabled,
   onAddOperatingHours
 }) => {
-  const generateOptions = useMemo((earliest, latest, step) => {
+  const generateOptions = useCallback((earliest, latest, step) => {
     const retval = [];
     while (earliest <= latest) {
       retval.push({ value: earliest, label: WDateUtils.MinutesToPrintTime(earliest)});
@@ -32,8 +26,8 @@ const OperatingHoursIntervalForm = ({
     }
     return retval;
   }, []);
-  
-  const start_options = generateOptions(0, 1440-settings.time_step, settings.time_step);
+ 
+  const start_options = generateOptions(0, 1440-time_step, time_step);
   const end_options = interval.start ?
     start_options.filter(x => x.value >= interval.start.value) : [];
   return (
@@ -79,12 +73,11 @@ const GenerateInitialOperatingHoursFormIntervals = (num_services) => {
 const SettingsComponent = ({
   ENDPOINT,
 }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [isProcessing, setIsProcessing] = useState(false);
   const { services, settings } = useSocketIo();
   const [ localSettings, setLocalSettings ] = useState(settings);
-  const { getAccessTokenSilently } = useAuth0();
   const [operating_hours_form_intervals, setOperatingHoursFormIntervals] = useState(GenerateInitialOperatingHoursFormIntervals(services?.length || 0));
-  console.log(services);
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!isProcessing) {
@@ -109,6 +102,10 @@ const SettingsComponent = ({
       }
     }
   };
+
+  if (!services || !services.length || !settings) {
+    return;
+  }
 
   const onChangeAdditionalPizzaLeadTime = (e) => {
     const new_settings = JSON.parse(JSON.stringify(localSettings));
@@ -142,9 +139,6 @@ const SettingsComponent = ({
     new_settings.operating_hours = new_operating_hours;
     setLocalSettings(new_settings);
   }
-
-
-
 
   const onSetUpperBound = (service_index, day_index, e) => {
     const new_intervals = JSON.parse(JSON.stringify(operating_hours_form_intervals));
@@ -181,7 +175,7 @@ const SettingsComponent = ({
           className="form-control"
           type="number"
           inputProps={{min: 1, max: 1440}}
-          value={services.time_step2[i]}
+          value={settings.time_step2[i]}
           onFinishChanging={(e) => onChangeTimeStep(e, i)}
           />
       </Grid>
@@ -204,7 +198,7 @@ const SettingsComponent = ({
           </Grid>
         ));
       return (
-        <Grid container item xs={12} spacing={1} key={i}>
+        <Grid container item xs={12} key={i}>
           <Grid item xs={1}>
             {moment(i, 'e').format('dddd')}:
           </Grid>
@@ -217,42 +211,25 @@ const SettingsComponent = ({
               onChangeLowerBound={e => onSetLowerBound(h, i, e)}
               onChangeUpperBound={e => onSetUpperBound(h, i, e)}
               onAddOperatingHours={() => AddOperatingHoursInterval(h, i)}
-              settings={localSettings}
+              time_step={localSettings.time_step2[h]}
               />
           </Grid>
         </Grid>
       );
     });
     return (
-      <span key={h}>
-        <Grid item xs={12}>
-          <AppBar position="static">
-            <Toolbar>
-              <Typography variant="subtitle2">
-                {services[h]}:
-              </Typography>
-            </Toolbar>
-          </AppBar>
-        </Grid>
-        <Grid item xs={12}>
-          {operating_hours_week_html}
-        </Grid>
-      </span>
+      <Card sx={{p:3}} key={h}>
+        <CardHeader title={services[h]} />
+        {operating_hours_week_html}
+      </Card>
     );
   });
+  // eslint-disable-next-line consistent-return
   return (
     <div>
-      <Paper>
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="subtitle1">
-                  Dangerous settings (requires PUSH CHANGES to take effect):
-                </Typography>
-              </Toolbar>
-            </AppBar>
-          </Grid>
+      <Card>
+        <CardHeader title={"Operating Hours Configuration"} subtitle={"Dangerous settings (requires PUSH CHANGES to take effect):"} />
+        <Grid container justifyContent="center">
           <Grid item xs={12}>
             {operating_hours_service_html}
           </Grid>
@@ -275,7 +252,7 @@ const SettingsComponent = ({
             <Button onClick={onSubmit}>Push Changes</Button>
           </Grid>          
         </Grid>
-      </Paper>
+      </Card>
     </div>
   );
 }
