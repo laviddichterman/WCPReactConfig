@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import moment from 'moment';
 
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { Paper, Card, CardHeader, Grid, Toolbar, Button, IconButton } from '@mui/material';
+import { Card, CardHeader, Grid, Button, IconButton } from '@mui/material';
 
 import { WDateUtils } from "@wcp/wcpshared";
 import { useAuth0 } from '@auth0/auth0-react';

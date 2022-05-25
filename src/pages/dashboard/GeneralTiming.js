@@ -31,7 +31,6 @@ export default function GeneralTiming() {
               ENDPOINT={HOST_API}
               LEADTIME={leadtime}
               SERVICES={services}
-              setLEADTIME={() => 0}
             />
           </Grid>
           <BlockOffComp

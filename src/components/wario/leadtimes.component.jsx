@@ -6,15 +6,21 @@ import CheckedInputComponent from "./checked_input.component";
 const LeadTimesComp = ({
   ENDPOINT,
   LEADTIME,
-  setLEADTIME,
   SERVICES
 }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
+  const [ dirty, setDirty ] = useState(Array(SERVICES.length).fill(false));
+  const [ localLeadTime, setLocalLeadTime ] = useState(LEADTIME);
+  const [ isProcessing, setIsProcessing ] = useState(false);
+
   const onChangeLeadTimes = (i, e) => {
-    const leadtimes = LEADTIME.slice();
-    leadtimes[i] = e;
-    setLEADTIME(leadtimes);
+    const newDirtyArray = dirty.slice();
+    newDirtyArray[i] = true;
+
+    const newLocalLeadTime = localLeadTime.slice();
+    newLocalLeadTime[i] = e;
+    setLocalLeadTime(newLocalLeadTime);
+    setDirty(newDirtyArray);
   };
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -28,10 +34,11 @@ const LeadTimesComp = ({
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(LEADTIME)
+          body: JSON.stringify(localLeadTime)
         });
         if (response.status === 201) {
-          setLEADTIME(await response.json());
+          setLocalLeadTime(await response.json());
+          setDirty(Array(SERVICES.length).fill(false));
         }
         setIsProcessing(false);
       } catch (error) {
@@ -39,15 +46,15 @@ const LeadTimesComp = ({
       }
     }
   };
-  const leadtime_html = LEADTIME ? LEADTIME.map((x, i) => (
-      <Grid item xs={Math.floor(12/LEADTIME.length)} key={i}>
+  const leadtime_html = localLeadTime ? localLeadTime.map((x, i) => (
+      <Grid item xs={Math.floor(12/LEADTIME.length)} key={i} >
         <CheckedInputComponent
-        sx={{ml:3, mb: 2, mr: 1}} 
+          sx={{ml:3, mb: 2, mr: 1}} 
           label={SERVICES[i]}
           className="form-control"
           type="number"
           inputProps={{min: 1, max: 43200}}
-          value={x}
+          value={dirty[i] ? x : LEADTIME[i]}
           onFinishChanging={(e) => onChangeLeadTimes(i, e)}
           />
       </Grid>

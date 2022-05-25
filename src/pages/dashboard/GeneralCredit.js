@@ -1,11 +1,10 @@
 // @mui
-import { Grid, Container, Stack, Card, CardHeader, } from '@mui/material';
+import { Grid, Container } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
 // sections
-import Scrollbar from '../../components/Scrollbar';
 import StoreCreditIssueComponent from "../../components/wario/store_credit_issue.component";
 import StoreCreditValidateAndSpendComponent from "../../components/wario/store_credit_validate_and_spend.component";
 

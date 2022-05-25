@@ -43,13 +43,9 @@ import { store, persistor } from './redux/store';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
 
-// Check our docs
-// https://docs-minimals.vercel.app/authentication/ts-version
-
 import { AuthProvider } from './contexts/Auth0Context';
 import { SocketIoProvider } from './contexts/SocketIoContext';
 
-//
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
