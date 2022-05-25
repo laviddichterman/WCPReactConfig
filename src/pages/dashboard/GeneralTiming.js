@@ -21,23 +21,23 @@ export default function GeneralTiming() {
   return (
     <Page title="Order Timing">
       <Container maxWidth={themeStretch ? false : 'xl'}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-          <LeadTimesComp
+        <Grid container spacing={8}>
+          <Grid item xs={12} md={12}>
+          {leadtime !==undefined && services !== undefined ? <LeadTimesComp
               ENDPOINT={HOST_API}
               LEADTIME={leadtime}
               SERVICES={services}
               setLEADTIME={() => 0}
-            />
-            <BlockOffComp
+            /> : ""}
+            </Grid>
+            {services && blockedOff && leadtime && settings ? <BlockOffComp
               ENDPOINT={HOST_API}
               SERVICES={services}
               BLOCKED_OFF={blockedOff}
               setBLOCKED_OFF={()=>0}
               LEAD_TIME={leadtime}
               SETTINGS={settings}
-            />
-          </Grid>
+            /> : "" }
         </Grid>
       </Container>
     </Page>

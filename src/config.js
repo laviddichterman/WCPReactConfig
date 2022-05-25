@@ -24,7 +24,7 @@ export const MAPBOX_API = process.env.REACT_APP_MAPBOX_API;
 export const MUI_LICENSE = process.env.REACT_APP_MUI_KEY;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
-export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.timing; // as '/dashboard/app'
+export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.timing;
 
 // LAYOUT
 // ----------------------------------------------------------------------

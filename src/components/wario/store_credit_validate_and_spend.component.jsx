@@ -4,18 +4,9 @@ import React, { useState, useEffect } from "react";
 import QrScanner from 'qr-scanner'; 
 import { OneOffQrScanner } from "react-webcam-qr-scanner.ts";
 
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import Toolbar from "@mui/material/Toolbar";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
-import AppBar from "@mui/material/AppBar";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
+import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, TextField } from "@mui/material";
 import DialogContainer from "./dialog.container";
 import CheckedInputComponent from "./checked_input.component";
 
@@ -114,22 +105,36 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
       }
     }
   };
+  const scanHTML = hasCamera ? (<>
+    <DialogContainer
+      title={"Scan Store Credit Code"}
+      onClose={() => {
+        setScanCode(false);
+      }}
+      isOpen={scanCode}
+      inner_component={
+        <OneOffQrScanner
+          onQrCode={onScanned}
+          hidden={false}
+        />
+      }
+    />
+    <Grid item xs={3}>
+      <IconButton
+        color="primary"
+        aria-label="upload picture"
+        component="span"
+        onClick={() => setScanCode(true)}
+        disabled={isProcessing || (validationResponse !== null && validationResponse.validated)}
+        size="large">
+        <PhotoCamera />
+      </IconButton>
+    </Grid></>) : "";
+
   return (
-    <div>
-      <Paper>
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="h5">
-                  Redeem Store Credit
-                </Typography>
-              </Toolbar>
-              <Typography variant="subtitle1">
-                Tool to debit store credit with instructions
-              </Typography>
-            </AppBar>
-          </Grid>
+    <Card>
+      <CardHeader title={"Redeem Store Credit"} subtitle={"Tool to debit store credit with instructions"} />
+        <Grid sx={{m:1}} container spacing={3} justifyContent="center">
           <Grid item xs={hasCamera ? 6 : 9}>
             <TextField
               label="Credit Code"
@@ -142,31 +147,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
               onChange={(e) => setCreditCode(e.target.value)}
             />
           </Grid>
-          {hasCamera ? (<>
-          <DialogContainer
-            title={"Scan Store Credit Code"}
-            onClose={() => {
-              setScanCode(false);
-            }}
-            isOpen={scanCode}
-            inner_component={
-              <OneOffQrScanner
-                onQrCode={onScanned}
-                hidden={false}
-              />
-            }
-          />
-          <Grid item xs={3}>
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="span"
-              onClick={() => setScanCode(true)}
-              disabled={isProcessing || (validationResponse !== null && validationResponse.validated)}
-              size="large">
-              <PhotoCamera />
-            </IconButton>
-          </Grid></>) : "" }
+          {scanHTML}
           <Grid item xs={3}>
             {validationResponse !== null ? (
               <Button
@@ -310,13 +291,9 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
                 This generally means there was some shenannigans.
               </Grid>
             )
-          ) : (
-            ""
-          )}
+          ) : ("")}
         </Grid>
-      </Paper>
-      <br />
-    </div>
+      </Card>
   );
 };
 

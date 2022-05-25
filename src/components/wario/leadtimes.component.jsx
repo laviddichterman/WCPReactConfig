@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-
-
-import Button from '@mui/material/Button';
-import Toolbar from '@mui/material/Toolbar';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import AppBar from '@mui/material/AppBar';
-import Typography from '@mui/material/Typography';
+import { Card, CardHeader, Grid, Button } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react';
 import CheckedInputComponent from "./checked_input.component";
 
@@ -47,8 +40,9 @@ const LeadTimesComp = ({
     }
   };
   const leadtime_html = LEADTIME ? LEADTIME.map((x, i) => (
-      <Grid item xs={4} key={i}>
+      <Grid item xs={Math.floor(12/LEADTIME.length)} key={i}>
         <CheckedInputComponent
+        sx={{ml:3, mb: 2, mr: 1}} 
           label={SERVICES[i]}
           className="form-control"
           type="number"
@@ -59,27 +53,17 @@ const LeadTimesComp = ({
       </Grid>
     )) : "";
   return (
-    <div>
-      <Paper>
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="subtitle1">
-                  Single pizza lead time:
-                </Typography>
-              </Toolbar>
-            </AppBar>
-          </Grid>
+      <Card>
+        <CardHeader title="Single pizza lead time:" sx={{ mb: 3 }} />
+        <Grid container justifyContent="center">
           <Grid item xs={10}>
-            <Grid container spacing={3} >{leadtime_html}</Grid>
+            <Grid container>{leadtime_html}</Grid>
           </Grid>
           <Grid item xs={2}>
             <Button onClick={onSubmit}>Push Changes</Button>
           </Grid>
         </Grid>
-      </Paper>
-    </div>
+      </Card>
   );
 }
 export default LeadTimesComp;

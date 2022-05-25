@@ -40,7 +40,7 @@ const OperatingHoursIntervalForm = ({
     <Grid container spacing={3} justifyContent="center">
       <Grid item xs={5}>
         <TimeSelection
-          onChange={e => onChangeLowerBound(e)}
+          onChange={(e, v) => onChangeLowerBound(v)}
           value={interval.start}
           optionCaption={"Start"}
           disabled={disabled}
@@ -51,7 +51,7 @@ const OperatingHoursIntervalForm = ({
       </Grid>
       <Grid item xs={5}>
         <TimeSelection
-          onChange={e => onChangeUpperBound(e)}
+          onChange={(e, v) => onChangeUpperBound(v)}
           value={interval.end}
           optionCaption={"End"}
           disabled={!interval.start || disabled}

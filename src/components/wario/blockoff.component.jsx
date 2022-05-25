@@ -1,28 +1,23 @@
 import React, { useState } from "react";
-import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
-import IconButton from '@mui/material/IconButton';
-import DoneIcon from '@mui/icons-material/Done';
-import Button from '@mui/material/Button';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import TextField from '@mui/material/TextField';
-import { MobileDatePicker } from '@mui/x-date-pickers';
-import Toolbar from '@mui/material/Toolbar';
 import moment from 'moment';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import AppBar from '@mui/material/AppBar';
-import Typography from '@mui/material/Typography';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
-import Container from '@mui/material/Container';
-import { ListItemText } from "@mui/material";
+import { Card, 
+  CardHeader, 
+  Chip, 
+  Container,
+  Grid,
+  Button,
+  IconButton,
+  List, 
+  ListItem, 
+  ListItemText, 
+  ListItemSecondaryAction,
+  TextField } from '@mui/material'
+import { Done, HighlightOff } from '@mui/icons-material';
+import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useAuth0 } from '@auth0/auth0-react';
 import { WDateUtils } from "@wcp/wcpshared";
+
 import TimeSelection from "./timepicker.component";
-
-
 
 const TrimOptionsBeforeDisabled = (opts) => {
   const idx = opts.findIndex((elt) => elt.disabled);
@@ -39,7 +34,7 @@ const ServiceSelectionCheckbox = (props) => {
       onDelete={(e) => onChange(e)}
       onClick={(e) => onChange(e)}
       color={selected ? "primary" : "default"}
-      deleteIcon={selected ? <DoneIcon /> : <HighlightOffIcon />}
+      deleteIcon={selected ? <Done /> : <HighlightOff />}
     />
   )
 }
@@ -267,7 +262,7 @@ const BlockOffComp = ({
   // }
 
   const services_checkboxes = SERVICES.map((x, i) => (
-      <Grid item xs key={i}>
+      <Grid item xs={Math.floor(12/SERVICES.length)} key={i}>
         <ServiceSelectionCheckbox
           service_name={x}
           selected={service_selection[i]}
@@ -284,38 +279,36 @@ const BlockOffComp = ({
             <ListItemText primary={from_to} />
             <ListItemSecondaryAction>
               <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(i,j,k)}>
-                <HighlightOffIcon />
+                <HighlightOff />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
         );
       })
       return (
-        <Container key={j}><ListItem>
-        {moment(BLOCKED_OFF[i][j][0], WDateUtils.DATE_STRING_INTERNAL_FORMAT).format('dddd, MMMM DD, Y')}
-        <ListItemSecondaryAction>
+        <Container key={j}>
+          <ListItem>
+            {moment(BLOCKED_OFF[i][j][0], WDateUtils.DATE_STRING_INTERNAL_FORMAT).format('dddd, MMMM DD, Y')}
+            <ListItemSecondaryAction>
               <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(i,j)}>
-                <HighlightOffIcon />
+                <HighlightOff />
               </IconButton>
             </ListItemSecondaryAction>
-        </ListItem>
-        <List component="div">
-          {blocked_off_intervals_html}
-        </List>
+          </ListItem>
+          <List sx={{ml: 2}}>
+            {blocked_off_intervals_html}
+          </List>
         </Container>
       );
     })
     return (
       <Grid key={i} item xs={Math.floor(12/SERVICES.length)}>
-        <Paper>
-            <AppBar position="static">
-            <Toolbar><Typography variant="subtitle1">
-            {SERVICES[i]}</Typography></Toolbar>
-            </AppBar>
+        <Card>
+          <CardHeader title={SERVICES[i]} />
             <List component="nav">
               {blocked_off_days_html}
             </List>
-          </Paper>
+        </Card>
       </Grid>
     );
   }) : "";
@@ -327,63 +320,57 @@ const BlockOffComp = ({
   const end_options = start_options.length && lower_time ?
     TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
   return (
-    <Box>
-      <Paper>
-      <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12}>
-          <AppBar position="static">
-            <Toolbar>
-              <Typography variant="subtitle1">
-                Add blocked off time:
-              </Typography>
-            </Toolbar>
-          </AppBar>
+    <>
+    <Grid item xs={12}>
+      <Card>
+        <CardHeader title="Add Blocked-Off Time:" sx={{ mb: 3 }} />
+        <Grid container justifyContent="center">
+          <Grid item xs={8}>
+            <Grid sx={{ml:6}} container>{services_checkboxes}</Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <MobileDatePicker
+              renderInput={(props) => <TextField {...props} />}
+              fullWidth
+              closeOnSelect
+              placeholder={"Select Date"}
+              showToolbar={false}
+              minDate={moment()}
+              maxDate={moment().add(60, 'days')}
+              shouldDisableDate={e => !HasOptionsForDate(e)}
+              value={selected_date}
+              onChange={date => setDate(date)}
+              inputFormat="dddd, MMMM DD, Y"
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TimeSelection
+            sx={{m:2}}
+            onChange={(e, nv) => onChangeLowerBound(nv)}
+            value={lower_time}
+            optionCaption={"Start"}
+            options={start_options.filter((elt) => !elt.disabled).map(x=>({...x, label: WDateUtils.MinutesToPrintTime(x.value)}))}
+            disabled={!selected_date}
+            className="col"
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TimeSelection
+            sx={{m:2}}
+            onChange={(e, nv) => onChangeUpperBound(nv)}
+            value={upper_time}
+            optionCaption={"End"}
+            options={end_options.map(x=>({...x, label: WDateUtils.MinutesToPrintTime(x.value)}))}
+            disabled={!(selected_date && lower_time)}
+            className="col"
+            />
+          </Grid>
+          <Grid item xs={2}><Button sx={{m:3}} onClick={handleSubmit} disabled={!can_submit || isProcessing}>Add</Button></Grid>
         </Grid>
-        <Grid item xs={8}>
-          <Grid container>{services_checkboxes}</Grid>
-        </Grid>
-        <Grid item xs={4}>
-          <MobileDatePicker
-            renderInput={(props) => <TextField {...props} />}
-            fullWidth
-            closeOnSelect
-            placeholder={"Select Date"}
-            showToolbar={false}
-            minDate={moment()}
-            maxDate={moment().add(60, 'days')}
-            shouldDisableDate={e => !HasOptionsForDate(e)}
-            value={selected_date}
-            onChange={date => setDate(date)}
-            inputFormat="dddd, MMMM DD, Y"
-          />
-        </Grid>
-        <Grid item xs={5}>
-          <TimeSelection
-          onChange={e => onChangeLowerBound(e)}
-          value={lower_time}
-          optionCaption={"Start"}
-          options={start_options.filter((elt) => !elt.disabled).map(x=>({...x, label: WDateUtils.MinutesToPrintTime(x.value)}))}
-          disabled={!selected_date}
-          className="col"
-          />
-        </Grid>
-        <Grid item xs={5}>
-          <TimeSelection
-          onChange={e => onChangeUpperBound(e)}
-          value={upper_time}
-          optionCaption={"End"}
-          options={end_options.map(x=>({...x, label: WDateUtils.MinutesToPrintTime(x.value)}))}
-          disabled={!(selected_date && lower_time)}
-          className="col"
-          />
-        </Grid>
-        <Grid item xs={2}><Button onClick={handleSubmit} disabled={!can_submit || isProcessing}>Add</Button></Grid>
+      </Card>
       </Grid>
-      </Paper>
-      <Grid container justifyContent="center" spacing={3}>
       { blocked_off_html }
-      </Grid>
-      </Box>
+      </>
   );
 }
 

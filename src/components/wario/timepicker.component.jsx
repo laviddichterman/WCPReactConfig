@@ -1,30 +1,14 @@
-import Select from 'react-select';
+import { Autocomplete, TextField } from "@mui/material";
 
-const groupStyles = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-};
 
-const Group = data => (
-  <div style={groupStyles}>
-    <span>{data.label}</span>
-  </div>
-);
-
-const TimeSelection = ({value, disabled, onChange, className, options, optionCaption="Time", isOptionDisabled=(x) => x.disabled}) => (
-  <Select
-    options={[{
-      label: optionCaption,
-      options
-    }]}
-    className={className}
-    formatGroupLabel={Group}
-    onChange={onChange}
-    value={value}
-    isDisabled={disabled}
-    isOptionDisabled={isOptionDisabled}
+const TimeSelection = ({options, optionCaption="Time", isOptionDisabled=(x) => x.disabled, ...forwardParams}) => (
+  <Autocomplete
+    options={options}
+    isOptionEqualToValue={(o, v) => o.value === v.value}
+    getOptionDisabled={isOptionDisabled}
+    {...forwardParams}
+    renderInput={(params) => <TextField {...params} label={optionCaption} />}
     />
-);
+)
 
 export default TimeSelection;
