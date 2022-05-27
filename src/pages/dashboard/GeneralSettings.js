@@ -39,8 +39,6 @@ export default function GeneralSettings() {
           <Grid item xs={12} md={12}>
             <DeliveryAreaComp
                 ENDPOINT={HOST_API}
-                DELIVERY_AREA={deliveryArea}
-                onChange={e => (e)}
               />
           </Grid>
           <Grid item xs={12} md={12}>

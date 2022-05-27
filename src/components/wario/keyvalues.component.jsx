@@ -1,16 +1,126 @@
 import React, { useState, useEffect } from "react";
-
-import Button from "@mui/material/Button";
-import Toolbar from "@mui/material/Toolbar";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
-import AppBar from "@mui/material/AppBar";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
+import PropTypes from "prop-types";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import IconButton from "@mui/material/IconButton";
 import { useAuth0 } from '@auth0/auth0-react';
+import { Box, Card, CardHeader, Grid, Button, TextField, Paper, Popper, Typography, CardContent, CardActions} from "@mui/material";
+import {GridActionsCellItem}  from "@mui/x-data-grid";
+import TableWrapperComponent from "./table_wrapper.component";
 
+const isOverflown = (element) => (
+  element.scrollHeight > element.clientHeight ||
+  element.scrollWidth > element.clientWidth
+);
+
+const GridCellExpand = React.memo((props) => {
+  const { width, value } = props;
+  const wrapper = React.useRef(null);
+  const cellDiv = React.useRef(null);
+  const cellValue = React.useRef(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [showFullCell, setShowFullCell] = React.useState(false);
+  const [showPopper, setShowPopper] = React.useState(false);
+
+  const handleMouseEnter = () => {
+    const isCurrentlyOverflown = isOverflown(cellValue.current);
+    setShowPopper(isCurrentlyOverflown);
+    setAnchorEl(cellDiv.current);
+    setShowFullCell(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowFullCell(false);
+  };
+
+  React.useEffect(() => {
+    if (!showFullCell) {
+      return undefined;
+    }
+
+    function handleKeyDown(nativeEvent) {
+      // IE11, Edge (prior to using Bink?) use 'Esc'
+      if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
+        setShowFullCell(false);
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [setShowFullCell, showFullCell]);
+
+  return (
+    <Box
+      ref={wrapper}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      sx={{
+        alignItems: 'center',
+        lineHeight: '24px',
+        width: 1,
+        height: 1,
+        position: 'relative',
+        display: 'flex',
+      }}
+    >
+      <Box
+        ref={cellDiv}
+        sx={{
+          height: 1,
+          width,
+          display: 'block',
+          position: 'absolute',
+          top: 0,
+        }}
+      />
+      <Box
+        ref={cellValue}
+        sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+      >
+        {value}
+      </Box>
+      {showPopper && (
+        <Popper
+          open={showFullCell && anchorEl !== null}
+          anchorEl={anchorEl}
+          style={{ width, offset: -17 }}
+        >
+          <Paper
+            elevation={1}
+            style={{ minHeight: wrapper.current.offsetHeight - 3 }}
+          >
+            <Typography variant="body2" style={{ padding: 8 }}>
+              {value}
+            </Typography>
+          </Paper>
+        </Popper>
+      )}
+    </Box>
+  );
+});
+
+GridCellExpand.propTypes = {
+  value: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+};
+
+function renderCellExpand(params) {
+  return (
+    <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
+  );
+}
+
+renderCellExpand.propTypes = {
+  /**
+   * The column of the row that the current cell belongs to.
+   */
+  colDef: PropTypes.object.isRequired,
+  /**
+   * The cell value, but if the column has valueGetter, use getValue.
+   */
+  value: PropTypes.string.isRequired,
+};
 
 const KeyValuesComponent = ({
   ENDPOINT
@@ -53,11 +163,6 @@ const KeyValuesComponent = ({
     setNewkey("");
     setNewvalue("");
   };
-  const onRemoveKeyValuePair = (key) => {
-    const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
-    delete new_dict[key];
-    setKEYVALUES(new_dict);
-  }
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!isProcessing) {
@@ -81,21 +186,12 @@ const KeyValuesComponent = ({
       }
     }
   };
-
   return (
     <div>
-      <Paper>
+      <Card>
+        <CardHeader title={"Key Value Store"} subtitle={"Use for authentication data; will cause reboot of service."} />
+        <CardContent>
         <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="subtitle1">
-                  Key Value Store (Use for authentication data, will cause
-                  reboot of service)
-                </Typography>
-              </Toolbar>
-            </AppBar>
-          </Grid>
           <Grid item xs={4}>
             <TextField
               label="Key"
@@ -119,30 +215,36 @@ const KeyValuesComponent = ({
             <Button onClick={onAddNewKeyValuePairLocal}>Add</Button>
           </Grid>
         </Grid>
-        {Object.keys(KEYVALUES).map((k, i) => (
-      <Paper key={i} spacing={3}>
-        <Grid container>
-          <Grid item xs={3}>
-            {k}
-          </Grid>
-          <Grid item xs={7}>
-            {KEYVALUES[k]}
-          </Grid>
-          <Grid item xs={2}>
-            <IconButton
-              edge="end"
-              size="small"
-              aria-label="delete"
-              onClick={() => onRemoveKeyValuePair(k)}
-            >
-              <HighlightOffIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
-      </Paper>
-    ))}
-        <Button onClick={onSubmit}>PUSH CHANGES</Button>
-      </Paper>
+        <div style={{ height: "100%", overflow: "auto" }}>
+  <TableWrapperComponent
+    disableToolbar
+    columns={[
+      { headerName: "Key", field: "key", valueGetter: v => v.row.id, flex: 1 },
+      { headerName: "Value", field: "value", valueGetter: v => v.row.data, flex: 4, renderCell: renderCellExpand},
+      {
+        headerName: "Delete",
+        field: 'actions',
+        type: 'actions',
+        getActions: (params) => [
+        <GridActionsCellItem
+            key={"delete"}
+            icon={<HighlightOffIcon />}
+            label={"Delete"}
+            onClick={() => {
+              const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
+              delete new_dict[params.id];
+              setKEYVALUES(new_dict);}}
+          />]
+      }
+    ]}
+    rows={Object.entries(KEYVALUES).map((e) => ({id: e[0], data: e[1] }) )}
+  />
+  </div>
+        </CardContent>
+        <CardActions>
+          <Button onClick={onSubmit}>PUSH CHANGES</Button>
+        </CardActions>
+      </Card>
     </div>
   );
 };

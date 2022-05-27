@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
 
-import Button from '@mui/material/Button';
-import Toolbar from '@mui/material/Toolbar';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import AppBar from '@mui/material/AppBar';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
+import { Button, TextField, Grid, Card, CardHeader } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 
+import useSocketIo from '../../hooks/useSocketIo';
+
+
 const DeliveryAreaComponent = ({
-  ENDPOINT,
-  DELIVERY_AREA,
-  setDELIVERY_AREA,
+  ENDPOINT
 }) => {
-  const [ stringified, setStringified ] = useState(JSON.stringify(DELIVERY_AREA));
+  const { deliveryArea } = useSocketIo();
+  const [ localDeliveryArea, setLocalDeliveryArea ] = useState(deliveryArea);
+  const [ stringified, setStringified ] = useState(JSON.stringify(deliveryArea));
   const [ dirty, setDirty ] = useState(false);
+  const [ isJsonError, setIsJsonError ] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -35,6 +33,10 @@ const DeliveryAreaComponent = ({
         });
         // eslint-disable-next-line no-empty
         if (response.status === 201) {
+          setDirty(false);
+          const resJson = await response.json();
+          setLocalDeliveryArea(resJson);
+          setStringified(JSON.stringify(resJson));
         }
         setIsProcessing(false);
       } catch (error) {
@@ -43,7 +45,13 @@ const DeliveryAreaComponent = ({
     }
   };
   const onBlurLocal = (val) => {
-    setDELIVERY_AREA(val);
+    try {
+      setLocalDeliveryArea(JSON.parse(val));
+      setIsJsonError(false);
+    }
+    catch (e) {
+      setIsJsonError(true);
+    }
   }
   const onChangeLocal = (val) => {
     setDirty(true);
@@ -51,35 +59,27 @@ const DeliveryAreaComponent = ({
   }
 
   return (
-    <div>
-      <Paper>
-        <Grid container spacing={3} justifyContent="center">
-            <Grid item xs={12}>
-              <AppBar position="static">
-                <Toolbar>
-                  <Typography variant="subtitle1">
-                    Delivery Area GeoJSON (polygon)
-                  </Typography>
-                </Toolbar>
-              </AppBar>
-            </Grid>
+      <Card>
+        <CardHeader title={"Delivery Area GeoJSON (polygon)"} />
+        <Grid container spacing={3} justifyContent="center">   
           <Grid item xs={10}>
           <TextField 
             aria-label="textarea" 
             rows={15} 
             fullWidth
             multiline 
-            value={dirty ? stringified : JSON.stringify(DELIVERY_AREA)} 
+            value={dirty ? stringified : JSON.stringify(localDeliveryArea)} 
             onChange={e => onChangeLocal(e.target.value)} 
-            onBlur={() => onBlurLocal(JSON.parse(stringified))}
+            onBlur={() => onBlurLocal(stringified)}
+            error={isJsonError}
+            helperText={isJsonError ? "JSON Parsing Error" : ""}
           />
           </Grid>
           <Grid item xs={2}>
-            <Button onClick={postDeliveryArea}>Push Changes</Button>
+            <Button disabled={isJsonError} onClick={postDeliveryArea}>Push Changes</Button>
           </Grid>
           </Grid>
-      </Paper>
-    </div>
+      </Card>
   );
 }
 export default DeliveryAreaComponent;
