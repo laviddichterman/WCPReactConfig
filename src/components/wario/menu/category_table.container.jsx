@@ -36,13 +36,15 @@ const CategoryTableContainer = ({
     setPanelsExpandedSize(obj)
   }, [panelsExpandedSize]);
 
-  const getDetailPanelHeight = useCallback(({ row }) => catalog.categories[row.category._id].products.length ? ((Object.hasOwn(panelsExpandedSize, row.category._id) ? panelsExpandedSize[row.category._id] : 0) + 41 + (catalog.categories[row.category._id].products.length * 36)) : 0, [catalog, panelsExpandedSize]);
+  const getProductsInCategory = useCallback((category_id) => Object.values(catalog.products).filter((x) =>
+  x.product.category_ids.includes(category_id) && (!hideDisabled || (hideDisabled && !x.product.disabled || x.product.disabled.start <= x.product.disabled.end))
+  ), [catalog.products, hideDisabled])
 
-  const getDetailPanelContent = useCallback(({ row }) => catalog.categories[row.category._id].products.length ? (
+  const getDetailPanelHeight = useCallback(({ row }) => getProductsInCategory(row.category._id).length ? ((Object.hasOwn(panelsExpandedSize, row.category._id) ? panelsExpandedSize[row.category._id] : 0) + 41 + (getProductsInCategory(row.category._id).length * 36)) : 0, [getProductsInCategory, panelsExpandedSize]);
+
+  const getDetailPanelContent = useCallback(({ row }) => getProductsInCategory(row.category._id).length ? (
     <ProductTableContainer
-      products={Object.values(catalog.products).filter((x) =>
-        x.product.category_ids.includes(row.category._id) && (!hideDisabled || (hideDisabled && !x.product.disabled || x.product.disabled.start <= x.product.disabled.end))
-      )}
+      products={getProductsInCategory(row.category._id)}
       catalog={catalog}
       setProductToEdit={setProductToEdit}
       setIsProductEditOpen={setIsProductEditOpen}
@@ -57,7 +59,7 @@ const CategoryTableContainer = ({
       setProductInstanceToEdit={setProductInstanceToEdit}
       setPanelsExpandedSize={setPanelsExpandedSizeForRow(row.category._id)}
     />) : "",
-    [catalog, setPanelsExpandedSizeForRow, setIsProductCopyOpen, setIsProductDeleteOpen, setIsProductDisableOpen, setIsProductDisableUntilEodOpen, setIsProductEditOpen, setIsProductEnableOpen, setIsProductInstanceAddOpen, setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit, hideDisabled]);
+    [catalog, getProductsInCategory, setProductToEdit, setIsProductEditOpen, setIsProductCopyOpen, setIsProductDeleteOpen, setIsProductDisableOpen, setIsProductDisableUntilEodOpen, setIsProductEnableOpen, setIsProductInstanceAddOpen, setIsProductInstanceEditOpen, setIsProductInstanceDeleteOpen, setProductInstanceToEdit, setPanelsExpandedSizeForRow]);
 
   const DeriveTreePath = useCallback(
     (row) => row.category.parent_id ? [...DeriveTreePath(catalog.categories[row.category.parent_id]), row.category.name] : [row.category.name],

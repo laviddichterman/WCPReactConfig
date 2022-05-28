@@ -108,13 +108,6 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-            /**
-             *               
-              display_name: prod[0],
-              description: prod[3],
-              shortcode: prod[1],
-              price: { amount: prod[2] * 100, currency: "USD" },
-             */
             body: JSON.stringify({
               display_name: prod.Name, // displayName,
               description: prod.Description || "",
