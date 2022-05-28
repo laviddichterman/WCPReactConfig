@@ -38,7 +38,7 @@ const ModifierTypeTableContainer = ({
     setModifierTypeToEdit(modifier_types_map[id].modifier_type);
   };
 
-  const getDetailPanelHeight = useCallback(({ row }) => row.options.length ? (54 + (row.options.length * 35)) : 0, []);
+  const getDetailPanelHeight = useCallback(({ row }) => row.options.length ? (41 + (row.options.length * 36)) : 0, []);
 
   const getDetailPanelContent = useCallback(({ row }) => row.options.length ? (
     <ModifierOptionTableContainer
