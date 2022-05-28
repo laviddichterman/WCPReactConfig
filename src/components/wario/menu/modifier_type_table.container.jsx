@@ -3,7 +3,7 @@ import React, {useCallback} from "react";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import {GridActionsCellItem}  from "@mui/x-data-grid";
 import {useGridApiRef} from "@mui/x-data-grid-pro";
-import Tooltip from '@mui/material/Tooltip';
+import {Tooltip, IconButton} from '@mui/material';
 import ModifierOptionTableContainer from "./modifier_option_table.container";
 import TableWrapperComponent from "../table_wrapper.component";
 
@@ -70,18 +70,21 @@ const ModifierTypeTableContainer = ({
               icon={<Tooltip title="Edit Modifier Type"><Edit/></Tooltip>}
               label="Edit Modifier Type"
               onClick={editModifierType(params.id)}
+              key="EDITMT"
             />,
             <GridActionsCellItem
               icon={<Tooltip title="Add Modifier Option"><AddBox/></Tooltip>}
               label="Add Modifier Option"
               onClick={addModifierOption(params.id)}
               showInMenu
+              key="ADDMO"
             />,
             <GridActionsCellItem
               icon={<Tooltip title="Delete Modifier Type"><DeleteOutline/></Tooltip>}
               label="Delete Modifier Type"
               onClick={deleteModifierType(params.id)}
               showInMenu
+              key="DELMT"
             />
           ]
         },
@@ -91,14 +94,11 @@ const ModifierTypeTableContainer = ({
         { headerName: "Max Selected", field: "max_selected", valueGetter: v => v.row.modifier_type.max_selected  },
         { headerName: "Display Name", field: "display_name", valueGetter: v => v.row.modifier_type.display_name},
       ]}
-      toolbarActions={[
-        <GridActionsCellItem
-          icon={<Tooltip title="Add Modifier Type"><AddBox/></Tooltip>}
-          label="Add Modifier Type"
-          onClick={() => setIsModifierTypeAddOpen(true)}
-          key="ADDNEW"
-        />
-      ]}
+      toolbarActions={[{
+        size: 1, 
+        elt:
+          <Tooltip key="ADDNEW" title="Add Modifier Type"><IconButton onClick={() => setIsModifierTypeAddOpen(true)}><AddBox /></IconButton></Tooltip>
+      }]}
       rows={Object.values(modifier_types_map)}
       onRowClick={(params, ) => apiRef.current.toggleDetailPanel(params.id)}
       getDetailPanelContent={getDetailPanelContent}

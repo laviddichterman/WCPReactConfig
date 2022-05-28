@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ProductInstanceContainer from "./product_instance.component";
+import {ProductInstanceActionContainer} from "./product_instance.component";
 
 const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_product, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [price, setPrice] = useState(0);
-  const [disabled, setDisabled] = useState(null);
   const [ordinal, setOrdinal] = useState(0);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
@@ -48,7 +47,6 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
             display_name: displayName,
             description,
             shortcode,
-            disabled,
             ordinal,
             price: { amount: price * 100, currency: "USD" },
             revelID,
@@ -73,14 +71,13 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
                 suppress_exhaustive_modifier_list: orderSuppressExhaustiveModifierList
               }
             }
-          }),
+          })
         });
         if (response.status === 201) {
           setDisplayName("");
           setDescription("");
           setShortcode("");
           setPrice(0);
-          setDisabled(null);
           setOrdinal(0);
           setRevelID("");
           setSquareID("");  
@@ -109,7 +106,7 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   };
 
   return (
-    <ProductInstanceContainer 
+    <ProductInstanceActionContainer 
       confirmText="Add"
       onCloseCallback={onCloseCallback}
       onConfirmClick={addProductInstance}
@@ -124,8 +121,6 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       setShortcode={setShortcode}
       price={price}
       setPrice={setPrice}
-      disabled={disabled}
-      setDisabled={setDisabled}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       revelID={revelID}

@@ -14,7 +14,7 @@ import {HOST_API} from '../../config';
 
 export default function GeneralCatalog() {
 
-  const { catalog } = useSocketIo();
+  const { catalog, services } = useSocketIo();
 
   const { themeStretch } = useSettings();
 
@@ -22,7 +22,7 @@ export default function GeneralCatalog() {
     <Page title="Catalog Management">
       <Container maxWidth={themeStretch ? false : 'xl'}>
           <Grid item xs={12} md={12}>
-            <MenuBuilderComponent ENDPOINT={HOST_API} catalog={catalog} />
+            <MenuBuilderComponent ENDPOINT={HOST_API} catalog={catalog} services={services} />
           </Grid>
       </Container>
     </Page>

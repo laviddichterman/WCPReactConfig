@@ -35,7 +35,7 @@ import ProductTableContainer from "./product_table.container";
 import ProductInstanceFunctionTableContainer from "./product_instance_function_table.container";
 
 
-const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
+const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
   const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
   const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
@@ -272,6 +272,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
         }
       />
       <DialogContainer
+        maxWidth={"xl"}
         title={"Edit Product"}
         onClose={() => {
           setIsProductEditOpen(false);
@@ -282,6 +283,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             onCloseCallback={() => {
               setIsProductEditOpen(false);
             }}
+            services={services}
             categories={catalog.categories}
             modifier_types={catalog.modifiers}
             product_instance_functions={catalog.product_instance_functions}
@@ -339,6 +341,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
         }
       />                      
       <DialogContainer
+        maxWidth={"xl"}
         title={`Make copy of: ${
           productToEdit ? productToEdit.item.display_name : ""
         }`}
@@ -351,6 +354,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
             onCloseCallback={() => {
               setIsProductCopyOpen(false);
             }}
+            services={services}
             categories={catalog.categories}
             modifier_types={catalog.modifiers}
             product_instance_functions={catalog.product_instance_functions}
@@ -515,6 +519,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog }) => {
                     onCloseCallback={() => {
                       setIsProductAddOpen(false);
                     }}
+                    services={services}
                     categories={catalog.categories}
                     modifier_types={catalog.modifiers}
                     product_instance_functions={catalog.product_instance_functions}

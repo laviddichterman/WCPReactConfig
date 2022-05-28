@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 
-const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, onCloseCallback }) => {
+const ProductAddContainer = ({ ENDPOINT, modifier_types, services, product_instance_functions, categories, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
@@ -95,6 +95,7 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, product_instance_functi
       disableConfirmOn={displayName.length === 0 || shortcode.length === 0 || price < 0 || isProcessing}
       modifier_types={modifier_types}
       product_instance_functions={product_instance_functions}
+      services={services}
       categories={categories}
       displayName={displayName}
       setDisplayName={setDisplayName}

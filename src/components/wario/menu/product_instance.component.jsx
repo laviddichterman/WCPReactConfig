@@ -18,11 +18,8 @@ import FormLabel from "@mui/material/FormLabel";
 import { ElementActionComponent } from "./element.action.component";
 import CheckedInputComponent from "../checked_input.component";
 
+
 const ProductInstanceComponent = ({
-  confirmText,
-  onCloseCallback,
-  onConfirmClick,
-  isProcessing,
   modifier_types_map,
   parent_product,
   displayName,
@@ -171,13 +168,6 @@ const ProductInstanceComponent = ({
   });
 
   return (
-    <ElementActionComponent 
-      onCloseCallback={onCloseCallback}
-      onConfirmClick={onConfirmClick}
-      isProcessing={isProcessing}
-      disableConfirmOn={displayName.length === 0 || shortcode.length === 0 || price < 0 || isProcessing}
-      confirmText={confirmText}
-      body={
         <>
           <Grid item xs={6}>
             <TextField
@@ -465,8 +455,7 @@ const ProductInstanceComponent = ({
               </FormControl>
             </Grid>
           {modifier_html}
-        </>}
-    />
+        </>
   );
 };
 
@@ -478,7 +467,7 @@ const normalizeModifiersAndOptions = (
   const normalized_modifiers = [];
   parent_product.modifiers.forEach((modifier_entry) => {
     const {mtid} = modifier_entry;
-    const options = modifier_types_map[mtid].options.map((option, idx) => ({
+    const options = modifier_types_map[mtid].options.map((option, ) => ({
         option_id: option._id,
         placement: "NONE",
       }));
@@ -503,7 +492,7 @@ const normalizeModifiersAndOptions = (
 };
 
 const minimizeModifiers = (normalized_modifiers) => normalized_modifiers
-    .map((mod, idx) => {
+    .map((mod, ) => {
       const filtered_options = mod.options.filter(
         (x) => x.placement !== "NONE"
       );
@@ -513,57 +502,7 @@ const minimizeModifiers = (normalized_modifiers) => normalized_modifiers
     })
     .filter((x) => x != null);
 
-const ProductInstanceContainer = ({
-  confirmText,
-  onCloseCallback,
-  onConfirmClick,
-  isProcessing,
-  modifier_types_map,
-  parent_product,
-  displayName,
-  setDisplayName,
-  description,
-  setDescription,
-  shortcode,
-  setShortcode,
-  price,
-  setPrice,
-  ordinal,
-  setOrdinal,
-  revelID,
-  setRevelID,
-  squareID,
-  setSquareID,
-  modifiers,
-  setModifiers,
-  isBase,
-  setIsBase,  
-  // menu
-  menuOrdinal,
-  setMenuOrdinal,
-  menuHide,
-  setMenuHide,
-  menuPriceDisplay,
-  setMenuPriceDisplay,
-  menuAdornment,
-  setMenuAdornment,
-  menuSuppressExhaustiveModifierList,
-  setMenuSuppressExhaustiveModifierList,
-  menuShowModifierOptions,
-  setMenuShowModifierOptions,
-  // order
-  orderOrdinal,
-  setOrderOrdinal,
-  orderMenuHide,
-  setOrderMenuHide,
-  skipCustomization,
-  setSkipCustomization,
-  orderPriceDisplay,
-  setOrderPriceDisplay,
-  orderAdornment,
-  setOrderAdornment,
-  orderSuppressExhaustiveModifierList,
-  setOrderSuppressExhaustiveModifierList
+export const ProductInstanceContainer = ({parent_product, modifier_types_map, modifiers, setModifiers, ...forwardRefs
 }) => {
   const [normalizedModifers, setNormalizedModifiers] = useState(
     normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers)
@@ -576,58 +515,39 @@ const ProductInstanceContainer = ({
 
   return (
     <ProductInstanceComponent
-      confirmText={confirmText}
-      onCloseCallback={onCloseCallback}
-      onConfirmClick={onConfirmClick}
-      isProcessing={isProcessing}
       modifier_types_map={modifier_types_map}
       parent_product={parent_product}
-      displayName={displayName}
-      setDisplayName={setDisplayName}
-      description={description}
-      setDescription={setDescription}
-      shortcode={shortcode}
-      setShortcode={setShortcode}
-      price={price}
-      setPrice={setPrice}
-      ordinal={ordinal}
-      setOrdinal={setOrdinal}
-      revelID={revelID}
-      setRevelID={setRevelID}
-      squareID={squareID}
-      setSquareID={setSquareID}
+      {...forwardRefs}
       modifiers={normalizedModifers}
       setModifiers={setNormalizedModifiersIntermediate}
-      isBase={isBase}
-      setIsBase={setIsBase}
-      // menu
-      menuOrdinal={menuOrdinal}
-      setMenuOrdinal={setMenuOrdinal}
-      menuHide={menuHide}
-      setMenuHide={setMenuHide}
-      menuPriceDisplay={menuPriceDisplay}
-      setMenuPriceDisplay={setMenuPriceDisplay}
-      menuAdornment={menuAdornment}
-      setMenuAdornment={setMenuAdornment}
-      menuSuppressExhaustiveModifierList={menuSuppressExhaustiveModifierList}
-      setMenuSuppressExhaustiveModifierList={setMenuSuppressExhaustiveModifierList}
-      menuShowModifierOptions={menuShowModifierOptions}
-      setMenuShowModifierOptions={setMenuShowModifierOptions}
-      // order
-      orderOrdinal={orderOrdinal}
-      setOrderOrdinal={setOrderOrdinal}
-      orderMenuHide={orderMenuHide}
-      setOrderMenuHide={setOrderMenuHide}
-      skipCustomization={skipCustomization}
-      setSkipCustomization={setSkipCustomization}
-      orderPriceDisplay={orderPriceDisplay}
-      setOrderPriceDisplay={setOrderPriceDisplay}
-      orderAdornment={orderAdornment}
-      setOrderAdornment={setOrderAdornment}
-      orderSuppressExhaustiveModifierList={orderSuppressExhaustiveModifierList}
-      setOrderSuppressExhaustiveModifierList={setOrderSuppressExhaustiveModifierList}
     />
   );
 };
 
-export default ProductInstanceContainer;
+export const ProductInstanceActionContainer = ({
+  confirmText,
+  onCloseCallback,
+  onConfirmClick,
+  isProcessing,
+  displayName,
+  shortcode,
+  price,
+  ...forwardRefs
+
+
+}) => (
+    <ElementActionComponent 
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={onConfirmClick}
+      isProcessing={isProcessing}
+      disableConfirmOn={displayName.length === 0 || shortcode.length === 0 || price < 0 || isProcessing}
+      confirmText={confirmText}
+      body={
+        <ProductInstanceContainer
+          {...forwardRefs}
+          displayName={displayName}
+          shortcode={shortcode}
+          price={price}
+        />} 
+      />
+)

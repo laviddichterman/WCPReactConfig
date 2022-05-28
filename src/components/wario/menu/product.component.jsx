@@ -21,8 +21,8 @@ const ProductComponent = ({
   disableConfirmOn,
   modifier_types,
   categories,
+  services,
   product_instance_functions,
-  productCopyMode,
   suppressNonProductInstanceFields,
   displayName,
   setDisplayName,
@@ -58,7 +58,8 @@ const ProductComponent = ({
   setModifiers,
   // Object mapping MTID to enable function
   modifierEnableFunctions,
-  setModifierEnableFunctions
+  setModifierEnableFunctions,
+  children
 }) => {
   const handleSetModifiers = (mods) => {
     const sorted = mods.sort((a, b) => a.modifier_type.ordinal - b.modifier_type.ordinal);
@@ -191,7 +192,6 @@ const ProductComponent = ({
               )}
             />
           </Grid>
-          {productCopyMode ? "" : (<>
           <Grid item xs={6}>
             <TextField
               label="Display Name"
@@ -288,12 +288,26 @@ const ProductComponent = ({
           </Grid>
           {modifierEnableFunctionSpecificationList}
           <Grid item xs={12}>
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              options={Object.keys(services)}
+              value={serviceDisabled.map(x=>String(x))}
+              onChange={(e, v) => {setServiceDisabled(v.map(x=>Number(x)))}}
+              getOptionLabel={(option) => services[option]}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderInput={(params) => (
+                <TextField {...params} label="Disabled Services" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <DatetimeBasedDisableComponent
               disabled={disabled}
               setDisabled={setDisabled}
             />
           </Grid>
-              </>)}
+          {children}
         </>}
     />
   );

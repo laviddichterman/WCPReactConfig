@@ -6,22 +6,18 @@ import AbstractExpressionFunctionalContainer from './abstract_expression_functio
 import { ElementActionComponent } from "./element.action.component";
 
 const ProductInstanceFunctionComponent = ({
-  confirmText,
-  onCloseCallback,
-  onConfirmClick,
   isProcessing,
   modifier_types,
   functionName,
   setFunctionName,
   expression,
   setExpression,
+  ...forwardRefs
 }) => (
     <ElementActionComponent 
-      onCloseCallback={onCloseCallback}
-      onConfirmClick={onConfirmClick}
+      {...forwardRefs}
       isProcessing={isProcessing}
       disableConfirmOn={functionName.length === 0 || isProcessing}
-      confirmText={confirmText}
       body={
       <>
         <Grid item xs={12}>

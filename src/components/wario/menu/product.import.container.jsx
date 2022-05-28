@@ -34,7 +34,7 @@ const InternalCSVReader = ({onAccepted}) => {
             {acceptedFile && acceptedFile.name}
           </Grid>
           <Grid item xs={3}>
-            <Button variant="contained" {...getRemoveFileProps()} color="primary">
+            <Button disabled={!acceptedFile} variant="contained" {...getRemoveFileProps()} color="primary">
               Remove
             </Button>
           </Grid>

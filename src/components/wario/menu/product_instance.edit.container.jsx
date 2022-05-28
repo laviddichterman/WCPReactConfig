@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ProductInstanceComponent from "./product_instance.component";
+import { ProductInstanceActionContainer } from "./product_instance.component";
 
 const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_product, product_instance, onCloseCallback}) => {
   const [displayName, setDisplayName] = useState(product_instance.item.display_name);
   const [description, setDescription] = useState(product_instance.item.description);
   const [shortcode, setShortcode] = useState(product_instance.item.shortcode);
   const [price, setPrice] = useState(product_instance.item.price.amount / 100);
-  const [disabled, setDisabled] = useState(product_instance.item?.disabled);
   const [ordinal, setOrdinal] = useState(product_instance.ordinal || 0);
   const [revelID, setRevelID] = useState(product_instance.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(product_instance.item?.externalIDs?.squareID ?? "");
@@ -84,7 +83,7 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
   };
 
   return (
-    <ProductInstanceComponent 
+    <ProductInstanceActionContainer 
       confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editProductInstance}
@@ -99,8 +98,6 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
       setShortcode={setShortcode}
       price={price}
       setPrice={setPrice}
-      disabled={disabled}
-      setDisabled={setDisabled}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       revelID={revelID}

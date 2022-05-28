@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 
-const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_functions, categories, product, onCloseCallback }) => {
+const ProductEditContainer = ({ ENDPOINT, modifier_types, services, product_instance_functions, categories, product, onCloseCallback }) => {
   const [displayName, setDisplayName] = useState(product.item?.display_name ?? "");
   const [description, setDescription] = useState(product.item?.description ?? "");
   const [shortcode, setShortcode] = useState(product.item?.shortcode ?? "");
@@ -77,9 +77,9 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, product_instance_funct
       isProcessing={isProcessing}
       disableConfirmOn={displayName.length === 0 || isProcessing}
       modifier_types={modifier_types}
+      services={services}
       product_instance_functions={product_instance_functions}
       categories={categories}
-      suppressNonProductInstanceFields
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}

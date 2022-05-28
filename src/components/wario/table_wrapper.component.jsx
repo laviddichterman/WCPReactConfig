@@ -57,16 +57,16 @@ const tableIcons = {
 
 LicenseInfo.setLicenseKey(MUI_LICENSE);
 
-function CustomToolbar({quickFilterProps, title, actions}) {
+function CustomToolbar({quickFilterProps, title, actions=[]}) {
   return (
     <GridToolbarContainer >
       <Grid container  item xs={12}>
         <Grid item xs={6}>{title}</Grid>
         <Grid item container xs={6}>
-          <Grid item xs={12-actions?.length} >
+          <Grid item xs={12-(actions.reduce((acc, x)=>acc+x.size, 0))} >
             <GridToolbarQuickFilter {...quickFilterProps} />
           </Grid>
-          {actions.length ? actions.map((action, idx)=>(<Grid item xs={1} key={idx}>{action}</Grid>)) : ""}
+          {actions.length ? actions.map((action, idx)=>(<Grid item xs={action.size} key={idx}>{action.elt}</Grid>)) : ""}
         </Grid>
       </Grid>
     </GridToolbarContainer>

@@ -2,7 +2,7 @@ import React from "react";
 
 import {GridActionsCellItem}  from "@mui/x-data-grid";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
-import Tooltip from '@mui/material/Tooltip';
+import { Tooltip, IconButton } from '@mui/material';
 import { WFunctional } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
 
@@ -26,14 +26,11 @@ const ProductInstanceFunctionTableContainer = ({
   return (
     <TableWrapperComponent
       title="Product Instance Functions"
-      toolbarActions={[
-        <GridActionsCellItem
-          icon={<Tooltip title="Add Product Function"><AddBox/></Tooltip>}
-          label="Add Product Function"
-          onClick={() => setIsProductInstanceFunctionAddOpen(true)}
-          key="ADDNEW"
-        />
-      ]}
+      toolbarActions={[{
+        size: 1, 
+        elt:
+          <Tooltip key="ADDNEW" title="Add Product Function"><IconButton onClick={() => setIsProductInstanceFunctionAddOpen(true)}><AddBox /></IconButton></Tooltip>
+      }]}
       rows={product_instance_functions}
       getRowId={(row) => row._id}
       columns={[
@@ -46,11 +43,13 @@ const ProductInstanceFunctionTableContainer = ({
               icon={<Tooltip title="Edit Product Function"><Edit/></Tooltip>}
               label="Edit Product Function"
               onClick={editProductFunction(params.row)}
+              key="EDITPF"
             />,
             <GridActionsCellItem
               icon={<Tooltip title="Delete Product Function"><DeleteOutline/></Tooltip>}
               label="Delete Product Function"
               onClick={deleteProductFunction(params.row)}
+              key="DELPF"
             />
           ]
         },
