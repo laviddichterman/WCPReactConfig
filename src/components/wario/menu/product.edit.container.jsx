@@ -4,13 +4,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 
 const ProductEditContainer = ({ ENDPOINT, modifier_types, services, product_instance_functions, categories, product, onCloseCallback }) => {
-  const [displayName, setDisplayName] = useState(product.item?.display_name ?? "");
-  const [description, setDescription] = useState(product.item?.description ?? "");
-  const [shortcode, setShortcode] = useState(product.item?.shortcode ?? "");
-  const [price, setPrice] = useState((product.item?.price.amount ?? 0) / 100);
+  const [price, setPrice] = useState((product.price?.amount ?? 0) / 100);
   const [disabled, setDisabled] = useState(product.disabled);
   const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
-  const [ordinal, setOrdinal] = useState(product.ordinal || 0);
   const [revelID, setRevelID] = useState(product.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(product.item?.externalIDs?.squareID ?? "");
   const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
@@ -38,12 +34,8 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, services, product_inst
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            display_name: displayName,
-            description,
-            shortcode,
             disabled,
             service_disable: serviceDisabled,
-            ordinal,
             price: { amount: price  * 100, currency: "USD" },
             revelID,
             squareID,
@@ -75,25 +67,18 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, services, product_inst
       onCloseCallback={onCloseCallback}
       onConfirmClick={editProduct}
       isProcessing={isProcessing}
-      disableConfirmOn={displayName.length === 0 || isProcessing}
+      disableConfirmOn={price < 0 || isProcessing}
       modifier_types={modifier_types}
       services={services}
       product_instance_functions={product_instance_functions}
       categories={categories}
-      displayName={displayName}
-      setDisplayName={setDisplayName}
-      description={description}
-      setDescription={setDescription}
-      shortcode={shortcode}
-      setShortcode={setShortcode}
+      suppressNonProductInstanceFields
       price={price}
       setPrice={setPrice}
       disabled={disabled}
       setDisabled={setDisabled}
       serviceDisabled={serviceDisabled}
       setServiceDisabled={setServiceDisabled}
-      ordinal={ordinal}
-      setOrdinal={setOrdinal}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID}

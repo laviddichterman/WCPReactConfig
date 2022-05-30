@@ -78,6 +78,14 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
   const [isProductInstanceFunctionEditOpen, setIsProductInstanceFunctionEditOpen] = useState(false);
   const [productInstanceFunctionToEdit, setProductInstanceFunctionToEdit] = useState(null);
 
+  // this assumes a single base product instance per product class.
+  // assumption is that this precondition is enforced by the service
+  const nameOfBaseProductInstance = useMemo(() => {
+    const pididx = productToEdit ? catalog.products[productToEdit._id].instances.findIndex((pi) => pi.is_base) : -1;
+    return pididx !== -1 ? catalog.products[productToEdit._id].instances[pididx].item.display_name : "";
+  }, [catalog.products, productToEdit]);
+
+
   const orphanedProducts = useMemo(
     () =>
       Object.values(catalog.products).filter(
@@ -280,9 +288,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         isOpen={isProductEditOpen}
         inner_component={
           <ProductEditContainer
-            onCloseCallback={() => {
-              setIsProductEditOpen(false);
-            }}
+            onCloseCallback={() => setIsProductEditOpen(false)}
             services={services}
             categories={catalog.categories}
             modifier_types={catalog.modifiers}
@@ -294,31 +300,25 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
       />
       <DialogContainer
         title={"Disable Product Until End-of-Day"}
-        onClose={() => {
-          setIsProductDisableUntilEodOpen(false);
-        }}
+        onClose={() => setIsProductDisableUntilEodOpen(false)}
         isOpen={isProductDisableUntilEodOpen}
         inner_component={
           <ProductDisableUntilEodContainer
-            onCloseCallback={() => {
-              setIsProductDisableUntilEodOpen(false);
-            }}
+            onCloseCallback={() => setIsProductDisableUntilEodOpen(false)}
             product={productToEdit}
+            productName={nameOfBaseProductInstance}
             ENDPOINT={ENDPOINT}
           />
         }
       />
       <DialogContainer
         title={"Disable Product"}
-        onClose={() => {
-          setIsProductDisableOpen(false);
-        }}
+        onClose={() => setIsProductDisableOpen(false)}
         isOpen={isProductDisableOpen}
         inner_component={
           <ProductDisableContainer
-            onCloseCallback={() => {
-              setIsProductDisableOpen(false);
-            }}
+            onCloseCallback={() => setIsProductDisableOpen(false)}
+            productName={nameOfBaseProductInstance}
             product={productToEdit}
             ENDPOINT={ENDPOINT}
           />
@@ -326,34 +326,25 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
       />
       <DialogContainer
         title={"Enable Product"}
-        onClose={() => {
-          setIsProductEnableOpen(false);
-        }}
+        onClose={() => setIsProductEnableOpen(false)}
         isOpen={isProductEnableOpen}
         inner_component={
           <ProductEnableContainer
-            onCloseCallback={() => {
-              setIsProductEnableOpen(false);
-            }}
+            onCloseCallback={() => setIsProductEnableOpen(false)}
             product={productToEdit}
+            productName={nameOfBaseProductInstance}
             ENDPOINT={ENDPOINT}
           />
         }
       />                      
       <DialogContainer
         maxWidth={"xl"}
-        title={`Make copy of: ${
-          productToEdit ? productToEdit.item.display_name : ""
-        }`}
-        onClose={() => {
-          setIsProductCopyOpen(false);
-        }}
+        title={"Copy Product"}
+        onClose={() => setIsProductCopyOpen(false)}
         isOpen={isProductCopyOpen}
         inner_component={
           <ProductCopyContainer
-            onCloseCallback={() => {
-              setIsProductCopyOpen(false);
-            }}
+            onCloseCallback={() => setIsProductCopyOpen(false)}
             services={services}
             categories={catalog.categories}
             modifier_types={catalog.modifiers}
@@ -366,16 +357,13 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
       />      
       <DialogContainer
         title={"Delete Product"}
-        onClose={() => {
-          setIsProductDeleteOpen(false);
-        }}
+        onClose={() => setIsProductDeleteOpen(false)}
         isOpen={isProductDeleteOpen}
         inner_component={
           <ProductDeleteContainer
-            onCloseCallback={() => {
-              setIsProductDeleteOpen(false);
-            }}
+            onCloseCallback={() => setIsProductDeleteOpen(false)}
             ENDPOINT={ENDPOINT}
+            productName={nameOfBaseProductInstance}
             product={productToEdit}
           />
         }

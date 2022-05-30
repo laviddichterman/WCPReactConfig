@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
 
-const ProductDeleteContainer = ({ ENDPOINT, product, onCloseCallback }) => {
+const ProductDeleteContainer = ({ ENDPOINT, product, productName, onCloseCallback }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -36,7 +36,7 @@ const ProductDeleteContainer = ({ ENDPOINT, product, onCloseCallback }) => {
     <ElementDeleteComponent 
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteProduct}
-      name={product?.item?.display_name}
+      name={productName}
       isProcessing={isProcessing}
     />
   );

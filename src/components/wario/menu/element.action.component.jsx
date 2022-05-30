@@ -22,11 +22,13 @@ const ElementActionComponent = ({
 
   const actions_html = GenerateActionsHtmlFromList([
     <Button
+      key="CANCEL"
       onClick={onCloseCallback}
       disabled={isProcessing}>
       Cancel
     </Button>,
     <Button
+      key="CONFIRM"
       onClick={onConfirmClick}
       disabled={disableConfirmOn}>
       {confirmText}

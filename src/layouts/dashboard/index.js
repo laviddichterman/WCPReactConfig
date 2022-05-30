@@ -2,15 +2,20 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, Container, Typography, Stack } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
+import useSocketIo from '../../hooks/useSocketIo';
 
 import useResponsive from '../../hooks/useResponsive';
 import useCollapseDrawer from '../../hooks/useCollapseDrawer';
 // config
 import { HEADER, NAVBAR } from '../../config';
+import PACKAGE from '../../../package.json';
+
 //
+import Label from '../../components/Label';
+
 import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
@@ -45,6 +50,8 @@ export default function DashboardLayout() {
 
   const { themeLayout } = useSettings();
 
+  const { catalog } = useSocketIo();
+
   const isDesktop = useResponsive('up', 'lg');
 
   const [open, setOpen] = useState(false);
@@ -78,6 +85,10 @@ export default function DashboardLayout() {
         >
           <Outlet />
         </Box>
+        <Container>
+              <Stack><Typography variant="caption" component="p">WARIO Dashboard Version: <Label>v{PACKAGE.version}</Label></Typography></Stack> 
+              {catalog ? <Stack><Typography variant="caption" component="p">WARIO Backend Server Version: <Label>{`v${catalog.api.major}.${catalog.api.minor}.${catalog.api.patch}`}</Label></Typography></Stack> : ""}
+          </Container>
       </>
     );
   }

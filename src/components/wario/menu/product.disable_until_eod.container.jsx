@@ -5,7 +5,7 @@ import moment from "moment";
 import Grid from "@mui/material/Grid";
 import { ElementActionComponent } from "./element.action.component";
 
-const ProductDisableUntilEodContainer = ({ ENDPOINT, product, onCloseCallback }) => {
+const ProductDisableUntilEodContainer = ({ ENDPOINT, product, productName, onCloseCallback }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async (e) => {
@@ -22,13 +22,9 @@ const ProductDisableUntilEodContainer = ({ ENDPOINT, product, onCloseCallback })
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            display_name: product.item.display_name,
-            description: product.item.description,
-            shortcode: product.item.shortcode,
             disabled: { start: moment().valueOf(), end: moment().hour(23).minute(59).valueOf() },
             service_disable: product.service_disable,
-            ordinal: product.ordinal,
-            price: product.item.price,
+            price: product.price,
             revelID: product.item.externalIDs?.revelID,
             squareID: product.item.externalIDs?.squareID,
             display_flags: product.display_flags,
@@ -56,7 +52,7 @@ const ProductDisableUntilEodContainer = ({ ENDPOINT, product, onCloseCallback })
       confirmText="Confirm"
       body={
         <Grid item xs={12}>
-          Are you sure you'd like to disable {product.item.display_name} until end-of-day?
+          Are you sure you'd like to disable {productName} until end-of-day?
         </Grid>
       }
     />

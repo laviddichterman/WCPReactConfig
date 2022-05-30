@@ -16,13 +16,9 @@ const useIndexedState = (x) => {
 };
 
 const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_instance_functions, categories, products, product, onCloseCallback }) => {
-  const [displayName, setDisplayName] = useState(product.item?.display_name ?? "");
-  const [description, setDescription] = useState(product.item?.description ?? "");
-  const [shortcode, setShortcode] = useState(`${product.item?.shortcode ?? ""}cpy`);
-  const [price, setPrice] = useState((product.item?.price.amount ?? 0) / 100);
+  const [price, setPrice] = useState((product.price?.amount ?? 0) / 100);
   const [disabled, setDisabled] = useState(product.item?.disabled);
   const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
-  const [ordinal, setOrdinal] = useState(product.ordinal || 0);
   const [revelID, setRevelID] = useState(product.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(product.item?.externalIDs?.squareID ?? "");
   const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
@@ -41,7 +37,6 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_inst
   const [piDisplayNames, setPiDisplayName] = useIndexedState(useState(products[product._id].instances.map(pi=>pi.item.display_name)));
   const [piDescriptions, setPiDescription] = useIndexedState(useState(products[product._id].instances.map(pi=>pi.item.description)));
   const [piShortcodes, setPiShortcode] = useIndexedState(useState(products[product._id].instances.map(pi=>pi.item.shortcode)));
-  const [piPrices, setPiPrice] = useIndexedState(useState(products[product._id].instances.map(pi=>(pi.item.price.amount / 100))));
   const [piOrdinals, setPiOrdinal] = useIndexedState(useState(products[product._id].instances.map(pi=>(pi.ordinal || 0))));
   const [piRevelIDs, setPiRevelID] = useIndexedState(useState(products[product._id].instances.map(pi=>(pi.item?.externalIDs?.revelID ?? ""))));
   const [piSquareIDs, setPiSquareID] = useIndexedState(useState(products[product._id].instances.map(pi=>(pi.item?.externalIDs?.squareID ?? ""))));
@@ -107,8 +102,6 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_inst
           setDescription={setPiDescription(i)}
           shortcode={piShortcodes[i]}
           setShortcode={setPiShortcode(i)}
-          price={piPrices[i]}
-          setPrice={setPiPrice(i)}
           ordinal={piOrdinals[i]}
           setOrdinal={setPiOrdinal(i)}
           revelID={piRevelIDs[i]}
@@ -149,7 +142,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_inst
         />
       </Grid>
     </AccordionDetails>
-  </Accordion>), [copyPIFlags, expandedPanels, modifier_types, piDescriptions, piDisplayNames, piIsBases, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piPrices, piRevelIDs, piShortcodes, piSkipCustomizations, piSquareIDs, product, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiIsBase, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiPrice, setPiRevelID, setPiShortcode, setPiSkipCustomization, setPiSquareID])
+  </Accordion>), [copyPIFlags, expandedPanels, modifier_types, piDescriptions, piDisplayNames, piIsBases, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piRevelIDs, piShortcodes, piSkipCustomizations, piSquareIDs, product, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiIsBase, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiRevelID, setPiShortcode, setPiSkipCustomization, setPiSquareID])
 
   const copyProduct = async (e) => {
     e.preventDefault();
@@ -164,9 +157,6 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_inst
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            display_name: displayName,
-            description,
-            shortcode,
             price: { amount: price * 100, currency: "USD" },
             service_disable: serviceDisabled,
             revelID,
@@ -181,7 +171,8 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_inst
             category_ids: parentCategories.map(x => x.category._id),
             modifiers: modifiers.map(x => ({ mtid: x.modifier_type._id, enable: Object.hasOwn(modifierEnableFunctions, x.modifier_type._id) && modifierEnableFunctions[x.modifier_type._id] !== null ? modifierEnableFunctions[x.modifier_type._id]._id : null }) ),
             disabled,
-            create_product_instance: false
+            create_product_instance: false,
+            suppress_catalog_recomputation: true
           }),
         });
         if (response.status === 201) {
@@ -195,7 +186,7 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_inst
               description: piDescriptions[i],
               shortcode: piShortcodes[i],
               ordinal: piOrdinals[i],
-              price: { amount: piPrices[i] * 100, currency: "USD" },
+              price: null,
               revelID: piRevelIDs[i],
               squareID: piSquareIDs[i],
               modifiers: piModifierss[i],
@@ -261,25 +252,18 @@ const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_inst
       onCloseCallback={onCloseCallback}
       onConfirmClick={copyProduct}
       isProcessing={isProcessing}
-      disableConfirmOn={displayName.length === 0 || shortcode.length === 0 || price < 0 || indexOfBase === -1 || isProcessing}
+      disableConfirmOn={price < 0 || indexOfBase === -1 || isProcessing}
       modifier_types={modifier_types}
       product_instance_functions={product_instance_functions}
+      suppressNonProductInstanceFields
       categories={categories}
       services={services}
-      displayName={displayName}
-      setDisplayName={setDisplayName}
-      description={description}
-      setDescription={setDescription}
-      shortcode={shortcode}
-      setShortcode={setShortcode}
       price={price}
       setPrice={setPrice}
       disabled={disabled}
       setDisabled={setDisabled}
       serviceDisabled={serviceDisabled}
       setServiceDisabled={setServiceDisabled}
-      ordinal={ordinal}
-      setOrdinal={setOrdinal}
       revelID={revelID}
       setRevelID={setRevelID}
       squareID={squareID}

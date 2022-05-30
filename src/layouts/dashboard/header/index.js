@@ -11,8 +11,11 @@ import cssStyles from '../../../utils/cssStyles';
 import { HEADER, NAVBAR } from '../../../config';
 // components
 import Logo from '../../../components/Logo';
+import Label from '../../../components/Label';
 import Iconify from '../../../components/Iconify';
 import { IconButtonAnimate } from '../../../components/animate';
+import PACKAGE from '../../../../package.json';
+
 //
 import LanguagePopover from './LanguagePopover';
 
@@ -66,7 +69,11 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
           px: { lg: 5 },
         }}
       >
-        {isDesktop && verticalLayout && <Logo sx={{ mr: 2.5 }} />}
+        {isDesktop && verticalLayout ? <><Logo sx={{ mr: 2.5 }}/>
+        <Label color="info" sx={{ ml: 1 }}>
+            {`v${PACKAGE.version}`}
+          </Label>
+        </> : ""}
 
         {!isDesktop && (
           <IconButtonAnimate onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>

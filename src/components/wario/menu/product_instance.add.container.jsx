@@ -7,7 +7,6 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
-  const [price, setPrice] = useState(0);
   const [ordinal, setOrdinal] = useState(0);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
@@ -48,7 +47,6 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
             description,
             shortcode,
             ordinal,
-            price: { amount: price * 100, currency: "USD" },
             revelID,
             squareID,
             modifiers,
@@ -77,7 +75,6 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
           setDisplayName("");
           setDescription("");
           setShortcode("");
-          setPrice(0);
           setOrdinal(0);
           setRevelID("");
           setSquareID("");  
@@ -119,8 +116,6 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       setDescription={setDescription}
       shortcode={shortcode}
       setShortcode={setShortcode}
-      price={price}
-      setPrice={setPrice}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       revelID={revelID}

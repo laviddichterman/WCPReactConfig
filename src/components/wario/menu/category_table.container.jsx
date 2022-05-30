@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD } from "@mui/x-data-grid-pro";
+import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD, GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GridDetailPanelToggleCell } from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { FormControlLabel, Tooltip, Switch, IconButton } from '@mui/material';
 import ProductTableContainer from "./product_table.container";
@@ -81,7 +81,11 @@ const CategoryTableContainer = ({
       apiRef={apiRef}
       treeData
       getTreeDataPath={(row) => DeriveTreePath(row)}
-      columns={[
+      columns={[{
+          ...GRID_DETAIL_PANEL_TOGGLE_COL_DEF,
+          type: "string", // this shouldn't be needed
+          renderCell: (params) => getProductsInCategory(params.id).length > 0 ? <GridDetailPanelToggleCell {...params} /> : <></>
+        },
         {
           headerName: "Actions",
           field: 'actions',
@@ -146,7 +150,7 @@ const CategoryTableContainer = ({
         // otherwise if there are products in this category, toggle the detail panel, else collapse the children categories
         if (params.row.children.length && !apiRef.current.getCellParams(params.id, "ordinal").rowNode.childrenExpanded) {
           apiRef.current.setRowChildrenExpansion(params.id, true);
-        } else if (catalog.categories[params.id].products.length) {
+        } else if (getProductsInCategory(params.id).length) {
           apiRef.current.toggleDetailPanel(params.id);
         } else {
           apiRef.current.setRowChildrenExpansion(params.id, false);

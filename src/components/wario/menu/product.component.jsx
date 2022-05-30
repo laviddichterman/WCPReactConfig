@@ -76,26 +76,46 @@ const ProductComponent = ({
     setModifierEnableFunctions(newValue);
   }
 
-  const descriptionField = suppressNonProductInstanceFields ? (
+  const displayNameDescriptionOrdinalFields = suppressNonProductInstanceFields ? (
     ""
   ) : (
-    <Grid item xs={6}>
-      <TextField
-        label="Description"
-        type="text"
-        inputProps={{ size: 60 }}
-        value={description}
-        size="small"
-        onChange={(e) => setDescription(e.target.value)}
-      />
-    </Grid>
+    <>
+      <Grid item xs={5}>
+        <TextField
+          label="Display Name"
+          type="text"
+          inputProps={{ size: 60 }}
+          value={displayName}
+          size="small"
+          onChange={(e) => setDisplayName(e.target.value)}
+        />
+      </Grid>
+      <Grid item xs={5}>
+        <TextField
+          label="Description"
+          type="text"
+          inputProps={{ size: 60 }}
+          value={description}
+          size="small"
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <CheckedInputComponent
+          label="Ordinal"
+          type="number"
+          value={ordinal}
+          inputProps={{ min: 0 }}
+          onFinishChanging={(e) => setOrdinal(e)}
+        />
+      </Grid>
+    </>
   );
 
   const shortCodePriceRIDSID = suppressNonProductInstanceFields ? (
     ""
   ) : (
-    <>
-      <Grid item xs={4}>
+      <Grid item xs={2}>
         <TextField
           label="Short Code"
           type="text"
@@ -105,42 +125,6 @@ const ProductComponent = ({
           onChange={(e) => setShortcode(e.target.value)}
         />
       </Grid>
-      <Grid item xs={4}>
-        <CheckedInputComponent
-          label="Price"
-          fullWidth={false}
-          className="form-control"
-          type="number"
-          size="small"
-          parseFunction={(e) => parseFloat(e).toFixed(2)}
-          value={price}
-          inputProps={{ min: 0.0 }}
-          onFinishChanging={(e) => setPrice(e)}
-        />
-      </Grid>
-      <>
-        <Grid item xs={4}>
-          <TextField
-            label="Revel ID"
-            type="text"
-            inputProps={{ size: 20 }}
-            value={revelID}
-            size="small"
-            onChange={(e) => setRevelID(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            label="Square ID"
-            type="text"
-            inputProps={{ size: 20 }}
-            value={squareID}
-            size="small"
-            onChange={(e) => setSquareID(e.target.value)}
-          />
-        </Grid>
-      </>
-    </>
   );
 
   const modifierEnableFunctionSpecificationList = modifiers.map((modifier, idx) => (
@@ -192,28 +176,42 @@ const ProductComponent = ({
               )}
             />
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Display Name"
-              type="text"
-              inputProps={{ size: 60 }}
-              value={displayName}
-              size="small"
-              onChange={(e) => setDisplayName(e.target.value)}
-            />
-          </Grid>
-          {descriptionField}
-          <Grid item xs={4}>
+          {displayNameDescriptionOrdinalFields}
+          <Grid item xs={2}>
             <CheckedInputComponent
-              label="Ordinal"
+              label="Price"
+              fullWidth={false}
+              className="form-control"
               type="number"
-              value={ordinal}
-              inputProps={{ min: 0 }}
-              onFinishChanging={(e) => setOrdinal(e)}
+              size="small"
+              parseFunction={(e) => parseFloat(e).toFixed(2)}
+              value={price}
+              inputProps={{ min: 0.0 }}
+              onFinishChanging={(e) => setPrice(e)}
             />
           </Grid>
+            <Grid item xs={2}>
+              <TextField
+                label="Revel ID"
+                type="text"
+                inputProps={{ size: 20 }}
+                value={revelID}
+                size="small"
+                onChange={(e) => setRevelID(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <TextField
+                label="Square ID"
+                type="text"
+                inputProps={{ size: 20 }}
+                value={squareID}
+                size="small"
+                onChange={(e) => setSquareID(e.target.value)}
+              />
+            </Grid>
           {shortCodePriceRIDSID}
-          <Grid item xs={4}>
+          <Grid item xs={2}>
             <CheckedInputComponent
               label="Flavor Max"
               type="number"
@@ -223,7 +221,7 @@ const ProductComponent = ({
               onFinishChanging={(e) => setFlavorMax(e)}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={2}>
             <CheckedInputComponent
               label="Bake Max"
               type="number"
@@ -233,7 +231,7 @@ const ProductComponent = ({
               onFinishChanging={(e) => setBakeMax(e)}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={2}>
             <CheckedInputComponent
               label="Bake Differential Max"
               type="number"
@@ -253,11 +251,11 @@ const ProductComponent = ({
                   name="Show Name of Base Product Instead of Component Modifiers"
                 />
               }
-              labelPlacement="top"
+              labelPlacement="end"
               label="Show Name of Base Product Instead of Component Modifiers"
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               label="Singular Noun"
               type="text"

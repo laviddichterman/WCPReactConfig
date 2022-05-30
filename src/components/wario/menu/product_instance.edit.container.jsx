@@ -7,7 +7,6 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
   const [displayName, setDisplayName] = useState(product_instance.item.display_name);
   const [description, setDescription] = useState(product_instance.item.description);
   const [shortcode, setShortcode] = useState(product_instance.item.shortcode);
-  const [price, setPrice] = useState(product_instance.item.price.amount / 100);
   const [ordinal, setOrdinal] = useState(product_instance.ordinal || 0);
   const [revelID, setRevelID] = useState(product_instance.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(product_instance.item?.externalIDs?.squareID ?? "");
@@ -46,7 +45,6 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
             description,
             shortcode,
             ordinal,
-            price: { amount: price * 100, currency: "USD" },
             revelID,
             squareID,
             modifiers,
@@ -96,8 +94,6 @@ const ProductInstanceEditContainer = ({ ENDPOINT, modifier_types_map, parent_pro
       setDescription={setDescription}
       shortcode={shortcode}
       setShortcode={setShortcode}
-      price={price}
-      setPrice={setPrice}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       revelID={revelID}

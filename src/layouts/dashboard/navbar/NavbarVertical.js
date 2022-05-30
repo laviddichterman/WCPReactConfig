@@ -13,8 +13,11 @@ import cssStyles from '../../../utils/cssStyles';
 import { NAVBAR } from '../../../config';
 // components
 import Logo from '../../../components/Logo';
+import Label from '../../../components/Label';
 import Scrollbar from '../../../components/Scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
+import PACKAGE from '../../../../package.json';
+
 //
 import navConfig from './NavConfig';
 import CollapseButton from './CollapseButton';
@@ -73,10 +76,14 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Logo />
-
           {isDesktop && !isCollapse && (
             <CollapseButton onToggleCollapse={onToggleCollapse} collapseClick={collapseClick} />
           )}
+        </Stack>
+        <Stack>
+          <Label color="info">
+            {`v${PACKAGE.version}`}
+          </Label>
         </Stack>
       </Stack>
 
