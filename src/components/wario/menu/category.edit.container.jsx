@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import { useAuth0 } from '@auth0/auth0-react';
 import CategoryComponent from "./category.component";
 
@@ -55,18 +54,10 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
 
   return (
     <CategoryComponent 
-      actions={[
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,
-        <Button
-          onClick={editCategory}
-          disabled={name.length === 0 || ordinal < 0 || isProcessing}>
-          Save
-        </Button>
-      ]}
+      confirmText="Save"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={editCategory}
+      isProcessing={isProcessing}
       categories={Object.values(categories).filter(cat => cat.category._id !== category._id)}
       description={description}
       setDescription={setDescription}

@@ -8,11 +8,15 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import { ElementActionComponent } from "./element.action.component";
 import CheckedInputComponent from "../checked_input.component";
 
 const CategoryComponent = ({ 
+  onCloseCallback,
+  onConfirmClick,
+  isProcessing,
+  confirmText,
   categories, 
-  actions, 
   description, setDescription, 
   ordinal, setOrdinal,
   subheading, setSubheading, 
@@ -20,19 +24,15 @@ const CategoryComponent = ({
   name, setName,
   callLineName, setCallLineName,
   callLineDisplay, setCallLineDisplay, 
-  parent, setParent }) => {
-  const actions_html = actions.length === 0 ? "" : 
-    (<Grid container justifyContent="flex-end" item xs={12}>
-      {actions.map((action, idx) => (
-        <Grid item key={idx}>
-          {action}
-        </Grid>
-      ))}
-    </Grid>);
-    
-  return (
-    <div>
-      <Grid container spacing={3} justifyContent="center">
+  parent, setParent }) => (
+  <ElementActionComponent 
+    onCloseCallback={onCloseCallback}
+    onConfirmClick={onConfirmClick}
+    isProcessing={isProcessing}
+    disableConfirmOn={name.length === 0 || ordinal < 0 || isProcessing}
+    confirmText={confirmText}
+    body={
+      <>
         <Grid item xs={6}>
           <TextField
             label="Category Name"
@@ -135,10 +135,10 @@ const CategoryComponent = ({
             </RadioGroup>
           </FormControl>
         </Grid>
-        {actions_html}
-      </Grid>
-    </div>
+      </>
+      }
+    />
   );
-};
+
 
 export default CategoryComponent;

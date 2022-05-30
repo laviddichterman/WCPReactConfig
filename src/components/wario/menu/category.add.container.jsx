@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
 import { useAuth0 } from '@auth0/auth0-react';
 import CategoryComponent from "./category.component";
 
@@ -63,19 +62,10 @@ const CategoryAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
 
   return (
     <CategoryComponent 
-      actions={[
-        <Button
-          onClick={onCloseCallback}
-          disabled={isProcessing}>
-          Cancel
-        </Button>,
-        <Button
-          onClick={addCategory}
-          disabled={name.length === 0 || ordinal < 0 || isProcessing}
-        >
-          Add
-        </Button>
-      ]}
+      confirmText="Add"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={addCategory}
+      isProcessing={isProcessing}
       categories={Object.values(categories)}
       description={description}
       setDescription={setDescription}
