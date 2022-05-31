@@ -7,7 +7,7 @@ import useSocketIo from '../../hooks/useSocketIo';
 import Page from '../../components/Page';
 // sections
 import MenuBuilderComponent from "../../components/wario/menu/menu_builder.component";
-
+import LoadingScreen from '../../components/LoadingScreen';
 import {HOST_API} from '../../config';
 
 // ----------------------------------------------------------------------
@@ -17,6 +17,10 @@ export default function GeneralCatalog() {
   const { catalog, services } = useSocketIo();
 
   const { themeStretch } = useSettings();
+
+  if (!services || !catalog) {
+    return <LoadingScreen />
+  }
 
   return (
     <Page title="Catalog Management">
