@@ -46,7 +46,7 @@ AuthProvider.propTypes = {
 
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { isLoading, user, isAuthenticated, getAccessTokenSilently, loginWithRedirect, logout} = useAuth0();
+  const { isLoading, user, isAuthenticated, getAccessTokenSilently, loginWithPopup, logout} = useAuth0();
 
   useEffect(() => {
     const initialize = async () => {
@@ -73,13 +73,13 @@ function AuthProvider({ children }) {
         type: 'INITIALIZE',
         payload: { isAuthenticated, user: null },
       });
-      loginWithRedirect();
+      loginWithPopup();
     }
 
-  }, [isLoading, getAccessTokenSilently, loginWithRedirect, user, isAuthenticated]);
+  }, [isLoading, getAccessTokenSilently, loginWithPopup, user, isAuthenticated]);
 
   const login = async () => {
-    await loginWithRedirect();
+    await loginWithPopup();
 
     if (isAuthenticated) {
       dispatch({ type: 'LOGIN', payload: { user } });

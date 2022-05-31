@@ -4,7 +4,6 @@ import { Navigate, useRoutes, useLocation } from 'react-router-dom';
 import DashboardLayout from '../layouts/dashboard';
 import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
 // guards
-import GuestGuard from '../guards/GuestGuard';
 import AuthGuard from '../guards/AuthGuard';
 // config
 import { PATH_AFTER_LOGIN } from '../config';
@@ -26,21 +25,6 @@ const Loadable = (Component) => (props) => {
 
 export default function Router() {
   return useRoutes([
-    // auth routes
-    {
-      path: 'auth',
-      children: [
-        {
-          path: 'login',
-          element: (
-            <GuestGuard>
-              <Login />
-            </GuestGuard>
-          ),
-        },
-      ],
-    },
-
     // Dashboard Routes
     {
       path: 'dashboard',
@@ -55,7 +39,6 @@ export default function Router() {
         { path: 'credit', element: <GeneralCredit /> },
         { path: 'catalog', element: <GeneralCatalog /> },
         { path: 'settings', element: <GeneralSettings /> },
-
         {
           path: 'user',
           children: [
@@ -80,7 +63,7 @@ export default function Router() {
         { path: '500', element: <Page500 /> },
         { path: '404', element: <Page404 /> },
         { path: '403', element: <Page403 /> },
-        { path: '*', element: <Navigate to="/404" replace /> },
+        { path: '*', element: <Navigate to={PATH_AFTER_LOGIN} replace /> },
       ],
     },
     {
@@ -90,9 +73,6 @@ export default function Router() {
     { path: '*', element: <Navigate to="/404" replace /> },
   ]);
 }
-
-// AUTHENTICATION
-const Login = Loadable(lazy(() => import('../pages/auth/Login')));
 
 // DASHBOARD
 
