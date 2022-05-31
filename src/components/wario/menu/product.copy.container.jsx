@@ -17,7 +17,7 @@ const useIndexedState = (x) => {
 
 const ProductCopyContainer = ({ ENDPOINT, modifier_types, services, product_instance_functions, categories, products, product, onCloseCallback }) => {
   const [price, setPrice] = useState((product.price?.amount ?? 0) / 100);
-  const [disabled, setDisabled] = useState(product.item?.disabled);
+  const [disabled, setDisabled] = useState(product.disabled);
   const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
   const [revelID, setRevelID] = useState(product.item?.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(product.item?.externalIDs?.squareID ?? "");
