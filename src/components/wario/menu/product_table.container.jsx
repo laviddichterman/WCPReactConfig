@@ -59,7 +59,6 @@ const ProductTableContainer = ({
   const GetIndexOfBaseProductInstance = useCallback((pid) =>
    catalog.products[pid].instances.findIndex((pi) => pi.is_base), [catalog.products]);
 
-
   const getDetailPanelHeight = useCallback(({ row }) => catalog.products[row.product._id].instances.length ? (41 + (catalog.products[row.product._id].instances.length * 36) ) : 0, [catalog]);
 
   const getDetailPanelContent = useCallback(({ row }) => catalog.products[row.product._id].instances.length ? (
@@ -117,7 +116,7 @@ const ProductTableContainer = ({
           type: 'actions',
           getActions: (params) => {
             const base_piidx = GetIndexOfBaseProductInstance(params.row.product._id);
-            const title = params.row.instances[base_piidx].item.display_name ?? "Product";
+            const title = base_piidx !== -1 ? params.row.instances[base_piidx].item.display_name : "Incomplete Product";
             const ADD_PRODUCT_INSTANCE = (<GridActionsCellItem
               icon={<Tooltip title={`Add Product Instance to ${title}`}><AddBox/></Tooltip>}
               label={`Add Product Instance to ${title}`}
@@ -161,7 +160,7 @@ const ProductTableContainer = ({
             return params.row.product.disabled ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           } 
         },
-        { headerName: "Name", field: "display_name", valueGetter: v => v.row.instances[GetIndexOfBaseProductInstance(v.row.product._id)].item.display_name, defaultSort: "asc", flex: 4 },
+        { headerName: "Name", field: "display_name", valueGetter: v => GetIndexOfBaseProductInstance(v.row.product._id) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.product._id)].item.display_name : "Incomplete Product", defaultSort: "asc", flex: 4 },
         { headerName: "Price", field: "product.price.amount", valueGetter: v => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
         { headerName: "Modifiers", field: "product.modifiers", valueGetter: v => v.row.product.modifiers ? v.row.product.modifiers.map(x=>catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "" , flex: 2},
         // eslint-disable-next-line no-nested-ternary
