@@ -112,8 +112,9 @@ const CategoryTableContainer = ({
         },
         { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.category.ordinal, defaultSort: "asc", width: 30 },
         { headerName: "Call Line Name", field: "category.display_flags.call_line_name", valueGetter: v => v.row.category.display_flags.call_line_name },
-        { headerName: "Description", field: "category.description", valueGetter: v => v.row.category.description, },
-        { headerName: "Subheading", field: "category.ordinal", valueGetter: v => v.row.category.subheading, },
+        { headerName: "Description", field: "category.description", valueGetter: v => v.row.category.description },
+        { headerName: "Subheading", field: "category.subheading", valueGetter: v => v.row.category.subheading },
+        { headerName: "Footer", field: "category.footer", valueGetter: v => v.row.category.footer },
       ]}
       toolbarActions={[
         {
