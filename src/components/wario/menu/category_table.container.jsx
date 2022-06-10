@@ -137,7 +137,7 @@ const CategoryTableContainer = ({
         {
           size: 1, 
           elt:
-            <Tooltip key="ADDNEW" title="Add new..."><IconButton onClick={() => setIsCategoryInterstitialOpen(true)}><AddBox /></IconButton></Tooltip>
+            <Tooltip key="AddNew" title="Add new..."><IconButton onClick={() => setIsCategoryInterstitialOpen(true)}><AddBox /></IconButton></Tooltip>
         }
 
       ]}

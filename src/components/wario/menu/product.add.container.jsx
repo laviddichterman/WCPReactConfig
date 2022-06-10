@@ -11,8 +11,6 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, services, product_insta
   const [disabled, setDisabled] = useState(null);
   const [serviceDisabled, setServiceDisabled] = useState([]);
   const [ordinal, setOrdinal] = useState(0);
-  const [revelID, setRevelID] = useState("");
-  const [squareID, setSquareID] = useState("");
   const [flavorMax, setFlavorMax] = useState(10);
   const [bakeMax, setBakeMax] = useState(10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(100);
@@ -44,8 +42,6 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, services, product_insta
             service_disable: serviceDisabled,
             ordinal,
             price: { amount: price * 100, currency: "USD" },
-            revelID,
-            squareID,
             display_flags: {
               bake_differential: bakeDifferentialMax,
               show_name_of_base_product: showNameOfBaseProduct,
@@ -66,8 +62,6 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, services, product_insta
           setDisabled(null);
           setServiceDisabled([]);
           setOrdinal(0);
-          setRevelID("");
-          setSquareID("");
           setFlavorMax(10);
           setBakeMax(10);  
           setBakeDifferentialMax(100);
@@ -111,10 +105,6 @@ const ProductAddContainer = ({ ENDPOINT, modifier_types, services, product_insta
       setServiceDisabled={setServiceDisabled}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
-      revelID={revelID}
-      setRevelID={setRevelID}
-      squareID={squareID}
-      setSquareID={setSquareID}
       flavorMax={flavorMax}
       setFlavorMax={setFlavorMax}
       bakeMax={bakeMax}

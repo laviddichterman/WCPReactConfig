@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import moment from "moment";
+import { getTime, endOfDay } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
 import Grid from "@mui/material/Grid";
 
@@ -24,15 +24,13 @@ const ModifierOptionDisableUntilEodContainer = ({ ENDPOINT, modifier_option, onC
             display_name: modifier_option.item.display_name,
             description: modifier_option.item.description,
             shortcode: modifier_option.item.shortcode,
-            disabled: { start: moment().valueOf(), end: moment().hour(23).minute(59).valueOf() },
+            disabled: { start: getTime(new Date()), end: getTime(endOfDay(new Date())) },
             price: modifier_option.item.price,
             ordinal: modifier_option.ordinal,
             enable_function: modifier_option.enable_function,
             flavor_factor: modifier_option.metadata.flavor_factor,
             bake_factor: modifier_option.metadata.bake_factor,
             can_split: modifier_option.metadata.can_split,
-            revelID: modifier_option.item?.externalIDs?.revelID,
-            squareID: modifier_option.item?.externalIDs?.squareID,
             display_flags: {
               omit_from_shortname: modifier_option.display_flags?.omit_from_shortname,
               omit_from_name: modifier_option.display_flags?.omit_from_name

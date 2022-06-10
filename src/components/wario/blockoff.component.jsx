@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import moment from 'moment';
+import { add, format, parse } from "date-fns";
 import { Card, 
   CardHeader, 
   Chip, 
@@ -49,8 +49,8 @@ const BlockOffComp = ({
 }) => {
   const [ upper_time, setUpperTime ] = useState(null);
   const [ lower_time, setLowerTime ] = useState(null);
-  const [ selected_date, setSelectedDate ] = useState(moment());
-  const [ parsed_date, setParsedDate ] = useState(moment().format(WDateUtils.DATE_STRING_INTERNAL_FORMAT));
+  const [ selected_date, setSelectedDate ] = useState(new Date());
+  const [ parsed_date, setParsedDate ] = useState(format(new Date(), WDateUtils.DATE_STRING_INTERNAL_FORMAT));
   const [ service_selection, setServiceSelection ] = useState(Array(SERVICES.length).fill(true));
   const [ can_submit, setCanSubmit ] = useState(false);
   const [ isProcessing, setIsProcessing ] = useState(false);
@@ -59,7 +59,7 @@ const BlockOffComp = ({
 
   const HasOptionsForDate = (date) => {
     const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, date, service_selection, {});
-    return WDateUtils.GetOptionsForDate(INFO, date, moment()).filter(x => !x.disabled).length
+    return WDateUtils.GetOptionsForDate(INFO, date, new Date()).filter(x => !x.disabled).length
   }
 
   const postBlockedOff = async (new_blocked_off) => {
@@ -214,7 +214,7 @@ const BlockOffComp = ({
   const setDate = date => {
     setSelectedDate(date);
     setParsedDate(date ?
-        moment(date).format(WDateUtils.DATE_STRING_INTERNAL_FORMAT) :
+        format(date, WDateUtils.DATE_STRING_INTERNAL_FORMAT) :
         "");
     setLowerTime(null);
     setUpperTime(null);
@@ -288,7 +288,7 @@ const BlockOffComp = ({
       return (
         <Container key={j}>
           <ListItem>
-            {moment(BLOCKED_OFF[i][j][0], WDateUtils.DATE_STRING_INTERNAL_FORMAT).format('dddd, MMMM DD, Y')}
+            {format(parse(BLOCKED_OFF[i][j][0], WDateUtils.DATE_STRING_INTERNAL_FORMAT, new Date()), 'EEEE, MMMM dd, y')}
             <ListItemSecondaryAction>
               <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(i,j)}>
                 <HighlightOff />
@@ -316,7 +316,7 @@ const BlockOffComp = ({
     WDateUtils.GetOptionsForDate(
       WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, selected_date, service_selection, {}), 
       selected_date,
-      moment()) : [];
+      new Date()) : [];
   const end_options = start_options.length && lower_time ?
     TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
   return (
@@ -335,12 +335,12 @@ const BlockOffComp = ({
               closeOnSelect
               placeholder={"Select Date"}
               showToolbar={false}
-              minDate={moment()}
-              maxDate={moment().add(60, 'days')}
+              minDate={new Date()}
+              maxDate={add(new Date(), {days: 60})}
               shouldDisableDate={e => !HasOptionsForDate(e)}
               value={selected_date}
               onChange={date => setDate(date)}
-              inputFormat="dddd, MMMM DD, Y"
+              inputFormat="EEEE, MMMM dd, y"
             />
           </Grid>
           <Grid item xs={5}>

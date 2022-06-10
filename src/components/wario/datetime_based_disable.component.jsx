@@ -1,11 +1,10 @@
 import React, {useState} from "react";
-
+import { endOfDay, getTime } from 'date-fns'
 import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from '@mui/material/TextField';
 import { DateTimePicker } from '@mui/x-date-pickers';
-import moment from "moment";
 
 const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
   const [enabled, setEnabled] = useState(!disabled);
@@ -13,19 +12,19 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
     disabled && disabled.start <= disabled.end
   );
   const [disabledStart, setDisabledStart] = useState(
-    disabled && disabled.start && disabled.start !== 1 ? moment(disabled.start) : moment()
+    disabled && disabled.start && disabled.start !== 1 ? disabled.start : getTime(new Date())
   );
   const [disabledEnd, setDisabledEnd] = useState(
     disabled && disabled.end && disabled.end !== 0
-      ? moment(disabled.end)
-      : moment().hour(23).minute(59)
+      ? disabled.end
+      : getTime(endOfDay(new Date()))
   );
 
   const toggleEnabled = () => {
     if (enabled) {
       setEnabled(false);
       if (isDatetimeBased) {
-        setDisabled({ start: disabledStart.valueOf(), end: disabledEnd.valueOf() });
+        setDisabled({ start: disabledStart, end: disabledEnd });
       }
       else {
         setDisabled({ start: 1, end: 0 });
@@ -43,18 +42,18 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
       setDisabled(enabled ? null : { start: 1, end: 0 });
     } else {
       setIsDatetimeBased(true);
-      setDisabled({ start: disabledStart.valueOf(), end: disabledEnd.valueOf() });
+      setDisabled({ start: disabledStart, end: disabledEnd });
     }
   };
 
   const updateDisabledStart = (start) => {
     setDisabledStart(start);
-    setDisabled({ start: start.valueOf(), end: disabled.end });
+    setDisabled({ start: getTime(start), end: disabled.end });
   };
 
   const updateDisabledEnd = (end) => {
     setDisabledEnd(end);
-    setDisabled({ start: disabled.start, end: end.valueOf() });
+    setDisabled({ start: disabled.start, end: getTime(end) });
   };
 
   return (
@@ -98,7 +97,7 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
               disablePast
               value={disabledStart}
               onChange={(date) => updateDisabledStart(date)}
-              inputFormat="MMMM DD, Y hh:mm A"
+              inputFormat="MMM dd, y hh:mm a"
               disableMaskedInput
             />
           </Grid>
@@ -112,7 +111,7 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
               minDateTime={disabledStart}
               value={disabledEnd}
               onChange={(date) => updateDisabledEnd(date)}
-              inputFormat="MMMM DD, Y hh:mm A"
+              inputFormat="MMM dd, y hh:mm a"
               disableMaskedInput
             />
           </Grid>

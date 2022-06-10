@@ -122,8 +122,6 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
                 bake_max: 10,
                 singular_noun: "",
               },
-              revelID: "",
-              squareID: "",
               category_ids: parentCategories.map(x => x.category._id),
               modifiers: [],
               create_product_instance: true

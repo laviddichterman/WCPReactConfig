@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import moment from 'moment';
-
+import { format, setDay } from 'date-fns';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Card, CardHeader, Grid, Button, IconButton } from '@mui/material';
 
@@ -200,7 +199,7 @@ const SettingsComponent = ({
       return (
         <Grid container item xs={12} key={i}>
           <Grid item xs={1}>
-            {moment(i, 'e').format('dddd')}:
+            {format(setDay(new Date(), i), 'EEEE')}:
           </Grid>
           {operating_hours_day_intervals_html}
           <Grid item xs />

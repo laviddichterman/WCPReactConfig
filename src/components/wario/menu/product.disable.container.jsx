@@ -24,8 +24,6 @@ const ProductDisableContainer = ({ ENDPOINT, product, onCloseCallback }) => {
             disabled: { start: 1, end: 0 },
             service_disable: product.service_disable,
             price: product.price,
-            revelID: product.item.externalIDs?.revelID,
-            squareID: product.item.externalIDs?.squareID,
             display_flags: product.display_flags,
             category_ids: product.category_ids,
             modifiers: product.modifiers,

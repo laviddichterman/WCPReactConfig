@@ -24,8 +24,6 @@ const ProductEnableContainer = ({ ENDPOINT, product, productName, onCloseCallbac
             disabled: null,
             service_disable: product.service_disable,
             price: product.price,
-            revelID: product.item.externalIDs?.revelID,
-            squareID: product.item.externalIDs?.squareID,
             display_flags: product.display_flags,
             category_ids: product.category_ids,
             modifiers: product.modifiers,

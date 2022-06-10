@@ -1,17 +1,17 @@
-import React from "react";
+import React from 'react';
 
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import Switch from "@mui/material/Switch";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Switch from '@mui/material/Switch';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Autocomplete from '@mui/material/Autocomplete';
-import CheckedInputComponent from "../checked_input.component";
-import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
-import { ElementActionComponent } from "./element.action.component";
+import CheckedInputComponent from '../checked_input.component';
+import DatetimeBasedDisableComponent from '../datetime_based_disable.component';
+import { ElementActionComponent } from './element.action.component';
 
 const ProductComponent = ({
   confirmText,
@@ -38,10 +38,6 @@ const ProductComponent = ({
   setServiceDisabled,
   ordinal,
   setOrdinal,
-  revelID,
-  setRevelID,
-  squareID,
-  setSquareID,
   flavorMax,
   setFlavorMax,
   bakeMax,
@@ -59,7 +55,7 @@ const ProductComponent = ({
   // Object mapping MTID to enable function
   modifierEnableFunctions,
   setModifierEnableFunctions,
-  children
+  children,
 }) => {
   const handleSetModifiers = (mods) => {
     const sorted = mods.sort((a, b) => a.modifier_type.ordinal - b.modifier_type.ordinal);
@@ -67,17 +63,17 @@ const ProductComponent = ({
       setShowNameOfBaseProduct(true);
     }
     setModifiers(sorted);
-  }
+  };
 
   const handleSetModifierEnableFunction = (mtid, enable) => {
     const newValue = {};
     Object.assign(newValue, modifierEnableFunctions);
     newValue[mtid] = enable;
     setModifierEnableFunctions(newValue);
-  }
+  };
 
   const displayNameDescriptionOrdinalFields = suppressNonProductInstanceFields ? (
-    ""
+    ''
   ) : (
     <>
       <Grid item xs={5}>
@@ -112,54 +108,36 @@ const ProductComponent = ({
     </>
   );
 
-  const shortCodePriceRIDSID = suppressNonProductInstanceFields ? (
-    ""
-  ) : (
-      <Grid item xs={2}>
-        <TextField
-          label="Short Code"
-          type="text"
-          inputProps={{ size: 40 }}
-          value={shortcode}
-          size="small"
-          onChange={(e) => setShortcode(e.target.value)}
-        />
-      </Grid>
-  );
-
   const modifierEnableFunctionSpecificationList = modifiers.map((modifier, idx) => (
-      <Grid item xs={6} key={idx}>
-        <Card>
-          <CardContent>
-            <FormControl component="fieldset">
-              <FormLabel>Modifier Details: {modifier.modifier_type.name}</FormLabel>
-              <Autocomplete
-                style={{ width: 225 }}
-                options={product_instance_functions}
-                value={ modifierEnableFunctions[modifier.modifier_type._id] || null }
-                onChange={(e, v) => handleSetModifierEnableFunction(modifier.modifier_type._id, v) }
-                getOptionLabel={(option) => option?.name ?? "CORRUPT DATA"}
-                isOptionEqualToValue={(option, value) => option && value && option._id === value._id }
-                renderInput={(params) => (
-                  <TextField {...params} label="Enable Function Name" />
-                )}
-              />
-            </FormControl>
-          </CardContent>
-        </Card>
-      </Grid>
-    )
-  );
+    <Grid item xs={6} key={idx}>
+      <Card>
+        <CardContent>
+          <FormControl component="fieldset">
+            <FormLabel>Modifier Details: {modifier.modifier_type.name}</FormLabel>
+            <Autocomplete
+              style={{ width: 225 }}
+              options={product_instance_functions}
+              value={modifierEnableFunctions[modifier.modifier_type._id] || null}
+              onChange={(e, v) => handleSetModifierEnableFunction(modifier.modifier_type._id, v)}
+              getOptionLabel={(option) => option?.name ?? 'CORRUPT DATA'}
+              isOptionEqualToValue={(option, value) => option && value && option._id === value._id}
+              renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
+            />
+          </FormControl>
+        </CardContent>
+      </Card>
+    </Grid>
+  ));
 
   return (
-    <ElementActionComponent 
+    <ElementActionComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={onConfirmClick}
       isProcessing={isProcessing}
       disableConfirmOn={disableConfirmOn}
       confirmText={confirmText}
       body={
-      <>
+        <>
           <Grid item xs={12}>
             <Autocomplete
               multiple
@@ -168,16 +146,12 @@ const ProductComponent = ({
               value={parentCategories.filter((x) => x)}
               onChange={(e, v) => setParentCategories(v)}
               getOptionLabel={(option) => option.category.name}
-              isOptionEqualToValue={(option, value) =>
-                option.category._id === value.category._id
-              }
-              renderInput={(params) => (
-                <TextField {...params} label="Categories" />
-              )}
+              isOptionEqualToValue={(option, value) => option.category._id === value.category._id}
+              renderInput={(params) => <TextField {...params} label="Categories" />}
             />
           </Grid>
           {displayNameDescriptionOrdinalFields}
-          <Grid item xs={2}>
+          <Grid item xs={4}>
             <CheckedInputComponent
               label="Price"
               fullWidth={false}
@@ -190,27 +164,20 @@ const ProductComponent = ({
               onFinishChanging={(e) => setPrice(e)}
             />
           </Grid>
+          {suppressNonProductInstanceFields ? (
+            ''
+          ) : (
             <Grid item xs={2}>
               <TextField
-                label="Revel ID"
+                label="Short Code"
                 type="text"
-                inputProps={{ size: 20 }}
-                value={revelID}
+                inputProps={{ size: 40 }}
+                value={shortcode}
                 size="small"
-                onChange={(e) => setRevelID(e.target.value)}
+                onChange={(e) => setShortcode(e.target.value)}
               />
             </Grid>
-            <Grid item xs={2}>
-              <TextField
-                label="Square ID"
-                type="text"
-                inputProps={{ size: 20 }}
-                value={squareID}
-                size="small"
-                onChange={(e) => setSquareID(e.target.value)}
-              />
-            </Grid>
-          {shortCodePriceRIDSID}
+          )}
           <Grid item xs={2}>
             <CheckedInputComponent
               label="Flavor Max"
@@ -270,18 +237,12 @@ const ProductComponent = ({
               filterSelectedOptions
               options={Object.values(modifier_types)}
               value={modifiers}
-              onChange={(e, v) => handleSetModifiers(v) }
-              getOptionLabel={(option) =>
-                option ? option.modifier_type.name : "CORRUPT DATA"
-              }
+              onChange={(e, v) => handleSetModifiers(v)}
+              getOptionLabel={(option) => (option ? option.modifier_type.name : 'CORRUPT DATA')}
               isOptionEqualToValue={(option, value) =>
-                option &&
-                value &&
-                option.modifier_type._id === value.modifier_type._id
+                option && value && option.modifier_type._id === value.modifier_type._id
               }
-              renderInput={(params) => (
-                <TextField {...params} label="Modifiers" />
-              )}
+              renderInput={(params) => <TextField {...params} label="Modifiers" />}
             />
           </Grid>
           {modifierEnableFunctionSpecificationList}
@@ -290,23 +251,21 @@ const ProductComponent = ({
               multiple
               filterSelectedOptions
               options={Object.keys(services)}
-              value={serviceDisabled.map(x=>String(x))}
-              onChange={(e, v) => {setServiceDisabled(v.map(x=>Number(x)))}}
+              value={serviceDisabled.map((x) => String(x))}
+              onChange={(e, v) => {
+                setServiceDisabled(v.map((x) => Number(x)));
+              }}
               getOptionLabel={(option) => services[option]}
               isOptionEqualToValue={(option, value) => option === value}
-              renderInput={(params) => (
-                <TextField {...params} label="Disabled Services" />
-              )}
+              renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />
           </Grid>
           <Grid item xs={12}>
-            <DatetimeBasedDisableComponent
-              disabled={disabled}
-              setDisabled={setDisabled}
-            />
+            <DatetimeBasedDisableComponent disabled={disabled} setDisabled={setDisabled} />
           </Grid>
           {children}
-        </>}
+        </>
+      }
     />
   );
 };

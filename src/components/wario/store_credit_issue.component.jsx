@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-
+import { addDays } from "date-fns";
 import IconButton from "@mui/material/IconButton";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import { DatePicker } from '@mui/x-date-pickers';
-import moment from "moment";
 import {Grid, Card, CardHeader, Divider} from "@mui/material";
 
 import { WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
@@ -21,7 +20,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
   const [lastName, setLastName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientEmailError, setRecipientEmailError] = useState(false);
-  const [expiration, setExpiration] = useState(moment().add(60, "days"));
+  const [expiration, setExpiration] = useState(addDays(new Date(), 60));
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -59,7 +58,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
         setLastName("");
         setRecipientEmail("");
         setRecipientEmailError(false);
-        setExpiration(moment().add(60, "days"))
+        setExpiration(addDays(new Date(), 60))
         setIsProcessing(false);
       } catch (error) {
         console.error(error);
@@ -127,11 +126,11 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
             clearable
             placeholder={"Select Date"}
             showToolbar={false}
-            minDate={moment().add(30, "days")}
+            minDate={addDays(new Date(), 30)}
             label="Expiration"
             value={expiration}
             onChange={(date) => { setExpiration(date) } }
-            inputFormat="dddd, MMMM DD, Y"
+            inputFormat="EEEE, MMMM dd, y"
           />
           <IconButton
             sx={{p:2}}

@@ -29,7 +29,7 @@ const ProductInstanceFunctionTableContainer = ({
       toolbarActions={[{
         size: 1, 
         elt:
-          <Tooltip key="ADDNEW" title="Add Product Function"><IconButton onClick={() => setIsProductInstanceFunctionAddOpen(true)}><AddBox /></IconButton></Tooltip>
+          <Tooltip key="AddNew" title="Add Product Function"><IconButton onClick={() => setIsProductInstanceFunctionAddOpen(true)}><AddBox /></IconButton></Tooltip>
       }]}
       rows={product_instance_functions}
       getRowId={(row) => row._id}
@@ -43,13 +43,13 @@ const ProductInstanceFunctionTableContainer = ({
               icon={<Tooltip title="Edit Product Function"><Edit/></Tooltip>}
               label="Edit Product Function"
               onClick={editProductFunction(params.row)}
-              key="EDITPF"
+              key="EditPF"
             />,
             <GridActionsCellItem
               icon={<Tooltip title="Delete Product Function"><DeleteOutline/></Tooltip>}
               label="Delete Product Function"
               onClick={deleteProductFunction(params.row)}
-              key="DELPF"
+              key="DelPF"
             />
           ]
         },

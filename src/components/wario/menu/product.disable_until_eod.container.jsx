@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-
+import { getTime, endOfDay } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
-import moment from "moment";
 import Grid from "@mui/material/Grid";
 import { ElementActionComponent } from "./element.action.component";
 
@@ -22,11 +21,9 @@ const ProductDisableUntilEodContainer = ({ ENDPOINT, product, productName, onClo
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            disabled: { start: moment().valueOf(), end: moment().hour(23).minute(59).valueOf() },
+            disabled: { start: getTime(new Date()), end: getTime(endOfDay(new Date())) },
             service_disable: product.service_disable,
             price: product.price,
-            revelID: product.item.externalIDs?.revelID,
-            squareID: product.item.externalIDs?.squareID,
             display_flags: product.display_flags,
             category_ids: product.category_ids,
             modifiers: product.modifiers,

@@ -1,10 +1,11 @@
 import React, {useCallback} from "react";
-import moment from 'moment';
-
+import { format } from 'date-fns';
+import { DisableDataCheck } from '@wcp/wcpshared';
 import {GridActionsCellItem}  from "@mui/x-data-grid";
 import {useGridApiRef} from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
+
 import TableWrapperComponent from "../table_wrapper.component";
 
 const ProductTableContainer = ({
@@ -157,14 +158,14 @@ const ProductTableContainer = ({
               onClick={deleteProduct(params.row)}
               showInMenu
             />);
-            return params.row.product.disabled ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
+            return !DisableDataCheck(params.row.product.disabled, new Date()) ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           } 
         },
-        { headerName: "Name", field: "display_name", valueGetter: v => GetIndexOfBaseProductInstance(v.row.product._id) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.product._id)].item.display_name : "Incomplete Product", defaultSort: "asc", flex: 4 },
+        { headerName: "Name", field: "display_name", valueGetter: v => GetIndexOfBaseProductInstance(v.row.product._id) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.product._id)].item.display_name : "Incomplete Product", defaultSort: "asc", flex: 6 },
         { headerName: "Price", field: "product.price.amount", valueGetter: v => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
-        { headerName: "Modifiers", field: "product.modifiers", valueGetter: v => v.row.product.modifiers ? v.row.product.modifiers.map(x=>catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "" , flex: 2},
+        { headerName: "Modifiers", field: "product.modifiers", valueGetter: v => v.row.product.modifiers ? v.row.product.modifiers.map(x=>catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "" , flex: 3},
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "product.disabled", valueGetter: v => v.row.product.disabled ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${moment(v.row.product.disabled.start).format("MMMM DD, Y hh:mm A")} to ${moment(v.row.product.disabled.end).format("MMMM DD, Y hh:mm A")}`) : "False" },
+        { headerName: "Disabled", field: "product.disabled", valueGetter: v => !DisableDataCheck(v.row.product.disabled, new Date()) ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(new Date(v.row.product.disabled.start), "MMMM dd, y hh:mm a")} to ${format(new Date(v.row.product.disabled.end), "MMMM dd, y hh:mm a")}`) : "False", flex: 1},
       ]}
       rows={products}
       getRowId={(row) => row.product._id}

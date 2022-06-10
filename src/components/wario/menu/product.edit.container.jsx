@@ -7,8 +7,6 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, services, product_inst
   const [price, setPrice] = useState((product.price?.amount ?? 0) / 100);
   const [disabled, setDisabled] = useState(product.disabled);
   const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
-  const [revelID, setRevelID] = useState(product.item?.externalIDs?.revelID ?? "");
-  const [squareID, setSquareID] = useState(product.item?.externalIDs?.squareID ?? "");
   const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
   const [bakeMax, setBakeMax] = useState(product.display_flags?.bake_max ?? 10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.display_flags?.bake_differential ?? 100);
@@ -37,8 +35,6 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, services, product_inst
             disabled,
             service_disable: serviceDisabled,
             price: { amount: price  * 100, currency: "USD" },
-            revelID,
-            squareID,
             display_flags: {
               bake_differential: bakeDifferentialMax,
               show_name_of_base_product: showNameOfBaseProduct,
@@ -79,10 +75,6 @@ const ProductEditContainer = ({ ENDPOINT, modifier_types, services, product_inst
       setDisabled={setDisabled}
       serviceDisabled={serviceDisabled}
       setServiceDisabled={setServiceDisabled}
-      revelID={revelID}
-      setRevelID={setRevelID}
-      squareID={squareID}
-      setSquareID={setSquareID}
       flavorMax={flavorMax}
       setFlavorMax={setFlavorMax}
       bakeMax={bakeMax}

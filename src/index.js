@@ -28,7 +28,7 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import { createBrowserHistory } from "history";
 // @mui
 // import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 // redux
 import { store, persistor } from './redux/store';
@@ -72,7 +72,7 @@ ReactDOM.render(
       <HelmetProvider>
         <ReduxProvider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
               <SettingsProvider>
                 <CollapseDrawerProvider>
                   <BrowserRouter>
