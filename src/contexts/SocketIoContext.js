@@ -8,13 +8,7 @@ import { SOCKETIO, HOST_API } from '../config';
 // ----------------------------------------------------------------------
 
 export const socketRoClient = socketIOClient(`${HOST_API}/${SOCKETIO.ns}`, { autoConnect: false, secure: true, cookie: false,     
-  transports: ["websocket", "polling"], 
-  allowEIO3: true,
-  cors: {
-    origin: [/.+$/, /https:\/\/.*\.breezytownpizza\.com$/, `http://localhost`],
-    methods: ["GET", "POST"],
-    credentials: true
-  }
+  transports: ["websocket", "polling"], withCredentials: true
  });
 
 const initialState = {

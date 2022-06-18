@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Grid from "@mui/material/Grid";
 import { ElementActionComponent } from "./element.action.component";
 
-const ProductDisableContainer = ({ ENDPOINT, product, onCloseCallback }) => {
+const ProductDisableContainer = ({ ENDPOINT, product, productName, onCloseCallback }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async (e) => {
@@ -49,7 +49,7 @@ const ProductDisableContainer = ({ ENDPOINT, product, onCloseCallback }) => {
       confirmText="Confirm"
       body={
         <Grid item xs={12}>
-          Are you sure you'd like to disable {product.item.display_name}?
+          Are you sure you'd like to disable {productName}?
         </Grid>
       }
     />

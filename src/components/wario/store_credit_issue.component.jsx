@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-import { addDays } from "date-fns";
+import { addDays, isValid, format } from "date-fns";
 import IconButton from "@mui/material/IconButton";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Button from "@mui/material/Button";
@@ -47,7 +47,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
             recipient_email: recipientEmail,
             added_by: addedBy,
             reason,
-            expiration: expiration && expiration.isValid() ? expiration.format(WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
+            expiration: expiration && isValid(expiration) ? format(expiration, WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
           })
         });  
         console.log(JSON.stringify(response));
