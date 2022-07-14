@@ -1,50 +1,45 @@
-import PropTypes from 'prop-types';
 import { m } from 'framer-motion';
-import { forwardRef } from 'react';
+import { forwardRef, ReactNode } from 'react';
 // @mui
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, IconButtonProps } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-const IconButtonAnimate = forwardRef(({ children, size = 'medium', ...other }, ref) => (
-  <AnimateWrap size={size}>
-    <IconButton size={size} ref={ref} {...other}>
-      {children}
-    </IconButton>
-  </AnimateWrap>
-));
-
-IconButtonAnimate.propTypes = {
-  children: PropTypes.node.isRequired,
-  color: PropTypes.oneOf(['inherit', 'default', 'primary', 'secondary', 'info', 'success', 'warning', 'error']),
-  size: PropTypes.oneOf(['small', 'medium', 'large'])
-};
+const IconButtonAnimate = forwardRef<HTMLButtonElement, IconButtonProps>(
+  ({ children, size = 'medium', ...other }, ref) => (
+    <AnimateWrap size={size}>
+      <IconButton size={size} ref={ref} {...other}>
+        {children}
+      </IconButton>
+    </AnimateWrap>
+  )
+);
 
 export default IconButtonAnimate;
 
 // ----------------------------------------------------------------------
 
+type AnimateWrapProp = {
+  children: ReactNode;
+  size: 'small' | 'medium' | 'large';
+};
+
 const varSmall = {
   hover: { scale: 1.1 },
-  tap: { scale: 0.95 }
+  tap: { scale: 0.95 },
 };
 
 const varMedium = {
   hover: { scale: 1.09 },
-  tap: { scale: 0.97 }
+  tap: { scale: 0.97 },
 };
 
 const varLarge = {
   hover: { scale: 1.08 },
-  tap: { scale: 0.99 }
+  tap: { scale: 0.99 },
 };
 
-AnimateWrap.propTypes = {
-  children: PropTypes.node.isRequired,
-  size: PropTypes.oneOf(['small', 'medium', 'large'])
-};
-
-function AnimateWrap({ size, children }) {
+function AnimateWrap({ size, children }: AnimateWrapProp) {
   const isSmall = size === 'small';
   const isLarge = size === 'large';
 
@@ -55,7 +50,7 @@ function AnimateWrap({ size, children }) {
       whileHover="hover"
       variants={(isSmall && varSmall) || (isLarge && varLarge) || varMedium}
       sx={{
-        display: 'inline-flex'
+        display: 'inline-flex',
       }}
     >
       {children}

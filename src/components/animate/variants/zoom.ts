@@ -1,8 +1,11 @@
+// @types
+import { VariantsType } from '../type';
+//
 import { varTranEnter, varTranExit } from './transition';
 
 // ----------------------------------------------------------------------
 
-export const varZoom = (props) => {
+export const varZoom = (props?: VariantsType) => {
   const distance = props?.distance || 720;
   const durationIn = props?.durationIn;
   const durationOut = props?.durationOut;

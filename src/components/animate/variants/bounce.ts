@@ -1,8 +1,11 @@
+// @types
+import { VariantsType } from '../type';
+//
 import { varTranEnter, varTranExit } from './transition';
 
 // ----------------------------------------------------------------------
 
-export const varBounce = (props) => {
+export const varBounce = (props?: VariantsType) => {
   const durationIn = props?.durationIn;
   const durationOut = props?.durationOut;
   const easeIn = props?.easeIn;
