@@ -22,7 +22,7 @@ export function ProgressBarStyle() {
             position: 'fixed',
             zIndex: theme.zIndex.snackbar,
             backgroundColor: theme.palette.primary.main,
-            boxShadow: `0 0 2px ${theme.palette.primary.main}`,
+            boxShadow: `0 0 2px ${theme.palette.primary.main}`
           },
           '& .peg': {
             right: 0,
@@ -32,9 +32,9 @@ export function ProgressBarStyle() {
             display: 'block',
             position: 'absolute',
             transform: 'rotate(3deg) translate(0px, -4px)',
-            boxShadow: `0 0 10px ${theme.palette.primary.main}, 0 0 5px ${theme.palette.primary.main}`,
-          },
-        },
+            boxShadow: `0 0 10px ${theme.palette.primary.main}, 0 0 5px ${theme.palette.primary.main}`
+          }
+        }
       }}
     />
   );
@@ -42,7 +42,7 @@ export function ProgressBarStyle() {
 
 export default function ProgressBar() {
   NProgress.configure({
-    showSpinner: false,
+    showSpinner: false
   });
 
   useMemo(() => {

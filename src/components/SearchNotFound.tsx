@@ -1,13 +1,12 @@
-import PropTypes from 'prop-types';
-import { Paper, Typography } from '@mui/material';
+import { Paper, PaperProps, Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-SearchNotFound.propTypes = {
-  searchQuery: PropTypes.string,
-};
+interface Props extends PaperProps {
+  searchQuery?: string;
+}
 
-export default function SearchNotFound({ searchQuery = '', ...other }) {
+export default function SearchNotFound({ searchQuery = '', ...other }: Props) {
   return searchQuery ? (
     <Paper {...other}>
       <Typography gutterBottom align="center" variant="subtitle1">

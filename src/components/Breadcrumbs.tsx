@@ -1,16 +1,28 @@
-import PropTypes from 'prop-types';
+import { ReactElement } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
-import { Box, Link, Typography, Breadcrumbs as MUIBreadcrumbs } from '@mui/material';
+import {
+  Box,
+  Link,
+  Typography,
+  BreadcrumbsProps,
+  Breadcrumbs as MUIBreadcrumbs,
+} from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-Breadcrumbs.propTypes = {
-  activeLast: PropTypes.bool,
-  links: PropTypes.array.isRequired,
+type TLink = {
+  href?: string;
+  name: string;
+  icon?: ReactElement;
 };
 
-export default function Breadcrumbs({ links, activeLast = false, ...other }) {
+export interface Props extends BreadcrumbsProps {
+  links: TLink[];
+  activeLast?: boolean;
+}
+
+export default function Breadcrumbs({ links, activeLast = false, ...other }: Props) {
   const currentLink = links[links.length - 1].name;
 
   const listDefault = links.map((link) => <LinkItem key={link.name} link={link} />);
@@ -38,7 +50,12 @@ export default function Breadcrumbs({ links, activeLast = false, ...other }) {
 
   return (
     <MUIBreadcrumbs
-      separator={<Box component="span" sx={{ width: 4, height: 4, borderRadius: '50%', bgcolor: 'text.disabled' }} />}
+      separator={
+        <Box
+          component="span"
+          sx={{ width: 4, height: 4, borderRadius: '50%', bgcolor: 'text.disabled' }}
+        />
+      }
       {...other}
     >
       {activeLast ? listDefault : listActiveLast}
@@ -48,15 +65,11 @@ export default function Breadcrumbs({ links, activeLast = false, ...other }) {
 
 // ----------------------------------------------------------------------
 
-LinkItem.propTypes = {
-  link: PropTypes.shape({
-    href: PropTypes.string,
-    icon: PropTypes.any,
-    name: PropTypes.string,
-  }),
+type LinkItemProps = {
+  link: TLink;
 };
 
-function LinkItem({ link }) {
+function LinkItem({ link }: LinkItemProps) {
   const { href, name, icon } = link;
   return (
     <Link

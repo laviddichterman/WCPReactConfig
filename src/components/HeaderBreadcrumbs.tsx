@@ -1,20 +1,25 @@
-import PropTypes from 'prop-types';
+import { ReactNode } from 'react';
 // @mui
 import { Box, Typography, Link } from '@mui/material';
 //
-import Breadcrumbs from './Breadcrumbs';
+import Breadcrumbs, { Props as BreadcrumbsProps } from './Breadcrumbs';
 
 // ----------------------------------------------------------------------
 
-HeaderBreadcrumbs.propTypes = {
-  links: PropTypes.array,
-  action: PropTypes.node,
-  heading: PropTypes.string.isRequired,
-  moreLink: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  sx: PropTypes.object,
-};
+interface Props extends BreadcrumbsProps {
+  action?: ReactNode;
+  heading: string;
+  moreLink?: string | string[];
+}
 
-export default function HeaderBreadcrumbs({ links, action, heading, moreLink = '' || [], sx, ...other }) {
+export default function HeaderBreadcrumbs({
+  links,
+  action,
+  heading,
+  moreLink = '' || [],
+  sx,
+  ...other
+}: Props) {
   return (
     <Box sx={{ mb: 5, ...sx }}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>

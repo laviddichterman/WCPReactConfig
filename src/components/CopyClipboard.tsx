@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 // @mui
@@ -9,18 +8,18 @@ import Iconify from './Iconify';
 
 // ----------------------------------------------------------------------
 
-CopyClipboard.propTypes = {
-  value: PropTypes.string,
+type Props = {
+  value: string;
 };
 
-export default function CopyClipboard({ value, ...other }) {
+export default function CopyClipboard({ value, ...other }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const [state, setState] = useState({
     value,
     copied: false,
   });
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setState({ value: event.target.value, copied: false });
   };
 

@@ -1,12 +1,16 @@
 // @mui
 import { styled } from '@mui/material/styles';
-import { TextField } from '@mui/material';
+import { OutlinedInputProps, TextField } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
+interface Props extends OutlinedInputProps {
+  stretchStart?: number;
+}
+
 const InputStyle = styled(TextField, {
   shouldForwardProp: (prop) => prop !== 'stretchStart',
-})(({ stretchStart, theme }) => ({
+})<Props>(({ stretchStart, theme }) => ({
   '& .MuiOutlinedInput-root': {
     transition: theme.transitions.create(['box-shadow', 'width'], {
       easing: theme.transitions.easing.easeInOut,

@@ -1,17 +1,16 @@
-import PropTypes from 'prop-types';
 // @mui
-import { Stack } from '@mui/material';
+import { Stack, StackProps, SxProps } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-TextIconLabel.propTypes = {
-  endIcon: PropTypes.bool,
-  icon: PropTypes.any,
-  sx: PropTypes.object,
-  value: PropTypes.any,
-};
+interface Props extends StackProps {
+  icon: React.ReactElement;
+  value: React.ReactNode;
+  endIcon?: boolean;
+  sx?: SxProps;
+}
 
-export default function TextIconLabel({ icon, value, endIcon = false, sx, ...other }) {
+export default function TextIconLabel({ icon, value, endIcon = false, sx, ...other }: Props) {
   return (
     <Stack
       direction="row"
@@ -23,7 +22,9 @@ export default function TextIconLabel({ icon, value, endIcon = false, sx, ...oth
       {...other}
     >
       {!endIcon && icon}
+
       {value}
+
       {endIcon && icon}
     </Stack>
   );

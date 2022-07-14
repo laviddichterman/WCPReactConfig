@@ -1,11 +1,28 @@
-import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Popover } from '@mui/material';
+import { Popover, PopoverProps } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-const ArrowStyle = styled('span')(({ arrow, theme }) => {
+type Arrow =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+  | 'left-top'
+  | 'left-center'
+  | 'left-bottom'
+  | 'right-top'
+  | 'right-center'
+  | 'right-bottom';
+
+type ArrowStyleProps = {
+  arrow: Arrow;
+};
+
+const ArrowStyle = styled('span')<ArrowStyleProps>(({ arrow, theme }) => {
   const SIZE = 12;
 
   const POSITION = -(SIZE / 2);
@@ -70,26 +87,18 @@ const ArrowStyle = styled('span')(({ arrow, theme }) => {
 
 // ----------------------------------------------------------------------
 
-MenuPopover.propTypes = {
-  sx: PropTypes.object,
-  children: PropTypes.node,
-  disabledArrow: PropTypes.bool,
-  arrow: PropTypes.oneOf([
-    'top-left',
-    'top-center',
-    'top-right',
-    'bottom-left',
-    'bottom-center',
-    'bottom-right',
-    'left-top',
-    'left-center',
-    'left-bottom',
-    'right-top',
-    'right-center',
-    'right-bottom',
-  ]),
-};
-export default function MenuPopover({ children, arrow = 'top-right', disabledArrow, sx, ...other }) {
+interface Props extends PopoverProps {
+  arrow?: Arrow;
+  disabledArrow?: boolean;
+}
+
+export default function MenuPopover({
+  children,
+  arrow = 'top-right',
+  disabledArrow,
+  sx,
+  ...other
+}: Props) {
   return (
     <Popover
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}

@@ -1,20 +1,41 @@
-import PropTypes from 'prop-types';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { Link, Stack, Button, Tooltip, IconButton } from '@mui/material';
+import {
+  Link,
+  Stack,
+  Button,
+  Tooltip,
+  IconButton,
+  ButtonProps,
+  IconButtonProps,
+} from '@mui/material';
 //
 import Iconify from './Iconify';
 
 // ----------------------------------------------------------------------
 
-SocialsButton.propTypes = {
-  initialColor: PropTypes.bool,
-  links: PropTypes.objectOf(PropTypes.string),
-  simple: PropTypes.bool,
-  sx: PropTypes.object,
+export type SocialLinks = {
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+  twitter?: string;
 };
 
-export default function SocialsButton({ initialColor = false, simple = true, links = {}, sx, ...other }) {
+type IProps = IconButtonProps & ButtonProps;
+
+interface Props extends IProps {
+  simple?: boolean;
+  initialColor?: boolean;
+  links?: SocialLinks;
+}
+
+export default function SocialsButton({
+  initialColor = false,
+  simple = true,
+  links = {},
+  sx,
+  ...other
+}: Props) {
   const SOCIALS = [
     {
       name: 'FaceBook',

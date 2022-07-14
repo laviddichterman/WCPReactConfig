@@ -1,13 +1,12 @@
-import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Typography } from '@mui/material';
+import { Typography, Box, BoxProps } from '@mui/material';
 //
 import Image from './Image';
 
 // ----------------------------------------------------------------------
 
-const RootStyle = styled('div')(({ theme }) => ({
+const RootStyle = styled(Box)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   textAlign: 'center',
@@ -19,13 +18,13 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-EmptyContent.propTypes = {
-  title: PropTypes.string.isRequired,
-  img: PropTypes.string,
-  description: PropTypes.string,
-};
+interface Props extends BoxProps {
+  title: string;
+  img?: string;
+  description?: string;
+}
 
-export default function EmptyContent({ title, description, img, ...other }) {
+export default function EmptyContent({ title, description, img, ...other }: Props) {
   return (
     <RootStyle {...other}>
       <Image

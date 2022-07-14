@@ -3,11 +3,11 @@ import useAuth from '../hooks/useAuth';
 // utils
 import createAvatar from '../utils/createAvatar';
 //
-import Avatar from './Avatar';
+import Avatar, { Props as AvatarProps } from './Avatar';
 
 // ----------------------------------------------------------------------
 
-export default function MyAvatar({ ...other }) {
+export default function MyAvatar({ ...other }: AvatarProps) {
   const { user } = useAuth();
 
   return (

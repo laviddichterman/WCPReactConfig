@@ -1,11 +1,13 @@
-import PropTypes from 'prop-types';
-import { useRef } from 'react';
-import { SnackbarProvider } from 'notistack';
+import { ReactNode, useRef } from 'react';
+import { IconifyIcon } from '@iconify/react';
+import { SnackbarProvider, SnackbarKey } from 'notistack';
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
 import { Box, GlobalStyles, Collapse } from '@mui/material';
 // hooks
 import useSettings from '../hooks/useSettings';
+// theme
+import { ColorSchema } from '../theme/palette';
 //
 import Iconify from './Iconify';
 import { IconButtonAnimate } from './animate';
@@ -55,18 +57,18 @@ function SnackbarStyles() {
 
 // ----------------------------------------------------------------------
 
-NotistackProvider.propTypes = {
-  children: PropTypes.node,
+type Props = {
+  children: ReactNode;
 };
 
-export default function NotistackProvider({ children }) {
+export default function NotistackProvider({ children }: Props) {
   const { themeDirection } = useSettings();
 
   const isRTL = themeDirection === 'rtl';
 
-  const notistackRef = useRef(null);
+  const notistackRef = useRef<any>(null);
 
-  const onClose = (key) => () => {
+  const onClose = (key: SnackbarKey) => () => {
     notistackRef.current.closeSnackbar(key);
   };
 
@@ -104,12 +106,12 @@ export default function NotistackProvider({ children }) {
 
 // ----------------------------------------------------------------------
 
-SnackbarIcon.propTypes = {
-  icon: PropTypes.string,
-  color: PropTypes.oneOf(['primary', 'secondary', 'info', 'success', 'warning', 'error']),
+type SnackbarIconProps = {
+  icon: IconifyIcon | string;
+  color: ColorSchema;
 };
 
-function SnackbarIcon({ icon, color }) {
+function SnackbarIcon({ icon, color }: SnackbarIconProps) {
   return (
     <Box
       component="span"

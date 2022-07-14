@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
 import { m } from 'framer-motion';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 //
 import Logo from './Logo';
 import ProgressBar from './ProgressBar';
@@ -24,11 +23,12 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-LoadingScreen.propTypes = {
-  isDashboard: PropTypes.bool,
+type Props = {
+  isDashboard?: boolean;
+  sx?: SxProps;
 };
 
-export default function LoadingScreen({ isDashboard, ...other }) {
+export default function LoadingScreen({ isDashboard, ...other }: Props) {
   return (
     <>
       <ProgressBar />
