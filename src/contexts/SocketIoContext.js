@@ -105,16 +105,10 @@ function SocketIoProvider({ children }) {
           console.log(data);
         });
         socketRoClient.on("WCP_BLOCKED_OFF", data => {
-          data.forEach((svcBlock, i) => {
-            svcBlock.forEach((dayBlock, j) => {
-              dayBlock[1].forEach((interval, k) => {
-                data[i][j][1][k] = [Number(data[i][j][1][k][0]), Number(data[i][j][1][k][1])];
-              })
-            })
-          })
+          // we recast the interval values to numbers
           dispatch({
             type: 'SET_BLOCKED_OFF',
-            payload: { blockedOff: data },
+            payload: { blockedOff: data.map(v=> v.map(e => [e[0], e[1].map(i => [Number(i[0]), Number(i[1])])])) },
           });
           console.log(data);
         });

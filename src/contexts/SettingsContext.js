@@ -12,32 +12,32 @@ import { defaultSettings } from '../config';
 const initialState = {
   ...defaultSettings,
   // Mode
-  onToggleMode: () => {},
-  onChangeMode: () => {},
+  onToggleMode: () => {  /* dummy */ },
+  onChangeMode: () => { /* dummy */ },
 
   // Direction
-  onToggleDirection: () => {},
-  onChangeDirection: () => {},
-  onChangeDirectionByLang: () => {},
+  onToggleDirection: () => { /* dummy */ },
+  onChangeDirection: () => { /* dummy */ },
+  onChangeDirectionByLang: () => { /* dummy */ },
 
   // Layout
-  onToggleLayout: () => {},
-  onChangeLayout: () => {},
+  onToggleLayout: () => { /* dummy */ },
+  onChangeLayout: () => { /* dummy */ },
 
   // Contrast
-  onToggleContrast: () => {},
-  onChangeContrast: () => {},
+  onToggleContrast: () => { /* dummy */ },
+  onChangeContrast: () => { /* dummy */ },
 
   // Color
-  onChangeColor: () => {},
+  onChangeColor: () => { /* dummy */ },
   setColor: defaultPreset,
   colorOption: [],
 
   // Stretch
-  onToggleStretch: () => {},
+  onToggleStretch: () => { /* dummy */ },
 
   // Reset
-  onResetSetting: () => {},
+  onResetSetting: () => { /* dummy */ },
 };
 
 const SettingsContext = createContext(initialState);

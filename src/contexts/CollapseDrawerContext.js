@@ -8,9 +8,9 @@ import useResponsive from '../hooks/useResponsive';
 const initialState = {
   collapseClick: false,
   collapseHover: false,
-  onToggleCollapse: () => {},
-  onHoverEnter: () => {},
-  onHoverLeave: () => {},
+  onToggleCollapse: () => { /* dummy */ },
+  onHoverEnter: () => { /* dummy */ },
+  onHoverLeave: () => { /* dummy */ },
 };
 
 const CollapseDrawerContext = createContext(initialState);

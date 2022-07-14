@@ -5,17 +5,21 @@
     "node": true
   },
   "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "airbnb",
     "plugin:jsx-a11y/recommended",
     "plugin:react-hooks/recommended",
-    "prettier"
+    "prettier",
+    "plugin:import/typescript"
   ],
   "plugins": [
+    "@typescript-eslint",
     "react",
     "react-hooks",
     "prettier"
   ],
-  "parser": "@babel/eslint-parser",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 8,
     "requireConfigFile": false,
