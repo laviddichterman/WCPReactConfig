@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 // @mui
 import { IconButton } from '@mui/material';
 //
@@ -7,14 +6,14 @@ import MenuPopover from '../MenuPopover';
 
 // ----------------------------------------------------------------------
 
-TableMoreMenu.propTypes = {
-  actions: PropTypes.node,
-  open: PropTypes.object,
-  onClose: PropTypes.func,
-  onOpen: PropTypes.func,
+type Props = {
+  actions: React.ReactNode;
+  open?: HTMLElement | null;
+  onClose?: VoidFunction;
+  onOpen?: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
-export default function TableMoreMenu({ actions, open, onClose, onOpen }) {
+export default function TableMoreMenu({ actions, open, onClose, onOpen }: Props) {
   return (
     <>
       <IconButton onClick={onOpen}>

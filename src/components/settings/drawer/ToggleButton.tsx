@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
@@ -37,13 +36,13 @@ const DotStyle = styled('span')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-ToggleButton.propTypes = {
-  notDefault: PropTypes.bool,
-  onToggle: PropTypes.func,
-  open: PropTypes.bool,
+type Props = {
+  open: boolean;
+  notDefault: boolean;
+  onToggle: VoidFunction;
 };
 
-export default function ToggleButton({ notDefault, open, onToggle }) {
+export default function ToggleButton({ notDefault, open, onToggle }: Props) {
   return (
     <RootStyle>
       {notDefault && !open && <DotStyle />}
@@ -57,7 +56,8 @@ export default function ToggleButton({ notDefault, open, onToggle }) {
             transition: (theme) => theme.transitions.create('all'),
             '&:hover': {
               color: 'primary.main',
-              bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.hoverOpacity),
+              bgcolor: (theme) =>
+                alpha(theme.palette.primary.main, theme.palette.action.hoverOpacity),
             },
           }}
         >

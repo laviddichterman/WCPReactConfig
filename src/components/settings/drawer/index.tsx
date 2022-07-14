@@ -48,8 +48,15 @@ const RootStyle = styled(m.div)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function SettingsDrawer() {
-  const { themeMode, themeLayout, themeStretch, themeContrast, themeDirection, themeColorPresets, onResetSetting } =
-    useSettings();
+  const {
+    themeMode,
+    themeLayout,
+    themeStretch,
+    themeContrast,
+    themeDirection,
+    themeColorPresets,
+    onResetSetting,
+  } = useSettings();
 
   const [open, setOpen] = useState(false);
 
@@ -104,7 +111,12 @@ export default function SettingsDrawer() {
         {open && (
           <>
             <RootStyle {...varSidebar}>
-              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ py: 2, pr: 1, pl: 2.5 }}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ py: 2, pr: 1, pl: 2.5 }}
+              >
                 <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
                   Settings
                 </Typography>

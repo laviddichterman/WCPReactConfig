@@ -40,7 +40,11 @@ export default function SettingContrast() {
                   }),
                 }}
               >
-                <Iconify icon={index === 0 ? 'cil:contrast' : 'ion:contrast-outline'} width={28} height={28} />
+                <Iconify
+                  icon={index === 0 ? 'cil:contrast' : 'ion:contrast-outline'}
+                  width={28}
+                  height={28}
+                />
                 <BoxMask value={contrast} />
               </BoxStyle>
             </Grid>

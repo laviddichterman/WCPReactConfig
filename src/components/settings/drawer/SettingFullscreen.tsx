@@ -31,7 +31,8 @@ export default function SettingFullscreen() {
       sx={{
         fontSize: 14,
         ...(fullscreen && {
-          bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+          bgcolor: (theme) =>
+            alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
         }),
       }}
     >

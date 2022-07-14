@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
 import { useDropzone } from 'react-dropzone';
 // @mui
 import { Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+// type
+import { UploadProps } from './type';
 //
 import Image from '../Image';
 import Iconify from '../Iconify';
@@ -56,14 +57,7 @@ const PlaceholderStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-UploadAvatar.propTypes = {
-  error: PropTypes.bool,
-  file: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  helperText: PropTypes.node,
-  sx: PropTypes.object,
-};
-
-export default function UploadAvatar({ error, file, helperText, sx, ...other }) {
+export default function UploadAvatar({ error, file, helperText, sx, ...other }: UploadProps) {
   const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
     multiple: false,
     ...other,
@@ -87,7 +81,13 @@ export default function UploadAvatar({ error, file, helperText, sx, ...other }) 
         >
           <input {...getInputProps()} />
 
-          {file && <Image alt="avatar" src={typeof file === 'string' ? file : file.preview} sx={{ zIndex: 8 }} />}
+          {file && (
+            <Image
+              alt="avatar"
+              src={typeof file === 'string' ? file : file.preview}
+              sx={{ zIndex: 8 }}
+            />
+          )}
 
           <PlaceholderStyle
             className="placeholder"

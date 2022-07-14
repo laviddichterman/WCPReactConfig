@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-//
 import SettingsDrawer from './drawer';
 //
 import ThemeContrast from './ThemeContrast';
@@ -9,11 +7,11 @@ import ThemeLocalization from './ThemeLocalization';
 
 // ----------------------------------------------------------------------
 
-ThemeSettings.propTypes = {
-  children: PropTypes.node.isRequired,
+type Props = {
+  children: React.ReactNode;
 };
 
-export default function ThemeSettings({ children }) {
+export default function ThemeSettings({ children }: Props) {
   return (
     <ThemeColorPresets>
       <ThemeContrast>

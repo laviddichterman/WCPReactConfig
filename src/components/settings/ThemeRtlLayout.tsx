@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 // rtl
 import rtlPlugin from 'stylis-plugin-rtl';
 // emotion
@@ -10,11 +9,11 @@ import { useTheme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-ThemeRtlLayout.propTypes = {
-  children: PropTypes.node,
+type Props = {
+  children: ReactNode;
 };
 
-export default function ThemeRtlLayout({ children }) {
+export default function ThemeRtlLayout({ children }: Props) {
   const theme = useTheme();
 
   useEffect(() => {

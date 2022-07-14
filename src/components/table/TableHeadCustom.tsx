@@ -1,6 +1,14 @@
-import PropTypes from 'prop-types';
 // @mui
-import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel } from '@mui/material';
+import { Theme } from '@mui/material/styles';
+import {
+  Box,
+  SxProps,
+  Checkbox,
+  TableRow,
+  TableCell,
+  TableHead,
+  TableSortLabel,
+} from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -14,19 +22,19 @@ const visuallyHidden = {
   position: 'absolute',
   whiteSpace: 'nowrap',
   clip: 'rect(0 0 0 0)',
-};
+} as const;
 
 // ----------------------------------------------------------------------
 
-TableHeadCustom.propTypes = {
-  onSort: PropTypes.func,
-  orderBy: PropTypes.string,
-  headLabel: PropTypes.array,
-  rowCount: PropTypes.number,
-  numSelected: PropTypes.number,
-  onSelectAllRows: PropTypes.func,
-  order: PropTypes.oneOf(['asc', 'desc']),
-  sx: PropTypes.object,
+type Props = {
+  order?: 'asc' | 'desc';
+  orderBy?: string;
+  headLabel: any[];
+  rowCount?: number;
+  numSelected?: number;
+  onSort?: (id: string) => void;
+  onSelectAllRows?: (checked: boolean) => void;
+  sx?: SxProps<Theme>;
 };
 
 export default function TableHeadCustom({
@@ -38,7 +46,7 @@ export default function TableHeadCustom({
   onSort,
   onSelectAllRows,
   sx,
-}) {
+}: Props) {
   return (
     <TableHead sx={sx}>
       <TableRow>
@@ -47,7 +55,9 @@ export default function TableHeadCustom({
             <Checkbox
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
-              onChange={(event) => onSelectAllRows(event.target.checked)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                onSelectAllRows(event.target.checked)
+              }
             />
           </TableCell>
         )}
@@ -70,7 +80,9 @@ export default function TableHeadCustom({
                 {headCell.label}
 
                 {orderBy === headCell.id ? (
-                  <Box sx={{ ...visuallyHidden }}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
+                  <Box sx={{ ...visuallyHidden }}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </Box>
                 ) : null}
               </TableSortLabel>
             ) : (

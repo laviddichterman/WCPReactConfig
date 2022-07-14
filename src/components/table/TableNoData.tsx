@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 // @mui
 import { TableRow, TableCell } from '@mui/material';
 //
@@ -6,11 +5,11 @@ import EmptyContent from '../EmptyContent';
 
 // ----------------------------------------------------------------------
 
-TableNoData.propTypes = {
-  isNotFound: PropTypes.bool,
+type Props = {
+  isNotFound: boolean;
 };
 
-export default function TableNoData({ isNotFound }) {
+export default function TableNoData({ isNotFound }: Props) {
   return (
     <TableRow>
       {isNotFound ? (

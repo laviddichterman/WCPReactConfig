@@ -1,14 +1,13 @@
-import PropTypes from 'prop-types';
 // @mui
 import { Radio, FormControlLabel } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-BoxMask.propTypes = {
-  value: PropTypes.string,
+type Props = {
+  value: string;
 };
 
-export default function BoxMask({ value }) {
+export default function BoxMask({ value }: Props) {
   return (
     <FormControlLabel
       label=""

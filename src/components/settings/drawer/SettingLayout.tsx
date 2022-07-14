@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Grid, RadioGroup, CardActionArea, Box, Stack } from '@mui/material';
@@ -40,7 +39,11 @@ export default function SettingLayout() {
                   }),
                 }}
               >
-                {isVertical ? <VerticalBox isSelected={isSelected} /> : <HorizontalBox isSelected={isSelected} />}
+                {isVertical ? (
+                  <VerticalBox isSelected={isSelected} />
+                ) : (
+                  <HorizontalBox isSelected={isSelected} />
+                )}
                 <BoxMask value={layout} />
               </BoxStyle>
             </Grid>
@@ -53,8 +56,8 @@ export default function SettingLayout() {
 
 // ----------------------------------------------------------------------
 
-VerticalBox.propTypes = {
-  isSelected: PropTypes.bool,
+type LayoutBoxProps = {
+  isSelected: boolean;
 };
 
 const style = {
@@ -63,7 +66,7 @@ const style = {
   borderRadius: 0.5,
 };
 
-function VerticalBox({ isSelected }) {
+function VerticalBox({ isSelected }: LayoutBoxProps) {
   return (
     <>
       <Box
@@ -92,11 +95,7 @@ function VerticalBox({ isSelected }) {
   );
 }
 
-HorizontalBox.propTypes = {
-  isSelected: PropTypes.bool,
-};
-
-function HorizontalBox({ isSelected }) {
+function HorizontalBox({ isSelected }: LayoutBoxProps) {
   return (
     <>
       <Box
