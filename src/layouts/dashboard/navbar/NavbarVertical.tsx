@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 // @mui
@@ -20,7 +19,7 @@ import PACKAGE from '../../../../package.json';
 
 //
 import navConfig from './NavConfig';
-import CollapseButton from './CollapseButton';
+  import CollapseButton from './CollapseButton';
 
 // ----------------------------------------------------------------------
 
@@ -35,12 +34,12 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-NavbarVertical.propTypes = {
-  isOpenSidebar: PropTypes.bool,
-  onCloseSidebar: PropTypes.func,
+type Props = {
+  isOpenSidebar: boolean;
+  onCloseSidebar: VoidFunction;
 };
 
-export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
+export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props) {
   const theme = useTheme();
 
   const { pathname } = useLocation();
@@ -106,7 +105,11 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
       }}
     >
       {!isDesktop && (
-        <Drawer open={isOpenSidebar} onClose={onCloseSidebar} PaperProps={{ sx: { width: NAVBAR.DASHBOARD_WIDTH } }}>
+        <Drawer
+          open={isOpenSidebar}
+          onClose={onCloseSidebar}
+          PaperProps={{ sx: { width: NAVBAR.DASHBOARD_WIDTH } }}
+        >
           {renderContent}
         </Drawer>
       )}

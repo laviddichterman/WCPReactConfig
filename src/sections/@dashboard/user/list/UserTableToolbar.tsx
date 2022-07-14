@@ -1,19 +1,24 @@
-import PropTypes from 'prop-types';
 import { Stack, InputAdornment, TextField, MenuItem } from '@mui/material';
 // components
 import Iconify from '../../../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
-UserTableToolbar.propTypes = {
-  filterName: PropTypes.string,
-  filterRole: PropTypes.string,
-  onFilterName: PropTypes.func,
-  onFilterRole: PropTypes.func,
-  optionsRole: PropTypes.arrayOf(PropTypes.string),
+type Props = {
+  optionsRole: string[];
+  filterName: string;
+  filterRole: string;
+  onFilterName: (value: string) => void;
+  onFilterRole: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function UserTableToolbar({ filterName, filterRole, onFilterName, onFilterRole, optionsRole }) {
+export default function UserTableToolbar({
+  filterName,
+  filterRole,
+  onFilterName,
+  onFilterRole,
+  optionsRole,
+}: Props) {
   return (
     <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }} sx={{ py: 2.5, px: 3 }}>
       <TextField
@@ -57,7 +62,10 @@ export default function UserTableToolbar({ filterName, filterRole, onFilterName,
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Iconify icon={'eva:search-fill'} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+              <Iconify
+                icon={'eva:search-fill'}
+                sx={{ color: 'text.disabled', width: 20, height: 20 }}
+              />
             </InputAdornment>
           ),
         }}

@@ -22,9 +22,13 @@ import NavbarHorizontal from './navbar/NavbarHorizontal';
 
 // ----------------------------------------------------------------------
 
+type MainStyleProps = {
+  collapseClick: boolean;
+};
+
 const MainStyle = styled('main', {
   shouldForwardProp: (prop) => prop !== 'collapseClick',
-})(({ collapseClick, theme }) => ({
+})<MainStyleProps>(({ collapseClick, theme }) => ({
   flexGrow: 1,
   paddingTop: HEADER.MOBILE_HEIGHT + 24,
   paddingBottom: HEADER.MOBILE_HEIGHT + 24,

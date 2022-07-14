@@ -1,6 +1,14 @@
 import { useState } from 'react';
 // @mui
-import { Box, Card, Container, Typography, CardHeader, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import {
+  Box,
+  Card,
+  Container,
+  Typography,
+  CardHeader,
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // routes
@@ -18,7 +26,7 @@ export default function PermissionDenied() {
 
   const [role, setRole] = useState('admin');
 
-  const handleChangeRole = (event, newRole) => {
+  const handleChangeRole = (event: React.MouseEvent<HTMLElement>, newRole: string | null) => {
     if (newRole !== null) {
       setRole(newRole);
     }
@@ -38,7 +46,13 @@ export default function PermissionDenied() {
           ]}
         />
 
-        <ToggleButtonGroup exclusive value={role} onChange={handleChangeRole} color="primary" sx={{ mb: 5 }}>
+        <ToggleButtonGroup
+          exclusive
+          value={role}
+          onChange={handleChangeRole}
+          color="primary"
+          sx={{ mb: 5 }}
+        >
           <ToggleButton value="admin" aria-label="admin role">
             isAdmin
           </ToggleButton>
@@ -61,8 +75,9 @@ export default function PermissionDenied() {
                 <CardHeader title={`Card ${index + 1}`} subheader="Proin viverra ligula" />
 
                 <Typography sx={{ p: 3, color: 'text.secondary' }}>
-                  Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. In enim justo, rhoncus ut, imperdiet
-                  a, venenatis vitae, justo. Vestibulum fringilla pede sit amet augue.
+                  Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. In enim justo,
+                  rhoncus ut, imperdiet a, venenatis vitae, justo. Vestibulum fringilla pede sit
+                  amet augue.
                 </Typography>
               </Card>
             ))}

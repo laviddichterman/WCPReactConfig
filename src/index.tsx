@@ -68,7 +68,7 @@ ReactDOM.render(
       scope={AUTH0_API.scope}
       audience={AUTH0_API.audience}
     >
-  <AuthProvider>
+  {/* //<AuthProvider> */}
     <SocketIoProvider>
       <HelmetProvider>
         <ReduxProvider store={store}>
@@ -86,7 +86,7 @@ ReactDOM.render(
         </ReduxProvider>
       </HelmetProvider>
     </SocketIoProvider>
-  </AuthProvider>
+  {/* </AuthProvider> */}
   </Auth0Provider>,
   document.getElementById('root')
 );

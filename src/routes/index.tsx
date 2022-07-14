@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, ElementType } from 'react';
 import { Navigate, useRoutes, useLocation } from 'react-router-dom';
 // layouts
 import DashboardLayout from '../layouts/dashboard';
@@ -12,7 +12,7 @@ import LoadingScreen from '../components/LoadingScreen';
 
 // ----------------------------------------------------------------------
 
-const Loadable = (Component) => (props) => {
+const Loadable = (Component : ElementType) => (props : any) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { pathname } = useLocation();
 

@@ -7,7 +7,6 @@ import { defaultLang } from '../config';
 import enLocales from './en';
 import esLocales from './es';
 
-
 // ----------------------------------------------------------------------
 
 i18n
@@ -17,7 +16,6 @@ i18n
     resources: {
       en: { translations: enLocales },
       es: { translations: esLocales },
-
     },
     lng: localStorage.getItem('i18nextLng') || defaultLang.value,
     fallbackLng: defaultLang.value,
