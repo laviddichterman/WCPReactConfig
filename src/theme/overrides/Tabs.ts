@@ -1,7 +1,17 @@
+import { Theme } from '@mui/material/styles';
+
 // ----------------------------------------------------------------------
 
-export default function Tabs(theme) {
+export default function Tabs(theme: Theme) {
   return {
+    MuiTabs: {
+      styleOverrides: {
+        scrollButtons: {
+          width: 48,
+          borderRadius: '50%',
+        },
+      },
+    },
     MuiTab: {
       styleOverrides: {
         root: {
@@ -27,7 +37,7 @@ export default function Tabs(theme) {
             marginRight: theme.spacing(1),
           },
         },
-        wrapper: {
+        wrapped: {
           flexDirection: 'row',
           whiteSpace: 'nowrap',
         },
@@ -41,14 +51,6 @@ export default function Tabs(theme) {
       styleOverrides: {
         root: {
           padding: 0,
-        },
-      },
-    },
-    MuiTabScrollButton: {
-      styleOverrides: {
-        root: {
-          width: 48,
-          borderRadius: '50%',
         },
       },
     },

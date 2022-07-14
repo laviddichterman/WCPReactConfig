@@ -1,21 +1,23 @@
+import { Theme } from '@mui/material/styles';
+
 // ----------------------------------------------------------------------
 
-export default function Timeline(theme) {
+export default function Timeline(theme: Theme) {
   return {
     MuiTimelineDot: {
       styleOverrides: {
         root: {
-          boxShadow: 'none',
-        },
-      },
+          boxShadow: 'none'
+        }
+      }
     },
 
     MuiTimelineConnector: {
       styleOverrides: {
         root: {
-          backgroundColor: theme.palette.divider,
-        },
-      },
-    },
+          backgroundColor: theme.palette.divider
+        }
+      }
+    }
   };
 }

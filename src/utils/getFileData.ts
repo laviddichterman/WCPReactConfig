@@ -1,6 +1,9 @@
+// components
+import { CustomFile } from '../components/upload/type';
+
 // ----------------------------------------------------------------------
 
-export default function getFileData(file, index) {
+export default function getFileData(file: CustomFile | string, index?: number) {
   if (typeof file === 'string') {
     return {
       key: index ? `${file}-${index}` : file,

@@ -6,22 +6,22 @@ const SUCCESS_NAME = ['K', 'D', 'Y', 'B', 'O', '4', '5'];
 const WARNING_NAME = ['P', 'E', 'R', 'S', 'C', 'U', '6', '7'];
 const ERROR_NAME = ['V', 'W', 'X', 'M', 'Z'];
 
-function getFirstCharacter(name) {
+function getFirstCharacter(name: string) {
   return name && name.charAt(0).toUpperCase();
 }
 
-function getAvatarColor(name) {
+function getAvatarColor(name: string) {
   if (PRIMARY_NAME.includes(getFirstCharacter(name))) return 'primary';
   if (INFO_NAME.includes(getFirstCharacter(name))) return 'info';
   if (SUCCESS_NAME.includes(getFirstCharacter(name))) return 'success';
   if (WARNING_NAME.includes(getFirstCharacter(name))) return 'warning';
-  if (ERROR_NAME.includes(getFirstCharacter(name))) return 'warning';
+  if (ERROR_NAME.includes(getFirstCharacter(name))) return 'error';
   return 'default';
 }
 
-export default function createAvatar(name) {
+export default function createAvatar(name: string) {
   return {
     name: getFirstCharacter(name),
     color: getAvatarColor(name),
-  };
+  } as const;
 }

@@ -1,9 +1,11 @@
-import { alpha } from '@mui/material/styles';
+import { Theme, alpha } from '@mui/material/styles';
+//
+import { ColorSchema } from '../palette';
 
 // ----------------------------------------------------------------------
 
-export default function ToggleButton(theme) {
-  const style = (color) => ({
+export default function ToggleButton(theme: Theme) {
+  const style = (color: ColorSchema) => ({
     props: { color },
     style: {
       '&:hover': {

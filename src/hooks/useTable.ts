@@ -2,20 +2,48 @@ import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 
-export default function useTable(props) {
+export type UseTableProps = {
+  dense: boolean;
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  rowsPerPage: number;
+  order: 'asc' | 'desc';
+  orderBy: string;
+  //
+  selected: string[];
+  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
+  onSelectRow: (id: string) => void;
+  onSelectAllRows: (checked: boolean, newSelecteds: string[]) => void;
+  //
+  onSort: (id: string) => void;
+  onChangePage: (event: unknown, newPage: number) => void;
+  onChangeRowsPerPage: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeDense: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export type Props = {
+  defaultDense?: boolean;
+  defaultOrder?: 'asc' | 'desc';
+  defaultOrderBy?: string;
+  defaultSelected?: string[];
+  defaultRowsPerPage?: number;
+  defaultCurrentPage?: number;
+};
+
+export default function useTable(props?: Props) {
   const [dense, setDense] = useState(props?.defaultDense || false);
 
   const [orderBy, setOrderBy] = useState(props?.defaultOrderBy || 'name');
 
-  const [order, setOrder] = useState(props?.defaultOrder || 'asc');
+  const [order, setOrder] = useState<'asc' | 'desc'>(props?.defaultOrder || 'asc');
 
   const [page, setPage] = useState(props?.defaultCurrentPage || 0);
 
   const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 5);
 
-  const [selected, setSelected] = useState(props?.defaultSelected || []);
+  const [selected, setSelected] = useState<string[]>(props?.defaultSelected || []);
 
-  const onSort = (id) => {
+  const onSort = (id: string) => {
     const isAsc = orderBy === id && order === 'asc';
     if (id !== '') {
       setOrder(isAsc ? 'desc' : 'asc');
@@ -23,10 +51,10 @@ export default function useTable(props) {
     }
   };
 
-  const onSelectRow = (id) => {
+  const onSelectRow = (id: string) => {
     const selectedIndex = selected.indexOf(id);
 
-    let newSelected = [];
+    let newSelected: string[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -35,12 +63,15 @@ export default function useTable(props) {
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
     }
     setSelected(newSelected);
   };
 
-  const onSelectAllRows = (checked, newSelecteds) => {
+  const onSelectAllRows = (checked: boolean, newSelecteds: string[]) => {
     if (checked) {
       setSelected(newSelecteds);
       return;
@@ -48,20 +79,18 @@ export default function useTable(props) {
     setSelected([]);
   };
 
-  const onChangePage = (event, newPage) => {
+  const onChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const onChangeRowsPerPage = (event) => {
+  const onChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const onChangeDense = (event) => {
+  const onChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
-
-  // filter
 
   return {
     dense,
@@ -85,7 +114,7 @@ export default function useTable(props) {
 
 // ----------------------------------------------------------------------
 
-export function descendingComparator(a, b, orderBy) {
+export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -95,12 +124,15 @@ export function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
-export function getComparator(order, orderBy) {
+export function getComparator<Key extends keyof any>(
+  order: 'asc' | 'desc',
+  orderBy: Key
+): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-export function emptyRows(page, rowsPerPage, arrayLength) {
+export function emptyRows(page: number, rowsPerPage: number, arrayLength: number) {
   return page > 0 ? Math.max(0, (1 + page) * rowsPerPage - arrayLength) : 0;
 }

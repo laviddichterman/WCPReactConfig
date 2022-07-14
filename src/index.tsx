@@ -27,9 +27,8 @@ import { PersistGate } from 'redux-persist/lib/integration/react';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { createBrowserHistory } from "history";
 // @mui
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 // redux
 import { store, persistor } from './redux/store';
 // contexts
@@ -39,8 +38,10 @@ import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
 import { AuthProvider } from './contexts/Auth0Context';
 import { SocketIoProvider } from './contexts/SocketIoContext';
 
+//
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
 import swConfig from './swConfig';
 import reportWebVitals from './reportWebVitals';
 import { AUTH0_API } from './config';

@@ -3,6 +3,12 @@ import 'highlight.js/styles/atom-one-dark-reasonable.css';
 
 // ----------------------------------------------------------------------
 
+declare global {
+  interface Window {
+    hljs: any;
+  }
+}
+
 hljs.configure({
   languages: ['javascript', 'jsx', 'sh', 'bash', 'html', 'scss', 'css', 'json'],
 });

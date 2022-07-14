@@ -1,3 +1,4 @@
+import { Theme } from '@mui/material/styles';
 //
 import Fab from './Fab';
 import Card from './Card';
@@ -45,7 +46,7 @@ import LoadingButton from './LoadingButton';
 
 // ----------------------------------------------------------------------
 
-export default function ComponentsOverrides(theme) {
+export default function ComponentsOverrides(theme: Theme) {
   return Object.assign(
     Fab(theme),
     Tabs(theme),

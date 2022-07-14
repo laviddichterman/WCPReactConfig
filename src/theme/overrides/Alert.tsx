@@ -1,11 +1,14 @@
+import { Theme } from '@mui/material/styles';
+//
+import { ColorSchema } from '../palette';
 import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from './CustomIcons';
 
 // ----------------------------------------------------------------------
 
-export default function Alert(theme) {
+export default function Alert(theme: Theme) {
   const isLight = theme.palette.mode === 'light';
 
-  const standardStyle = (color) => ({
+  const standardStyle = (color: ColorSchema) => ({
     color: theme.palette[color][isLight ? 'darker' : 'lighter'],
     backgroundColor: theme.palette[color][isLight ? 'lighter' : 'darker'],
     '& .MuiAlert-icon': {
@@ -13,11 +16,11 @@ export default function Alert(theme) {
     },
   });
 
-  const filledStyle = (color) => ({
+  const filledStyle = (color: ColorSchema) => ({
     color: theme.palette[color].contrastText,
   });
 
-  const outlinedStyle = (color) => ({
+  const outlinedStyle = (color: ColorSchema) => ({
     color: theme.palette[color][isLight ? 'darker' : 'lighter'],
     border: `solid 1px ${theme.palette[color][isLight ? 'light' : 'dark']}`,
     backgroundColor: theme.palette[color][isLight ? 'lighter' : 'darker'],

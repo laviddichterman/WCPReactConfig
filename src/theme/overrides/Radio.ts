@@ -1,6 +1,8 @@
+import { Theme } from '@mui/material/styles';
+
 // ----------------------------------------------------------------------
 
-export default function Radio(theme) {
+export default function Radio(theme: Theme) {
   return {
     MuiRadio: {
       styleOverrides: {
@@ -9,11 +11,11 @@ export default function Radio(theme) {
           svg: {
             fontSize: 24,
             '&[font-size=small]': {
-              fontSize: 20,
-            },
-          },
-        },
-      },
-    },
+              fontSize: 20
+            }
+          }
+        }
+      }
+    }
   };
 }

@@ -13,19 +13,19 @@ const FORMAT_PDF = ['pdf'];
 const FORMAT_PHOTOSHOP = ['psd'];
 const FORMAT_ILLUSTRATOR = ['ai', 'esp'];
 
-export function getFileType(fileUrl = '') {
+export function getFileType(fileUrl: string = '') {
   return (fileUrl && fileUrl.split('.').pop()) || '';
 }
 
-export function getFileName(fileUrl) {
+export function getFileName(fileUrl: string) {
   return fileUrl.substring(fileUrl.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, '');
 }
 
-export function getFileFullName(fileUrl) {
+export function getFileFullName(fileUrl: string) {
   return fileUrl.split('/').pop();
 }
 
-export function getFileFormat(fileUrl) {
+export function getFileFormat(fileUrl: string) {
   let format;
 
   switch (fileUrl.includes(getFileType(fileUrl))) {
@@ -60,7 +60,7 @@ export function getFileFormat(fileUrl) {
   return format;
 }
 
-const getIcon = (name) => (
+const getIcon = (name: string) => (
   <Image
     src={`https://minimal-assets-api-dev.vercel.app/assets/icons/file/${name}.svg`}
     alt={name}
@@ -68,7 +68,7 @@ const getIcon = (name) => (
   />
 );
 
-export function getFileThumb(fileUrl) {
+export function getFileThumb(fileUrl: string) {
   let thumb;
   switch (getFileFormat(fileUrl)) {
     case 'video':

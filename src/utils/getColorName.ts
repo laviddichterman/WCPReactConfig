@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------
 
-export default function getColorName(hex) {
+export default function getColorName(hex: string) {
   let color;
 
   switch (hex) {

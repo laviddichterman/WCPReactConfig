@@ -1,9 +1,13 @@
+import { Theme } from '@mui/material/styles';
+
 // ----------------------------------------------------------------------
 
-export default function ButtonGroup(theme) {
-  const styleContained = (color) => ({
+export default function ButtonGroup(theme: Theme) {
+  const styleContained = (
+    color: 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error'
+  ) => ({
     props: { variant: 'contained', color },
-    style: { boxShadow: theme.customShadows[color] },
+    style: { boxShadow: theme.customShadows[color] }
   });
 
   return {
@@ -11,7 +15,7 @@ export default function ButtonGroup(theme) {
       variants: [
         {
           props: { variant: 'contained', color: 'inherit' },
-          style: { boxShadow: theme.customShadows.z8 },
+          style: { boxShadow: theme.customShadows.z8 }
         },
         styleContained('primary'),
         styleContained('secondary'),
@@ -28,20 +32,20 @@ export default function ButtonGroup(theme) {
               color: theme.palette.action.disabled,
               borderColor: `${theme.palette.action.disabledBackground} !important`,
               '&.MuiButton-contained': {
-                backgroundColor: theme.palette.action.disabledBackground,
-              },
-            },
-          },
-        },
+                backgroundColor: theme.palette.action.disabledBackground
+              }
+            }
+          }
+        }
       ],
 
       styleOverrides: {
         root: {
           '&:hover': {
-            boxShadow: 'none',
-          },
-        },
-      },
-    },
+            boxShadow: 'none'
+          }
+        }
+      }
+    }
   };
 }

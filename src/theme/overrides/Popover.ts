@@ -1,6 +1,8 @@
+import { Theme } from '@mui/material/styles';
+
 // ----------------------------------------------------------------------
 
-export default function Popover(theme) {
+export default function Popover(theme: Theme) {
   return {
     MuiPopover: {
       styleOverrides: {
