@@ -1,11 +1,11 @@
 import { memo } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-function SentIcon({ ...other }) {
+function SentIcon({ ...other }: BoxProps) {
   const theme = useTheme();
 
   const PRIMARY_MAIN = theme.palette.primary.main;

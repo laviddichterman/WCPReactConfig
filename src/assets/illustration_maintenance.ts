@@ -1,13 +1,13 @@
 import { memo } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 //
 import BackgroundIllustration from './illustration_background';
 
 // ----------------------------------------------------------------------
 
-function MaintenanceIllustration({ ...other }) {
+function MaintenanceIllustration({ ...other }: BoxProps) {
   const theme = useTheme();
 
   const PRIMARY_MAIN = theme.palette.primary.main;
@@ -31,7 +31,13 @@ function MaintenanceIllustration({ ...other }) {
             <stop offset="100%" stopColor="#F36F56" />
           </linearGradient>
 
-          <linearGradient id="linearGradient-5" x1="51.677%" x2="47.989%" y1="-28.72%" y2="127.533%">
+          <linearGradient
+            id="linearGradient-5"
+            x1="51.677%"
+            x2="47.989%"
+            y1="-28.72%"
+            y2="127.533%"
+          >
             <stop offset="0%" stopColor="#FFC444" />
             <stop offset="100%" stopColor="#F36F56" />
           </linearGradient>

@@ -1,13 +1,13 @@
 import { memo } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 //
 import BackgroundIllustration from './illustration_background';
 
 // ----------------------------------------------------------------------
 
-function ForbiddenIllustration({ ...other }) {
+function ForbiddenIllustration({ ...other }: BoxProps) {
   const theme = useTheme();
 
   const PRIMARY_MAIN = theme.palette.primary.main;
@@ -20,7 +20,14 @@ function ForbiddenIllustration({ ...other }) {
         <BackgroundIllustration />
 
         {/* SUN */}
-        <linearGradient id="SUN" x1="64.297" x2="111.109" y1="95.623" y2="142.436" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="SUN"
+          x1="64.297"
+          x2="111.109"
+          y1="95.623"
+          y2="142.436"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop stopColor="#FFE16A" />
           <stop offset="1" stopColor="#B78103" />
         </linearGradient>
