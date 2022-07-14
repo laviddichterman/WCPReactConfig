@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es6",
     "lib": [
       "dom",
@@ -20,9 +21,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": false,
   },
   "include": [
-    "src"
+    "src/",
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
