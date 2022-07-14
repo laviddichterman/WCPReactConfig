@@ -15,8 +15,10 @@ const US_MONEY_FORMATTER = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
+import { HOST_API } from "../../config";
 
-const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
+
+const StoreCreditValidateAndSpendComponent = () => {
   const [creditCode, setCreditCode] = useState("");
   const [scanCode, setScanCode] = useState(false);
   const [hasCamera, setHasCamera] = useState(false);
@@ -34,7 +36,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
     CheckForCamera();
   }, []);
   
-  const onScanned = async (qrCode) => {
+  const onScanned = async (qrCode : string) => {
     setCreditCode(qrCode);
     setScanCode(false);
     if (qrCode.length === 19) {
@@ -52,13 +54,13 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
     setIsProcessing(false);
     setDebitResponse(null);
   };
-  const validateCode = async (code) => {
+  const validateCode = async (code : string) => {
     if (!isProcessing) {
       setValidationResponse(null);
       setIsProcessing(true);
       try {
         const response = await fetch(
-          `${ENDPOINT}/api/v1/payments/storecredit/validate/?code=${encodeURIComponent(
+          `${HOST_API}/api/v1/payments/storecredit/validate/?code=${encodeURIComponent(
             code
           )}`,
           { method: "GET" }
@@ -78,7 +80,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
       setIsProcessing(true);
       try {
         const response = await fetch(
-          `${ENDPOINT}/api/v1/payments/storecredit/spend`,
+          `${HOST_API}/api/v1/payments/storecredit/spend`,
           {
             method: "POST",
             headers: {
@@ -111,7 +113,7 @@ const StoreCreditValidateAndSpendComponent = ({ ENDPOINT }) => {
       onClose={() => {
         setScanCode(false);
       }}
-      isOpen={scanCode}
+      open={scanCode}
       inner_component={
         <OneOffQrScanner
           onQrCode={onScanned}

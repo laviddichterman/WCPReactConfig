@@ -1,27 +1,34 @@
-import PropTypes from 'prop-types';
-import { createContext, useState, useEffect } from 'react';
+import { ReactNode, createContext, useState, useEffect } from 'react';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
-const initialState = {
+export type CollapseDrawerContextProps = {
+  isCollapse: boolean;
+  collapseClick: boolean;
+  collapseHover: boolean;
+  onToggleCollapse: VoidFunction;
+  onHoverEnter: VoidFunction;
+  onHoverLeave: VoidFunction;
+};
+
+const initialState: CollapseDrawerContextProps = {
+  isCollapse: false,
   collapseClick: false,
   collapseHover: false,
-  onToggleCollapse: () => { /* dummy */ },
-  onHoverEnter: () => { /* dummy */ },
-  onHoverLeave: () => { /* dummy */ },
+  onToggleCollapse: () => {},
+  onHoverEnter: () => {},
+  onHoverLeave: () => {},
 };
 
 const CollapseDrawerContext = createContext(initialState);
 
-// ----------------------------------------------------------------------
-
-CollapseDrawerProvider.propTypes = {
-  children: PropTypes.node,
+type CollapseDrawerProviderProps = {
+  children: ReactNode;
 };
 
-function CollapseDrawerProvider({ children }) {
+function CollapseDrawerProvider({ children }: CollapseDrawerProviderProps) {
   const isDesktop = useResponsive('up', 'lg');
 
   const [collapse, setCollapse] = useState({

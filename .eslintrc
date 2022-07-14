@@ -21,12 +21,9 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 8,
-    "requireConfigFile": false,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
-      "impliedStrict": true
-    }
+    "project": [
+      "**/tsconfig.json"
+    ]
   },
   "rules": {
     "no-shadow": 0,

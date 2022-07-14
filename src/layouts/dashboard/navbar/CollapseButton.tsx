@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 // @mui
 import { Box } from '@mui/material';
 // components
@@ -6,12 +5,12 @@ import { IconButtonAnimate } from '../../../components/animate';
 
 // ----------------------------------------------------------------------
 
-CollapseButton.propTypes = {
-  collapseClick: PropTypes.bool,
-  onToggleCollapse: PropTypes.func,
+type Props = {
+  onToggleCollapse: VoidFunction;
+  collapseClick: boolean;
 };
 
-export default function CollapseButton({ onToggleCollapse, collapseClick }) {
+export default function CollapseButton({ onToggleCollapse, collapseClick }: Props) {
   return (
     <IconButtonAnimate onClick={onToggleCollapse}>
       <Box

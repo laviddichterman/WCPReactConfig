@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -8,13 +8,49 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CheckedInputComponent from "../checked_input.component";
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 import { ElementActionComponent } from "./element.action.component";
+import { IProductInstanceFunction, IWInterval } from "@wcp/wcpshared";
+import { useAppSelector } from '../../../hooks/useRedux';
+
+interface ModifierOptionComponentProps {
+  confirmText: string
+  onCloseCallback: VoidFunction;
+  onConfirmClick: VoidFunction;
+  isProcessing: boolean;
+  displayName: string
+  setDisplayName: Dispatch<SetStateAction<string>>;
+  description: string
+  setDescription: Dispatch<SetStateAction<string>>;
+  shortcode: string
+  setShortcode: Dispatch<SetStateAction<string>>;
+  ordinal: number;
+  setOrdinal: Dispatch<SetStateAction<number>>;
+  price: number;
+  setPrice: Dispatch<SetStateAction<number>>;
+  enableFunction: string | null;
+  setEnableFunction: Dispatch<SetStateAction<string|null>>;
+  flavorFactor: number;
+  setFlavorFactor: Dispatch<SetStateAction<number>>;
+  bakeFactor: number;
+  setBakeFactor: Dispatch<SetStateAction<number>>;
+  canSplit: boolean;
+  setCanSplit: Dispatch<SetStateAction<boolean>>;
+  omitFromShortname: boolean;
+  setOmitFromShortname: Dispatch<SetStateAction<boolean>>;
+  omitFromName: boolean;
+  setOmitFromName: Dispatch<SetStateAction<boolean>>;
+  disabled: IWInterval | null;
+  setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
+  revelID: string
+  setRevelID: Dispatch<SetStateAction<string>>;
+  squareID: string
+  setSquareID: Dispatch<SetStateAction<string>>;
+}
 
 const ModifierOptionComponent = ({
   confirmText,
   onCloseCallback,
   onConfirmClick,
   isProcessing,
-  product_instance_functions,
   displayName,
   setDisplayName,
   description,
@@ -43,8 +79,10 @@ const ModifierOptionComponent = ({
   setRevelID,
   squareID,
   setSquareID,
-}) => (
-    <ElementActionComponent 
+}: ModifierOptionComponentProps) => {
+  const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.product_instance_functions) as IProductInstanceFunction[];
+  return (
+    <ElementActionComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={onConfirmClick}
       isProcessing={isProcessing}
@@ -86,15 +124,15 @@ const ModifierOptionComponent = ({
           </Grid>
           <Grid item xs={4}>
             <CheckedInputComponent
-                label="Price"
-                fullWidth={false}
-                type="number"
-                size="small"
-                parseFunction={(e) => parseFloat(e).toFixed(2)}
-                value={price}
-                inputProps={{min:0.00}}
-                onFinishChanging={(e) => setPrice(e)}
-              />
+              label="Price"
+              fullWidth={false}
+              type="number"
+              size="small"
+              parseFunction={(e) => parseFloat(e).toFixed(2)}
+              value={price}
+              inputProps={{ min: 0.00 }}
+              onFinishChanging={(e) => setPrice(e)}
+            />
           </Grid>
           <Grid item xs={4}>
             <CheckedInputComponent
@@ -108,10 +146,10 @@ const ModifierOptionComponent = ({
           <Grid item xs={6}>
             <Autocomplete
               style={{ width: 300 }}
-              options={product_instance_functions}
+              options={productInstanceFunctions}
               value={enableFunction}
               onChange={(e, v) => setEnableFunction(v)}
-              getOptionLabel={(option) => option?.name ?? "CORRUPT DATA" }
+              getOptionLabel={(option) => option?.name ?? "CORRUPT DATA"}
               isOptionEqualToValue={(option, value) =>
                 option &&
                 value &&
@@ -208,5 +246,6 @@ const ModifierOptionComponent = ({
       }
     />
   );
+}
 
 export default ModifierOptionComponent;

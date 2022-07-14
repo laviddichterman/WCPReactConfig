@@ -1,25 +1,29 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { useDispatch as useAppDispatch, useSelector as useAppSelector } from 'react-redux';
-import { persistStore, persistReducer } from 'redux-persist';
-import { rootPersistConfig, rootReducer } from './rootReducer';
-
+import { rootReducer } from './rootReducer';
+import SocketIoMiddleware from "./slices/SocketIoMiddleware";
+import { ICategoriesAdapter, 
+  IOptionTypesAdapter, 
+  IOptionsAdapter, 
+  IProductInstancesAdapter, 
+  IProductsAdapter, 
+  ProductInstanceFunctionsAdapter } from './slices/SocketIoSlice';
 // ----------------------------------------------------------------------
 
-const store = configureStore({
-  reducer: persistReducer(rootPersistConfig, rootReducer),
+
+export const store = configureStore({
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
-      immutableCheck: false,
-    }),
+      // serializableCheck: false,
+      // immutableCheck: false,
+    }).concat([SocketIoMiddleware]),
 });
 
-const persistor = persistStore(store);
-
-const { dispatch } = store;
-
-const useSelector = useAppSelector;
-
-const useDispatch = () => useAppDispatch();
-
-export { store, persistor, dispatch, useSelector, useDispatch };
+export const ICategoriesSelectors = ICategoriesAdapter.getSelectors((state: RootState) => state.ws.categories);
+export const IOptionTypesSelectors = IOptionTypesAdapter.getSelectors((state: RootState) => state.ws.modifiers);
+export const IOptionsSelectors = IOptionsAdapter.getSelectors((state: RootState) => state.ws.modifierOptions);
+export const IProductInstancesSelectors = IProductInstancesAdapter.getSelectors((state: RootState) => state.ws.productInstances);
+export const IProductsSelectors = IProductsAdapter.getSelectors((state: RootState) => state.ws.products);
+export const ProductInstanceFunctionsSelectors = ProductInstanceFunctionsAdapter.getSelectors((state: RootState) => state.ws.productInstanceFunctions);
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

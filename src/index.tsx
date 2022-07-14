@@ -23,20 +23,18 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
-import { PersistGate } from 'redux-persist/lib/integration/react';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { createBrowserHistory } from "history";
 // @mui
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 // redux
-import { store, persistor } from './redux/store';
+import { store } from './redux/store';
 // contexts
 import { SettingsProvider } from './contexts/SettingsContext';
 import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
 
-import { AuthProvider } from './contexts/Auth0Context';
-import { SocketIoProvider } from './contexts/SocketIoContext';
+//import { AuthProvider } from './contexts/Auth0Context';
 
 //
 import App from './App';
@@ -49,30 +47,27 @@ import { AUTH0_API } from './config';
 
 export const history = createBrowserHistory();
 
-// A function that routes the user to the right place
-// after login
-const onRedirectCallback = (appState) => {
-  // Use the router's history module to replace the url
-  history.replace(appState?.returnTo || window.location.pathname);
-};
+// // A function that routes the user to the right place
+// // after login
+// const onRedirectCallback = (appState) => {
+//   // Use the router's history module to replace the url
+//   history.replace(appState?.returnTo || window.location.pathname);
+// };
 
 
 // ----------------------------------------------------------------------
 
 ReactDOM.render(
   <Auth0Provider
-      domain={AUTH0_API.domain}
-      clientId={AUTH0_API.clientId}
+      domain={AUTH0_API.domain as string}
+      clientId={AUTH0_API.clientId as string}
       redirectUri={window.location.origin}
-      onRedirectCallback={onRedirectCallback}
       scope={AUTH0_API.scope}
       audience={AUTH0_API.audience}
     >
   {/* //<AuthProvider> */}
-    <SocketIoProvider>
       <HelmetProvider>
         <ReduxProvider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <SettingsProvider>
                 <CollapseDrawerProvider>
@@ -82,10 +77,8 @@ ReactDOM.render(
                 </CollapseDrawerProvider>
               </SettingsProvider>
             </LocalizationProvider>
-          </PersistGate>
         </ReduxProvider>
       </HelmetProvider>
-    </SocketIoProvider>
   {/* </AuthProvider> */}
   </Auth0Provider>,
   document.getElementById('root')

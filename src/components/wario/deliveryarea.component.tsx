@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 
 import { Button, TextField, Grid, Card, CardHeader } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useAppSelector } from '../../hooks/useRedux';
+import { HOST_API } from '../../config';
 
-import useSocketIo from '../../hooks/useSocketIo';
 
-
-const DeliveryAreaComponent = ({
-  ENDPOINT
-}) => {
-  const { deliveryArea } = useSocketIo();
+const DeliveryAreaComponent = () => {
+  const deliveryArea = useAppSelector(s=>s.ws.deliveryArea);
   const [ localDeliveryArea, setLocalDeliveryArea ] = useState(deliveryArea);
   const [ stringified, setStringified ] = useState(JSON.stringify(deliveryArea));
   const [ dirty, setDirty ] = useState(false);
@@ -17,13 +15,16 @@ const DeliveryAreaComponent = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const postDeliveryArea = async (e) => {
-    e.preventDefault();
+  if (deliveryArea === null) { 
+    return <>Loading...</>;
+  }
+
+  const postDeliveryArea = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:order_config"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/addresses`, {
+        const response = await fetch(`${HOST_API}/api/v1/addresses`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -31,7 +32,6 @@ const DeliveryAreaComponent = ({
           },
           body: stringified
         });
-        // eslint-disable-next-line no-empty
         if (response.status === 201) {
           setDirty(false);
           const resJson = await response.json();
@@ -44,7 +44,7 @@ const DeliveryAreaComponent = ({
       }
     }
   };
-  const onBlurLocal = (val) => {
+  const onBlurLocal = (val : string) => {
     try {
       setLocalDeliveryArea(JSON.parse(val));
       setIsJsonError(false);
@@ -53,7 +53,7 @@ const DeliveryAreaComponent = ({
       setIsJsonError(true);
     }
   }
-  const onChangeLocal = (val) => {
+  const onChangeLocal = (val : string) => {
     setDirty(true);
     setStringified(val);
   }
@@ -76,7 +76,7 @@ const DeliveryAreaComponent = ({
           />
           </Grid>
           <Grid item xs={2}>
-            <Button disabled={isJsonError} onClick={postDeliveryArea}>Push Changes</Button>
+            <Button disabled={isJsonError || isProcessing} onClick={postDeliveryArea}>Push Changes</Button>
           </Grid>
           </Grid>
       </Card>

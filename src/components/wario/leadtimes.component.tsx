@@ -2,18 +2,22 @@ import React, { useState } from 'react';
 import { Card, CardHeader, Grid, Button } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react';
 import CheckedInputComponent from "./checked_input.component";
+import { HOST_API } from 'src/config';
+import { useAppSelector } from '../../hooks/useRedux';
 
-const LeadTimesComp = ({
-  ENDPOINT,
-  LEADTIME,
-  SERVICES
-}) => {
+const LeadTimesComp = () => {
+  const SERVICES = useAppSelector(s=>s.ws.services);
+  const LEADTIME = useAppSelector(s=>s.ws.leadtime);
   const { getAccessTokenSilently } = useAuth0();
-  const [ dirty, setDirty ] = useState(Array(SERVICES.length).fill(false));
-  const [ localLeadTime, setLocalLeadTime ] = useState(LEADTIME);
+  const [ dirty, setDirty ] = useState(Array(SERVICES ? Object.keys(SERVICES).length : 3).fill(false));
+  const [ localLeadTime, setLocalLeadTime ] = useState(LEADTIME || []);
   const [ isProcessing, setIsProcessing ] = useState(false);
 
-  const onChangeLeadTimes = (i, e) => {
+  if (SERVICES === null || LEADTIME === null) {
+    return <>Loading...</>;
+  }
+
+  const onChangeLeadTimes = (i : number, e : number) => {
     const newDirtyArray = dirty.slice();
     newDirtyArray[i] = true;
 
@@ -22,13 +26,12 @@ const LeadTimesComp = ({
     setLocalLeadTime(newLocalLeadTime);
     setDirty(newDirtyArray);
   };
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:order_config" });
-        const response = await fetch(`${ENDPOINT}/api/v1/config/timing/leadtime`, {
+        const response = await fetch(`${HOST_API}/api/v1/config/timing/leadtime`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -38,7 +41,7 @@ const LeadTimesComp = ({
         });
         if (response.status === 201) {
           setLocalLeadTime(await response.json());
-          setDirty(Array(SERVICES.length).fill(false));
+          setDirty(Array(Object.keys(SERVICES).length).fill(false));
         }
         setIsProcessing(false);
       } catch (error) {

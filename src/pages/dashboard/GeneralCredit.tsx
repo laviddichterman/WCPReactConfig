@@ -8,8 +8,6 @@ import Page from '../../components/Page';
 import StoreCreditIssueComponent from "../../components/wario/store_credit_issue.component";
 import StoreCreditValidateAndSpendComponent from "../../components/wario/store_credit_validate_and_spend.component";
 
-import {HOST_API} from '../../config';
-
 // ----------------------------------------------------------------------
 
 export default function GeneralCredit() {
@@ -20,10 +18,10 @@ export default function GeneralCredit() {
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={6}>
           <Grid item xs={12} >
-            <StoreCreditIssueComponent ENDPOINT={HOST_API} />
+            <StoreCreditIssueComponent />
           </Grid>
           <Grid item xs={12}>
-            <StoreCreditValidateAndSpendComponent ENDPOINT={HOST_API} />
+            <StoreCreditValidateAndSpendComponent />
           </Grid>
 
         </Grid>

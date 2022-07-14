@@ -19,7 +19,7 @@ import PACKAGE from '../../../../package.json';
 
 //
 import navConfig from './NavConfig';
-  import CollapseButton from './CollapseButton';
+import CollapseButton from './CollapseButton';
 
 // ----------------------------------------------------------------------
 

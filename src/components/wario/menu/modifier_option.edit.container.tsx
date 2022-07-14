@@ -2,8 +2,14 @@ import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ModifierOptionComponent from "./modifier_option.component";
+import { HOST_API } from "../../../config";
+import { IOption } from "@wcp/wcpshared";
 
-const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, modifier_option, onCloseCallback }) => {
+interface ModifierOptionEditContainer { 
+  modifier_option: IOption;
+  onCloseCallback: VoidFunction;
+}
+const ModifierOptionEditContainer = ({modifier_option, onCloseCallback } : ModifierOptionEditContainer) => {
   const [displayName, setDisplayName] = useState(modifier_option.item.display_name);
   const [description, setDescription] = useState(modifier_option.item.description);
   const [shortcode, setShortcode] = useState(modifier_option.item.shortcode);
@@ -20,14 +26,12 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
   const [squareID, setSquareID] = useState(modifier_option.item?.externalIDs?.squareID ?? "");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
-  const editModifierOption = async (e) => {
-    e.preventDefault();
-
+  const editModifierOption = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option._id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -40,7 +44,7 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
             disabled,
             price: { amount: price * 100, currency: "USD" },
             ordinal,
-            enable_function: enableFunction ? enableFunction._id : null,
+            enable_function: enableFunction ? enableFunction : null,
             flavor_factor: flavorFactor,
             bake_factor: bakeFactor,
             can_split: canSplit,
@@ -69,7 +73,6 @@ const ModifierOptionEditContainer = ({ ENDPOINT, product_instance_functions, mod
       onCloseCallback={onCloseCallback}
       onConfirmClick={editModifierOption}
       isProcessing={isProcessing}
-      product_instance_functions={product_instance_functions}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}

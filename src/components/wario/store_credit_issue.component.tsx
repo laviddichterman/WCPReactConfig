@@ -10,9 +10,9 @@ import {Grid, Card, CardHeader, Divider} from "@mui/material";
 
 import { WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
 import CheckedInputComponent from "./checked_input.component";
+import { HOST_API } from "../../config";
 
-
-const StoreCreditIssueComponent = ({ ENDPOINT }) => {
+const StoreCreditIssueComponent = () => {
   const [amount, setAmount] = useState(5.00);
   const [addedBy, setAddedBy] = useState("");
   const [reason, setReason] = useState("");
@@ -20,7 +20,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
   const [lastName, setLastName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientEmailError, setRecipientEmailError] = useState(false);
-  const [expiration, setExpiration] = useState(addDays(new Date(), 60));
+  const [expiration, setExpiration] = useState<Date | null>(addDays(new Date(), 60));
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -34,7 +34,7 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "edit:store_credit"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/payments/storecredit/discount`, {
+        const response = await fetch(`${HOST_API}/api/v1/payments/storecredit/discount`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -120,7 +120,6 @@ const StoreCreditIssueComponent = ({ ENDPOINT }) => {
         <Grid item xs={4}>
           <DatePicker
             renderInput={(props) => <TextField sx={{height: '10%'}} {...props} />}
-            inputProps={{ size: 25 }}
             allowSameDateSelection
             disableMaskedInput
             clearable

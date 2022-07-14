@@ -1,11 +1,20 @@
 import React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
+import Dialog, { DialogProps } from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
 
-function DialogContainer({ onClose, title, inner_component, isOpen, ...other }) {
+// TODO: move to commmon react library
+
+export interface IDialogContainer { 
+  onClose: Exclude<DialogProps['onClose'], undefined>;
+  title: string;
+  inner_component: React.ReactNode;
+  open: boolean;
+};
+
+function DialogContainer({ onClose, title, open, inner_component, ...other } : IDialogContainer & Omit<DialogProps, 'onClose' | 'open'>) {
   return (
-    <Dialog {...other} onClose={onClose} aria-labelledby="simple-dialog-title" open={isOpen}>
+    <Dialog {...other} open={open} onClose={onClose}>
       <DialogTitle id="simple-dialog-title">{title}</DialogTitle>
       <Divider />
       {inner_component}

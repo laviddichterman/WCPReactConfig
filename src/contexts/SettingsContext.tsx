@@ -1,54 +1,62 @@
-import PropTypes from 'prop-types';
-import { useEffect, createContext } from 'react';
+import { ReactNode, useEffect, createContext } from 'react';
 // hooks
 import useLocalStorage from '../hooks/useLocalStorage';
 // utils
 import getColorPresets, { colorPresets, defaultPreset } from '../utils/getColorPresets';
 // config
 import { defaultSettings } from '../config';
+// @type
+import {
+  ThemeMode,
+  ThemeLayout,
+  ThemeContrast,
+  ThemeDirection,
+  ThemeColorPresets,
+  SettingsContextProps,
+} from '../components/settings/type';
 
 // ----------------------------------------------------------------------
 
-const initialState = {
+const initialState: SettingsContextProps = {
   ...defaultSettings,
   // Mode
-  onToggleMode: () => {  /* dummy */ },
-  onChangeMode: () => { /* dummy */ },
+  onToggleMode: () => {},
+  onChangeMode: () => {},
 
   // Direction
-  onToggleDirection: () => { /* dummy */ },
-  onChangeDirection: () => { /* dummy */ },
-  onChangeDirectionByLang: () => { /* dummy */ },
+  onToggleDirection: () => {},
+  onChangeDirection: () => {},
+  onChangeDirectionByLang: () => {},
 
   // Layout
-  onToggleLayout: () => { /* dummy */ },
-  onChangeLayout: () => { /* dummy */ },
+  onToggleLayout: () => {},
+  onChangeLayout: () => {},
 
   // Contrast
-  onToggleContrast: () => { /* dummy */ },
-  onChangeContrast: () => { /* dummy */ },
+  onToggleContrast: () => {},
+  onChangeContrast: () => {},
 
   // Color
-  onChangeColor: () => { /* dummy */ },
+  onChangeColor: () => {},
   setColor: defaultPreset,
   colorOption: [],
 
   // Stretch
-  onToggleStretch: () => { /* dummy */ },
+  onToggleStretch: () => {},
 
   // Reset
-  onResetSetting: () => { /* dummy */ },
+  onResetSetting: () => {},
 };
 
 const SettingsContext = createContext(initialState);
 
 // ----------------------------------------------------------------------
 
-SettingsProvider.propTypes = {
-  children: PropTypes.node,
+type SettingsProviderProps = {
+  children: ReactNode;
 };
 
-function SettingsProvider({ children }) {
+function SettingsProvider({ children }: SettingsProviderProps) {
   const [settings, setSettings] = useLocalStorage('settings', {
     themeMode: initialState.themeMode,
     themeLayout: initialState.themeLayout,
@@ -76,10 +84,10 @@ function SettingsProvider({ children }) {
     });
   };
 
-  const onChangeMode = (event) => {
+  const onChangeMode = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSettings({
       ...settings,
-      themeMode: event.target.value,
+      themeMode: (event.target as HTMLInputElement).value as ThemeMode,
     });
   };
 
@@ -92,14 +100,14 @@ function SettingsProvider({ children }) {
     });
   };
 
-  const onChangeDirection = (event) => {
+  const onChangeDirection = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSettings({
       ...settings,
-      themeDirection: event.target.value,
+      themeDirection: (event.target as HTMLInputElement).value as ThemeDirection,
     });
   };
 
-  const onChangeDirectionByLang = (lang) => {
+  const onChangeDirectionByLang = (lang: string) => {
     setSettings({
       ...settings,
       themeDirection: lang === 'ar' ? 'rtl' : 'ltr',
@@ -115,10 +123,10 @@ function SettingsProvider({ children }) {
     });
   };
 
-  const onChangeLayout = (event) => {
+  const onChangeLayout = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSettings({
       ...settings,
-      themeLayout: event.target.value,
+      themeLayout: (event.target as HTMLInputElement).value as ThemeLayout,
     });
   };
 
@@ -131,19 +139,19 @@ function SettingsProvider({ children }) {
     });
   };
 
-  const onChangeContrast = (event) => {
+  const onChangeContrast = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSettings({
       ...settings,
-      themeContrast: event.target.value,
+      themeContrast: (event.target as HTMLInputElement).value as ThemeContrast,
     });
   };
 
   // Color
 
-  const onChangeColor = (event) => {
+  const onChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSettings({
       ...settings,
-      themeColorPresets: event.target.value,
+      themeColorPresets: (event.target as HTMLInputElement).value as ThemeColorPresets,
     });
   };
 

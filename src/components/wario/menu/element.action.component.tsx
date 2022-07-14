@@ -3,7 +3,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
-const GenerateActionsHtmlFromList = (actions) => actions.length === 0 ? "" : 
+const GenerateActionsHtmlFromList = (actions : React.ReactNode[]) => actions.length === 0 ? "" : 
     (<Grid container justifyContent="flex-end" item xs={12}>
       {actions.map((action, idx) => (
         <Grid item key={idx}>
@@ -11,6 +11,15 @@ const GenerateActionsHtmlFromList = (actions) => actions.length === 0 ? "" :
         </Grid>
       ))}
     </Grid>)
+
+interface ElementActionComponentProps { 
+  onCloseCallback: React.MouseEventHandler<HTMLButtonElement>;
+  onConfirmClick: React.MouseEventHandler<HTMLButtonElement>;
+  isProcessing: boolean;
+  disableConfirmOn: boolean;
+  confirmText: string;
+  body: React.ReactNode;
+}
 const ElementActionComponent = ({ 
   body,
   onCloseCallback,
@@ -18,7 +27,7 @@ const ElementActionComponent = ({
   isProcessing,
   disableConfirmOn,
   confirmText
-}) => {
+} : ElementActionComponentProps) => {
 
   const actions_html = GenerateActionsHtmlFromList([
     <Button

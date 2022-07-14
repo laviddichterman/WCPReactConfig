@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar } from '@mui/material';
@@ -21,9 +20,16 @@ import LanguagePopover from './LanguagePopover';
 
 // ----------------------------------------------------------------------
 
+type RootStyleProps = {
+  isCollapse: boolean;
+  isOffset: boolean;
+  verticalLayout: boolean;
+};
+
 const RootStyle = styled(AppBar, {
-  shouldForwardProp: (prop) => prop !== 'isCollapse' && prop !== 'isOffset' && prop !== 'verticalLayout',
-})(({ isCollapse, isOffset, verticalLayout, theme }) => ({
+  shouldForwardProp: (prop) =>
+    prop !== 'isCollapse' && prop !== 'isOffset' && prop !== 'verticalLayout',
+})<RootStyleProps>(({ isCollapse, isOffset, verticalLayout, theme }) => ({
   ...cssStyles(theme).bgBlur(),
   boxShadow: 'none',
   height: HEADER.MOBILE_HEIGHT,
@@ -50,13 +56,17 @@ const RootStyle = styled(AppBar, {
 
 // ----------------------------------------------------------------------
 
-DashboardHeader.propTypes = {
-  onOpenSidebar: PropTypes.func,
-  isCollapse: PropTypes.bool,
-  verticalLayout: PropTypes.bool,
+type Props = {
+  onOpenSidebar: VoidFunction;
+  isCollapse?: boolean;
+  verticalLayout?: boolean;
 };
 
-export default function DashboardHeader({ onOpenSidebar, isCollapse = false, verticalLayout = false }) {
+export default function DashboardHeader({
+  onOpenSidebar,
+  isCollapse = false,
+  verticalLayout = false,
+}: Props) {
   const isOffset = useOffSetTop(HEADER.DASHBOARD_DESKTOP_HEIGHT) && !verticalLayout;
 
   const isDesktop = useResponsive('up', 'lg');
@@ -81,7 +91,6 @@ export default function DashboardHeader({ onOpenSidebar, isCollapse = false, ver
           </IconButtonAnimate>
         )}
 
-        {/* <Searchbar /> */}
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>

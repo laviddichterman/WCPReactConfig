@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -7,13 +6,25 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import AddIcon from '@mui/icons-material/Add';
 
-import DialogContainer from './dialog.container';
+import DialogContainer, { IDialogContainer } from './dialog.container';
 
-function InterstitialDialog(props) {
+interface InterstitialDialogProps {
+  onClose: IDialogContainer['onClose'];
+  dialogTitle: string;
+  options: { title: string; 
+    onClose: IDialogContainer['onClose']; 
+    open: boolean; 
+    component: React.ReactNode; 
+    cb: VoidFunction;
+  }[];
+  open: boolean;
+};
+
+export default function InterstitialDialog(props : InterstitialDialogProps) {
   const { onClose, dialogTitle, options, open } = props;
 
-  const handleListItemClick = (cb) => {
-    onClose();
+  const handleListItemClick = (e : React.MouseEvent<HTMLDivElement>, cb: VoidFunction) => {
+    onClose(e, 'backdropClick');
     cb();
   };
 
@@ -25,18 +36,18 @@ function InterstitialDialog(props) {
           key={option.title} 
           title={option.title}
           onClose={option.onClose} 
-          isOpen={option.open} 
+          open={option.open} 
           inner_component={option.component} 
         />
       ))}
       <DialogContainer 
         onClose={onClose} 
-        isOpen={open} 
+        open={open} 
         title={dialogTitle} 
         inner_component={(
           <List>
             {options.map((option) => (
-              <ListItem button onClick={() => handleListItemClick(option.cb)} key={option.title}>
+              <ListItem button onClick={(e) => handleListItemClick(e, option.cb)} key={option.title}>
                 <ListItemAvatar>
                   <Avatar>
                     <AddIcon />
@@ -51,12 +62,3 @@ function InterstitialDialog(props) {
     </>
   );
 }
-
-InterstitialDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  dialogTitle: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  open: PropTypes.bool.isRequired,
-};
-
-export default InterstitialDialog;

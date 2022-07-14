@@ -1,17 +1,8 @@
 import { combineReducers } from 'redux';
-import storage from 'redux-persist/lib/storage';
 // slices
-
+import SocketIoReducer from './slices/SocketIoSlice';
 // ----------------------------------------------------------------------
 
-const rootPersistConfig = {
-  key: 'root',
-  storage,
-  keyPrefix: 'redux-',
-  whitelist: [],
-};
-
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
+  ws: SocketIoReducer
 });
-
-export { rootPersistConfig, rootReducer };

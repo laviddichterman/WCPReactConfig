@@ -1,21 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, MutableRefObject } from "react";
 import PropTypes from "prop-types";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useAuth0 } from '@auth0/auth0-react';
-import { Box, Card, CardHeader, Grid, Button, TextField, Paper, Popper, Typography, CardContent, CardActions} from "@mui/material";
-import {GridActionsCellItem}  from "@mui/x-data-grid";
+import { Box, Card, CardHeader, Grid, Button, TextField, Paper, Popper, Typography, CardContent, CardActions } from "@mui/material";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 import TableWrapperComponent from "./table_wrapper.component";
+import { HOST_API } from "../../config";
 
-const isOverflown = (element) => (
-  element.scrollHeight > element.clientHeight ||
-  element.scrollWidth > element.clientWidth
-);
+function isOverflown<T>(element : any) {
+  return element.scrollHeight > element.clientHeight ||
+    element.scrollWidth > element.clientWidth;
+}
 
-const GridCellExpand = React.memo((props) => {
-  const { width, value } = props;
-  const wrapper = React.useRef(null);
-  const cellDiv = React.useRef(null);
-  const cellValue = React.useRef(null);
+interface GridCellExpandProps {
+  value: string;
+  width: number;
+};
+
+const GridCellExpand = React.memo(({ width, value } : GridCellExpandProps) => {
+  const wrapper = React.useRef<HTMLDivElement>(null);
+  const cellDiv = React.useRef<HTMLDivElement>(null);
+  const cellValue = React.useRef<HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [showFullCell, setShowFullCell] = React.useState(false);
   const [showPopper, setShowPopper] = React.useState(false);
@@ -100,31 +105,18 @@ const GridCellExpand = React.memo((props) => {
   );
 });
 
-GridCellExpand.propTypes = {
-  value: PropTypes.string.isRequired,
-  width: PropTypes.number.isRequired,
-};
+interface renderCellExpandProps { 
+  colDef: { computedWidth: number; };
+  value: string;
+}
 
-function renderCellExpand(params) {
+function renderCellExpand(params : renderCellExpandProps) {
   return (
     <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
   );
 }
 
-renderCellExpand.propTypes = {
-  /**
-   * The column of the row that the current cell belongs to.
-   */
-  colDef: PropTypes.object.isRequired,
-  /**
-   * The cell value, but if the column has valueGetter, use getValue.
-   */
-  value: PropTypes.string.isRequired,
-};
-
-const KeyValuesComponent = ({
-  ENDPOINT
-}) => {
+const KeyValuesComponent = () => {
   const [KEYVALUES, setKEYVALUES] = useState({});
   const [newkey, setNewkey] = useState("");
   const [newvalue, setNewvalue] = useState("");
@@ -133,8 +125,8 @@ const KeyValuesComponent = ({
 
   useEffect(() => {
     const getToken = async () => {
-      const token = await getAccessTokenSilently( { scope: "read:settings"} );
-      const response = await fetch(`${ENDPOINT}/api/v1/config/kvstore`, {
+      const token = await getAccessTokenSilently({ scope: "read:settings" });
+      const response = await fetch(`${HOST_API}/api/v1/config/kvstore`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -149,9 +141,9 @@ const KeyValuesComponent = ({
     if (!isLoading && !isAuthenticated) {
       loginWithRedirect();
     }
-  }, [isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout, ENDPOINT]);
+  }, [isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout, HOST_API]);
 
-  const onAddNewKeyValuePair = (key, value) => {
+  const onAddNewKeyValuePair = (key : string, value: string) => {
     const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
     new_dict[key] = value;
     setKEYVALUES(new_dict);
@@ -168,8 +160,8 @@ const KeyValuesComponent = ({
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:settings"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/config/kvstore`, {
+        const token = await getAccessTokenSilently({ scope: "write:settings" });
+        const response = await fetch(`${HOST_API}/api/v1/config/kvstore`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -191,55 +183,55 @@ const KeyValuesComponent = ({
       <Card>
         <CardHeader title={"Key Value Store"} subtitle={"Use for authentication data; will cause reboot of service."} />
         <CardContent>
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={4}>
-            <TextField
-              label="Key"
-              type="text"
-              size="small"
-              onChange={e => setNewkey(e.target.value)}
-              value={newkey}
-            />
+          <Grid container spacing={3} justifyContent="center">
+            <Grid item xs={4}>
+              <TextField
+                label="Key"
+                type="text"
+                size="small"
+                onChange={e => setNewkey(e.target.value)}
+                value={newkey}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Value"
+                type="text"
+                value={newvalue}
+                size="small"
+                onChange={e => setNewvalue(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <Button onClick={onAddNewKeyValuePairLocal}>Add</Button>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Value"
-              type="text"
-              value={newvalue}
-              size="small"
-              onChange={e => setNewvalue(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={2}>
-            <Button onClick={onAddNewKeyValuePairLocal}>Add</Button>
-          </Grid>
-        </Grid>
-        <div style={{ height: "100%", overflow: "auto" }}>
-  <TableWrapperComponent
-    disableToolbar
-    columns={[
-      { headerName: "Key", field: "key", valueGetter: v => v.row.id, flex: 1 },
-      { headerName: "Value", field: "value", valueGetter: v => v.row.data, flex: 4, renderCell: renderCellExpand},
-      {
-        headerName: "Delete",
-        field: 'actions',
-        type: 'actions',
-        getActions: (params) => [
-        <GridActionsCellItem
-            key={"delete"}
-            icon={<HighlightOffIcon />}
-            label={"Delete"}
-            onClick={() => {
-              const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
-              delete new_dict[params.id];
-              setKEYVALUES(new_dict);}}
-          />]
-      }
-    ]}
-    rows={Object.entries(KEYVALUES).map((e) => ({id: e[0], data: e[1] }) )}
-  />
-  </div>
+          <div style={{ height: "100%", overflow: "auto" }}>
+            <TableWrapperComponent
+              disableToolbar
+              columns={[
+                { headerName: "Key", field: "key", valueGetter: v => v.row.id, flex: 1 },
+                { headerName: "Value", field: "value", valueGetter: v => v.row.data, flex: 4, renderCell: renderCellExpand },
+                {
+                  headerName: "Delete",
+                  field: 'actions',
+                  type: 'actions',
+                  getActions: (params) => [
+                    <GridActionsCellItem
+                      key={"delete"}
+                      icon={<HighlightOffIcon />}
+                      label={"Delete"}
+                      onClick={() => {
+                        const new_dict = JSON.parse(JSON.stringify(KEYVALUES));
+                        delete new_dict[params.id];
+                        setKEYVALUES(new_dict);
+                      }} />
+                  ]
+                }
+              ]}
+              rows={Object.entries(KEYVALUES).map((e) => ({ id: e[0], data: e[1] }))} toolbarActions={[]} />
+          </div>
         </CardContent>
         <CardActions>
           <Button onClick={onSubmit}>PUSH CHANGES</Button>

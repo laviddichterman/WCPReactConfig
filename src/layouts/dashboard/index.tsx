@@ -5,7 +5,6 @@ import { styled } from '@mui/material/styles';
 import { Box, Container, Typography, Stack } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
-import useSocketIo from '../../hooks/useSocketIo';
 
 import useResponsive from '../../hooks/useResponsive';
 import useCollapseDrawer from '../../hooks/useCollapseDrawer';
@@ -19,6 +18,7 @@ import Label from '../../components/Label';
 import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
+import { useAppSelector } from '../../hooks/useRedux';
 
 // ----------------------------------------------------------------------
 
@@ -50,11 +50,11 @@ const MainStyle = styled('main', {
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
+
+  const catalog = useAppSelector(s=>s.ws.catalog);
   const { collapseClick, isCollapse } = useCollapseDrawer();
 
   const { themeLayout } = useSettings();
-
-  const { catalog } = useSocketIo();
 
   const isDesktop = useResponsive('up', 'lg');
 

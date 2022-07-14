@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -25,11 +24,11 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-NavbarAccount.propTypes = {
-  isCollapse: PropTypes.bool,
+type Props = {
+  isCollapse: boolean | undefined;
 };
 
-export default function NavbarAccount({ isCollapse }) {
+export default function NavbarAccount({ isCollapse }: Props) {
   const { user } = useAuth();
 
   return (

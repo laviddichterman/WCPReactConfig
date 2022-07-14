@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { m } from 'framer-motion';
 // @mui
 import { Container, Typography } from '@mui/material';
@@ -11,13 +10,13 @@ import { ForbiddenIllustration } from '../assets';
 
 // ----------------------------------------------------------------------
 
-RoleBasedGuard.propTypes = {
-  hasContent: PropTypes.bool,
-  roles: PropTypes.arrayOf(PropTypes.string), // Example ['admin', 'leader']
-  children: PropTypes.node.isRequired,
+type RoleBasedGuardProp = {
+  hasContent?: boolean;
+  roles?: string[];
+  children: React.ReactNode;
 };
 
-export default function RoleBasedGuard({ hasContent, roles, children }) {
+export default function RoleBasedGuard({ hasContent, roles, children }: RoleBasedGuardProp) {
   // Logic here to get current user role
   const { user } = useAuth();
 
@@ -34,7 +33,9 @@ export default function RoleBasedGuard({ hasContent, roles, children }) {
         </m.div>
 
         <m.div variants={varBounce().in}>
-          <Typography sx={{ color: 'text.secondary' }}>You do not have permission to access this page</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>
+            You do not have permission to access this page
+          </Typography>
         </m.div>
 
         <m.div variants={varBounce().in}>

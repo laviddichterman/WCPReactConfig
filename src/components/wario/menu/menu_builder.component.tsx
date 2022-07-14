@@ -34,8 +34,13 @@ import ModifierTypeTableContainer from "./modifier_type_table.container";
 import ProductTableContainer from "./product_table.container";
 import ProductInstanceFunctionTableContainer from "./product_instance_function_table.container";
 
+import { HOST_API } from "../../../config";
+import { useAppSelector } from "../../../hooks/useRedux";
+import { ICatalog, ICategory, IOption, IOptionType, IProduct, IProductInstance, IProductInstanceFunction } from "@wcp/wcpshared";
 
-const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
+const MenuBuilderComponent = () => {
+  const catalog = useAppSelector(s=>s.ws.catalog);
+  const services = useAppSelector(s=>s.ws.services);
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
   const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
   const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
@@ -47,8 +52,8 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
   const [isModifierOptionDisableOpen, setIsModifierOptionDisableOpen] = useState(false);
   const [isModifierOptionDisableUntilEodOpen, setIsModifierOptionDisableUntilEodOpen] = useState(false);
 
-  const [modifierTypeToEdit, setModifierTypeToEdit] = useState(null);
-  const [modifierOptionToEdit, setModifierOptionToEdit] = useState(null);
+  const [modifierTypeToEdit, setModifierTypeToEdit] = useState<IOptionType | null>(null);
+  const [modifierOptionToEdit, setModifierOptionToEdit] = useState<IOption | null>(null);
 
   const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
   const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
@@ -62,49 +67,54 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
 
   const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false);
   const [isCategoryDeleteOpen, setIsCategoryDeleteOpen] = useState(false);
-  const [categoryToEdit, setCategoryToEdit] = useState(null);
+  const [categoryToEdit, setCategoryToEdit] = useState<ICategory | null>(null);
 
   const [isProductEditOpen, setIsProductEditOpen] = useState(false);
   const [isProductDisableUntilEodOpen, setIsProductDisableUntilEodOpen] = useState(false);
   const [isProductDisableOpen, setIsProductDisableOpen] = useState(false);
   const [isProductEnableOpen, setIsProductEnableOpen] = useState(false);
-  const [productToEdit, setProductToEdit] = useState(null);
+  const [productToEdit, setProductToEdit] = useState<IProduct | null>(null);
 
   const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
-  const [productInstanceToEdit, setProductInstanceToEdit] = useState(null);
+  const [productInstanceToEdit, setProductInstanceToEdit] = useState<IProductInstance|null>(null);
 
   const [isProductInstanceFunctionAddOpen, setIsProductInstanceFunctionAddOpen] = useState(false);
   const [isProductInstanceFunctionDeleteOpen, setIsProductInstanceFunctionDeleteOpen] = useState(false);
   const [isProductInstanceFunctionEditOpen, setIsProductInstanceFunctionEditOpen] = useState(false);
-  const [productInstanceFunctionToEdit, setProductInstanceFunctionToEdit] = useState(null);
+  const [productInstanceFunctionToEdit, setProductInstanceFunctionToEdit] = useState<IProductInstanceFunction | null>(null);
 
   // this assumes a single base product instance per product class.
   // assumption is that this precondition is enforced by the service
   const nameOfBaseProductInstance = useMemo(() => {
-    const pididx = productToEdit && Object.hasOwn(catalog.products, productToEdit._id) ? catalog.products[productToEdit._id].instances.findIndex((pi) => pi.is_base) : -1;
-    return pididx !== -1 ? catalog.products[productToEdit._id].instances[pididx].item.display_name : "Incomplete Product";
-  }, [catalog.products, productToEdit]);
+    const pididx = productToEdit !== null && catalog !== null && Object.hasOwn(catalog.products, productToEdit.id) ? catalog.products[productToEdit.id].instances.findIndex((pi) => pi.is_base) : -1;
+    return pididx !== -1 ? (catalog as ICatalog).products[(productToEdit as IProduct).id].instances[pididx].item.display_name : "Incomplete Product";
+  }, [catalog?.products, productToEdit]);
 
 
   const orphanedProducts = useMemo(
     () =>
-      Object.values(catalog.products).filter(
+      catalog !== null ? Object.values(catalog.products).filter(
         (x) =>
           x.product.category_ids.filter((x) => x && x.length > 0).length === 0
-      ),
-    [catalog.products]
+      ) : [],
+    [catalog?.products]
   );
+
+  if (catalog === null) {
+    return <>Loading...</>;
+  }
+
   return (
     <div>
       <DialogContainer
         title={"Edit Category"}
         onClose={() => setIsCategoryEditOpen(false)}
-        isOpen={isCategoryEditOpen}
+        open={isCategoryEditOpen}
         inner_component={
           <CategoryEditContainer
             onCloseCallback={() => setIsCategoryEditOpen(false)}
             categories={catalog.categories}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             category={categoryToEdit}
           />
         }
@@ -112,11 +122,11 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
       <DialogContainer
         title={"Delete Category"}
         onClose={() => setIsCategoryDeleteOpen(false)}
-        isOpen={isCategoryDeleteOpen}
+        open={isCategoryDeleteOpen}
         inner_component={
           <CategoryDeleteContainer
             onCloseCallback={() => setIsCategoryDeleteOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             category={categoryToEdit}
           />
         }
@@ -124,34 +134,34 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
       <DialogContainer
         title={"Add Modifier Type"}
         onClose={() => setIsModifierTypeAddOpen(false)}
-        isOpen={isModifierTypeAddOpen}
+        open={isModifierTypeAddOpen}
         inner_component={
           <ModifierTypeAddContainer
             onCloseCallback={() => setIsModifierTypeAddOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
       <DialogContainer
         title={"Edit Modifier Type"}
         onClose={() => setIsModifierTypeEditOpen(false)}
-        isOpen={isModifierTypeEditOpen}
+        open={isModifierTypeEditOpen}
         inner_component={
           <ModifierTypeEditContainer
             onCloseCallback={() => setIsModifierTypeEditOpen(false)}
             modifier_type={modifierTypeToEdit}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
       <DialogContainer
         title={"Delete Modifier Type"}
         onClose={() => setIsModifierTypeDeleteOpen(false)}
-        isOpen={isModifierTypeDeleteOpen}
+        open={isModifierTypeDeleteOpen}
         inner_component={
           <ModifierTypeDeleteContainer
             onCloseCallback={() => setIsModifierTypeDeleteOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             modifier_type={modifierTypeToEdit}
           />
         }
@@ -160,12 +170,12 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         maxWidth={"xl"}
         title={`Add Modifier Option for Type: ${modifierTypeToEdit?.name ?? ""}`}
         onClose={() => setIsModifierOptionAddOpen(false)}
-        isOpen={isModifierOptionAddOpen}
+        open={isModifierOptionAddOpen}
         inner_component={
           <ModifierOptionAddContainer
             onCloseCallback={() => setIsModifierOptionAddOpen(false)}
             product_instance_functions={catalog.product_instance_functions}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             parent={modifierTypeToEdit}
           />
         }
@@ -174,25 +184,25 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         maxWidth={"xl"}
         title={"Edit Modifier Option"}
         onClose={() => setIsModifierOptionEditOpen(false)}
-        isOpen={isModifierOptionEditOpen}
+        open={isModifierOptionEditOpen}
         inner_component={
           <ModifierOptionEditContainer
             onCloseCallback={() => setIsModifierOptionEditOpen(false)}
             product_instance_functions={catalog.product_instance_functions}
             modifier_option={modifierOptionToEdit}
             modifier_types={catalog.modifiers}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
       <DialogContainer
         title={"Disable Modifier Option Until End-of-Day"}
         onClose={() => setIsModifierOptionDisableUntilEodOpen(false)}
-        isOpen={isModifierOptionDisableUntilEodOpen}
+        open={isModifierOptionDisableUntilEodOpen}
         inner_component={
           <ModifierOptionDisableUntilEodContainer
             onCloseCallback={() => setIsModifierOptionDisableUntilEodOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             modifier_option={modifierOptionToEdit}
           />
         }
@@ -200,11 +210,11 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
       <DialogContainer
         title={"Disable Modifier Option"}
         onClose={() => setIsModifierOptionDisableOpen(false)}
-        isOpen={isModifierOptionDisableOpen}
+        open={isModifierOptionDisableOpen}
         inner_component={
           <ModifierOptionDisableContainer
             onCloseCallback={() => setIsModifierOptionDisableOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             modifier_option={modifierOptionToEdit}
           />
         }
@@ -212,11 +222,11 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
       <DialogContainer
         title={"Enable Modifier Option"}
         onClose={() => setIsModifierOptionEnableOpen(false)}
-        isOpen={isModifierOptionEnableOpen}
+        open={isModifierOptionEnableOpen}
         inner_component={
           <ModifierOptionEnableContainer
             onCloseCallback={() => setIsModifierOptionEnableOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             modifier_option={modifierOptionToEdit}
           />
         }
@@ -224,11 +234,11 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
       <DialogContainer
         title={"Delete Modifier Option"}
         onClose={() => setIsModifierOptionDeleteOpen(false)}
-        isOpen={isModifierOptionDeleteOpen}
+        open={isModifierOptionDeleteOpen}
         inner_component={
           <ModifierOptionDeleteContainer
             onCloseCallback={() => setIsModifierOptionDeleteOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             modifier_option={modifierOptionToEdit}
           />
         }
@@ -237,7 +247,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         maxWidth={"xl"}
         title={"Edit Product"}
         onClose={() => setIsProductEditOpen(false)}
-        isOpen={isProductEditOpen}
+        open={isProductEditOpen}
         inner_component={
           <ProductEditContainer
             onCloseCallback={() => setIsProductEditOpen(false)}
@@ -246,46 +256,46 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
             modifier_types={catalog.modifiers}
             product_instance_functions={catalog.product_instance_functions}
             product={productToEdit}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
       <DialogContainer
         title={"Disable Product Until End-of-Day"}
         onClose={() => setIsProductDisableUntilEodOpen(false)}
-        isOpen={isProductDisableUntilEodOpen}
+        open={isProductDisableUntilEodOpen}
         inner_component={
           <ProductDisableUntilEodContainer
             onCloseCallback={() => setIsProductDisableUntilEodOpen(false)}
             product={productToEdit}
             productName={nameOfBaseProductInstance}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
       <DialogContainer
         title={"Disable Product"}
         onClose={() => setIsProductDisableOpen(false)}
-        isOpen={isProductDisableOpen}
+        open={isProductDisableOpen}
         inner_component={
           <ProductDisableContainer
             onCloseCallback={() => setIsProductDisableOpen(false)}
             productName={nameOfBaseProductInstance}
             product={productToEdit}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
       <DialogContainer
         title={"Enable Product"}
         onClose={() => setIsProductEnableOpen(false)}
-        isOpen={isProductEnableOpen}
+        open={isProductEnableOpen}
         inner_component={
           <ProductEnableContainer
             onCloseCallback={() => setIsProductEnableOpen(false)}
             product={productToEdit}
             productName={nameOfBaseProductInstance}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
@@ -293,7 +303,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         maxWidth={"xl"}
         title={"Copy Product"}
         onClose={() => setIsProductCopyOpen(false)}
-        isOpen={isProductCopyOpen}
+        open={isProductCopyOpen}
         inner_component={
           <ProductCopyContainer
             onCloseCallback={() => setIsProductCopyOpen(false)}
@@ -303,18 +313,18 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
             product_instance_functions={catalog.product_instance_functions}
             products={catalog.products}
             product={productToEdit}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
       <DialogContainer
         title={"Delete Product"}
         onClose={() => setIsProductDeleteOpen(false)}
-        isOpen={isProductDeleteOpen}
+        open={isProductDeleteOpen}
         inner_component={
           <ProductDeleteContainer
             onCloseCallback={() => setIsProductDeleteOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             productName={nameOfBaseProductInstance}
             product={productToEdit}
           />
@@ -324,13 +334,13 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         maxWidth={"xl"}
         title={`Add Product Instance for: ${nameOfBaseProductInstance}`}
         onClose={() => setIsProductInstanceAddOpen(false)}
-        isOpen={isProductInstanceAddOpen}
+        open={isProductInstanceAddOpen}
         inner_component={
           <ProductInstanceAddContainer
             onCloseCallback={() => setIsProductInstanceAddOpen(false)}
             modifier_types_map={catalog.modifiers}
             parent_product={productToEdit}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
@@ -338,25 +348,25 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         maxWidth={"xl"}
         title={"Edit Product Instance"}
         onClose={() => setIsProductInstanceEditOpen(false)}
-        isOpen={isProductInstanceEditOpen}
+        open={isProductInstanceEditOpen}
         inner_component={
           <ProductInstanceEditContainer
             onCloseCallback={() => setIsProductInstanceEditOpen(false)}
             modifier_types_map={catalog.modifiers}
             parent_product={productToEdit}
             product_instance={productInstanceToEdit}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
       <DialogContainer
         title={"Delete Product Instance"}
         onClose={() => setIsProductInstanceDeleteOpen(false)}
-        isOpen={isProductInstanceDeleteOpen}
+        open={isProductInstanceDeleteOpen}
         inner_component={
           <ProductInstanceDeleteContainer
             onCloseCallback={() => setIsProductInstanceDeleteOpen(false)}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             product_instance={productInstanceToEdit}
           />
         }
@@ -365,12 +375,12 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         maxWidth={"xl"}
         title={"Add Product Instance Function"}
         onClose={() => setIsProductInstanceFunctionAddOpen(false)}
-        isOpen={isProductInstanceFunctionAddOpen}
+        open={isProductInstanceFunctionAddOpen}
         inner_component={
           <ProductInstanceFunctionAddContainer
             onCloseCallback={() => setIsProductInstanceFunctionAddOpen(false)}
             modifier_types={catalog.modifiers}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
@@ -378,13 +388,13 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         maxWidth={"xl"}
         title={"Edit Product Instance Function"}
         onClose={() => setIsProductInstanceFunctionEditOpen(false)}
-        isOpen={isProductInstanceFunctionEditOpen}
+        open={isProductInstanceFunctionEditOpen}
         inner_component={
           <ProductInstanceFunctionEditContainer
             onCloseCallback={() => setIsProductInstanceFunctionEditOpen(false)}
             modifier_types={catalog.modifiers}
             product_instance_function={productInstanceFunctionToEdit}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
           />
         }
       />
@@ -393,13 +403,13 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         onClose={() => {
           setIsProductInstanceFunctionDeleteOpen(false);
         }}
-        isOpen={isProductInstanceFunctionDeleteOpen}
+        open={isProductInstanceFunctionDeleteOpen}
         inner_component={
           <ProductInstanceFunctionDeleteContainer
             onCloseCallback={() => {
               setIsProductInstanceFunctionDeleteOpen(false);
             }}
-            ENDPOINT={ENDPOINT}
+            ENDPOINT={HOST_API}
             product_instance_function={productInstanceFunctionToEdit}
           />
         }
@@ -421,7 +431,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
                     onCloseCallback={() => {
                       setIsCategoryAddOpen(false);
                     }}
-                    ENDPOINT={ENDPOINT}
+                    ENDPOINT={HOST_API}
                     categories={catalog.categories}
                   />
                 ),
@@ -433,7 +443,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
                 onClose: () => setIsProductAddOpen(false),
                 component: (
                   <ProductAddContainer
-                    ENDPOINT={ENDPOINT}
+                    ENDPOINT={HOST_API}
                     onCloseCallback={() => {
                       setIsProductAddOpen(false);
                     }}
@@ -451,7 +461,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
                 onClose: () => setIsProductImportOpen(false),
                 component: (
                   <ProductImportContainer
-                    ENDPOINT={ENDPOINT}
+                    ENDPOINT={HOST_API}
                     onCloseCallback={() => {
                       setIsProductImportOpen(false);
                     }}
@@ -488,9 +498,7 @@ const MenuBuilderComponent = ({ ENDPOINT, catalog, services }) => {
         {orphanedProducts.length > 0 ? (
           <Grid item xs={12}>
             <ProductTableContainer
-              title="Orphan Products"
               products={orphanedProducts}
-              catalog={catalog}
               setProductToEdit={setProductToEdit}
               setIsProductEditOpen={setIsProductEditOpen}
               setIsProductCopyOpen={setIsProductCopyOpen}

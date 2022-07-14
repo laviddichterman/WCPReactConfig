@@ -1,16 +1,32 @@
-import React, {useCallback} from "react";
+import React, {useCallback, Dispatch, SetStateAction} from "react";
 import { format } from 'date-fns';
-import { DisableDataCheck } from '@wcp/wcpshared';
+import { DisableDataCheck, ICatalog, IProduct, IProductInstance } from '@wcp/wcpshared';
 import {GridActionsCellItem}  from "@mui/x-data-grid";
 import {useGridApiRef} from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
-
+import { useAppSelector } from "../../../hooks/useRedux";
 import TableWrapperComponent from "../table_wrapper.component";
 
+type RowType = { product: IProduct; instances: IProductInstance[]; }
+
+interface ProductTableContainerProps {
+  products: RowType[];
+  setProductToEdit: Dispatch<SetStateAction<IProduct|null>>;
+  setIsProductEditOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductCopyOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductDeleteOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductDisableOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductDisableUntilEodOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductEnableOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductInstanceAddOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductInstanceEditOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductInstanceDeleteOpen: Dispatch<SetStateAction<boolean>>;
+  setProductInstanceToEdit: Dispatch<SetStateAction<IProductInstance | null>>;
+  setPanelsExpandedSize: Dispatch<SetStateAction<number>>;
+}
 const ProductTableContainer = ({
   products,
-  catalog,
   setProductToEdit,
   setIsProductEditOpen,
   setIsProductCopyOpen,
@@ -23,46 +39,48 @@ const ProductTableContainer = ({
   setIsProductInstanceDeleteOpen,
   setProductInstanceToEdit,
   setPanelsExpandedSize
-}) => {
+} : ProductTableContainerProps) => {
+  const catalog = useAppSelector(s=>s.ws.catalog) as ICatalog;
+
   const apiRef = useGridApiRef();
 
-  const addProductInstance = (row) => () => {
+  const addProductInstance = (row : RowType) => () => {
     setIsProductInstanceAddOpen(true);
     setProductToEdit(row.product);
   };
-  const editProduct = (row) => () => {
+  const editProduct = (row : RowType) => () => {
     setIsProductEditOpen(true);
     setProductToEdit(row.product);
   };
-  const deleteProduct = (row) => () => {
+  const deleteProduct = (row : RowType) => () => {
     setIsProductDeleteOpen(true);
     setProductToEdit(row.product);
   };
-  const copyProduct = (row) => () => {
+  const copyProduct = (row : RowType) => () => {
     setIsProductCopyOpen(true);
     setProductToEdit(row.product);
   };
-  const enableProduct = (row) => () => { 
+  const enableProduct = (row : RowType) => () => { 
     setIsProductEnableOpen(true);
     setProductToEdit(row.product);
   };
-  const disableProductUntilEOD = (row) => () => { 
+  const disableProductUntilEOD = (row : RowType) => () => { 
     setIsProductDisableUntilEodOpen(true);
     setProductToEdit(row.product);
   };
-  const disableProduct = (row) => () => { 
+  const disableProduct = (row : RowType) => () => { 
     setIsProductDisableOpen(true);
     setProductToEdit(row.product);
   };
 
   // this assumes a single base product instance per product class.
   // assumption is that this precondition is enforced by the service
-  const GetIndexOfBaseProductInstance = useCallback((pid) =>
-   catalog.products[pid].instances.findIndex((pi) => pi.is_base), [catalog.products]);
+  const GetIndexOfBaseProductInstance = useCallback((instances : IProductInstance[]) =>
+   instances.findIndex((pi) => pi.is_base), []);
 
-  const getDetailPanelHeight = useCallback(({ row }) => catalog.products[row.product._id].instances.length ? (41 + (catalog.products[row.product._id].instances.length * 36) ) : 0, [catalog]);
+  const getDetailPanelHeight = useCallback(({ row } : {row : RowType}) => row.instances.length ? (41 + (row.instances.length * 36) ) : 0, []);
 
-  const getDetailPanelContent = useCallback(({ row }) => catalog.products[row.product._id].instances.length ? (
+  const getDetailPanelContent = useCallback(({ row } : {row : RowType}) => row.instances.length ? (
     <TableWrapperComponent
       disableToolbar
       columns={[
@@ -72,7 +90,7 @@ const ProductTableContainer = ({
           type: 'actions',
           getActions: (params) => [
             <GridActionsCellItem 
-              key={`EDIT${row.product._id}`}
+              key={`EDIT${row.product.id}`}
               icon={<Tooltip title="Edit Product Instance"><Edit/></Tooltip>}
               label="Edit Product Instance"
               onClick={(() => {
@@ -82,7 +100,7 @@ const ProductTableContainer = ({
               })}
             />,
             <GridActionsCellItem 
-              key={`DEL${row.product._id}`}
+              key={`DEL${row.product.id}`}
               icon={<Tooltip title="Delete Product Instance"><DeleteOutline/></Tooltip>}
               label="Delete Product Instance"
               onClick={(() => {
@@ -92,19 +110,19 @@ const ProductTableContainer = ({
             />
           ]
         },
-        { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name, flex: 1 },
-        { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.ordinal, defaultSort: "asc" },
-        { headerName: "Menu Ordinal", field: "menuOrdinal", valueGetter: v => v.row.display_flags?.menu?.ordinal || 0},
-        { headerName: "Order Ordinal", field: "orderOrdinal", valueGetter: v => v.row.display_flags?.order?.ordinal || 0 },
-        { headerName: "Shortcode", field: "item.shortcode", valueGetter: v => v.row.item.shortcode },
-        { headerName: "Description", field: "item.description", valueGetter: v => v.row.item.description },
+        { headerName: "Name", field: "item.display_name", valueGetter: (v : {row: IProductInstance}) => v.row.item.display_name, flex: 1 },
+        { headerName: "Ordinal", field: "ordinal", valueGetter: (v : {row: IProductInstance}) => v.row.ordinal },
+        { headerName: "Menu Ordinal", field: "menuOrdinal", valueGetter: (v : {row: IProductInstance}) => v.row.display_flags?.menu?.ordinal || 0},
+        { headerName: "Order Ordinal", field: "orderOrdinal", valueGetter: (v : {row: IProductInstance}) => v.row.display_flags?.order?.ordinal || 0 },
+        { headerName: "Shortcode", field: "item.shortcode", valueGetter: (v : {row: IProductInstance}) => v.row.item.shortcode },
+        { headerName: "Description", field: "item.description", valueGetter: (v : {row: IProductInstance}) => v.row.item.description },
 
       ]}
-      rows={catalog.products[row.product._id].instances}
+      rows={row.instances}
       getRowId={(row_inner) => row_inner._id}
     />) : 
     (""), 
-    [catalog.products, setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
+    [setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
       
   return (
     <div style={{ height: "100%", overflow: "auto" }}>
@@ -116,7 +134,7 @@ const ProductTableContainer = ({
           field: 'actions',
           type: 'actions',
           getActions: (params) => {
-            const base_piidx = GetIndexOfBaseProductInstance(params.row.product._id);
+            const base_piidx = GetIndexOfBaseProductInstance(params.row.instances);
             const title = base_piidx !== -1 ? params.row.instances[base_piidx].item.display_name : "Incomplete Product";
             const ADD_PRODUCT_INSTANCE = (<GridActionsCellItem
               icon={<Tooltip title={`Add Product Instance to ${title}`}><AddBox/></Tooltip>}
@@ -161,9 +179,9 @@ const ProductTableContainer = ({
             return !DisableDataCheck(params.row.product.disabled, new Date()) ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           } 
         },
-        { headerName: "Name", field: "display_name", valueGetter: v => GetIndexOfBaseProductInstance(v.row.product._id) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.product._id)].item.display_name : "Incomplete Product", defaultSort: "asc", flex: 6 },
+        { headerName: "Name", field: "display_name", valueGetter: ( v : { row: RowType }) => GetIndexOfBaseProductInstance(v.row.instances) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.instances)].item.display_name : "Incomplete Product", flex: 6 },
         { headerName: "Price", field: "product.price.amount", valueGetter: v => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
-        { headerName: "Modifiers", field: "product.modifiers", valueGetter: v => v.row.product.modifiers ? v.row.product.modifiers.map(x=>catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "" , flex: 3},
+        { headerName: "Modifiers", field: "product.modifiers", valueGetter: ( v : { row: RowType }) => v.row.product.modifiers ? v.row.product.modifiers.map(x=>catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "" , flex: 3},
         // eslint-disable-next-line no-nested-ternary
         { headerName: "Disabled", field: "product.disabled", valueGetter: v => !DisableDataCheck(v.row.product.disabled, new Date()) ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(new Date(v.row.product.disabled.start), "MMMM dd, y hh:mm a")} to ${format(new Date(v.row.product.disabled.end), "MMMM dd, y hh:mm a")}`) : "False", flex: 1},
       ]}
@@ -171,7 +189,7 @@ const ProductTableContainer = ({
       getRowId={(row) => row.product._id}
       getDetailPanelContent={getDetailPanelContent}
       getDetailPanelHeight={getDetailPanelHeight}
-      onDetailPanelExpandedRowIdsChange={(ids) => setPanelsExpandedSize(ids.reduce((acc, rid) => acc + 41 + (catalog.products[rid].instances.length * 36), 0))}
+      onDetailPanelExpandedRowIdsChange={(ids : number[]) => setPanelsExpandedSize(ids.reduce((acc, rid) => acc + 41 + (catalog.products[rid].instances.length * 36), 0))}
       rowThreshold={0}
       onRowClick={(params, ) => apiRef.current.toggleDetailPanel(params.id)}
     />

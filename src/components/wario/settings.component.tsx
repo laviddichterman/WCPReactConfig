@@ -1,13 +1,23 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { format, setDay } from 'date-fns';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Card, CardHeader, Grid, Button, IconButton } from '@mui/material';
 
-import { WDateUtils } from "@wcp/wcpshared";
+import { WDateUtils, WIntervalTuple } from "@wcp/wcpshared";
 import { useAuth0 } from '@auth0/auth0-react';
-import useSocketIo from '../../hooks/useSocketIo';
 import CheckedInputComponent from "./checked_input.component";
 import TimeSelection from "./timepicker.component";
+import {HOST_API} from '../../config';
+import { CheckedNumericInput } from './CheckedNumericTextInput';
+
+export interface OperatingHoursIntervalFormProps { 
+  time_step: number
+  interval, 
+  onChangeLowerBound, 
+  onChangeUpperBound,
+  disabled,
+  onAddOperatingHours 
+};
 
 const OperatingHoursIntervalForm = ({
   time_step, 
@@ -16,19 +26,20 @@ const OperatingHoursIntervalForm = ({
   onChangeUpperBound,
   disabled,
   onAddOperatingHours
-}) => {
-  const generateOptions = useCallback((earliest, latest, step) => {
+} : OperatingHoursIntervalFormProps) => {
+  const startOptions = useMemo(() => {
+    let earliest = 0;
+    const latest = 1440-time_step;
     const retval = [];
     while (earliest <= latest) {
       retval.push({ value: earliest, label: WDateUtils.MinutesToPrintTime(earliest)});
-      earliest += step;
+      earliest += time_step;
     }
     return retval;
-  }, []);
+  }, [time_step]);
  
-  const start_options = generateOptions(0, 1440-time_step, time_step);
-  const end_options = interval.start ?
-    start_options.filter(x => x.value >= interval.start.value) : [];
+  const endOptions = interval.start ?
+    startOptions.filter(x => x.value >= interval.start.value) : [];
   return (
     <Grid container spacing={3} justifyContent="center">
       <Grid item xs={5}>
@@ -38,7 +49,7 @@ const OperatingHoursIntervalForm = ({
           optionCaption={"Start"}
           disabled={disabled}
           // className="col-2"
-          options={start_options}
+          options={startOptions}
           isOptionDisabled={() => false}
         />
       </Grid>
@@ -49,7 +60,7 @@ const OperatingHoursIntervalForm = ({
           optionCaption={"End"}
           disabled={!interval.start || disabled}
           // className="col-2"
-          options={end_options}
+          options={endOptions}
           isOptionDisabled={() => false}
         />
       </Grid>
@@ -69,9 +80,7 @@ const GenerateInitialOperatingHoursFormIntervals = (num_services) => {
   return intervals;
 }
 
-const SettingsComponent = ({
-  ENDPOINT,
-}) => {
+const SettingsComponent = ({}) => {
   const { getAccessTokenSilently } = useAuth0();
   const [isProcessing, setIsProcessing] = useState(false);
   const { services, settings } = useSocketIo();
@@ -83,7 +92,7 @@ const SettingsComponent = ({
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:order_config"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/config/settings`, {
+        const response = await fetch(`${HOST_API}/api/v1/config/settings`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -103,22 +112,22 @@ const SettingsComponent = ({
   };
 
   if (!services || !services.length || !settings) {
-    return;
+    return <>Loading...</>;
   }
 
-  const onChangeAdditionalPizzaLeadTime = (e) => {
+  const onChangeAdditionalPizzaLeadTime = (e : number) => {
     const new_settings = JSON.parse(JSON.stringify(localSettings));
     new_settings.additional_pizza_lead_time = e;
     setLocalSettings(new_settings);
   }
 
-  const onChangeTimeStep = (e, service_idx) => {
+  const onChangeTimeStep = (e, service_idx : number) => {
     const new_settings = JSON.parse(JSON.stringify(localSettings));
     new_settings.time_step2[service_idx] = parseInt(e, 10);
     setLocalSettings(new_settings);
   }
 
-  const onAddOperatingHours = (service_index, day_index, interval) => {
+  const onAddOperatingHours = (service_index : number, day_index : number , interval : WIntervalTuple) => {
     const new_settings = JSON.parse(JSON.stringify(localSettings));
     WDateUtils.AddIntervalToOperatingHours(
       service_index,
@@ -128,7 +137,7 @@ const SettingsComponent = ({
     setLocalSettings(new_settings);
   }
 
-  const onRemoveOperatingHours = (service_index, day_index, interval_index) => {
+  const onRemoveOperatingHours = (service_index : number, day_index : number, interval_index : number) => {
     const new_settings = JSON.parse(JSON.stringify(localSettings));
     const new_operating_hours = WDateUtils.RemoveIntervalFromOperatingHours(
       service_index,
@@ -139,7 +148,7 @@ const SettingsComponent = ({
     setLocalSettings(new_settings);
   }
 
-  const onSetUpperBound = (service_index, day_index, e) => {
+  const onSetUpperBound = (service_index : number, day_index: number, e) => {
     const new_intervals = JSON.parse(JSON.stringify(operating_hours_form_intervals));
     new_intervals[service_index][day_index] = {start: new_intervals[service_index][day_index].start, end: e};
     setOperatingHoursFormIntervals(new_intervals);
@@ -233,14 +242,16 @@ const SettingsComponent = ({
             {operating_hours_service_html}
           </Grid>
           <Grid item xs={2}>
-            <CheckedInputComponent
+            <CheckedNumericInput 
               type="number"
               label="Additional lead time per pizza beyond the first"
-              className="form-control"
-              value={localSettings.additional_pizza_lead_time}
-              onFinishChanging={onChangeAdditionalPizzaLeadTime}
-              inputProps={{min: 0, max: 64}}
-            />
+              inputProps={{ inputMode: 'numeric', min: 0, max: 64, pattern: '[0-9]*' }} 
+              value={localSettings.additional_pizza_lead_time} 
+              className="form-control" 
+              disabled={isProcessing}
+              onChange={onChangeAdditionalPizzaLeadTime} 
+              parseFunction={parseInt}
+              allowEmpty={false} />
           </Grid>
           <Grid item xs={8}>
             <Grid container spacing={3}>

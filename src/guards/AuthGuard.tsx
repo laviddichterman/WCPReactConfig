@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 // hooks
 import useAuth from '../hooks/useAuth';
@@ -8,16 +7,16 @@ import LoadingScreen from '../components/LoadingScreen';
 
 // ----------------------------------------------------------------------
 
-AuthGuard.propTypes = {
-  children: PropTypes.node,
+type AuthGuardProps = {
+  children: ReactNode;
 };
 
-export default function AuthGuard({ children }) {
+export default function AuthGuard({ children }: AuthGuardProps) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const { pathname } = useLocation();
 
-  const [requestedLocation, setRequestedLocation] = useState(null);
+  const [requestedLocation, setRequestedLocation] = useState<string | null>(null);
 
   if (!isInitialized) {
     return <LoadingScreen />;
