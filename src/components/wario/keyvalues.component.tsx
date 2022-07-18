@@ -1,9 +1,8 @@
-import React, { useState, useEffect, MutableRefObject } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useAuth0 } from '@auth0/auth0-react';
 import { Box, Card, CardHeader, Grid, Button, TextField, Paper, Popper, Typography, CardContent, CardActions } from "@mui/material";
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRenderCellParams } from "@mui/x-data-grid";
 import TableWrapperComponent from "./table_wrapper.component";
 import { HOST_API } from "../../config";
 
@@ -21,7 +20,7 @@ const GridCellExpand = React.memo(({ width, value } : GridCellExpandProps) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cellDiv = React.useRef<HTMLDivElement>(null);
   const cellValue = React.useRef<HTMLDivElement>(null);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
   const [showFullCell, setShowFullCell] = React.useState(false);
   const [showPopper, setShowPopper] = React.useState(false);
 
@@ -41,7 +40,7 @@ const GridCellExpand = React.memo(({ width, value } : GridCellExpandProps) => {
       return undefined;
     }
 
-    function handleKeyDown(nativeEvent) {
+    function handleKeyDown(nativeEvent : KeyboardEvent) {
       // IE11, Edge (prior to using Bink?) use 'Esc'
       if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
         setShowFullCell(false);
@@ -93,7 +92,7 @@ const GridCellExpand = React.memo(({ width, value } : GridCellExpandProps) => {
         >
           <Paper
             elevation={1}
-            style={{ minHeight: wrapper.current.offsetHeight - 3 }}
+            style={{ minHeight: (wrapper.current as HTMLDivElement).offsetHeight - 3 }}
           >
             <Typography variant="body2" style={{ padding: 8 }}>
               {value}
@@ -105,10 +104,10 @@ const GridCellExpand = React.memo(({ width, value } : GridCellExpandProps) => {
   );
 });
 
-interface renderCellExpandProps { 
+type renderCellExpandProps = { 
   colDef: { computedWidth: number; };
   value: string;
-}
+} & GridRenderCellParams<any, any, any>
 
 function renderCellExpand(params : renderCellExpandProps) {
   return (

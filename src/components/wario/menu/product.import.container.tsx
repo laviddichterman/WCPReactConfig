@@ -13,7 +13,7 @@ import { useAppSelector } from "src/hooks/useRedux";
 import { HOST_API } from "src/config";
 
 
-const InternalCSVReader = ({onAccepted} : {onAccepted: VoidFunction}) => {
+const InternalCSVReader = ({onAccepted} : {onAccepted : any}) => {
   const { CSVReader } = useCSVReader();
   return (
     <CSVReader
@@ -25,7 +25,7 @@ const InternalCSVReader = ({onAccepted} : {onAccepted: VoidFunction}) => {
         acceptedFile,
         ProgressBar,
         getRemoveFileProps,
-      }) => (
+      } : any) => (
         <Grid container>
           <Grid item xs={4}>
             <Button variant="contained" {...getRootProps()} color="primary">
@@ -93,20 +93,28 @@ const ProductComponent = ({
           />
         </Grid>
         <Grid item xs={12}>
-        <InternalCSVReader onAccepted={(e : any) => setFileData(e)} />
+        <InternalCSVReader onAccepted={setFileData} />
         </Grid>
     </>}
     />
   );
 };
 
+interface CSVProduct { 
+  Name: string;
+  Description: string | null | undefined;
+  Shortname: string;
+  Price: string;
+};
+
 const ProductAddContainer = ({ onCloseCallback } : { onCloseCallback: VoidFunction }) => {
   const [parentCategories, setParentCategories] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data, setData] = useState(null)
+  const [data, setData] = useState<{data: CSVProduct[]}>({ data: [] })
   const { getAccessTokenSilently } = useAuth0();
 
   const addProducts = async () => {
+
     data.data.forEach(async (prod, index) => {
       if (!isProcessing) {
         setIsProcessing(true);

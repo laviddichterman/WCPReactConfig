@@ -1,44 +1,67 @@
 // @mui
 import { alpha, styled } from '@mui/material/styles';
-import { ListItemText, ListItemButton, ListItemIcon } from '@mui/material';
+import {
+  ListItemText,
+  ListItemIcon,
+  ListSubheader,
+  ListItemButton,
+  ListItemTextProps,
+  ListItemButtonProps,
+} from '@mui/material';
+// utils
+import cssStyles from '../../../utils/cssStyles';
 // config
 import { ICON, NAVBAR } from '../../../config';
 
 // ----------------------------------------------------------------------
 
+export interface ListItemStyleProps extends ListItemButtonProps {
+  active: boolean;
+  depth: number;
+}
+
 export const ListItemStyle = styled(ListItemButton, {
-  shouldForwardProp: (prop) => prop !== 'activeRoot' && prop !== 'activeSub' && prop !== 'subItem',
-})(({ activeRoot, activeSub, subItem, theme }) => ({
-  ...theme.typography.body2,
+  shouldForwardProp: (prop) => prop !== 'active',
+})<ListItemStyleProps>(({ active, depth, theme }) => ({
   position: 'relative',
-  height: NAVBAR.DASHBOARD_ITEM_ROOT_HEIGHT,
   textTransform: 'capitalize',
   paddingLeft: theme.spacing(2),
   paddingRight: theme.spacing(1.5),
   marginBottom: theme.spacing(0.5),
   color: theme.palette.text.secondary,
   borderRadius: theme.shape.borderRadius,
-  // activeRoot
-  ...(activeRoot && {
-    ...theme.typography.subtitle2,
+  height: NAVBAR.DASHBOARD_ITEM_ROOT_HEIGHT,
+  // Active item
+  ...(active && {
     color: theme.palette.primary.main,
     backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
   }),
-  // activeSub
-  ...(activeSub && {
-    ...theme.typography.subtitle2,
-    color: theme.palette.text.primary,
-  }),
-  // subItem
-  ...(subItem && {
-    height: NAVBAR.DASHBOARD_ITEM_SUB_HEIGHT,
+  // Active item
+  ...(active &&
+    depth !== 1 && {
+      color: theme.palette.text.primary,
+      backgroundColor: 'transparent',
+    }),
+  // Sub item
+  ...(depth && {
+    ...(depth > 1 && {
+      height: NAVBAR.DASHBOARD_ITEM_SUB_HEIGHT,
+    }),
+    ...(depth > 2 && {
+      paddingLeft: theme.spacing(depth),
+    }),
   }),
 }));
 
+// ----------------------------------------------------------------------
+
+interface ListItemTextStyleProps extends ListItemTextProps {
+  isCollapse?: boolean;
+}
+
 export const ListItemTextStyle = styled(ListItemText, {
   shouldForwardProp: (prop) => prop !== 'isCollapse',
-})(({ isCollapse, theme }) => ({
-  whiteSpace: 'nowrap',
+})<ListItemTextStyleProps>(({ isCollapse, theme }) => ({
   transition: theme.transitions.create(['width', 'opacity'], {
     duration: theme.transitions.duration.shorter,
   }),
@@ -48,6 +71,8 @@ export const ListItemTextStyle = styled(ListItemText, {
   }),
 }));
 
+// ----------------------------------------------------------------------
+
 export const ListItemIconStyle = styled(ListItemIcon)({
   width: ICON.NAVBAR_ITEM,
   height: ICON.NAVBAR_ITEM,
@@ -56,3 +81,18 @@ export const ListItemIconStyle = styled(ListItemIcon)({
   justifyContent: 'center',
   '& svg': { width: '100%', height: '100%' },
 });
+
+// ----------------------------------------------------------------------
+
+export const ListSubheaderStyle = styled(ListSubheader)(({ theme }) => ({
+  ...theme.typography.overline,
+  borderRadius: theme.shape.borderRadius,
+  paddingTop: theme.spacing(3),
+  paddingLeft: theme.spacing(2),
+  paddingBottom: theme.spacing(1),
+  color: theme.palette.text.primary,
+  transition: theme.transitions.create('opacity', {
+    duration: theme.transitions.duration.shorter,
+  }),
+  ...cssStyles(theme).bgBlur(),
+}));

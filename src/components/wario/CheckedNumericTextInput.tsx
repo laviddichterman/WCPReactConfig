@@ -37,8 +37,6 @@ function CheckFunctionGenerator<T extends ICheckFxnGenProps>(props: T) {
   }
 }
 
-
-
 type NeverEmptyProps = ChkFxnAllowEmptyFalse & CheckedNumericInputNeverEmptyProps;
 type CanBeEmptyProps = ChkFxnAllowEmptyTrue & CheckedNumericInputCanBeEmptyProps;
 type VariadicProps = (NeverEmptyProps | CanBeEmptyProps);

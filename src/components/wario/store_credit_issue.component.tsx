@@ -115,7 +115,7 @@ const StoreCreditIssueComponent = () => {
             className="form-control"
             disabled={isProcessing}
             onChange={(e) => setAmount(e)}
-            parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e))}
+            parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e as string))}
             allowEmpty={false} />
         </Grid>
         <Grid item xs={4}>

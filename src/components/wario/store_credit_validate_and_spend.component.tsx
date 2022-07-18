@@ -1,5 +1,6 @@
-/* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from "react";
+import { RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
+
+import { useState, useEffect } from "react";
 
 import QrScanner from 'qr-scanner';
 import { OneOffQrScanner } from "react-webcam-qr-scanner.ts";
@@ -8,25 +9,42 @@ import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, TextField } from "@mui/material";
 import DialogContainer from "./dialog.container";
+import { HOST_API } from "../../config";
+import { CheckedNumericInput } from "./CheckedNumericTextInput";
 
 const US_MONEY_FORMATTER = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
 
-import { HOST_API } from "../../config";
-import { CheckedNumericInput } from "./CheckedNumericTextInput";
-import { RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
+export interface ValidateResponse {
+  enc: string;
+  iv: string;
+  auth: string;
+  validated: boolean;
+  amount: number;
+  credit_type: "MONEY" | "DISCOUNT"
+ }
+
+type StoreCreditDebitSuccessResponse = {
+  success: true;
+  balance: number;
+}
+type StoreCreditDebitFailureResponse = {
+  success: false;
+  result: {errors: [{detail: "Unable to debit store credit."}]}
+}
+type StoreCreditDebitResponse = StoreCreditDebitSuccessResponse | StoreCreditDebitFailureResponse;
 
 const StoreCreditValidateAndSpendComponent = () => {
   const [creditCode, setCreditCode] = useState("");
   const [scanCode, setScanCode] = useState(false);
   const [hasCamera, setHasCamera] = useState(false);
-  const [validationResponse, setValidationResponse] = useState(null);
+  const [validationResponse, setValidationResponse] = useState<ValidateResponse|null>(null);
   const [amount, setAmount] = useState(0);
   const [processedBy, setProcessedBy] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [debitResponse, setDebitResponse] = useState(null);
+  const [debitResponse, setDebitResponse] = useState<StoreCreditDebitResponse|null>(null);
 
   useEffect(() => {
     const CheckForCamera = async () => {
@@ -76,7 +94,7 @@ const StoreCreditValidateAndSpendComponent = () => {
   };
 
   const processDebit = async () => {
-    if (!isProcessing) {
+    if (!isProcessing && validationResponse !== null ) {
       setIsProcessing(true);
       try {
         const response = await fetch(
@@ -247,7 +265,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     className="form-control"
                     disabled={isProcessing || debitResponse !== null}
                     onChange={(e) => setAmount(e)}
-                    parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e))}
+                    parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
                     allowEmpty={false} />
                 </Grid>
                 <Grid item xs={4}>

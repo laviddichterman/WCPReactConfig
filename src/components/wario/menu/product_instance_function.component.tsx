@@ -40,8 +40,8 @@ const ProductInstanceFunctionComponent = ({
         </Grid>
         <Grid item xs={12}>
           <AbstractExpressionFunctionalContainer
-            expression={expression}
-            setExpression={setExpression}
+            value={expression}
+            setValue={setExpression}
           />
         </Grid>
       </>}

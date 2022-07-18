@@ -1,5 +1,4 @@
-/* eslint-disable prefer-const */
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState, useEffect } from "react";
 
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -15,14 +14,14 @@ import Autocomplete from '@mui/material/Autocomplete';
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import { useAppSelector } from "src/hooks/useRedux";
-import { IAbstractExpression, IHasAnyOfModifierExpression, IModifierPlacementExpression, ProductInstanceFunctionType } from "@wcp/wcpshared";
+import { IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, ProductInstanceFunctionOperator, ProductInstanceFunctionType } from "@wcp/wcpshared";
 
 // BUG// TODO: https://app.asana.com/0/1184794277483753/1200242818246330/f
 // we need a way to disable saving the abstract expression if it's not fully specified
 export interface AbstractExpressionFunctionalComponentProps {
   expression_types: Record<keyof typeof ProductInstanceFunctionType, React.ReactNode>;
-  discriminator: keyof typeof ProductInstanceFunctionType;
-  setDiscriminator: Dispatch<SetStateAction<keyof typeof ProductInstanceFunctionType>>;
+  discriminator: ProductInstanceFunctionType | null;
+  setDiscriminator: Dispatch<SetStateAction<ProductInstanceFunctionType | null>>;
 }
 
 const AbstractExpressionFunctionalComponent = ({
@@ -42,9 +41,9 @@ const AbstractExpressionFunctionalComponent = ({
                   name="Expression Type"
                   row
                   value={discriminator}
-                  onChange={(e) => setDiscriminator(e.target.value as keyof typeof ProductInstanceFunctionType)}
+                  onChange={(e) => setDiscriminator(ProductInstanceFunctionType[e.target.value as keyof typeof ProductInstanceFunctionType])}
                 >
-                  {Object.keys(expression_types).map((val, idx) => (
+                  {Object.keys(ProductInstanceFunctionType).map((val, idx) => (
                       <FormControlLabel
                         key={idx}
                         control={<Radio disableRipple />}
@@ -57,101 +56,68 @@ const AbstractExpressionFunctionalComponent = ({
             </CardContent>
           </Card>
         </ListItem>
+        { discriminator !== null && 
         <ListItem>
           <List>
             {expression_types[discriminator]}
           </List>
         </ListItem>
+        }
       </List>
     </div>
   );
 
-let ConstLiteralFunctionalComponent: (props: any) => JSX.Element;
-let LogicalFunctionalComponent: (props: any) => JSX.Element;
-let IfElseFunctionalComponent: (props: any) => JSX.Element;
-let ModifierPlacementFunctionalComponent: (props: any) => JSX.Element;
-let HasAnyOfModifierTypeFunctionalComponent: (props: any) => JSX.Element;
+type ValSetVal<T> = { value: T, setValue: Dispatch<SetStateAction<T>> };
+let ConstLiteralFunctionalComponent: ({ value, setValue }: ValSetVal<IConstLiteralExpression | null>) => JSX.Element;
+let LogicalFunctionalComponent: ({ value, setValue }: ValSetVal<ILogicalExpression | null>) => JSX.Element;
+let IfElseFunctionalComponent: ({ value, setValue }: ValSetVal<IIfElseExpression | null>) => JSX.Element;
+let ModifierPlacementFunctionalComponent: ({ value, setValue }: ValSetVal<IModifierPlacementExpression|null>) => JSX.Element;
+let HasAnyOfModifierTypeFunctionalComponent: ({ value, setValue }: ValSetVal<IHasAnyOfModifierExpression|null>) => JSX.Element;
 
-// convert this to a ListItem that can be collapsed and returns a text representation of the internal expression when collapsed
-export interface AbstractExpressionFunctionalContainerProps {
-  expression: IAbstractExpression | null;
-  setExpression: Dispatch<SetStateAction<IAbstractExpression | null>>;
-}
 const AbstractExpressionFunctionalContainer = ({
-  expression,
-  setExpression,
-} : AbstractExpressionFunctionalContainerProps) => {
-
-  const modifier_types = useAppSelector(s=>s.ws.catalog?.modifiers ?? {});
-  const [discriminator, setDiscriminator] = useState<keyof typeof ProductInstanceFunctionType>(expression?.discriminator ?? 'ConstLiteral');
-  const [constLiteralValue, setConstLiteralValue] = useState<number | string>(expression && expression.discriminator && expression.discriminator === "ConstLiteral" && expression.const_literal ? expression.const_literal.value : "" );
-  const [logicalValue, setLogicalValue] = useState(expression && expression.discriminator && expression.discriminator === "Logical" && expression.logical ? expression.logical : { operator: "AND" } );
-  const [ifElseValue, setIfElseValue] = useState(expression && expression.discriminator && expression.discriminator === "IfElse" && expression.if_else ? expression.if_else : {} );
-  const [modifierPlacementValue, setModifierPlacementValue] = useState(expression && expression.discriminator && expression.discriminator === "ModifierPlacement" && expression.modifier_placement ? expression.modifier_placement : {} );
-  const [hasAnyOfModifierTypeValue, setHasAnyOfModifierTypeValue] = useState(expression && expression.discriminator && expression.discriminator === "HasAnyOfModifierType" && expression.has_any_of_modifier ? expression.has_any_of_modifier : {} );
-  const updateDiscriminator = (val: keyof typeof ProductInstanceFunctionType) => {
+  value,
+  setValue
+} : ValSetVal<IAbstractExpression | null>) => {
+  const [discriminator, setDiscriminator] = useState<ProductInstanceFunctionType | null>(value?.discriminator ?? null);
+  const [expr, setExpr] = useState<IAbstractExpression['expr'] | null>(value?.expr ?? null);
+  useEffect(()=>{
+    if (discriminator !== null && expr !== null) { 
+      setValue({ discriminator: discriminator, expr: expr } as IAbstractExpression);
+    }
+  }, [discriminator, expr]);
+  const updateDiscriminator = (val: ProductInstanceFunctionType) => {
     setDiscriminator(val);
-    setExpression({...expression, discriminator: val});
+    setExpr(null);
   }
-  const updateConstLiteralValue = (val: number | string) => {
-    setConstLiteralValue(val);
-    setExpression({...expression, const_literal: { value: val } });
-  };
-  const updateLogicalValue = (val) => {
-    setLogicalValue(val);
-    const newexpr = { discriminator: expression.discriminator, logical: val };
-    setExpression(newexpr);
-  };
-  const updateModifierPlacementValue = (val) => {
-    setModifierPlacementValue(val);
-    const newexpr = { discriminator: expression.discriminator, modifier_placement: val };
-    setExpression(newexpr);
-  };
-  const updateHasAnyOfModifierTypeValue = (val) => {
-    setHasAnyOfModifierTypeValue(val);
-    console.log(val);
-    const newexpr = { discriminator: expression.discriminator, has_any_of_modifier: val };
-    console.log(newexpr);
-    setExpression(newexpr);
-  };
-  const updateIfElseValue = (val) => {
-    setIfElseValue(val);
-    const newexpr = { discriminator: expression.discriminator, if_else: val };
-    setExpression(newexpr);
-  };
   const expression_types = {
     Logical: (
       <LogicalFunctionalComponent
-        modifier_types={modifier_types}
-        value={logicalValue}
-        setValue={updateLogicalValue}
+        value={expr as ILogicalExpression}
+        setValue={setExpr}
       />
     ),
     ConstLiteral: (
       <ConstLiteralFunctionalComponent
-        value={constLiteralValue}
-        setValue={updateConstLiteralValue}
+        value={expr as IConstLiteralExpression}
+        setValue={setExpr}
       />
     ),
     IfElse: (
       <IfElseFunctionalComponent
-        modifier_types={modifier_types}
-        value={ifElseValue}
-        setValue={updateIfElseValue}
+        value={expr as IIfElseExpression}
+        setValue={setExpr}
       />
     ),
     ModifierPlacement: (
       <ModifierPlacementFunctionalComponent 
-        modifier_types={modifier_types} 
-        value={modifierPlacementValue}
-        setValue={updateModifierPlacementValue}
+        value={expr as IModifierPlacementExpression}
+        setValue={setExpr}
       />
     ),
     HasAnyOfModifierType: (
       <HasAnyOfModifierTypeFunctionalComponent 
-        modifier_types={modifier_types} 
-        value={hasAnyOfModifierTypeValue}
-        setValue={updateHasAnyOfModifierTypeValue}
+        value={expr as IHasAnyOfModifierExpression}
+        setValue={setExpr}
       />
     ),
   };
@@ -170,29 +136,22 @@ LogicalFunctionalComponent = ({
   value,
   setValue,
 }) => {
-  const [operator, setOperator] = useState(value?.operator ?? "AND");
-  const [operandA, setOperandA] = useState(value?.operandA ?? {});
-  const [operandB, setOperandB] = useState(value?.operandB ?? {});
-  const updateOperator = (val) => {
-    setOperator(val);
-    const newValue = {};
-    Object.assign(newValue, value);
-    newValue.operator = val;
-    setValue(newValue);
-  };
-  const updateOperandA = (val) => {
-    setOperandA(val);
-    const newValue = {};
-    Object.assign(newValue, value);
-    newValue.operandA = val;
-    setValue(newValue);
-  };
-  const updateOperandB = (val) => {
-    setOperandB(val);
-    const newValue = {};
-    Object.assign(newValue, value);
-    newValue.operandB = val;
-    setValue(newValue);
+  const [operator, setOperator] = useState(value?.operator ?? null);
+  const [operandA, setOperandA] = useState(value?.operandA ?? null);
+  const [operandB, setOperandB] = useState(value?.operandB ?? null);
+  useEffect(() => {
+    if (operator !== null && 
+      operandA !== null && 
+      (operator !== ProductInstanceFunctionOperator.NOT || operandB !== null)) {
+      setValue({ operator, operandA, operandB: operandB ?? undefined });
+    }
+  }, [operator, operandA, operandB])
+  const updateOperator = (val : string) => {
+    const value = ProductInstanceFunctionOperator[val as keyof typeof ProductInstanceFunctionOperator];
+    if ((operator === ProductInstanceFunctionOperator.NOT || value === ProductInstanceFunctionOperator.NOT) && operator !== value) {
+      setOperandB(null);
+    }
+    setOperator(value);
   };
   return (
     <div>
@@ -206,11 +165,10 @@ LogicalFunctionalComponent = ({
                   aria-label="Operator"
                   name="Operator"
                   row
-                  defaultValue={operators[0]}
                   value={operator}
-                  onChange={(e) => updateOperator(e.target.value)}
+                  onChange={(_, value) => updateOperator(value)}
                 >
-                  {operators.map((val, idx) => (
+                  {Object.keys(ProductInstanceFunctionOperator).map((val, idx) => (
                       <FormControlLabel
                         key={idx}
                         control={<Radio disableRipple />}
@@ -228,21 +186,21 @@ LogicalFunctionalComponent = ({
             <CardHeader title="Left Operand" />
             <CardContent>
               <AbstractExpressionFunctionalContainer
-                expression={operandA}
-                setExpression={updateOperandA}
+                value={operandA}
+                setValue={setOperandA}
               />
             </CardContent>
           </Card>
         </ListItem>
       </List>
-      {operator !== "NOT" ? (
+      {operator !== ProductInstanceFunctionOperator.NOT ? (
           <ListItem>
             <Card>
               <CardHeader title="Right Operand" />
               <CardContent>
                 <AbstractExpressionFunctionalContainer
-                  expression={operandB}
-                  setExpression={updateOperandB}
+                  value={operandB}
+                  setValue={setOperandB}
                 />
               </CardContent>
             </Card>
@@ -258,28 +216,18 @@ IfElseFunctionalComponent = ({
   value,
   setValue,
 }) => {
-  const [testExpr, setTestExpr] = useState<IAbstractExpression>(value?.test ?? {});
-  const [trueBranchExpr, setTrueBranchExpr] = useState<IAbstractExpression>(
-    value?.true_branch ?? {}
+  const [testExpr, setTestExpr] = useState<IAbstractExpression | null>(value?.test ?? null);
+  const [trueBranchExpr, setTrueBranchExpr] = useState<IAbstractExpression | null>(
+    value?.true_branch ?? null
   );
-  const [falseBranchExpr, setFalseBranchExpr] = useState<IAbstractExpression>(
-    value?.false_branch ?? {}
+  const [falseBranchExpr, setFalseBranchExpr] = useState<IAbstractExpression | null>(
+    value?.false_branch ?? null
   );
-  const updateTestExpr = (val) => {
-    setTestExpr(val);
-    const newValue = {};
-    Object.assign(newValue, value);
-    newValue.test = val;
-    setValue(newValue);
-  };
-  const updateTrueBranchExpr = (val: IAbstractExpression) => {
-    setTrueBranchExpr(val);
-    setValue({...value, true_branch: val });
-  };
-  const updateFalseBranchExpr = (val: IAbstractExpression) => {
-    setFalseBranchExpr(val);
-    setValue({...value, false_branch: val });
-  };
+  useEffect(() => {
+    if (testExpr !== null && trueBranchExpr !== null && falseBranchExpr !== null) {
+      setValue({test: testExpr, true_branch: trueBranchExpr, false_branch: falseBranchExpr});
+    }
+  }, [testExpr, trueBranchExpr, falseBranchExpr]);
   return (
     <div>
       <List>
@@ -288,8 +236,8 @@ IfElseFunctionalComponent = ({
             <CardHeader title="Test Expression" />
             <CardContent>
               <AbstractExpressionFunctionalContainer
-                expression={testExpr}
-                setExpression={updateTestExpr}
+                value={testExpr}
+                setValue={setTestExpr}
               />
             </CardContent>
           </Card>
@@ -299,8 +247,8 @@ IfElseFunctionalComponent = ({
             <CardHeader title="True Branch Expression" />
             <CardContent>
               <AbstractExpressionFunctionalContainer
-                expression={trueBranchExpr}
-                setExpression={updateTrueBranchExpr}
+                value={trueBranchExpr}
+                setValue={setTrueBranchExpr}
               />
             </CardContent>
           </Card>
@@ -310,8 +258,8 @@ IfElseFunctionalComponent = ({
             <CardHeader title="False Branch Expression" />
             <CardContent>
               <AbstractExpressionFunctionalContainer
-                expression={falseBranchExpr}
-                setExpression={updateFalseBranchExpr}
+                value={falseBranchExpr}
+                setValue={setFalseBranchExpr}
               />
             </CardContent>
           </Card>
@@ -320,37 +268,28 @@ IfElseFunctionalComponent = ({
     </div>
   );
 };
-export interface HasAnyOfModifierTypeFunctionalComponentProps { 
-  value: IHasAnyOfModifierExpression;
-  setValue: Dispatch<SetStateAction<IHasAnyOfModifierExpression>>;
-}
+
 HasAnyOfModifierTypeFunctionalComponent = ({
   value,
   setValue,
-} : HasAnyOfModifierTypeFunctionalComponentProps) => {
+}) => {
   const modifier_types = useAppSelector(s=>s.ws.catalog?.modifiers ?? {});
-  const [modifier, setModifier] = useState(value && value.mtid ? modifier_types[value.mtid] : null);
-  const updateModifier = (val) => {
-    setModifier(val);
-    setValue(val ? { mtid: val.modifier_type.id } : {});
-  };
+  const [modifier, setModifier] = useState(value?.mtid ?? null);
+  useEffect(() => {
+    if (modifier !== null) {
+      setValue({ mtid: modifier });
+    }
+  }, [modifier]);
   return (
     <Grid container>
       <Grid item>
         <Autocomplete
           style={{ width: 200 }}
-
-          options={Object.values(modifier_types)}
+          options={Object.keys(modifier_types)}
           value={modifier}
-          onChange={(e, v) => updateModifier(v)}
-          getOptionLabel={(option) =>
-            option?.modifier_type.name ?? "CORRUPT DATA"
-          }
-          isOptionEqualToValue={(option, value) =>
-            option &&
-            value &&
-            option.modifier_type.id === value.modifier_type.id
-          }
+          onChange={(_, v) => setModifier(v)}
+          getOptionLabel={(o) => modifier_types[o].modifier_type.name ?? "CORRUPTED DATA" }
+          isOptionEqualToValue={(o, v) => o === v}
           renderInput={(params) => <TextField {...params} label="Modifier" />}
         />
       </Grid>
@@ -358,92 +297,82 @@ HasAnyOfModifierTypeFunctionalComponent = ({
   );
 };
 
-export interface ModifierPlacementFunctionalComponentProps {
-  value: IModifierPlacementExpression;
-  setValue: Dispatch<SetStateAction<IModifierPlacementExpression>>;
- }
+
 ModifierPlacementFunctionalComponent = ({
   value,
   setValue,
-}: ModifierPlacementFunctionalComponentProps) => {
+}) => {
   const modifier_types = useAppSelector(s=>s.ws.catalog?.modifiers ?? {});
-  const [modifier, setModifier] = useState(value && value.mtid ? modifier_types[value.mtid] : null);
-  const [modifierOption, setModifierOption] = useState(value && value.moid ? modifier_types[value.mtid].options.find(x => x.id === value.moid) : null);
-  const updateModifier = (val) => {
-    setModifier(val);
-    setValue({});
-  };
-  const updateModifierOption = (val) => {
-    setModifierOption(val);
-    setValue(val ? { mtid: val.option_type_id, moid: val.id} : {});
-  };
+  const [modifier, setModifier] = useState(value?.mtid ?? null);
+  const modifierOptionsForType = useMemo(() => modifier !== null ? 
+    modifier_types[modifier].options.reduce((acc : Record<string, IOption>, o) => ({...acc, [o.id]: o}), {}) : 
+    {}, [modifier])
+  const [modifierOption, setModifierOption] = useState(value?.moid ?? null);
+  useEffect(() => {
+    if (modifier !== null && modifierOption !== null) {
+      setValue({ mtid: modifier, moid: modifierOption });
+    }
+  }, [modifier, modifierOption]);
   return (
     <Grid container>
       <Grid item>
         <Autocomplete
           style={{ width: 200 }}
-
-          options={Object.values(modifier_types)}
+          options={Object.keys(modifier_types)}
           value={modifier}
-          onChange={(e, v) => updateModifier(v)}
-          getOptionLabel={(option) =>
-            option?.modifier_type.name ?? "CORRUPT DATA"
-          }
-          isOptionEqualToValue={(option, value) =>
-            option &&
-            value &&
-            option.modifier_type.id === value.modifier_type.id
-          }
+          onChange={(e, v) => setModifier(v)}
+          getOptionLabel={(o) => modifier_types[o].modifier_type.name ?? "CORRUPTED DATA" }
+          isOptionEqualToValue={(o, v) => o === v}
           renderInput={(params) => <TextField {...params} label="Modifier" />}
         />
       </Grid>
 
-      {modifier && modifier.options.length ? (
+      {modifier !== null && modifier_types[modifier].options.length && (
         <Grid item xs={6}>
           <Autocomplete
             style={{ width: 200 }}
-
-            options={modifier ? modifier.options : []}
+            options={Object.keys(modifierOptionsForType)}
             value={modifierOption}
-            onChange={(e, v) => updateModifierOption(v)}
-            getOptionLabel={(option) =>
-              option?.item.display_name ?? "CORRUPT DATA"
-            }
-            isOptionEqualToValue={(option, value) =>
-              option && value && option.id === value.id
-            }
+            onChange={(_, v) => setModifierOption(v)}
+            getOptionLabel={(o) => modifierOptionsForType[o].item.display_name ?? "CORRUPT DATA"}
+            isOptionEqualToValue={(o, v) => o === v}
             renderInput={(params) => <TextField {...params} label="Option" />}
           />
         </Grid>
-      ) : (
-        ""
       )}
     </Grid>
   );
 };
 
 // todo: ADD PLACEMENT, BOOLEAN
-const LITERAL_TYPES = {"Text": (x) => x, "Number": parseFloat };
+const LITERAL_TYPES = {"Text": (x : string) => x, "Number": parseFloat };
 ConstLiteralFunctionalComponent = ({ value, setValue }) => {
   // TODO FINISH getting the value in the correct type after changing the literalType flag
-  const [literalType, setLiteralType] = useState(value && typeof value !== 'number' ? "Text" : "Number");
-  const [local_value, setLocalValue] = useState(value);
+  const [literalType, setLiteralType] = useState(value !== null && typeof value.value !== 'number' ? "Text" : "Number");
+  const [local_value, setLocalValue] = useState(value?.value ?? null);
   const [dirty, setDirty] = useState(false);
+  useEffect(() => {
+    if (local_value !== null) {
+      setValue({ value: local_value });
+    }
+  }, [local_value]);
   const onFinishChangingLocal = () => {
+    // @ts-ignore
     const new_val = typeof local_value === "string" && local_value.length ? LITERAL_TYPES[literalType](local_value) : local_value;
     setDirty(false);
     setLocalValue(new_val);
     setValue(new_val);
   }
 
-  const onChangeLocal = (e) => {
+  const onChangeLocal = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setDirty(true);
     setLocalValue(e.target.value);
   }
 
-  const updateLiteralType = (e) => {
+  const updateLiteralType = (e: "Text" | 'Number') => {
     setLiteralType(e);
-    setLocalValue(local_value.length ? LITERAL_TYPES[e](local_value) : "");
+    // @ts-ignore
+    setLocalValue(local_value !== null ? LITERAL_TYPES[e](local_value) : "");
     onFinishChangingLocal();
   }
   return (
@@ -458,7 +387,7 @@ ConstLiteralFunctionalComponent = ({ value, setValue }) => {
             name="Literal Type"
             row
             value={literalType}
-            onChange={(e) => updateLiteralType(e.target.value)}
+            onChange={(e) => updateLiteralType(e.target.value as "Text" | "Number")}
           >
             {Object.keys(LITERAL_TYPES).map((val, idx) => (
                 <FormControlLabel
@@ -478,8 +407,8 @@ ConstLiteralFunctionalComponent = ({ value, setValue }) => {
           value={dirty ? local_value : value}
           size="small"
           fullWidth
-          onChange={onChangeLocal}
-          onBlur={onFinishChangingLocal}
+          onChange={(e) => onChangeLocal(e)}
+          onBlur={() => onFinishChangingLocal()}
         />
         </Grid>
       </Grid>

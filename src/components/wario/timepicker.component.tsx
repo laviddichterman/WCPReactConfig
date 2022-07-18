@@ -2,6 +2,8 @@ import { Autocomplete, TextField, AutocompleteProps } from "@mui/material";
 import { useMemo } from "react";
 // probably move to shared react lib
 
+// maybe this is useless though
+
 export interface Option { 
   label: string;
   value: number;
