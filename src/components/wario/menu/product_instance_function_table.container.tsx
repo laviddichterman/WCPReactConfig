@@ -1,37 +1,45 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 import {GridActionsCellItem}  from "@mui/x-data-grid";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
-import { WFunctional } from "@wcp/wcpshared";
+import { IProductInstanceFunction, WFunctional } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
-
+import { useAppSelector } from "src/hooks/useRedux";
+interface PIFTableContainerProps {
+  setIsProductInstanceFunctionEditOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductInstanceFunctionDeleteOpen: Dispatch<SetStateAction<boolean>>;
+  setIsProductInstanceFunctionAddOpen: Dispatch<SetStateAction<boolean>>;
+  setProductInstanceFunctionToEdit: Dispatch<SetStateAction<IProductInstanceFunction>>;
+}
 const ProductInstanceFunctionTableContainer = ({
-  product_instance_functions,
-  modifier_types,
   setIsProductInstanceFunctionEditOpen,
   setIsProductInstanceFunctionDeleteOpen,
   setIsProductInstanceFunctionAddOpen,
   setProductInstanceFunctionToEdit,
-}) => {
-  const editProductFunction = (row) => () => {
+}: PIFTableContainerProps) => {
+
+  const productInstanceFunctions = useAppSelector(s=>s.ws.catalog?.product_instance_functions ?? {});
+  const modifierTypes = useAppSelector(s=>s.ws.catalog?.modifiers ?? {});
+  const editProductFunction = (row : IProductInstanceFunction) => () => {
     setIsProductInstanceFunctionEditOpen(true);
     setProductInstanceFunctionToEdit(row);
   };
 
-  const deleteProductFunction = (row) => () => {
+  const deleteProductFunction = (row : IProductInstanceFunction) => () => {
     setIsProductInstanceFunctionDeleteOpen(true);
     setProductInstanceFunctionToEdit(row);
   };
   return (
     <TableWrapperComponent
+      disableToolbar={false}
       title="Product Instance Functions"
       toolbarActions={[{
         size: 1, 
         elt:
           <Tooltip key="AddNew" title="Add Product Function"><IconButton onClick={() => setIsProductInstanceFunctionAddOpen(true)}><AddBox /></IconButton></Tooltip>
       }]}
-      rows={product_instance_functions}
+      rows={Object.values(productInstanceFunctions)}
       getRowId={(row) => row._id}
       columns={[
         {
@@ -53,8 +61,8 @@ const ProductInstanceFunctionTableContainer = ({
             />
           ]
         },
-        { headerName: "Name", field: "name", valueGetter: v => v.row.name, defaultSort: "asc", flex: 1},
-        { headerName: "Function", field: "expression", valueGetter: v => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifier_types), flex: 3},
+        { headerName: "Name", field: "name", valueGetter: v => v.row.name, flex: 1},
+        { headerName: "Function", field: "expression", valueGetter: v => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifierTypes), flex: 3},
       ]}
     />
   );

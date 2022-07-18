@@ -2,19 +2,24 @@ import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
+import { HOST_API } from "../../../config";
+import { IProduct } from "@wcp/wcpshared";
 
-const ProductDeleteContainer = ({ ENDPOINT, product, productName, onCloseCallback }) => {
+export interface ProductQuickActionProps {
+  product: IProduct;
+  productName: string;
+  onCloseCallback: VoidFunction;
+}
+const ProductDeleteContainer = ({ product, productName, onCloseCallback } : ProductQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const deleteProduct = async (e) => {
-    e.preventDefault();
-
+  const deleteProduct = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${product._id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

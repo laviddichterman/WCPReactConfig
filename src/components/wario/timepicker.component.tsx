@@ -1,24 +1,25 @@
 import { Autocomplete, TextField, AutocompleteProps } from "@mui/material";
-
+import { useMemo } from "react";
 // probably move to shared react lib
 
 export interface Option { 
   label: string;
   value: number;
+  disabled: boolean;
 }
 export interface TimeSelectionProps<T> {
-  options : T[];
+  options : readonly T[];
   optionCaption: string;
-  isOptionDisabled: (x : T) => boolean
 }
 
-function TimeSelection<T extends Option>({options, optionCaption, isOptionDisabled, ...forwardParams} : TimeSelectionProps<T> & Omit<AutocompleteProps<T, false, true, false>, 'renderInput'>) {
+function TimeSelection<T extends Option>({options, optionCaption, ...forwardParams} : TimeSelectionProps<T> & Omit<AutocompleteProps<number, false, true, false>, 'options' | 'renderInput'>) {
+  const optionsMap = useMemo(() => options.reduce((acc, v)=>({...acc, [v.value]: v}), {} as Record<number, T>), [options]);
   return <Autocomplete
     disablePortal
     disableClearable
-    options={options}
-    isOptionEqualToValue={(o, v) => o.value === v.value}
-    getOptionDisabled={isOptionDisabled}
+    options={options.map(x=>x.value)}
+    isOptionEqualToValue={(o, v) => o === v}
+    getOptionDisabled={(o) => optionsMap[o].disabled}
     {...forwardParams}
     renderInput={(params) => <TextField {...params} label={optionCaption} />}
     />

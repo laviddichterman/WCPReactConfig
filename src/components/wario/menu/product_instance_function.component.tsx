@@ -1,19 +1,27 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import AbstractExpressionFunctionalContainer from './abstract_expression_functional.container';
-import { ElementActionComponent } from "./element.action.component";
+import { ElementActionComponent, ElementActionComponentProps } from "./element.action.component";
+import { IAbstractExpression } from "@wcp/wcpshared";
+
+export interface ProductInstanceFunctionComponentProps { 
+  isProcessing: boolean;
+  functionName: string;
+  setFunctionName: Dispatch<SetStateAction<string>>;
+  expression: IAbstractExpression| null;
+  setExpression: Dispatch<SetStateAction<IAbstractExpression|null>>;
+}
 
 const ProductInstanceFunctionComponent = ({
   isProcessing,
-  modifier_types,
   functionName,
   setFunctionName,
   expression,
   setExpression,
   ...forwardRefs
-}) => (
+} : ProductInstanceFunctionComponentProps & Omit<ElementActionComponentProps, 'disableConfirmOn' | 'body'>) => (
     <ElementActionComponent 
       {...forwardRefs}
       isProcessing={isProcessing}
@@ -32,7 +40,6 @@ const ProductInstanceFunctionComponent = ({
         </Grid>
         <Grid item xs={12}>
           <AbstractExpressionFunctionalContainer
-            modifier_types={modifier_types}
             expression={expression}
             setExpression={setExpression}
           />

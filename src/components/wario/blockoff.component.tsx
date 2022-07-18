@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { add, format, parse } from "date-fns";
 import { Card, 
   CardHeader, 
@@ -15,7 +15,7 @@ import { Card,
 import { Done, HighlightOff } from '@mui/icons-material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { WDateUtils } from "@wcp/wcpshared";
+import { JSFEBlockedOff, WDateUtils, WIntervalTuple } from "@wcp/wcpshared";
 
 import TimeSelection from "./timepicker.component";
 import { useAppSelector } from "../../hooks/useRedux";
@@ -52,12 +52,13 @@ const BlockOffComp = () => {
   const BLOCKED_OFF = useAppSelector(s=>s.ws.blockedOff);
   const SETTINGS = useAppSelector(s=>s.ws.settings);
   const LEAD_TIME = useAppSelector(s=>s.ws.leadtime);
+  const NUM_SERVICES = useMemo(() => SERVICES !== null ? Object.keys(SERVICES).length : 3, [SERVICES]);
   const [ upper_time, setUpperTime ] = useState<number | null>(null);
   const [ lower_time, setLowerTime ] = useState<number | null>(null);
-  const [ selected_date, setSelectedDate ] = useState(new Date());
+  const [ selected_date, setSelectedDate ] = useState<Date | null>(new Date());
   const [ parsed_date, setParsedDate ] = useState(format(new Date(), WDateUtils.DATE_STRING_INTERNAL_FORMAT));
-  const [ service_selection, setServiceSelection ] = useState(Array(Object.keys(SERVICES).length).fill(true));
-  const [ can_submit, setCanSubmit ] = useState(false);
+  const [ service_selection, setServiceSelection ] = useState<boolean[]>(Array(NUM_SERVICES).fill(true));
+  const can_submit = useMemo(() => upper_time !== null && lower_time !== null && selected_date !== null, [upper_time, lower_time, selected_date]);
   const [ isProcessing, setIsProcessing ] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   
@@ -71,7 +72,7 @@ const BlockOffComp = () => {
     return WDateUtils.GetOptionsForDate(INFO, date, new Date()).filter(x => !x.disabled).length
   }
 
-  const postBlockedOff = async (new_blocked_off) => {
+  const postBlockedOff = async (new_blocked_off : JSFEBlockedOff) => {
     try {
       const token = await getAccessTokenSilently( { scope: "write:order_config"} );
       const response = await fetch(
@@ -93,22 +94,20 @@ const BlockOffComp = () => {
     }
   };
 
-
-  const addBlockedOffInterval = (parsed_date, interval, service_selection) => {
+  const addBlockedOffInterval = useCallback((parsed_date : string, interval : WIntervalTuple) => {
     if (!isProcessing) {
       setIsProcessing(true);
       const new_blocked_off = BLOCKED_OFF.slice();
       // iterate over services
-      // eslint-disable-next-line no-restricted-syntax
-      for (const service_index in service_selection) {
-        if (service_selection[service_index]) {
-          WDateUtils.AddIntervalToService(service_index, parsed_date, interval, new_blocked_off);
+      service_selection.forEach((enabled, i) => {
+        if (enabled) {
+          WDateUtils.AddIntervalToService(i, parsed_date, interval, new_blocked_off);
         }
-      }
+      });
       postBlockedOff(new_blocked_off);
       setIsProcessing(false);
     }
-  }
+  }, [service_selection, BLOCKED_OFF])
   const removeBlockedOffForDate = (service_index : number, day_index: number) => {
     if (!isProcessing) {
       setIsProcessing(true);
@@ -127,7 +126,7 @@ const BlockOffComp = () => {
   }
 
 
-  const removeBlockedOffInterval = (service_index, day_index, interval_index) => {
+  const removeBlockedOffInterval = (service_index : number, day_index : number, interval_index : number) => {
     if (!isProcessing) {
       setIsProcessing(true);
       const new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
@@ -140,56 +139,7 @@ const BlockOffComp = () => {
     }
   }
 
-  // const removeBlockedOffIntervalForService = async (service, day_index, interval_index) => {
-  //   // try {
-  //   //   const token = await getAccessTokenSilently();
-  //   //   const response = await fetch(
-  //   //     `${ENDPOINT}/api/v1/config/timing/${service}/${parsed_date}`,
-  //   //     {
-  //   //       method: "DELETE",
-  //   //       headers: {
-  //   //         Authorization: `Bearer ${token}`,
-  //   //         "Content-Type": "application/json",
-  //   //       },
-  //   //       body: JSON.stringify({
-  //   //         min: lower_time.value,
-  //   //         max: upper_time.value,
-  //   //       }),
-  //   //     }
-  //   //   );
-  //   //   if (response.status === 201) {
-  //   //   }
-  //   // } catch (error) {
-  //   //   console.error(error);
-  //   // }
-  // };
-
-  // const addBlockedOffIntervalForService = async (service) => {
-  //   try {
-  //     const token = await getAccessTokenSilently();
-  //     const response = await fetch(
-  //       `${ENDPOINT}/api/v1/config/timing/${service}/${parsed_date}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           min: lower_time.value,
-  //           max: upper_time.value,
-  //         }),
-  //       }
-  //     );
-  //     if (response.status === 201) {
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  const onChangeServiceSelection = (e, i) => {
-    e.preventDefault();
+  const onChangeServiceSelection = (i : number) => {
     const new_service_selection = service_selection.slice();
     new_service_selection[i] = !new_service_selection[i];
     setServiceSelection(new_service_selection);
@@ -198,10 +148,10 @@ const BlockOffComp = () => {
     }
   }
 
-  const onChangeLowerBound = e => {
+  const onChangeLowerBound = (e : number) => {
     let new_upper;
     if (upper_time) {
-      new_upper = upper_time.value < e.value ? e : upper_time;
+      new_upper = upper_time < e ? e : upper_time;
     }
     else {
       new_upper = e;
@@ -209,29 +159,24 @@ const BlockOffComp = () => {
     if (!e) {
       new_upper = null;
     }
-    setCanSubmit(e && new_upper && selected_date);
     setLowerTime(e);
     setUpperTime(new_upper);
   }
-  const onChangeUpperBound = e => {
-    setCanSubmit(e && lower_time && selected_date);
+  const onChangeUpperBound = (e : number) => {
     setUpperTime(e);
   }
-  const setDate = date => {
+  const setDate = (date : Date | null) => {
     setSelectedDate(date);
-    setParsedDate(date ?
+    setParsedDate(date !==  null ?
         format(date, WDateUtils.DATE_STRING_INTERNAL_FORMAT) :
         "");
     setLowerTime(null);
     setUpperTime(null);
-    setCanSubmit(false);
   }
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    if (selected_date) {
-      const interval = [lower_time.value, upper_time.value];
-      addBlockedOffInterval(parsed_date, interval, service_selection);
+  const handleSubmit = () => {
+    if (selected_date && lower_time !== null && upper_time !== null) {
+      addBlockedOffInterval(parsed_date, [lower_time, upper_time]);
       if (!HasOptionsForDate(selected_date)) {
         setDate(null);
       }
@@ -241,38 +186,12 @@ const BlockOffComp = () => {
       }
     }
   }
-
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (can_submit) {
-  //     setCanSubmit(false);
-  //     if (selected_date) {
-  //       var promises = [];
-  //       for (var service_index in service_selection) {
-  //         if (service_selection[service_index]) {
-  //           promises.push(addBlockedOffIntervalForService(service_index));
-  //         }
-  //       }
-  //       await Promise.all(promises);
-  //       if (!HasOptionsForDate(selected_date)) {
-  //         setDate(null);
-  //       }
-  //       else {
-  //         setLowerTime(null);
-  //         setUpperTime(null);
-  //       }
-  //     }
-  //     setCanSubmit(true);
-  //   }
-  // }
-
   const services_checkboxes = Object.values(SERVICES).map((x, i) => (
-      <Grid item xs={Math.floor(12/Object.keys(SERVICES).length)} key={i}>
+      <Grid item xs={Math.floor(12/NUM_SERVICES)} key={i}>
         <ServiceSelectionCheckbox
           service_name={x}
           selected={service_selection[i]}
-          onChange={(e) => onChangeServiceSelection(e, i)}
+          onChange={() => onChangeServiceSelection(i)}
         />
       </Grid>
     ));
@@ -308,7 +227,7 @@ const BlockOffComp = () => {
       );
     })
     return (
-      <Grid key={i} item xs={Math.floor(12/Object.keys(SERVICES).length)}>
+      <Grid key={i} item xs={Math.floor(12/NUM_SERVICES)}>
         <Card>
           <CardHeader title={SERVICES[i]} />
             <List component="nav">
@@ -323,8 +242,8 @@ const BlockOffComp = () => {
       WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, selected_date, service_selection, {cart_based_lead_time: 0, size: 1}), 
       selected_date,
       new Date()) : [];
-  const end_options = start_options.length && lower_time ?
-    TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time.value)) : [];
+  const end_options = start_options.length && lower_time !== null ?
+    TrimOptionsBeforeDisabled(start_options.filter(x => x.value >= lower_time)) : [];
   return (
     <>
     <Grid item xs={12}>
@@ -343,14 +262,14 @@ const BlockOffComp = () => {
               maxDate={add(new Date(), {days: 60})}
               shouldDisableDate={e => !HasOptionsForDate(e)}
               value={selected_date}
-              onChange={date => setDate(date)}
+              onChange={(date) => setDate(date)}
               inputFormat="EEEE, MMMM dd, y"
             />
           </Grid>
           <Grid item xs={5}>
             <TimeSelection
             sx={{m:2}}
-            onChange={(e, nv) => onChangeLowerBound(nv)}
+            onChange={(_, nv) => onChangeLowerBound(nv)}
             // @ts-ignore
             value={lower_time}
             optionCaption={"Start"}
@@ -362,15 +281,17 @@ const BlockOffComp = () => {
           <Grid item xs={5}>
             <TimeSelection
             sx={{m:2}}
-            onChange={(e, nv) => onChangeUpperBound(nv)}
+            onChange={(_, nv) => onChangeUpperBound(nv)}
+            // @ts-ignore
             value={upper_time}
+            getOptionLabel={x=>WDateUtils.MinutesToPrintTime(x)}
             optionCaption={"End"}
             options={end_options.map(x=>({...x, label: WDateUtils.MinutesToPrintTime(x.value)}))}
             disabled={!(selected_date && lower_time)}
             className="col"
             />
           </Grid>
-          <Grid item xs={2}><Button sx={{m:3}} onClick={handleSubmit} disabled={!can_submit || isProcessing}>Add</Button></Grid>
+          <Grid item xs={2}><Button sx={{m:3}} onClick={() => handleSubmit()} disabled={!can_submit || isProcessing}>Add</Button></Grid>
         </Grid>
       </Card>
       </Grid>

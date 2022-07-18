@@ -6,11 +6,11 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import { DatePicker } from '@mui/x-date-pickers';
-import {Grid, Card, CardHeader, Divider} from "@mui/material";
+import { Grid, Card, CardHeader, Divider } from "@mui/material";
 
-import { WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
-import CheckedInputComponent from "./checked_input.component";
+import { RoundToTwoDecimalPlaces, WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
 import { HOST_API } from "../../config";
+import { CheckedNumericInput } from "./CheckedNumericTextInput";
 
 const StoreCreditIssueComponent = () => {
   const [amount, setAmount] = useState(5.00);
@@ -33,14 +33,14 @@ const StoreCreditIssueComponent = () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "edit:store_credit"} );
+        const token = await getAccessTokenSilently({ scope: "edit:store_credit" });
         const response = await fetch(`${HOST_API}/api/v1/payments/storecredit/discount`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             amount,
             recipient_name_first: firstName,
             recipient_name_last: lastName,
@@ -49,7 +49,7 @@ const StoreCreditIssueComponent = () => {
             reason,
             expiration: expiration && isValid(expiration) ? format(expiration, WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
           })
-        });  
+        });
         console.log(JSON.stringify(response));
         setAddedBy("");
         setAmount(5.00);
@@ -68,11 +68,11 @@ const StoreCreditIssueComponent = () => {
   }
   return (
     <Card>
-      <CardHeader title="Issue a store credit for a customer" 
+      <CardHeader title="Issue a store credit for a customer"
         subheader="Note: purchased store credit MUST be done through our website!"
-       />
+      />
       <Divider />
-      <Grid sx={{p:2}} container spacing={3} justifyContent="center">
+      <Grid sx={{ p: 2 }} container spacing={3} justifyContent="center">
         <Grid item xs={3}>
           <TextField
             label="First Name"
@@ -101,38 +101,36 @@ const StoreCreditIssueComponent = () => {
             inputProps={{ size: 60 }}
             value={recipientEmail}
             size="small"
-            onChange={e => { setRecipientEmail(e.target.value); } }
+            onChange={e => { setRecipientEmail(e.target.value); }}
             onBlur={() => validateRecipientEmail()}
           />
         </Grid>
         <Grid item xs={2}>
-          <CheckedInputComponent
-            label="Dollar Amount"
-            className="form-control"
+          <CheckedNumericInput
             type="number"
             fullWidth
-            parseFunction={(e) => parseFloat(e).toFixed(2)}
+            label="Dollar Amount"
+            inputProps={{ inputMode: 'numeric', min: 1.00, max: 500.00, pattern: '[0-9]*' }}
             value={amount}
-            inputProps={{min:1.00, max:500.00}}
-            onFinishChanging={(e) => setAmount(e)}
-          />
+            className="form-control"
+            disabled={isProcessing}
+            onChange={(e) => setAmount(e)}
+            parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e))}
+            allowEmpty={false} />
         </Grid>
         <Grid item xs={4}>
           <DatePicker
-            renderInput={(props) => <TextField sx={{height: '10%'}} {...props} />}
-            allowSameDateSelection
+            renderInput={(props) => <TextField sx={{ height: '10%' }} {...props} />}
             disableMaskedInput
-            clearable
-            placeholder={"Select Date"}
             showToolbar={false}
             minDate={addDays(new Date(), 30)}
             label="Expiration"
             value={expiration}
-            onChange={(date) => { setExpiration(date) } }
+            onChange={(date) => { setExpiration(date) }}
             inputFormat="EEEE, MMMM dd, y"
           />
           <IconButton
-            sx={{p:2}}
+            sx={{ p: 2 }}
             edge="end"
             size="medium"
             aria-label="delete"
@@ -175,3 +173,7 @@ const StoreCreditIssueComponent = () => {
 };
 
 export default StoreCreditIssueComponent;
+function setAmount(e: any) {
+  throw new Error("Function not implemented.");
+}
+

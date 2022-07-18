@@ -2,19 +2,23 @@ import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
+import { HOST_API } from "../../../config";
+import { IOption } from "@wcp/wcpshared";
 
-const ModifierOptionDeleteContainer = ({ ENDPOINT, modifier_option, onCloseCallback }) => {
+export interface ModifierOptionQuickActionProps {
+  modifier_option: IOption;
+  onCloseCallback: VoidFunction;
+}
+const ModifierOptionDeleteContainer = ({ modifier_option, onCloseCallback } : ModifierOptionQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const deleteModifierOption = async (e) => {
-    e.preventDefault();
-
+  const deleteModifierOption = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option._id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option.id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

@@ -2,15 +2,14 @@ import React from "react";
 
 import { Warning } from "@mui/icons-material";
 import Grid from "@mui/material/Grid";
-import { ElementActionComponent } from "./element.action.component";
+import { ElementActionComponent, ElementActionComponentProps } from "./element.action.component";
 
-// TODO: rename ElementDeleteContainer since it contains business logic
 const ElementDeleteComponent = ({ 
   name,
   onCloseCallback,
   onConfirmClick,
   isProcessing
-  }) => (
+  } : {name: string} & Pick<ElementActionComponentProps, 'onCloseCallback' | 'onConfirmClick' | 'isProcessing'>) => (
     <ElementActionComponent 
       onCloseCallback={onCloseCallback}
       onConfirmClick={onConfirmClick}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -8,9 +8,58 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Switch from "@mui/material/Switch";
-import CheckedInputComponent from "../checked_input.component";
 import { ElementActionComponent } from "./element.action.component";
+import { CheckedNumericInput } from "../CheckedNumericTextInput";
+import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
+import {camelCase} from 'lodash';
 
+export interface ModifierTypeUiProps { 
+  onCloseCallback: VoidFunction;
+}
+
+export type ModifierTypeModifyUiProps = {
+  modifier_type: IOptionType;
+} & ModifierTypeUiProps;
+
+export interface ModifierTypeComponentProps {
+  confirmText: string;
+  onConfirmClick: VoidFunction;
+  isProcessing: boolean;
+  ordinal: number;
+  setOrdinal: Dispatch<SetStateAction<number>>;
+  minSelected: number;
+  setMinSelected: Dispatch<SetStateAction<number>>; 
+  maxSelected: number | null;
+  setMaxSelected: Dispatch<SetStateAction<number | null>>;
+  name: string;
+  setName: Dispatch<SetStateAction<string>>;
+  displayName: string;
+  setDisplayName: Dispatch<SetStateAction<string>>;
+  templateString: string;
+  setTemplateString: Dispatch<SetStateAction<string>>;
+  multipleItemSeparator: string;
+  setMultipleItemSeparator: Dispatch<SetStateAction<string>>;
+  nonEmptyGroupPrefix: string;
+  setNonEmptyGroupPrefix: Dispatch<SetStateAction<string>>;
+  nonEmptyGroupSuffix: string;
+  setNonEmptyGroupSuffix: Dispatch<SetStateAction<string>>;
+  revelID: string;
+  setRevelID: Dispatch<SetStateAction<string>>;
+  squareID: string;
+  setSquareID: Dispatch<SetStateAction<string>>;
+  omitOptionIfNotAvailable: boolean;
+  setOmitOptionIfNotAvailable: Dispatch<SetStateAction<boolean>>;
+  omitSectionIfNoAvailableOptions: boolean;
+  setOmitSectionIfNoAvailableOptions: Dispatch<SetStateAction<boolean>>;
+  useToggleIfOnlyTwoOptions: boolean;
+  setUseToggleIfOnlyTwoOptions: Dispatch<SetStateAction<boolean>>;
+  isHiddenDuringCustomization: boolean;
+  setIsHiddenDuringCustomization: Dispatch<SetStateAction<boolean>>;
+  emptyDisplayAs: keyof typeof DISPLAY_AS;
+  setEmptyDisplayAs: Dispatch<SetStateAction<keyof typeof DISPLAY_AS>>;
+  modifierClass: keyof typeof MODIFIER_CLASS;
+  setModifierClass: Dispatch<SetStateAction<keyof typeof MODIFIER_CLASS>>;
+}
 const ModifierTypeComponent = ({
   confirmText,
   onCloseCallback,
@@ -50,8 +99,8 @@ const ModifierTypeComponent = ({
   setEmptyDisplayAs,
   modifierClass,
   setModifierClass,
-}) => {
-  const handleSetMaxSelected = (val) => {
+} : ModifierTypeComponentProps & ModifierTypeUiProps) => {
+  const handleSetMaxSelected = (val : number | null) => {
     if (val !== 1) {
       if (emptyDisplayAs === "LIST_CHOICES") {
         setEmptyDisplayAs("YOUR_CHOICE_OF");
@@ -61,11 +110,11 @@ const ModifierTypeComponent = ({
     setMaxSelected(val);
   }
 
-  const handleSetMinSelected = (val) => {
+  const handleSetMinSelected = (val : number) => {
     if (val !== 1) {
       setUseToggleIfOnlyTwoOptions(false);
     }
-    if (maxSelected < val) {
+    if (maxSelected !== null && maxSelected < val) {
       setMaxSelected(val);
     }
     setMinSelected(val);
@@ -76,7 +125,10 @@ const ModifierTypeComponent = ({
       onCloseCallback={onCloseCallback}
       onConfirmClick={onConfirmClick}
       isProcessing={isProcessing}
-      disableConfirmOn={name.length === 0 || (Number.isFinite(maxSelected) && maxSelected < minSelected) || (useToggleIfOnlyTwoOptions && (maxSelected!==1 && minSelected !== 1)) || isProcessing}
+      disableConfirmOn={name.length === 0 || 
+        (Number.isFinite(maxSelected) && (maxSelected as number) < minSelected) || 
+        (useToggleIfOnlyTwoOptions && ((maxSelected as number)!==1 && minSelected !== 1)) || 
+        isProcessing}
       confirmText={confirmText}
       body={
       <>
@@ -103,32 +155,38 @@ const ModifierTypeComponent = ({
           />
         </Grid>
         <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Ordinal"
-            type="number"
-            value={ordinal}
-            inputProps={{ min: 0 }}
-            onFinishChanging={(e) => setOrdinal(e)}
-          />
+        <CheckedNumericInput
+          label="Ordinal"
+          type="number"
+          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*' }}
+          value={ordinal}
+          disabled={isProcessing}
+          onChange={(e) => setOrdinal(e)}
+          parseFunction={parseInt}
+          allowEmpty={false} />
         </Grid>
         <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Min Selected"
-            type="number"
-            value={minSelected}
-            inputProps={{ min: 0, size: 10 }}
-            onFinishChanging={(e) => handleSetMinSelected(e)}
-          />
+        <CheckedNumericInput
+          label="Min Selected"
+          type="number"
+          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*' }}
+          value={minSelected}
+          disabled={isProcessing}
+          onChange={(e) => handleSetMinSelected(e)}
+          parseFunction={parseInt}
+          allowEmpty={false} />
+
         </Grid>
         <Grid item xs={4}>
-          <CheckedInputComponent
-            label="Max Selected"
-            type="number"
-            value={maxSelected}
-            allowEmpty
-            inputProps={{ size: 10, min: minSelected }}
-            onFinishChanging={(e) => handleSetMaxSelected(e)}
-          />
+        <CheckedNumericInput
+          label="Max Selected"
+          type="number"
+          inputProps={{ inputMode: 'numeric', min: minSelected, pattern: '[0-9]*' }}
+          value={maxSelected}
+          disabled={isProcessing}
+          onChange={(e) => handleSetMaxSelected(e)}
+          parseFunction={parseInt}
+          allowEmpty={true} />
         </Grid>
         <Grid item xs={6}>
           <FormControlLabel
@@ -196,30 +254,16 @@ const ModifierTypeComponent = ({
               name="selection-type"
               row
               value={modifierClass}
-              onChange={(e) => setModifierClass(e.target.value)}
+              onChange={(e) => setModifierClass(e.target.value as keyof typeof MODIFIER_CLASS)}
             >
-              <FormControlLabel
-                value="ADD"
+              { Object.keys(MODIFIER_CLASS).map((opt, i) => 
+                <FormControlLabel
+                key={i}
+                value={opt}
                 control={<Radio />}
-                label="Addition"
+                label={camelCase(opt)}
               />
-              <FormControlLabel value="SIZE" control={<Radio />} label="Size" />
-              <FormControlLabel
-                value="SUB"
-                control={<Radio />}
-                label="Substitution"
-              />
-              <FormControlLabel
-                value="REMOVAL"
-                control={<Radio />}
-                label="Removal"
-              />
-              <FormControlLabel value="NOTE" control={<Radio />} label="Note" />
-              <FormControlLabel
-                value="PROMPT"
-                control={<Radio />}
-                label="Prompt"
-              />
+              )}
             </RadioGroup>
           </FormControl>
         </Grid>
@@ -232,24 +276,17 @@ const ModifierTypeComponent = ({
               name="empty-display-as"
               row
               value={emptyDisplayAs}
-              onChange={(e) => setEmptyDisplayAs(e.target.value)}
+              onChange={(e) => setEmptyDisplayAs(e.target.value as keyof typeof DISPLAY_AS)}
             >
-              <FormControlLabel
-                value="OMIT"
+              { Object.keys(DISPLAY_AS).map((opt, i) => 
+                <FormControlLabel
+                key={i}
+                value={opt}
+                disabled={opt === "LIST_CHOICES" && maxSelected !== 1}
                 control={<Radio />}
-                label="Omit"
+                label={camelCase(opt)}
               />
-              <FormControlLabel
-                value="YOUR_CHOICE_OF"
-                control={<Radio />}
-                label="Your Choice Of..."
-              />
-              <FormControlLabel
-                value="LIST_CHOICES"
-                control={<Radio />}
-                label="List Choices"
-                disabled={maxSelected !== 1}
-              />
+              )}
             </RadioGroup>
           </FormControl>
         </Grid>

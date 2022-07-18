@@ -1,27 +1,31 @@
 import React, { useCallback, useState } from 'react';
-import {InputBaseComponentProps, TextField, TextFieldProps} from '@mui/material';
+import { InputBaseComponentProps, TextField, TextFieldProps } from '@mui/material';
 
 // TODO: centralize this in a shared react repo
 
-export interface ICheckFxnGen {
-  inputProps: {
-    min?: number;
-    max?: number;
+type MinMax = { min: number; max: number; };
+type ChkFxnAllowEmptyFalse = { inputProps: MinMax & InputBaseComponentProps } & { parseFunction: (v: string | null) => number; allowEmpty: false; };
+type ChkFxnAllowEmptyTrue = { inputProps: Partial<MinMax> & InputBaseComponentProps } & { parseFunction: (v: string | null) => number | null; allowEmpty: true; };
+type CheckedNumericInputCanBeEmptyProps = {
+  onChange: ((value: number | null) => void);
+  value: number | null;
+};
+type CheckedNumericInputNeverEmptyProps = {
+  onChange: ((value: number) => void);
+  value: number;
+};
 
-  } & Partial<InputBaseComponentProps>;
-  parseFunction: (v: string | null | undefined) => number;
-  allowEmpty: boolean;
-}
-function CheckFunctionGenerator({ inputProps, parseFunction = parseInt, allowEmpty = false }: ICheckFxnGen) {
-  const MIN = inputProps.min !== undefined && Number.isFinite(inputProps.min) ? inputProps.min : null;
-  const MAX = inputProps.max !== undefined && Number.isFinite(inputProps.max) ? inputProps.max : null;
+type ICheckFxnGenProps = ChkFxnAllowEmptyFalse | ChkFxnAllowEmptyTrue;
+function CheckFunctionGenerator<T extends ICheckFxnGenProps>(props: T) {
+  const MIN: number | null = props.inputProps.min !== undefined && Number.isFinite(props.inputProps.min) ? props.inputProps.min : null;
+  const MAX: number | null = props.inputProps.max !== undefined && Number.isFinite(props.inputProps.max) ? props.inputProps.max : null;
   return (e: string | null) => {
-    const parsed = parseFunction(e);
-    if (Number.isNaN(parsed)) {
-      if (!allowEmpty && MIN !== null) {
-        return MIN;
+    const parsed = e !== null ? props.parseFunction(e) : null;
+    if (parsed === null || Number.isNaN(parsed)) {
+      if (props.allowEmpty) {
+        return null;
       }
-      return null;
+      return MIN;
     }
     if (MIN !== null && parsed < MIN) {
       return MIN;
@@ -33,21 +37,24 @@ function CheckFunctionGenerator({ inputProps, parseFunction = parseInt, allowEmp
   }
 }
 
-interface CheckedNumericInputProps {
-  onChange: (value : number | null) => void;
-  value: number | null;
-}
 
-export type ICheckedNumericInput = ICheckFxnGen & CheckedNumericInputProps & Omit<TextFieldProps, 'value' | 'onChange' | 'inputProps' | 'onBlur'>;
 
-export function CheckedNumericInput({ onChange, value, inputProps, parseFunction = parseInt, allowEmpty = false, ...other } : ICheckedNumericInput) {
-  const CheckFxn = useCallback((v : string | null) => CheckFunctionGenerator({inputProps, parseFunction, allowEmpty})(v), [allowEmpty, inputProps, parseFunction]);
+type NeverEmptyProps = ChkFxnAllowEmptyFalse & CheckedNumericInputNeverEmptyProps;
+type CanBeEmptyProps = ChkFxnAllowEmptyTrue & CheckedNumericInputCanBeEmptyProps;
+type VariadicProps = (NeverEmptyProps | CanBeEmptyProps);
+export type ICheckedNumericInput = VariadicProps &
+  Omit<TextFieldProps, 'value' | 'onChange' | 'inputProps' | 'onBlur'>;
+
+export function CheckedNumericInput({ onChange, value, inputProps, parseFunction, allowEmpty, ...other }: ICheckedNumericInput) {
+  // @ts-ignore
+  const CheckFxn = useCallback((v: string | null) => CheckFunctionGenerator({ inputProps, parseFunction, allowEmpty })(v), [allowEmpty, inputProps, parseFunction]);
   const [local_value, setLocalValue] = useState(value !== null ? String(value) : null);
   const [dirty, setDirty] = useState(false);
   const onFinishChangingLocal = () => {
     const new_val = CheckFxn(local_value);
     setDirty(false);
     setLocalValue(new_val !== null ? String(new_val) : null);
+    // @ts-ignore
     onChange(new_val);
   }
 

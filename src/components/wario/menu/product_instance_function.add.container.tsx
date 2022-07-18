@@ -2,20 +2,24 @@ import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductInstanceFunctionComponent from "./product_instance_function.component";
+import { HOST_API } from "../../../config";
+import { IAbstractExpression } from "@wcp/wcpshared";
 
-const ProductInstanceFunctionAddContainer = ({ ENDPOINT, modifier_types, onCloseCallback }) => {
+interface ProductInstanceFunctionAddContainerProps { 
+  onCloseCallback: VoidFunction;
+}
+const ProductInstanceFunctionAddContainer = ({ onCloseCallback } : ProductInstanceFunctionAddContainerProps) => {
   const [functionName, setFunctionName] = useState("");
-  const [expression, setExpression] = useState({});
+  const [expression, setExpression] = useState<IAbstractExpression|null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const addProductInstanceFunction = async (e) => {
-    e.preventDefault();
+  const addProductInstanceFunction = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/query/language/productinstancefunction/`, {
+        const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -28,7 +32,7 @@ const ProductInstanceFunctionAddContainer = ({ ENDPOINT, modifier_types, onClose
         });
         if (response.status === 201) {
           setFunctionName("");
-          setExpression({});
+          setExpression(null);
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -45,7 +49,6 @@ const ProductInstanceFunctionAddContainer = ({ ENDPOINT, modifier_types, onClose
       onCloseCallback={onCloseCallback}
       onConfirmClick={addProductInstanceFunction}
       isProcessing={isProcessing}
-      modifier_types={modifier_types}
       functionName={functionName}
       setFunctionName={setFunctionName}
       expression={expression}

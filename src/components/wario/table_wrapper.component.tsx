@@ -5,7 +5,7 @@ import {
   GridToolbarQuickFilter,
   GridToolbarQuickFilterProps
 } from '@mui/x-data-grid';
-import Grid, { GridSize } from "@mui/material/Grid";
+import Grid from "@mui/material/Grid";
 
 import { LicenseInfo } from '@mui/x-license-pro';
 

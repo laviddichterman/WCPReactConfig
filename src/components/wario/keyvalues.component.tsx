@@ -155,8 +155,7 @@ const KeyValuesComponent = () => {
     setNewkey("");
     setNewvalue("");
   };
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {

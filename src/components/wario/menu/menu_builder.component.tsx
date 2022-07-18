@@ -111,10 +111,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsCategoryEditOpen(false)}
         open={isCategoryEditOpen}
         inner_component={
+          categoryToEdit !== null && 
           <CategoryEditContainer
             onCloseCallback={() => setIsCategoryEditOpen(false)}
-            categories={catalog.categories}
-            ENDPOINT={HOST_API}
             category={categoryToEdit}
           />
         }
@@ -124,9 +123,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsCategoryDeleteOpen(false)}
         open={isCategoryDeleteOpen}
         inner_component={
+          categoryToEdit !== null && 
           <CategoryDeleteContainer
             onCloseCallback={() => setIsCategoryDeleteOpen(false)}
-            ENDPOINT={HOST_API}
             category={categoryToEdit}
           />
         }
@@ -138,7 +137,6 @@ const MenuBuilderComponent = () => {
         inner_component={
           <ModifierTypeAddContainer
             onCloseCallback={() => setIsModifierTypeAddOpen(false)}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -147,10 +145,10 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsModifierTypeEditOpen(false)}
         open={isModifierTypeEditOpen}
         inner_component={
+          modifierTypeToEdit !== null && 
           <ModifierTypeEditContainer
             onCloseCallback={() => setIsModifierTypeEditOpen(false)}
             modifier_type={modifierTypeToEdit}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -159,9 +157,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsModifierTypeDeleteOpen(false)}
         open={isModifierTypeDeleteOpen}
         inner_component={
+          modifierTypeToEdit !== null && 
           <ModifierTypeDeleteContainer
             onCloseCallback={() => setIsModifierTypeDeleteOpen(false)}
-            ENDPOINT={HOST_API}
             modifier_type={modifierTypeToEdit}
           />
         }
@@ -172,10 +170,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsModifierOptionAddOpen(false)}
         open={isModifierOptionAddOpen}
         inner_component={
+          modifierTypeToEdit !== null && 
           <ModifierOptionAddContainer
             onCloseCallback={() => setIsModifierOptionAddOpen(false)}
-            product_instance_functions={catalog.product_instance_functions}
-            ENDPOINT={HOST_API}
             parent={modifierTypeToEdit}
           />
         }
@@ -186,12 +183,10 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsModifierOptionEditOpen(false)}
         open={isModifierOptionEditOpen}
         inner_component={
+          modifierOptionToEdit !== null && 
           <ModifierOptionEditContainer
             onCloseCallback={() => setIsModifierOptionEditOpen(false)}
-            product_instance_functions={catalog.product_instance_functions}
             modifier_option={modifierOptionToEdit}
-            modifier_types={catalog.modifiers}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -200,9 +195,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsModifierOptionDisableUntilEodOpen(false)}
         open={isModifierOptionDisableUntilEodOpen}
         inner_component={
+          modifierOptionToEdit !== null && 
           <ModifierOptionDisableUntilEodContainer
             onCloseCallback={() => setIsModifierOptionDisableUntilEodOpen(false)}
-            ENDPOINT={HOST_API}
             modifier_option={modifierOptionToEdit}
           />
         }
@@ -212,9 +207,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsModifierOptionDisableOpen(false)}
         open={isModifierOptionDisableOpen}
         inner_component={
+          modifierOptionToEdit !== null && 
           <ModifierOptionDisableContainer
             onCloseCallback={() => setIsModifierOptionDisableOpen(false)}
-            ENDPOINT={HOST_API}
             modifier_option={modifierOptionToEdit}
           />
         }
@@ -224,9 +219,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsModifierOptionEnableOpen(false)}
         open={isModifierOptionEnableOpen}
         inner_component={
+          modifierOptionToEdit !== null && 
           <ModifierOptionEnableContainer
             onCloseCallback={() => setIsModifierOptionEnableOpen(false)}
-            ENDPOINT={HOST_API}
             modifier_option={modifierOptionToEdit}
           />
         }
@@ -236,9 +231,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsModifierOptionDeleteOpen(false)}
         open={isModifierOptionDeleteOpen}
         inner_component={
+          modifierOptionToEdit !== null && 
           <ModifierOptionDeleteContainer
             onCloseCallback={() => setIsModifierOptionDeleteOpen(false)}
-            ENDPOINT={HOST_API}
             modifier_option={modifierOptionToEdit}
           />
         }
@@ -249,14 +244,10 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductEditOpen(false)}
         open={isProductEditOpen}
         inner_component={
+          productToEdit !== null && 
           <ProductEditContainer
             onCloseCallback={() => setIsProductEditOpen(false)}
-            services={services}
-            categories={catalog.categories}
-            modifier_types={catalog.modifiers}
-            product_instance_functions={catalog.product_instance_functions}
             product={productToEdit}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -265,11 +256,11 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductDisableUntilEodOpen(false)}
         open={isProductDisableUntilEodOpen}
         inner_component={
+          productToEdit !== null && 
           <ProductDisableUntilEodContainer
             onCloseCallback={() => setIsProductDisableUntilEodOpen(false)}
             product={productToEdit}
             productName={nameOfBaseProductInstance}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -278,11 +269,11 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductDisableOpen(false)}
         open={isProductDisableOpen}
         inner_component={
+          productToEdit !== null &&
           <ProductDisableContainer
             onCloseCallback={() => setIsProductDisableOpen(false)}
             productName={nameOfBaseProductInstance}
             product={productToEdit}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -291,11 +282,11 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductEnableOpen(false)}
         open={isProductEnableOpen}
         inner_component={
+          productToEdit !== null && 
           <ProductEnableContainer
             onCloseCallback={() => setIsProductEnableOpen(false)}
             product={productToEdit}
             productName={nameOfBaseProductInstance}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -305,15 +296,10 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductCopyOpen(false)}
         open={isProductCopyOpen}
         inner_component={
+          productToEdit !== null && 
           <ProductCopyContainer
             onCloseCallback={() => setIsProductCopyOpen(false)}
-            services={services}
-            categories={catalog.categories}
-            modifier_types={catalog.modifiers}
-            product_instance_functions={catalog.product_instance_functions}
-            products={catalog.products}
             product={productToEdit}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -322,9 +308,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductDeleteOpen(false)}
         open={isProductDeleteOpen}
         inner_component={
+          productToEdit !== null &&
           <ProductDeleteContainer
             onCloseCallback={() => setIsProductDeleteOpen(false)}
-            ENDPOINT={HOST_API}
             productName={nameOfBaseProductInstance}
             product={productToEdit}
           />
@@ -336,11 +322,10 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductInstanceAddOpen(false)}
         open={isProductInstanceAddOpen}
         inner_component={
+          productToEdit !== null &&
           <ProductInstanceAddContainer
             onCloseCallback={() => setIsProductInstanceAddOpen(false)}
-            modifier_types_map={catalog.modifiers}
             parent_product={productToEdit}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -350,12 +335,11 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductInstanceEditOpen(false)}
         open={isProductInstanceEditOpen}
         inner_component={
+          productToEdit !== null && productInstanceToEdit !== null &&
           <ProductInstanceEditContainer
             onCloseCallback={() => setIsProductInstanceEditOpen(false)}
-            modifier_types_map={catalog.modifiers}
             parent_product={productToEdit}
             product_instance={productInstanceToEdit}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -364,9 +348,9 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductInstanceDeleteOpen(false)}
         open={isProductInstanceDeleteOpen}
         inner_component={
+          productInstanceToEdit !== null &&
           <ProductInstanceDeleteContainer
             onCloseCallback={() => setIsProductInstanceDeleteOpen(false)}
-            ENDPOINT={HOST_API}
             product_instance={productInstanceToEdit}
           />
         }
@@ -379,8 +363,6 @@ const MenuBuilderComponent = () => {
         inner_component={
           <ProductInstanceFunctionAddContainer
             onCloseCallback={() => setIsProductInstanceFunctionAddOpen(false)}
-            modifier_types={catalog.modifiers}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -390,11 +372,10 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductInstanceFunctionEditOpen(false)}
         open={isProductInstanceFunctionEditOpen}
         inner_component={
+          productInstanceFunctionToEdit !== null &&
           <ProductInstanceFunctionEditContainer
             onCloseCallback={() => setIsProductInstanceFunctionEditOpen(false)}
-            modifier_types={catalog.modifiers}
             product_instance_function={productInstanceFunctionToEdit}
-            ENDPOINT={HOST_API}
           />
         }
       />
@@ -405,11 +386,11 @@ const MenuBuilderComponent = () => {
         }}
         open={isProductInstanceFunctionDeleteOpen}
         inner_component={
+          productInstanceFunctionToEdit !== null &&
           <ProductInstanceFunctionDeleteContainer
             onCloseCallback={() => {
               setIsProductInstanceFunctionDeleteOpen(false);
             }}
-            ENDPOINT={HOST_API}
             product_instance_function={productInstanceFunctionToEdit}
           />
         }
@@ -431,8 +412,6 @@ const MenuBuilderComponent = () => {
                     onCloseCallback={() => {
                       setIsCategoryAddOpen(false);
                     }}
-                    ENDPOINT={HOST_API}
-                    categories={catalog.categories}
                   />
                 ),
               },
@@ -443,14 +422,9 @@ const MenuBuilderComponent = () => {
                 onClose: () => setIsProductAddOpen(false),
                 component: (
                   <ProductAddContainer
-                    ENDPOINT={HOST_API}
                     onCloseCallback={() => {
                       setIsProductAddOpen(false);
                     }}
-                    services={services}
-                    categories={catalog.categories}
-                    modifier_types={catalog.modifiers}
-                    product_instance_functions={catalog.product_instance_functions}
                   />
                 ),
               },
@@ -461,13 +435,9 @@ const MenuBuilderComponent = () => {
                 onClose: () => setIsProductImportOpen(false),
                 component: (
                   <ProductImportContainer
-                    ENDPOINT={HOST_API}
                     onCloseCallback={() => {
                       setIsProductImportOpen(false);
                     }}
-                    categories={catalog.categories}
-                    modifier_types={catalog.modifiers}
-                    product_instance_functions={catalog.product_instance_functions}
                   />
                 ),
               },
@@ -476,7 +446,6 @@ const MenuBuilderComponent = () => {
             open={isCategoryInterstitialOpen}
           />
           <CategoryTableContainer
-            catalog={catalog}
             setIsCategoryInterstitialOpen={setIsCategoryInterstitialOpen}
             setIsCategoryDeleteOpen={setIsCategoryDeleteOpen}
             setIsCategoryEditOpen={setIsCategoryEditOpen}
@@ -491,7 +460,6 @@ const MenuBuilderComponent = () => {
             setIsProductInstanceAddOpen={setIsProductInstanceAddOpen}
             setIsProductInstanceEditOpen={setIsProductInstanceEditOpen}
             setIsProductInstanceDeleteOpen={setIsProductInstanceDeleteOpen}
-            productInstanceToEdit={productInstanceToEdit}
             setProductInstanceToEdit={setProductInstanceToEdit}
           />
         </Grid>
@@ -518,7 +486,6 @@ const MenuBuilderComponent = () => {
         )}
         <Grid item xs={12}>
           <ModifierTypeTableContainer
-            modifier_types_map={catalog.modifiers}
             setIsModifierTypeAddOpen={setIsModifierTypeAddOpen}
             setIsModifierTypeEditOpen={setIsModifierTypeEditOpen}
             setIsModifierOptionAddOpen={setIsModifierOptionAddOpen}
@@ -534,13 +501,10 @@ const MenuBuilderComponent = () => {
         </Grid>
         <Grid item xs={12}>
           <ProductInstanceFunctionTableContainer
-            product_instance_functions={catalog.product_instance_functions}
             setIsProductInstanceFunctionEditOpen={setIsProductInstanceFunctionEditOpen}
             setIsProductInstanceFunctionDeleteOpen={setIsProductInstanceFunctionDeleteOpen}
             setIsProductInstanceFunctionAddOpen={setIsProductInstanceFunctionAddOpen}
-            productInstanceFunctionToEdit={productInstanceFunctionToEdit}
             setProductInstanceFunctionToEdit={setProductInstanceFunctionToEdit}
-            modifier_types={catalog.modifiers}
           />
         </Grid>
       </Grid>

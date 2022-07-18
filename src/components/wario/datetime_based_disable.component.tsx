@@ -1,23 +1,28 @@
-import React, {useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import { endOfDay, getTime } from 'date-fns'
 import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from '@mui/material/TextField';
 import { DateTimePicker } from '@mui/x-date-pickers';
+import { IWInterval } from "@wcp/wcpshared";
 
-const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
-  const [enabled, setEnabled] = useState(!disabled);
-  const [isDatetimeBased, setIsDatetimeBased] = useState(
-    disabled && disabled.start <= disabled.end
+export interface DatetimeBasedDisableComponentProps { 
+  disabled: IWInterval | null;
+  setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
+}
+const DatetimeBasedDisableComponent = ({ disabled, setDisabled } : DatetimeBasedDisableComponentProps) => {
+  const [enabled, setEnabled] = useState(disabled === null);
+  const [isDatetimeBased, setIsDatetimeBased] = useState<boolean>(
+    disabled !== null && disabled.start <= disabled.end
   );
   const [disabledStart, setDisabledStart] = useState(
-    disabled && disabled.start && disabled.start !== 1 ? disabled.start : getTime(new Date())
+    disabled !== null && disabled.start && disabled.start !== 1 ? disabled.start : getTime(Date.now())
   );
   const [disabledEnd, setDisabledEnd] = useState(
-    disabled && disabled.end && disabled.end !== 0
+    disabled !== null && disabled.end && disabled.end !== 0
       ? disabled.end
-      : getTime(endOfDay(new Date()))
+      : getTime(endOfDay(Date.now()))
   );
 
   const toggleEnabled = () => {
@@ -46,14 +51,15 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
     }
   };
 
-  const updateDisabledStart = (start) => {
+  // TODO: BEFORE COMMITTING THIS, CHECK THAT THE "EMPTY" DATES returned by the datetimepicker make sense.
+  const updateDisabledStart = (start : number) => {
     setDisabledStart(start);
-    setDisabled({ start: getTime(start), end: disabled.end });
+    setDisabled({ start: getTime(start), end: disabledEnd });
   };
 
-  const updateDisabledEnd = (end) => {
+  const updateDisabledEnd = (end : number) => {
     setDisabledEnd(end);
-    setDisabled({ start: disabled.start, end: getTime(end) });
+    setDisabled({ start: disabledStart, end: getTime(end) });
   };
 
   return (
@@ -91,12 +97,10 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
           <Grid item xs={6}>
             <DateTimePicker
               renderInput={(props) => <TextField {...props} />}
-              fullWidth
-              placeholder={"Disabled Start"}
               label={"Disabled Start"}
               disablePast
               value={disabledStart}
-              onChange={(date) => updateDisabledStart(date)}
+              onChange={(date) => date !== null && updateDisabledStart(date)}
               inputFormat="MMM dd, y hh:mm a"
               disableMaskedInput
             />
@@ -104,13 +108,11 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }) => {
           <Grid item xs={6}>
             <DateTimePicker
               renderInput={(props) => <TextField {...props} />}
-              fullWidth
-              placeholder={"Disabled End"}
               label={"Disabled End"}
               disablePast
               minDateTime={disabledStart}
               value={disabledEnd}
-              onChange={(date) => updateDisabledEnd(date)}
+              onChange={(date) => date !== null && updateDisabledEnd(date)}
               inputFormat="MMM dd, y hh:mm a"
               disableMaskedInput
             />

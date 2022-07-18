@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierTypeComponent from "./modifier_type.component";
+import ModifierTypeComponent, { ModifierTypeModifyUiProps } from "./modifier_type.component";
+import { HOST_API } from "../../../config";
 
-const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback }) => {
+const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback } : ModifierTypeModifyUiProps) => {
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
   const [displayName, setDisplayName] = useState(modifier_type.display_name ?? "");
   const [minSelected, setMinSelected] = useState(modifier_type.min_selected || 0);
-  const [maxSelected, setMaxSelected] = useState(modifier_type.max_selected || "");
+  const [maxSelected, setMaxSelected] = useState(modifier_type.max_selected || null);
   const [revelID, setRevelID] = useState(modifier_type.externalIDs?.revelID ?? "");
   const [squareID, setSquareID] = useState(modifier_type.externalIDs?.squareID ?? "");
   const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(modifier_type.display_flags?.omit_options_if_not_available ?? false);
@@ -24,14 +25,12 @@ const ModifierTypeEditContainer = ({ ENDPOINT, modifier_type, onCloseCallback })
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const editModifierType = async (e) => {
-    e.preventDefault();
-
+  const editModifierType = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${modifier_type._id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_type.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,

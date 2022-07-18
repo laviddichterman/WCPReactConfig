@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -16,11 +16,58 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { ElementActionComponent } from "./element.action.component";
-import CheckedInputComponent from "../checked_input.component";
+import { useAppSelector } from "src/hooks/useRedux";
+import { ICatalogModifiers, IProduct, IWModifiersInstance, IWOptionInstance, PriceDisplay } from "@wcp/wcpshared";
+import { isUndefined } from "lodash";
+import { CheckedNumericInput } from "../CheckedNumericTextInput";
 
+export interface ProductInstanceComponentProps {
+  parent_product: IProduct;
+  displayName: string;
+  setDisplayName: Dispatch<SetStateAction<string>>;
+  description: string;
+  setDescription: Dispatch<SetStateAction<string>>;
+  shortcode: string;
+  setShortcode: Dispatch<SetStateAction<string>>;
+  ordinal: number;
+  setOrdinal: Dispatch<SetStateAction<number>>;
+  revelID: string;
+  setRevelID: Dispatch<SetStateAction<string>>;
+  squareID: string;
+  setSquareID: Dispatch<SetStateAction<string>>;
+  modifiers: IWModifiersInstance[];
+  setModifiers: Dispatch<SetStateAction<IWModifiersInstance[]>>;
+  isBase: boolean;
+  setIsBase: Dispatch<SetStateAction<boolean>>;
+  // menu
+  menuOrdinal: number;
+  setMenuOrdinal: Dispatch<SetStateAction<number>>;
+  menuHide: boolean;
+  setMenuHide: Dispatch<SetStateAction<boolean>>;
+  menuPriceDisplay: keyof typeof PriceDisplay;
+  setMenuPriceDisplay: Dispatch<SetStateAction<keyof typeof PriceDisplay>>;
+  menuAdornment: string;
+  setMenuAdornment: Dispatch<SetStateAction<string>>;
+  menuSuppressExhaustiveModifierList: boolean;
+  setMenuSuppressExhaustiveModifierList: Dispatch<SetStateAction<boolean>>;
+  menuShowModifierOptions: boolean;
+  setMenuShowModifierOptions: Dispatch<SetStateAction<boolean>>;
+  // order
+  orderOrdinal: number;
+  setOrderOrdinal: Dispatch<SetStateAction<number>>;
+  orderMenuHide: boolean;
+  setOrderMenuHide: Dispatch<SetStateAction<boolean>>;
+  skipCustomization: boolean;
+  setSkipCustomization: Dispatch<SetStateAction<boolean>>;
+  orderPriceDisplay: keyof typeof PriceDisplay;
+  setOrderPriceDisplay: Dispatch<SetStateAction<keyof typeof PriceDisplay>>
+  orderAdornment: string;
+  setOrderAdornment: Dispatch<SetStateAction<string>>;
+  orderSuppressExhaustiveModifierList: boolean;
+  setOrderSuppressExhaustiveModifierList: Dispatch<SetStateAction<boolean>>;
+}
 
 const ProductInstanceComponent = ({
-  modifier_types_map,
   parent_product,
   displayName,
   setDisplayName,
@@ -64,8 +111,9 @@ const ProductInstanceComponent = ({
   setOrderAdornment,
   orderSuppressExhaustiveModifierList,
   setOrderSuppressExhaustiveModifierList
-}) => {
-  const handleToggle = (mtid, oidx) => {
+}: ProductInstanceComponentProps) => {
+  const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const handleToggle = (mtid: number, oidx: number) => {
     const new_normalized_mod = modifiers.slice();
     new_normalized_mod[mtid].options = modifiers[mtid].options.slice();
     Object.assign(
@@ -74,12 +122,12 @@ const ProductInstanceComponent = ({
     );
 
     switch (modifiers[mtid].options[oidx].placement) {
-      case "WHOLE":
-        new_normalized_mod[mtid].options[oidx].placement = "NONE";
+      case 'WHOLE':
+        new_normalized_mod[mtid].options[oidx].placement = 'NONE';
         break;
-      case "NONE":
-        new_normalized_mod[mtid].options[oidx].placement = "WHOLE";
-        new_normalized_mod[mtid].options[oidx].qualifier = "REGULAR";
+      case 'NONE':
+        new_normalized_mod[mtid].options[oidx].placement = 'WHOLE';
+        new_normalized_mod[mtid].options[oidx].qualifier = 'REGULAR';
         break;
       default:
         console.error("messed up option value!");
@@ -87,7 +135,7 @@ const ProductInstanceComponent = ({
     setModifiers(new_normalized_mod);
   };
 
-  const handleRadioChange = (mtidx, oidx) => {
+  const handleRadioChange = (mtidx: number, oidx: number) => {
     const new_normalized_mod = modifiers.slice();
     new_normalized_mod[mtidx].options = modifiers[mtidx].options.map(
       (opt, idx) =>
@@ -95,8 +143,8 @@ const ProductInstanceComponent = ({
       ({
         option_id: opt.option_id,
         // eslint-disable-next-line
-        placement: idx == oidx ? "WHOLE" : "NONE",
-        qualifier: "REGULAR"
+        placement: idx == oidx ? 'WHOLE' : 'NONE',
+        qualifier: 'REGULAR'
       })
 
     );
@@ -111,13 +159,13 @@ const ProductInstanceComponent = ({
     if (mt.min_selected === 1 && mt.max_selected === 1) {
       mt_options_html = (
         <RadioGroup
-          aria-label={mt._id}
+          aria-label={mt.id}
           name={mt.name}
           row
           value={modifiers[mtidx].options.findIndex(
             (o) => o.placement === "WHOLE"
           )}
-          onChange={(e) => handleRadioChange(mtidx, e.target.value)}
+          onChange={(e) => handleRadioChange(mtidx, parseInt(e.target.value))}
         >
           {mt_options.map((option, oidx) => (
             <FormControlLabel
@@ -142,7 +190,7 @@ const ProductInstanceComponent = ({
                   }
                   onChange={() => handleToggle(mtidx, oidx)}
                   disableRipple
-                  inputProps={{ "aria-labelledby": oidx }}
+                  inputProps={{ "aria-labelledby": String(oidx) }}
                 />
               }
               label={mt_options[oidx].item.display_name}
@@ -189,13 +237,15 @@ const ProductInstanceComponent = ({
         />
       </Grid>
       <Grid item xs={2}>
-        <CheckedInputComponent
-          label="Ordinal"
+        <CheckedNumericInput
           type="number"
+          label="Ordinal"
+          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
           value={ordinal}
-          inputProps={{ min: 0 }}
-          onFinishChanging={(e) => setOrdinal(e)}
-        />
+          onChange={setOrdinal}
+          parseFunction={parseInt}
+          allowEmpty={false} />
+
       </Grid>
       <Grid item xs={4}>
         <TextField
@@ -243,15 +293,16 @@ const ProductInstanceComponent = ({
         />
       </Grid>
       <Grid item xs={2}>
-        <CheckedInputComponent
-          label="Menu Ordinal"
+        <CheckedNumericInput
           type="number"
+          label="Menu Ordinal"
+          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
           value={menuOrdinal}
-          inputProps={{ min: 0 }}
-          onFinishChanging={(e) => setMenuOrdinal(e)}
-        />
+          onChange={setMenuOrdinal}
+          parseFunction={parseInt}
+          allowEmpty={false} />
       </Grid>
-      <Grid item xs={3}  alignItems="center">
+      <Grid item xs={3} alignItems="center">
         <FormControlLabel
           control={
             <Switch
@@ -307,49 +358,32 @@ const ProductInstanceComponent = ({
         <FormControl component="fieldset">
           <FormLabel component="legend">Menu Price Display</FormLabel>
           <RadioGroup
-            defaultValue="ALWAYS"
+            defaultValue={PriceDisplay.ALWAYS}
             aria-label="menu-price-display"
             name="menu-price-display"
             row
             value={menuPriceDisplay}
-            onChange={(e) => setMenuPriceDisplay(e.target.value)}
+            onChange={(e) => setMenuPriceDisplay(e.target.value as keyof typeof PriceDisplay)}
           >
-            <FormControlLabel
-              value="FROM_X"
-              control={<Radio />}
-              label="From X"
-            />
-            <FormControlLabel
-              value="VARIES"
-              control={<Radio />}
-              label="Never"
-            />
-            <FormControlLabel
-              value="ALWAYS"
-              control={<Radio />}
-              label="Always"
-            />
-            <FormControlLabel
-              value="MIN_TO_MAX"
-              control={<Radio />}
-              label="Min To Max"
-            />
-            <FormControlLabel
-              value="LIST"
-              control={<Radio />}
-              label="List"
-            />
+            {Object.keys(PriceDisplay).map((val, i) =>
+              <FormControlLabel
+                key={i}
+                value={val}
+                control={<Radio />}
+                label={val}
+              />)}
           </RadioGroup>
         </FormControl>
       </Grid>
       <Grid item xs={2}>
-        <CheckedInputComponent
-          label="Order Ordinal"
+        <CheckedNumericInput
           type="number"
+          label="Order Ordinal"
+          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
           value={orderOrdinal}
-          inputProps={{ min: 0 }}
-          onFinishChanging={(e) => setOrderOrdinal(e)}
-        />
+          onChange={setOrderOrdinal}
+          parseFunction={parseInt}
+          allowEmpty={false} />
       </Grid>
       <Grid item xs={3}>
         <FormControlLabel
@@ -412,33 +446,15 @@ const ProductInstanceComponent = ({
             name="order-menu-price-display"
             row
             value={orderPriceDisplay}
-            onChange={(e) => setOrderPriceDisplay(e.target.value)}
+            onChange={(e) => setOrderPriceDisplay(e.target.value as keyof typeof PriceDisplay)}
           >
-            <FormControlLabel
-              value="FROM_X"
-              control={<Radio />}
-              label="From X"
-            />
-            <FormControlLabel
-              value="VARIES"
-              control={<Radio />}
-              label="Never"
-            />
-            <FormControlLabel
-              value="ALWAYS"
-              control={<Radio />}
-              label="Always"
-            />
-            <FormControlLabel
-              value="MIN_TO_MAX"
-              control={<Radio />}
-              label="Min To Max"
-            />
-            <FormControlLabel
-              value="LIST"
-              control={<Radio />}
-              label="List"
-            />
+            {Object.keys(PriceDisplay).map((val, i) =>
+              <FormControlLabel
+                key={i}
+                value={val}
+                control={<Radio />}
+                label={val}
+              />)}
           </RadioGroup>
         </FormControl>
       </Grid>
@@ -448,16 +464,17 @@ const ProductInstanceComponent = ({
 };
 
 const normalizeModifiersAndOptions = (
-  parent_product,
-  modifier_types_map,
-  modifiers
+  parent_product: IProduct,
+  modifier_types_map: ICatalogModifiers,
+  modifiers: IWModifiersInstance[]
 ) => {
-  const normalized_modifiers = [];
+  const normalized_modifiers: IWModifiersInstance[] = [];
   parent_product.modifiers.forEach((modifier_entry) => {
     const { mtid } = modifier_entry;
-    const options = modifier_types_map[mtid].options.map((option,) => ({
-      option_id: option._id,
+    const options: IWOptionInstance[] = modifier_types_map[mtid].options.map((option,) => ({
+      option_id: option.id,
       placement: "NONE",
+      qualifier: 'REGULAR'
     }));
     normalized_modifiers.push({ modifier_type_id: mtid, options });
   });
@@ -466,51 +483,62 @@ const normalizeModifiersAndOptions = (
     const normalized_modifier = normalized_modifiers.find(
       (x) => x.modifier_type_id === mod.modifier_type_id
     );
-    mod.options.forEach((opt) => {
-      if (opt.placement !== "NONE") {
-        const found_modifier_option = normalized_modifier.options.find(
-          (x) => x.option_id === opt.option_id
-        );
-        found_modifier_option.placement = opt.placement;
-        found_modifier_option.qualifier = opt.qualifier;
+    if (!isUndefined(normalized_modifier)) {
+      mod.options.forEach((opt) => {
+        if (opt.placement !== "NONE") {
+          const found_modifier_option = normalized_modifier.options.find(
+            (x) => x.option_id === opt.option_id
+          );
+          if (found_modifier_option) {
+            Object.assign(found_modifier_option, opt);
+          }
+        }
       }
-    });
+      );
+    }
   });
   return normalized_modifiers;
 };
 
-const minimizeModifiers = (normalized_modifiers) => normalized_modifiers
-  .map((mod,) => {
+const minimizeModifiers = (normalized_modifiers: IWModifiersInstance[]) =>
+  normalized_modifiers.reduce((acc, mod) => {
     const filtered_options = mod.options.filter(
       (x) => x.placement !== "NONE"
     );
-    return filtered_options.length
-      ? { modifier_type_id: mod.modifier_type_id, options: filtered_options }
-      : null;
-  })
-  .filter((x) => x != null);
+    return filtered_options.length ? [...acc, { modifier_type_id: mod.modifier_type_id, options: filtered_options }] : acc;
+  }, []);
 
-export const ProductInstanceContainer = ({ parent_product, modifier_types_map, modifiers, setModifiers, ...forwardRefs
-}) => {
-  const [normalizedModifers, setNormalizedModifiers] = useState(
+
+export const ProductInstanceContainer = ({ parent_product, modifiers, setModifiers, ...forwardRefs
+}: ProductInstanceComponentProps) => {
+  const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const [normalizedModifers, setNormalizedModifiers] = useState<IWModifiersInstance[]>(
     normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers)
   );
 
-  const setNormalizedModifiersIntermediate = (mods) => {
+  const setNormalizedModifiersIntermediate = (mods: IWModifiersInstance[]) => {
     setNormalizedModifiers(mods);
     setModifiers(minimizeModifiers(mods));
   };
 
   return (
     <ProductInstanceComponent
-      modifier_types_map={modifier_types_map}
       parent_product={parent_product}
-      {...forwardRefs}
       modifiers={normalizedModifers}
       setModifiers={setNormalizedModifiersIntermediate}
+      {...forwardRefs}
     />
   );
 };
+
+interface ProductInstanceActionContainerProps {
+  confirmText: string;
+  onCloseCallback: VoidFunction;
+  onConfirmClick: VoidFunction;
+  isProcessing: boolean;
+  displayName: string;
+  shortcode: string;
+}
 
 export const ProductInstanceActionContainer = ({
   confirmText,
@@ -520,9 +548,7 @@ export const ProductInstanceActionContainer = ({
   displayName,
   shortcode,
   ...forwardRefs
-
-
-}) => (
+}: ProductInstanceActionContainerProps & ProductInstanceComponentProps) => (
   <ElementActionComponent
     onCloseCallback={onCloseCallback}
     onConfirmClick={onConfirmClick}

@@ -2,20 +2,27 @@ import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import {ProductInstanceActionContainer} from "./product_instance.component";
+import { IProduct, IWModifiersInstance, PriceDisplay } from "@wcp/wcpshared";
+import { HOST_API } from "../../../config";
 
-const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_product, onCloseCallback }) => {
+interface ProductInstanceAddContainerProps { 
+  parent_product: IProduct;
+  onCloseCallback: VoidFunction;
+}
+
+const ProductInstanceAddContainer = ({ parent_product, onCloseCallback } : ProductInstanceAddContainerProps) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
-  const [modifiers, setModifiers] = useState([]);
+  const [modifiers, setModifiers] = useState<IWModifiersInstance[]>([]);
   const [isBase, setIsBase] = useState(false);
   // menu
   const [menuOrdinal, setMenuOrdinal] = useState(0);
   const [menuHide, setMenuHide] = useState(false);
-  const [menuPriceDisplay, setMenuPriceDisplay] = useState("ALWAYS");
+  const [menuPriceDisplay, setMenuPriceDisplay] = useState<keyof typeof PriceDisplay>("ALWAYS");
   const [menuAdornment, setMenuAdornment] = useState("");
   const [menuSuppressExhaustiveModifierList, setMenuSuppressExhaustiveModifierList] = useState(false);
   const [menuShowModifierOptions, setMenuShowModifierOptions] = useState(false);
@@ -24,19 +31,18 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
   const [orderOrdinal, setOrderOrdinal] = useState(0);
   const [orderMenuHide, setOrderMenuHide] = useState(false);        
   const [skipCustomization, setSkipCustomization] = useState(true);
-  const [orderPriceDisplay, setOrderPriceDisplay] = useState("ALWAYS");
+  const [orderPriceDisplay, setOrderPriceDisplay] = useState<keyof typeof PriceDisplay>("ALWAYS");
   const [orderAdornment, setOrderAdornment] = useState("");
   const [orderSuppressExhaustiveModifierList, setOrderSuppressExhaustiveModifierList] = useState(false);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
-  const addProductInstance = async (e) => {
-    e.preventDefault();
+  const addProductInstance = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/product/${parent_product._id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/product/${parent_product.id}`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -108,7 +114,6 @@ const ProductInstanceAddContainer = ({ ENDPOINT, modifier_types_map, parent_prod
       onCloseCallback={onCloseCallback}
       onConfirmClick={addProductInstance}
       isProcessing={isProcessing}
-      modifier_types_map={modifier_types_map}
       parent_product={parent_product}
       displayName={displayName}
       setDisplayName={setDisplayName}

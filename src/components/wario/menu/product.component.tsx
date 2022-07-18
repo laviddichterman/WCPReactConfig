@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -9,9 +9,52 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Autocomplete from '@mui/material/Autocomplete';
-import CheckedInputComponent from '../checked_input.component';
 import DatetimeBasedDisableComponent from '../datetime_based_disable.component';
 import { ElementActionComponent } from './element.action.component';
+import { IMoney, IWInterval, RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
+import { useAppSelector } from 'src/hooks/useRedux';
+import { CheckedNumericInput } from '../CheckedNumericTextInput';
+
+interface ProductInstanceComponentProps {
+  displayName: string;
+  setDisplayName: Dispatch<SetStateAction<string>>;
+  description: string;
+  setDescription: Dispatch<SetStateAction<string>>;
+  shortcode: string;
+  setShortcode: Dispatch<SetStateAction<string>>;
+  ordinal: number;
+  setOrdinal: Dispatch<SetStateAction<number>>;
+}
+
+interface ProductComponentProps {
+  confirmText: string;
+  onCloseCallback: VoidFunction;
+  onConfirmClick: VoidFunction;
+  isProcessing: boolean;
+  disableConfirmOn: boolean;
+  price: IMoney;
+  setPrice: Dispatch<SetStateAction<IMoney>>;
+  disabled: IWInterval | null;
+  setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
+  serviceDisabled: number[];
+  setServiceDisabled: Dispatch<SetStateAction<number[]>>;
+  flavorMax: number;
+  setFlavorMax: Dispatch<SetStateAction<number>>;
+  bakeMax: number;
+  setBakeMax: Dispatch<SetStateAction<number>>;
+  bakeDifferentialMax: number;
+  setBakeDifferentialMax: Dispatch<SetStateAction<number>>;
+  showNameOfBaseProduct: boolean;
+  setShowNameOfBaseProduct: Dispatch<SetStateAction<boolean>>;
+  singularNoun: string;
+  setSingularNoun: Dispatch<SetStateAction<string>>;
+  parentCategories: string[];
+  setParentCategories: Dispatch<SetStateAction<string[]>>;
+  modifiers: { mtid: string, enable: string | null }[]
+  setModifiers: Dispatch<SetStateAction<{ mtid: string, enable: string | null }[]>>;
+  children?: React.ReactNode;
+}
+type ProductComponentPropsTypes = (({ suppressNonProductInstanceFields: true ; } & Partial<ProductInstanceComponentProps>) | ({  suppressNonProductInstanceFields: false ; } & ProductInstanceComponentProps));
 
 const ProductComponent = ({
   confirmText,
@@ -19,10 +62,6 @@ const ProductComponent = ({
   onConfirmClick,
   isProcessing,
   disableConfirmOn,
-  modifier_types,
-  categories,
-  services,
-  product_instance_functions,
   suppressNonProductInstanceFields,
   displayName,
   setDisplayName,
@@ -52,24 +91,22 @@ const ProductComponent = ({
   setParentCategories,
   modifiers,
   setModifiers,
-  // Object mapping MTID to enable function
-  modifierEnableFunctions,
-  setModifierEnableFunctions,
-  children,
-}) => {
-  const handleSetModifiers = (mods) => {
-    const sorted = mods.sort((a, b) => a.modifier_type.ordinal - b.modifier_type.ordinal);
+  children
+}: ProductComponentPropsTypes & ProductComponentProps) => {
+  const catalog = useAppSelector(s => s.ws.catalog);
+  const services = useAppSelector(s => s.ws.services);
+  if (catalog === null || services === null) {
+    return <>Loading...</>;
+  }
+
+  const handleSetModifiers = (mods: string[]) => {
+    const oldModsAsRecord = modifiers.reduce((acc, m) => ({...acc, [m.mtid]: m.enable}), {} as Record<string, string | null>)
+    const sorted = mods.sort((a, b) => catalog.modifiers[a].modifier_type.ordinal - catalog.modifiers[b].modifier_type.ordinal)
+      .map(x=>({mtid: x, enable: oldModsAsRecord[x] ?? null }));
     if (sorted.length === 0 && !showNameOfBaseProduct) {
       setShowNameOfBaseProduct(true);
     }
     setModifiers(sorted);
-  };
-
-  const handleSetModifierEnableFunction = (mtid, enable) => {
-    const newValue = {};
-    Object.assign(newValue, modifierEnableFunctions);
-    newValue[mtid] = enable;
-    setModifierEnableFunctions(newValue);
   };
 
   const displayNameDescriptionOrdinalFields = suppressNonProductInstanceFields ? (
@@ -97,13 +134,15 @@ const ProductComponent = ({
         />
       </Grid>
       <Grid item xs={2}>
-        <CheckedInputComponent
+        <CheckedNumericInput
           label="Ordinal"
           type="number"
+          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*' }}
           value={ordinal}
-          inputProps={{ min: 0 }}
-          onFinishChanging={(e) => setOrdinal(e)}
-        />
+          disabled={isProcessing}
+          onChange={(e) => setOrdinal(e)}
+          parseFunction={parseInt}
+          allowEmpty={false} />
       </Grid>
     </>
   );
@@ -113,14 +152,15 @@ const ProductComponent = ({
       <Card>
         <CardContent>
           <FormControl component="fieldset">
-            <FormLabel>Modifier Details: {modifier.modifier_type.name}</FormLabel>
+            <FormLabel>Modifier Details: {catalog.modifiers[modifier.mtid].modifier_type.name}</FormLabel>
             <Autocomplete
               style={{ width: 225 }}
-              options={product_instance_functions}
-              value={modifierEnableFunctions[modifier.modifier_type._id] || null}
-              onChange={(e, v) => handleSetModifierEnableFunction(modifier.modifier_type._id, v)}
-              getOptionLabel={(option) => option?.name ?? 'CORRUPT DATA'}
-              isOptionEqualToValue={(option, value) => option && value && option._id === value._id}
+              options={Object.keys(catalog.product_instance_functions)}
+              value={modifier.enable}
+              // this makes a copy of the modifiers array with the updated enable function value
+              onChange={(_, v) => setModifiers(Object.assign([], modifiers, {[idx]: {...modifier, enable: v}}))}
+              getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
+              isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
             />
           </FormControl>
@@ -142,27 +182,25 @@ const ProductComponent = ({
             <Autocomplete
               multiple
               filterSelectedOptions
-              options={Object.values(categories)}
-              value={parentCategories.filter((x) => x)}
+              options={Object.keys(catalog.categories)}
+              value={parentCategories}
               onChange={(e, v) => setParentCategories(v)}
-              getOptionLabel={(option) => option.category.name}
-              isOptionEqualToValue={(option, value) => option.category._id === value.category._id}
+              getOptionLabel={(option) => catalog.categories[option].category.name}
+              isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Categories" />}
             />
           </Grid>
           {displayNameDescriptionOrdinalFields}
           <Grid item xs={4}>
-            <CheckedInputComponent
-              label="Price"
-              fullWidth={false}
-              className="form-control"
+            <CheckedNumericInput
               type="number"
-              size="small"
-              parseFunction={(e) => parseFloat(e).toFixed(2)}
-              value={price}
-              inputProps={{ min: 0.0 }}
-              onFinishChanging={(e) => setPrice(e)}
-            />
+              label="Price"
+              inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([\.,][0-9]+)?', step: .25 }}
+              value={price.amount  / 100}
+              disabled={isProcessing}
+              onChange={(e) => setPrice({...price, amount: e})}
+              parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
+              allowEmpty={false} />
           </Grid>
           {suppressNonProductInstanceFields ? (
             ''
@@ -179,34 +217,37 @@ const ProductComponent = ({
             </Grid>
           )}
           <Grid item xs={2}>
-            <CheckedInputComponent
+            <CheckedNumericInput
+              type="number"
               label="Flavor Max"
-              type="number"
+              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
               value={flavorMax}
+              disabled={isProcessing}
+              onChange={(e) => setFlavorMax(e)}
               parseFunction={parseFloat}
-              inputProps={{ min: 0 }}
-              onFinishChanging={(e) => setFlavorMax(e)}
-            />
+              allowEmpty={false} />
           </Grid>
           <Grid item xs={2}>
-            <CheckedInputComponent
+          <CheckedNumericInput
+              type="number"
               label="Bake Max"
-              type="number"
+              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
               value={bakeMax}
+              disabled={isProcessing}
+              onChange={(e) => setBakeMax(e)}
               parseFunction={parseFloat}
-              inputProps={{ min: 0 }}
-              onFinishChanging={(e) => setBakeMax(e)}
-            />
+              allowEmpty={false} />
           </Grid>
           <Grid item xs={2}>
-            <CheckedInputComponent
-              label="Bake Differential Max"
+          <CheckedNumericInput
               type="number"
+              label="Bake Differential Max"
+              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
               value={bakeDifferentialMax}
+              disabled={isProcessing}
+              onChange={(e) => setBakeDifferentialMax(e)}
               parseFunction={parseFloat}
-              inputProps={{ min: 0 }}
-              onFinishChanging={(e) => setBakeDifferentialMax(e)}
-            />
+              allowEmpty={false} />
           </Grid>
           <Grid item xs={6}>
             <FormControlLabel
@@ -235,13 +276,11 @@ const ProductComponent = ({
             <Autocomplete
               multiple
               filterSelectedOptions
-              options={Object.values(modifier_types)}
-              value={modifiers}
+              options={Object.keys(catalog.modifiers)}
+              value={modifiers.map(x=>x.mtid)}
               onChange={(e, v) => handleSetModifiers(v)}
-              getOptionLabel={(option) => (option ? option.modifier_type.name : 'CORRUPT DATA')}
-              isOptionEqualToValue={(option, value) =>
-                option && value && option.modifier_type._id === value.modifier_type._id
-              }
+              getOptionLabel={(option) => catalog.modifiers[option].modifier_type.name ?? 'CORRUPT DATA'}
+              isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => <TextField {...params} label="Modifiers" />}
             />
           </Grid>

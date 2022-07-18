@@ -14,7 +14,7 @@ const ModifierOptionEditContainer = ({modifier_option, onCloseCallback } : Modif
   const [description, setDescription] = useState(modifier_option.item.description);
   const [shortcode, setShortcode] = useState(modifier_option.item.shortcode);
   const [ordinal, setOrdinal] = useState(modifier_option.ordinal);
-  const [price, setPrice] = useState(modifier_option.item.price.amount / 100);
+  const [price, setPrice] = useState(modifier_option.item.price);
   const [enableFunction, setEnableFunction] = useState(modifier_option.enable_function ?? null);
   const [flavorFactor, setFlavorFactor] = useState(modifier_option.metadata.flavor_factor);
   const [bakeFactor, setBakeFactor] = useState(modifier_option.metadata.bake_factor);
@@ -42,7 +42,7 @@ const ModifierOptionEditContainer = ({modifier_option, onCloseCallback } : Modif
             description,
             shortcode,
             disabled,
-            price: { amount: price * 100, currency: "USD" },
+            price,
             ordinal,
             enable_function: enableFunction ? enableFunction : null,
             flavor_factor: flavorFactor,

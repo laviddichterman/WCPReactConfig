@@ -1,28 +1,30 @@
 import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import CategoryComponent from "./category.component";
+import CategoryComponent, { CategoryEditProps } from "./category.component";
+import { HOST_API } from "../../../config";
+import { getCategoryIds } from "src/redux/slices/SocketIoSlice";
+import { useAppSelector } from "src/hooks/useRedux";
 
-const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback }) => {
+const CategoryEditContainer = ({ category, onCloseCallback } : CategoryEditProps) => {
+  const categoryIds = useAppSelector(s => getCategoryIds(s.ws.categories));
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
   const [subheading, setSubheading] = useState(category.subheading);
   const [footnotes, setFootnotes] = useState(category.footnotes);
   const [ordinal, setOrdinal] = useState(category.ordinal || 0);
-  const [parent, setParent] = useState(category.parent_id ? categories[category.parent_id] : null);
-  const [callLineName, setCallLineName] = useState(category.display_flags?.call_line_name ?? "");
-  const [callLineDisplay, setCallLineDisplay] = useState(category.display_flags?.call_line_display ?? "SHORTNAME");
+  const [parent, setParent] = useState(category.parent_id);
+  const [callLineName, setCallLineName] = useState(category.display_flags.call_line_name);
+  const [callLineDisplay, setCallLineDisplay] = useState(category.display_flags.call_line_display);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const editCategory = async (e) => {
-    e.preventDefault();
-
+  const editCategory = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/category/${category._id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/category/${category.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -34,7 +36,7 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
             ordinal,
             subheading,
             footnotes,
-            parent_id: parent ? parent.category._id : "",
+            parent_id: parent,
             display_flags: {
               call_line_name: callLineName,
               call_line_display: callLineDisplay
@@ -58,7 +60,8 @@ const CategoryEditContainer = ({ ENDPOINT, categories, category, onCloseCallback
       onCloseCallback={onCloseCallback}
       onConfirmClick={editCategory}
       isProcessing={isProcessing}
-      categories={Object.values(categories).filter(cat => cat.category._id !== category._id)}
+      // intentional != instead of !==
+      categoryIds={categoryIds.filter(c=>c != category.id)}
       description={description}
       setDescription={setDescription}
       name={name}

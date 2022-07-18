@@ -2,19 +2,19 @@ import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
+import { HOST_API } from "../../../config";
+import { CategoryEditProps } from "./category.component";
 
-const CategoryDeleteContainer = ({ ENDPOINT, category, onCloseCallback }) => {
+const CategoryDeleteContainer = ({ category, onCloseCallback } : CategoryEditProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const deleteCategory = async (e) => {
-    e.preventDefault();
-
+  const deleteCategory = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/category/${category._id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/category/${category.id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

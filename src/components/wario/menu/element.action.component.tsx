@@ -12,7 +12,7 @@ const GenerateActionsHtmlFromList = (actions : React.ReactNode[]) => actions.len
       ))}
     </Grid>)
 
-interface ElementActionComponentProps { 
+export interface ElementActionComponentProps { 
   onCloseCallback: React.MouseEventHandler<HTMLButtonElement>;
   onConfirmClick: React.MouseEventHandler<HTMLButtonElement>;
   isProcessing: boolean;

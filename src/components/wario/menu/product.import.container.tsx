@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -9,9 +9,11 @@ import { useCSVReader } from 'react-papaparse';
 import Button from "@mui/material/Button";
 import { useAuth0 } from '@auth0/auth0-react';
 import { ElementActionComponent } from "./element.action.component";
+import { useAppSelector } from "src/hooks/useRedux";
+import { HOST_API } from "src/config";
 
 
-const InternalCSVReader = ({onAccepted}) => {
+const InternalCSVReader = ({onAccepted} : {onAccepted: VoidFunction}) => {
   const { CSVReader } = useCSVReader();
   return (
     <CSVReader
@@ -46,18 +48,28 @@ const InternalCSVReader = ({onAccepted}) => {
     </CSVReader>
   );
 };
-
+interface ProductComponentProps { 
+  confirmText: string;
+  onCloseCallback: VoidFunction;
+  onConfirmClick: VoidFunction;
+  isProcessing: boolean;
+  disableConfirmOn: boolean;
+  parentCategories : string[];
+  setParentCategories: Dispatch<SetStateAction<string[]>>;
+  setFileData: Dispatch<SetStateAction<any>>;
+}
 const ProductComponent = ({
   confirmText,
   onCloseCallback,
   onConfirmClick,
   isProcessing,
   disableConfirmOn,
-  categories,
   parentCategories,
   setParentCategories,
   setFileData,
-}) => (
+} : ProductComponentProps) => {
+  const categories = useAppSelector(s=>s.ws.catalog?.categories ?? {});
+  return (
     <ElementActionComponent 
     onCloseCallback={onCloseCallback}
     onConfirmClick={onConfirmClick}
@@ -70,39 +82,37 @@ const ProductComponent = ({
           <Autocomplete
             multiple
             filterSelectedOptions
-            options={Object.values(categories)}
+            options={Object.keys(categories)}
             value={parentCategories.filter((x) => x)}
             onChange={(e, v) => setParentCategories(v)}
-            getOptionLabel={(option) => option.category.name}
-            isOptionEqualToValue={(option, value) =>
-              option.category._id === value.category._id
-            }
+            getOptionLabel={(option) => categories[option].category.name}
+            isOptionEqualToValue={(o, v) => o === v}
             renderInput={(params) => (
               <TextField {...params} label="Categories" />
             )}
           />
         </Grid>
         <Grid item xs={12}>
-        <InternalCSVReader onAccepted={(e) => setFileData(e)} />
+        <InternalCSVReader onAccepted={(e : any) => setFileData(e)} />
         </Grid>
     </>}
     />
   );
+};
 
-const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
-  const [parentCategories, setParentCategories] = useState([]);
+const ProductAddContainer = ({ onCloseCallback } : { onCloseCallback: VoidFunction }) => {
+  const [parentCategories, setParentCategories] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data, setData] = useState()
+  const [data, setData] = useState(null)
   const { getAccessTokenSilently } = useAuth0();
 
-  const addProducts = async (e) => {
-    e.preventDefault();
+  const addProducts = async () => {
     data.data.forEach(async (prod, index) => {
       if (!isProcessing) {
         setIsProcessing(true);
         try {
           const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-          const response = await fetch(`${ENDPOINT}/api/v1/menu/product/`, {
+          const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
             method: "POST",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -122,7 +132,7 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
                 bake_max: 10,
                 singular_noun: "",
               },
-              category_ids: parentCategories.map(x => x.category._id),
+              category_ids: parentCategories,
               modifiers: [],
               create_product_instance: true
             }),
@@ -143,10 +153,9 @@ const ProductAddContainer = ({ ENDPOINT, categories, onCloseCallback }) => {
     <ProductComponent 
       confirmText="Import"
       onCloseCallback={onCloseCallback}
-      onConfirmClick={addProducts}
+      onConfirmClick={() => addProducts()}
       isProcessing={isProcessing}
       disableConfirmOn={isProcessing || !data || data.data.length === 0}
-      categories={categories}
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
       setFileData={setData}

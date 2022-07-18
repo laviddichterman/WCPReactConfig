@@ -3,19 +3,19 @@ import { format, setDay } from 'date-fns';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Card, CardHeader, Grid, Button, IconButton } from '@mui/material';
 
-import { WDateUtils, WIntervalTuple } from "@wcp/wcpshared";
+import { IWSettings, WDateUtils, WIntervalTuple } from "@wcp/wcpshared";
 import { useAuth0 } from '@auth0/auth0-react';
-import CheckedInputComponent from "./checked_input.component";
 import TimeSelection from "./timepicker.component";
 import {HOST_API} from '../../config';
 import { CheckedNumericInput } from './CheckedNumericTextInput';
+import { useAppSelector } from '../../hooks/useRedux';
 
 export interface OperatingHoursIntervalFormProps { 
-  time_step: number
+  time_step: number;
   interval, 
   onChangeLowerBound, 
   onChangeUpperBound,
-  disabled,
+  disabled: boolean;
   onAddOperatingHours 
 };
 
@@ -73,21 +73,21 @@ const OperatingHoursIntervalForm = ({
   );
 }
 
-const GenerateInitialOperatingHoursFormIntervals = (num_services) => {
-  const intervals = Array(num_services).fill();
-  intervals.forEach((v, idx) => {
-    intervals[idx] = Array(7).fill({start: null, end:null})});
-  return intervals;
-}
+const GenerateInitialOperatingHoursFormIntervals = (num_services : number) => Array(num_services).fill(Array(7).fill({start: null, end:null}))
 
 const SettingsComponent = ({}) => {
   const { getAccessTokenSilently } = useAuth0();
   const [isProcessing, setIsProcessing] = useState(false);
-  const { services, settings } = useSocketIo();
-  const [ localSettings, setLocalSettings ] = useState(settings);
-  const [operating_hours_form_intervals, setOperatingHoursFormIntervals] = useState(GenerateInitialOperatingHoursFormIntervals(services?.length || 0));
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const services = useAppSelector(s=>s.ws.services);
+  const settings = useAppSelector(s=>s.ws.settings);
+  const numServices = useMemo(()=> services !== null ? Object.keys(services).length : 3, [services]);
+  const [ localSettings, setLocalSettings ] = useState<IWSettings>(settings);
+  const [operating_hours_form_intervals, setOperatingHoursFormIntervals] = useState(GenerateInitialOperatingHoursFormIntervals(numServices));
+  if (!services || !services.length || !settings) {
+    return <>Loading...</>;
+  }
+
+  const onSubmit = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
@@ -110,20 +110,15 @@ const SettingsComponent = ({}) => {
       }
     }
   };
-
-  if (!services || !services.length || !settings) {
-    return <>Loading...</>;
-  }
-
   const onChangeAdditionalPizzaLeadTime = (e : number) => {
     const new_settings = JSON.parse(JSON.stringify(localSettings));
     new_settings.additional_pizza_lead_time = e;
     setLocalSettings(new_settings);
   }
 
-  const onChangeTimeStep = (e, service_idx : number) => {
+  const onChangeTimeStep = (value: string, service_idx : number) => {
     const new_settings = JSON.parse(JSON.stringify(localSettings));
-    new_settings.time_step2[service_idx] = parseInt(e, 10);
+    new_settings.time_step2[service_idx] = parseInt(value, 10);
     setLocalSettings(new_settings);
   }
 
@@ -153,7 +148,7 @@ const SettingsComponent = ({}) => {
     new_intervals[service_index][day_index] = {start: new_intervals[service_index][day_index].start, end: e};
     setOperatingHoursFormIntervals(new_intervals);
   }
-  const onSetLowerBound = (service_index, day_index, e) => {
+  const onSetLowerBound = (service_index: number, day_index: number, e) => {
     const new_intervals = JSON.parse(JSON.stringify(operating_hours_form_intervals));
     let new_end = new_intervals[service_index][day_index].end;
     if (e && new_end && new_end.value < e.value) {
@@ -162,7 +157,7 @@ const SettingsComponent = ({}) => {
     new_intervals[service_index][day_index] = {start: e, end: new_end};
     setOperatingHoursFormIntervals(new_intervals);
   }
-  const AddOperatingHoursInterval = (service_index, day_index) => {
+  const AddOperatingHoursInterval = (service_index: number, day_index: number) => {
     const interval = operating_hours_form_intervals[service_index][day_index];
     onAddOperatingHours(
       service_index,
@@ -176,18 +171,18 @@ const SettingsComponent = ({}) => {
     console.log(new_intervals[service_index][day_index]);
   }
 
-  const timestep_html = settings.time_step2 ? services.map((_, i) => (
-      <Grid item xs={Math.floor(12/services.length)} key={i}>
+  const timestep_html = useMemo(() => Object.keys(services).map((key, i) => (
+      <Grid item xs={Math.floor(12/numServices)} key={key}>
         <CheckedInputComponent
-          label={`${services[i]} Time Step (minutes)`}
+          label={`${services[key]} Time Step (minutes)`}
           className="form-control"
           type="number"
           inputProps={{min: 1, max: 1440}}
-          value={settings.time_step2[i]}
-          onFinishChanging={(e) => onChangeTimeStep(e, i)}
+          value={settings.time_step[i]}
+          onFinishChanging={(value : string) => onChangeTimeStep(value, i)}
           />
       </Grid>
-    )) : "";
+    )), []);
 
   const operating_hours_service_html = localSettings.operating_hours.map((operating_hours_week, h) => {
     const operating_hours_week_html = operating_hours_week.map((operating_hours_day, i) => {
@@ -219,7 +214,7 @@ const SettingsComponent = ({}) => {
               onChangeLowerBound={e => onSetLowerBound(h, i, e)}
               onChangeUpperBound={e => onSetUpperBound(h, i, e)}
               onAddOperatingHours={() => AddOperatingHoursInterval(h, i)}
-              time_step={localSettings.time_step2[h]}
+              time_step={localSettings.time_step[h]}
               />
           </Grid>
         </Grid>

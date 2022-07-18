@@ -1,22 +1,24 @@
 import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierTypeComponent from "./modifier_type.component";
+import ModifierTypeComponent, {ModifierTypeUiProps} from "./modifier_type.component";
+import { HOST_API } from "../../../config";
+import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wcpshared";
 
-const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
+const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
   const [ordinal, setOrdinal] = useState(0);
   const [name, setName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [minSelected, setMinSelected] = useState(0);
-  const [maxSelected, setMaxSelected] = useState("");
+  const [maxSelected, setMaxSelected] = useState<number|null>(null);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(false);
   const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(true);
   const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(false);
   const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(false);
-  const [emptyDisplayAs, setEmptyDisplayAs] = useState("OMIT");
-  const [modifierClass, setModifierClass] = useState("ADD");
+  const [emptyDisplayAs, setEmptyDisplayAs] = useState<keyof typeof DISPLAY_AS>("OMIT");
+  const [modifierClass, setModifierClass] = useState<keyof typeof MODIFIER_CLASS>("ADD");
   const [templateString, setTemplateString] = useState("");
   const [multipleItemSeparator, setMultipleItemSeparator] = useState(" + ");
   const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState("");
@@ -24,13 +26,12 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const addModifierType = async (e) => {
-    e.preventDefault();
+  const addModifierType = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/option/`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/option/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,7 +64,7 @@ const ModifierTypeAddContainer = ({ ENDPOINT, onCloseCallback }) => {
           setName("");
           setDisplayName("");
           setMinSelected(0);
-          setMaxSelected("");
+          setMaxSelected(null);
           setRevelID("");
           setSquareID("");
           setOmitOptionIfNotAvailable(false);

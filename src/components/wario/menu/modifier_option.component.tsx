@@ -5,11 +5,11 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Autocomplete from '@mui/material/Autocomplete';
-import CheckedInputComponent from "../checked_input.component";
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 import { ElementActionComponent } from "./element.action.component";
-import { IProductInstanceFunction, IWInterval } from "@wcp/wcpshared";
+import { IMoney, IWInterval, RecordProductInstanceFunctions, RoundToTwoDecimalPlaces } from "@wcp/wcpshared";
 import { useAppSelector } from '../../../hooks/useRedux';
+import { CheckedNumericInput } from "../CheckedNumericTextInput";
 
 interface ModifierOptionComponentProps {
   confirmText: string
@@ -24,10 +24,10 @@ interface ModifierOptionComponentProps {
   setShortcode: Dispatch<SetStateAction<string>>;
   ordinal: number;
   setOrdinal: Dispatch<SetStateAction<number>>;
-  price: number;
-  setPrice: Dispatch<SetStateAction<number>>;
+  price: IMoney;
+  setPrice: Dispatch<SetStateAction<IMoney>>;
   enableFunction: string | null;
-  setEnableFunction: Dispatch<SetStateAction<string|null>>;
+  setEnableFunction: Dispatch<SetStateAction<string | null>>;
   flavorFactor: number;
   setFlavorFactor: Dispatch<SetStateAction<number>>;
   bakeFactor: number;
@@ -80,14 +80,14 @@ const ModifierOptionComponent = ({
   squareID,
   setSquareID,
 }: ModifierOptionComponentProps) => {
-  const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.product_instance_functions) as IProductInstanceFunction[];
+  const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.product_instance_functions) as RecordProductInstanceFunctions;
   return (
     <ElementActionComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={onConfirmClick}
       isProcessing={isProcessing}
       disableConfirmOn={displayName.length === 0 || shortcode.length === 0 ||
-        price < 0 || flavorFactor < 0 || bakeFactor < 0 || isProcessing}
+        price.amount < 0 || flavorFactor < 0 || bakeFactor < 0 || isProcessing}
       confirmText={confirmText}
       body={
         <>
@@ -123,62 +123,59 @@ const ModifierOptionComponent = ({
             />
           </Grid>
           <Grid item xs={4}>
-            <CheckedInputComponent
-              label="Price"
-              fullWidth={false}
+            <CheckedNumericInput
               type="number"
-              size="small"
-              parseFunction={(e) => parseFloat(e).toFixed(2)}
-              value={price}
-              inputProps={{ min: 0.00 }}
-              onFinishChanging={(e) => setPrice(e)}
-            />
+              label="Price"
+              inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([\.,][0-9]+)?', step: .25 }}
+              value={price.amount / 100}
+              disabled={isProcessing}
+              onChange={(e) => setPrice({ ...price, amount: e })}
+              parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
+              allowEmpty={false} />
           </Grid>
           <Grid item xs={4}>
-            <CheckedInputComponent
+            <CheckedNumericInput
               label="Ordinal"
               type="number"
+              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
               value={ordinal}
-              inputProps={{ min: 0 }}
-              onFinishChanging={(e) => setOrdinal(e)}
-            />
+              disabled={isProcessing}
+              onChange={(e) => setOrdinal(e)}
+              parseFunction={parseInt}
+              allowEmpty={false} />
           </Grid>
           <Grid item xs={6}>
             <Autocomplete
               style={{ width: 300 }}
-              options={productInstanceFunctions}
+              options={Object.keys(productInstanceFunctions)}
               value={enableFunction}
               onChange={(e, v) => setEnableFunction(v)}
-              getOptionLabel={(option) => option?.name ?? "CORRUPT DATA"}
-              isOptionEqualToValue={(option, value) =>
-                option &&
-                value &&
-                option._id === value._id
-              }
+              getOptionLabel={(option) => productInstanceFunctions[option].name ?? "CORRUPT DATA"}
+              isOptionEqualToValue={(o, v) => o===v}
               renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
             />
           </Grid>
           <Grid item xs={3}>
-            <CheckedInputComponent
+            <CheckedNumericInput
               label="Flavor Factor"
               type="number"
-              fullWidth
+              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]+([\.,][0-9]+)?', step: 1 }}
               value={flavorFactor}
+              disabled={isProcessing}
+              onChange={(e) => setFlavorFactor(e)}
               parseFunction={parseFloat}
-              inputProps={{ min: 0, max: 63 }}
-              onFinishChanging={(e) => setFlavorFactor(e)}
-            />
+              allowEmpty={false} />
           </Grid>
           <Grid item xs={3}>
-            <CheckedInputComponent
+            <CheckedNumericInput
               label="Bake Factor"
               type="number"
-              fullWidth
+              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]+([\.,][0-9]+)?', step: 1 }}
               value={bakeFactor}
+              disabled={isProcessing}
+              onChange={(e) => setBakeFactor(e)}
               parseFunction={parseFloat}
-              inputProps={{ min: 0, max: 63 }}
-              onFinishChanging={(e) => setBakeFactor(e)}
-            />
+              allowEmpty={false} />
           </Grid>
           <Grid item xs={4}>
             <FormControlLabel

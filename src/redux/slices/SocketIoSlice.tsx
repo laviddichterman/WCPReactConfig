@@ -7,7 +7,8 @@ export const IProductInstancesAdapter = createEntityAdapter<IProductInstance>({s
 export const IOptionTypesAdapter = createEntityAdapter<IOptionType>({selectId: entry => entry.id});
 export const IOptionsAdapter = createEntityAdapter<IOption>({selectId: entry => entry.id});
 export const ICategoriesAdapter = createEntityAdapter<ICategory>({selectId: entry => entry.id});
-
+export const { selectAll: getCategories, selectById: getCategoryById, selectIds: getCategoryIds } =
+  ICategoriesAdapter.getSelectors();
 export interface SocketIoState { 
   catalog: ICatalog | null;
   modifiers: EntityState<IOptionType>;
@@ -16,7 +17,7 @@ export interface SocketIoState {
   productInstances: EntityState<IProductInstance>;
   categories: EntityState<ICategory>;
   productInstanceFunctions: EntityState<IProductInstanceFunction>;
-  services: { [index:string] : string } | null;
+  services: Record<string, string> | null;
   deliveryArea: GeoJSON.Polygon | null;
   blockedOff: JSFEBlockedOff | null;
   leadtime: number[] | null;

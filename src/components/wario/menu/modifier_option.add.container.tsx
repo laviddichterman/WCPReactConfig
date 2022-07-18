@@ -3,13 +3,21 @@ import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ModifierOptionComponent from "./modifier_option.component";
 
-const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, parent, onCloseCallback }) => {
+import { HOST_API } from "../../../config";
+import { IOptionType, IMoney, CURRENCY } from "@wcp/wcpshared";
+
+export interface ModifierOptionUiContainerProps {
+  parent: IOptionType;
+  onCloseCallback: VoidFunction;
+}
+
+const ModifierOptionAddContainer = ({ parent, onCloseCallback } : ModifierOptionUiContainerProps) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
-  const [price, setPrice] = useState(0);
-  const [enableFunction, setEnableFunction] = useState(null);
+  const [price, setPrice] = useState<IMoney>({amount: 0, currency: CURRENCY.USD});
+  const [enableFunction, setEnableFunction] = useState<string|null>(null);
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
   const [canSplit, setCanSplit] = useState(true);
@@ -21,13 +29,12 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const addModifierOption = async (e) => {
-    e.preventDefault();
+  const addModifierOption = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently( { scope: "write:catalog"} );
-        const response = await fetch(`${ENDPOINT}/api/v1/menu/option/${parent._id}/`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/option/${parent.id}/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -38,9 +45,9 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
             description,
             shortcode,
             disabled,
-            price: { amount: price * 100, currency: "USD" },
+            price,
             ordinal,
-            enable_function: enableFunction ? enableFunction._id : null,
+            enable_function: enableFunction,
             flavor_factor: flavorFactor,
             bake_factor: bakeFactor,
             can_split: canSplit,
@@ -57,7 +64,7 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
           setDescription("");
           setShortcode("");
           setOrdinal(0);
-          setPrice(0);
+          setPrice({amount: 0, currency: CURRENCY.USD});
           setEnableFunction(null);
           setFlavorFactor(0);
           setBakeFactor(0);
@@ -83,7 +90,6 @@ const ModifierOptionAddContainer = ({ ENDPOINT, product_instance_functions, pare
       onCloseCallback={onCloseCallback}
       onConfirmClick={addModifierOption}
       isProcessing={isProcessing}
-      product_instance_functions={product_instance_functions}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}
