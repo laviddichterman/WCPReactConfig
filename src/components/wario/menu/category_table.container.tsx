@@ -7,15 +7,7 @@ import { FormControlLabel, Tooltip, Switch, IconButton } from '@mui/material';
 import ProductTableContainer from "./product_table.container";
 import TableWrapperComponent from "../table_wrapper.component";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { ICategory, IProduct, IProductInstance } from "@wcp/wcpshared";
-import { EntityId } from "@reduxjs/toolkit";
-import { getCategoryById } from "src/redux/slices/SocketIoSlice";
-
-interface CategoryTableRow {
-  category: ICategory;
-  children: string[];
-  products: string[];
-};
+import { CatalogCategoryEntry, ICategory, IProduct, IProductInstance } from "@wcp/wcpshared";
 
 export interface CategoryTableContainerProps {
   setCategoryToEdit: Dispatch<SetStateAction<ICategory>>;
@@ -72,13 +64,13 @@ const CategoryTableContainer = ({
       (hideDisabled && (!x.product.disabled || x.product.disabled.start <= x.product.disabled.end)))
   ), [products, hideDisabled])
 
-  const getDetailPanelHeight = useCallback(({ row } : {row:CategoryTableRow}) => 
+  const getDetailPanelHeight = useCallback(({ row } : {row:CatalogCategoryEntry}) => 
     getProductsInCategory(row.category.id).length ? 
       ((Object.hasOwn(panelsExpandedSize, row.category.id) ? panelsExpandedSize[row.category.id] : 0) + 
       41 + 
       (getProductsInCategory(row.category.id).length * 36)) : 0, [getProductsInCategory, panelsExpandedSize]);
 
-  const getDetailPanelContent = useCallback(({ row }: {row:CategoryTableRow}) => getProductsInCategory(row.category.id).length ? (
+  const getDetailPanelContent = useCallback(({ row }: {row:CatalogCategoryEntry}) => getProductsInCategory(row.category.id).length ? (
     <ProductTableContainer
       products={getProductsInCategory(row.category.id)}
       setProductToEdit={setProductToEdit}
@@ -96,18 +88,18 @@ const CategoryTableContainer = ({
     />) : "",
     []);
 
-  const DeriveTreePath : (row: CategoryTableRow) => string[] = useCallback((row) => 
+  const DeriveTreePath : (row: CatalogCategoryEntry) => string[] = useCallback((row) => 
     row.category.parent_id !== null ? 
       [...DeriveTreePath(categories[row.category.parent_id]), row.category.name] : 
       [row.category.name],
     [categories]);
 
-  const editCategory = (row : CategoryTableRow) => () => {
+  const editCategory = (row : CatalogCategoryEntry) => () => {
     setIsCategoryEditOpen(true);
     setCategoryToEdit(row.category);
   };
 
-  const deleteCategory = (row : CategoryTableRow) => () => {
+  const deleteCategory = (row : CatalogCategoryEntry) => () => {
     setIsCategoryDeleteOpen(true);
     setCategoryToEdit(row.category);
   };
@@ -117,7 +109,7 @@ const CategoryTableContainer = ({
       title="Catalog Tree View"
       apiRef={apiRef}
       treeData
-      getTreeDataPath={(row : CategoryTableRow) => DeriveTreePath(row)}
+      getTreeDataPath={(row : CatalogCategoryEntry) => DeriveTreePath(row)}
       columns={[{
         ...GRID_DETAIL_PANEL_TOGGLE_COL_DEF,
         type: "string",

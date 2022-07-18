@@ -6,13 +6,8 @@ import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { Tooltip, IconButton } from '@mui/material';
 import ModifierOptionTableContainer from "./modifier_option_table.container";
 import TableWrapperComponent from "../table_wrapper.component";
-import { IOption, IOptionType } from "@wcp/wcpshared";
+import { IOption, IOptionType, CatalogModifierEntry } from "@wcp/wcpshared";
 import { useAppSelector } from "src/hooks/useRedux";
-
-interface RowType {
-  options: IOption[];
-  modifier_type: IOptionType;
-}
 
 export interface ModifierTypeTableContainerProps {
   setIsModifierTypeEditOpen: Dispatch<SetStateAction<boolean>>;
@@ -59,9 +54,9 @@ const ModifierTypeTableContainer = ({
     setModifierTypeToEdit(modifiers[id].modifier_type);
   };
 
-  const getDetailPanelHeight = useCallback(({ row }: { row: RowType }) => row.options.length ? (41 + (row.options.length * 36)) : 0, []);
+  const getDetailPanelHeight = useCallback(({ row }: { row: CatalogModifierEntry }) => row.options.length ? (41 + (row.options.length * 36)) : 0, []);
 
-  const getDetailPanelContent = useCallback(({ row }: { row: RowType }) => row.options.length ? (
+  const getDetailPanelContent = useCallback(({ row }: { row: CatalogModifierEntry }) => row.options.length ? (
     <ModifierOptionTableContainer
       modifier_type={row.modifier_type}
       setModifierOptionToEdit={setModifierOptionToEdit}
@@ -73,13 +68,13 @@ const ModifierTypeTableContainer = ({
     />
   ) : (
     ""
-  ), [setIsModifierOptionDeleteOpen, setIsModifierOptionDisableOpen, setIsModifierOptionDisableUntilEodOpen, setIsModifierOptionEditOpen, setIsModifierOptionEnableOpen, setModifierOptionToEdit]);
+  ), []);
 
   return (
     <TableWrapperComponent
       title="Modifier Types / Modifier Type Option"
       apiRef={apiRef}
-      getRowId={(row: RowType) => row.modifier_type.id}
+      getRowId={(row: CatalogModifierEntry) => row.modifier_type.id}
       columns={[
         {
           headerName: "Actions",
@@ -105,11 +100,11 @@ const ModifierTypeTableContainer = ({
               key="DELMT" />
           ]
         },
-        { headerName: "Name", field: "modifier_type.name", valueGetter: (v: { row: RowType }) => v.row.modifier_type.name, flex: 1 },
-        { headerName: "Ordinal", field: "ordinal", valueGetter: (v: { row: RowType }) => v.row.modifier_type.ordinal },
-        { headerName: "Min Selected", field: "min_selected", valueGetter: (v: { row: RowType }) => v.row.modifier_type.min_selected, },
-        { headerName: "Max Selected", field: "max_selected", valueGetter: (v: { row: RowType }) => v.row.modifier_type.max_selected },
-        { headerName: "Display Name", field: "display_name", valueGetter: (v: { row: RowType }) => v.row.modifier_type.display_name },
+        { headerName: "Name", field: "modifier_type.name", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.name, flex: 1 },
+        { headerName: "Ordinal", field: "ordinal", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.ordinal },
+        { headerName: "Min Selected", field: "min_selected", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.min_selected, },
+        { headerName: "Max Selected", field: "max_selected", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.max_selected },
+        { headerName: "Display Name", field: "display_name", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.display_name },
       ]}
       toolbarActions={[{
         size: 1,
