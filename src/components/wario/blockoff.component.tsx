@@ -15,7 +15,7 @@ import { Card,
 import { Done, HighlightOff } from '@mui/icons-material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { JSFEBlockedOff, WDateUtils, WIntervalTuple } from "@wcp/wcpshared";
+import { IWSettings, JSFEBlockedOff, WDateUtils, WIntervalTuple } from "@wcp/wcpshared";
 
 import TimeSelection from "./timepicker.component";
 import { useAppSelector } from "../../hooks/useRedux";
@@ -49,7 +49,7 @@ const ServiceSelectionCheckbox = (props : ServiceSelectionCheckboxProps) => {
 
 const BlockOffComp = () => {
   const SERVICES = useAppSelector(s=>s.ws.services);
-  const BLOCKED_OFF = useAppSelector(s=>s.ws.blockedOff);
+  const BLOCKED_OFF = useAppSelector(s=>s.ws.blockedOff ?? []);
   const SETTINGS = useAppSelector(s=>s.ws.settings);
   const LEAD_TIME = useAppSelector(s=>s.ws.leadtime);
   const NUM_SERVICES = useMemo(() => SERVICES !== null ? Object.keys(SERVICES).length : 3, [SERVICES]);
@@ -62,15 +62,10 @@ const BlockOffComp = () => {
   const [ isProcessing, setIsProcessing ] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   
-  if (SERVICES === null || BLOCKED_OFF === null || SETTINGS === null || LEAD_TIME === null) {
-    return <>Loading...</>;
-  }
-
-
-  const HasOptionsForDate = (date : Date | number) => {
-    const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, date, service_selection, {cart_based_lead_time: 0, size: 1});
+  const HasOptionsForDate = useCallback((date : Date | number) => {
+    const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF!, SETTINGS!, LEAD_TIME!, date, service_selection, {cart_based_lead_time: 0, size: 1});
     return WDateUtils.GetOptionsForDate(INFO, date, new Date()).filter(x => !x.disabled).length
-  }
+  }, [BLOCKED_OFF, SETTINGS, LEAD_TIME])
 
   const postBlockedOff = async (new_blocked_off : JSFEBlockedOff) => {
     try {
@@ -124,6 +119,10 @@ const BlockOffComp = () => {
       setIsProcessing(false);
     }
   }
+  if (SERVICES === null || SETTINGS === null || LEAD_TIME === null) {
+    return <>Loading...</>;
+  }
+
 
 
   const removeBlockedOffInterval = (service_index : number, day_index : number, interval_index : number) => {

@@ -1,37 +1,82 @@
-import { createContext, useEffect, useReducer } from 'react';
-import PropTypes from 'prop-types';
-import { useAuth0 } from '@auth0/auth0-react';
+import { createContext, ReactNode, useEffect, useReducer } from 'react';
+import { useAuth0, User } from '@auth0/auth0-react';
 // routes
 import { PATH_AUTH } from '../routes/paths';
 
 // ----------------------------------------------------------------------
 
+type AuthUser = User | undefined;
+export type AuthState = {
+  isAuthenticated: boolean;
+  isInitialized: boolean;
+  user: AuthUser;
+};
+
+export type AuthContext = {  method: 'auth0';
+login: () => Promise<void>;
+logout: VoidFunction; } & AuthState;
 
 const initialState = {
   isAuthenticated: false,
   isInitialized: false,
-  user: null,
+  user: undefined,
 };
 
-const handlers = {
-  INITIALIZE: (state, action) => {
+enum Types {
+  init = 'INITIALIZE',
+  login = 'LOGIN',
+  logout = 'LOGOUT',
+}
+
+export type ActionMap<M extends { [index: string]: any }> = {
+  [Key in keyof M]: M[Key] extends undefined
+    ? {
+        type: Key;
+      }
+    : {
+        type: Key;
+        payload: M[Key];
+      };
+};
+
+type Auth0AuthPayload = {
+  [Types.init]: {
+    isAuthenticated: boolean;
+    user: AuthUser;
+  };
+  [Types.login]: {
+    user: AuthUser;
+  };
+  [Types.logout]: undefined;
+};
+
+type Auth0Actions = ActionMap<Auth0AuthPayload>[keyof ActionMap<Auth0AuthPayload>];
+
+const reducer = (state: AuthState, action: Auth0Actions) => {
+  if (action.type === Types.init) {
     const { isAuthenticated, user } = action.payload;
-    return { ...state, isAuthenticated, isInitialized: true, user };
-  },
-  LOGIN: (state, action) => {
+    return {
+      ...state,
+      isAuthenticated,
+      isInitialized: true,
+      user,
+    };
+  }
+  if (action.type === Types.login) {
     const { user } = action.payload;
     return { ...state, isAuthenticated: true, user };
-  },
-  LOGOUT: (state) => ({
-    ...state,
-    isAuthenticated: false,
-    user: null,
-  }),
+  }
+  if (action.type === Types.logout) {
+    return {
+      ...state,
+      isAuthenticated: false,
+      user: null,
+    };
+  }
+  return state;
 };
 
-const reducer = (state, action) => (handlers[action.type] ? handlers[action.type](state, action) : state);
-
-const AuthContext = createContext({
+const Auth0Context = createContext<AuthContext>({
   ...initialState,
   method: 'auth0',
   login: () => Promise.resolve(),
@@ -40,26 +85,25 @@ const AuthContext = createContext({
 
 // ----------------------------------------------------------------------
 
-AuthProvider.propTypes = {
-  children: PropTypes.node,
+type AuthProviderProps = {
+  children: ReactNode;
 };
-
-function AuthProvider({ children }) {
+function AuthProvider({ children } : AuthProviderProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { isLoading, user, isAuthenticated, getAccessTokenSilently, loginWithPopup, logout} = useAuth0();
+  const { isLoading, user, isAuthenticated, getAccessTokenSilently, loginWithPopup, logout } = useAuth0();
 
   useEffect(() => {
     const initialize = async () => {
       try {
         dispatch({
-          type: 'INITIALIZE',
+          type: Types.init,
           payload: { isAuthenticated, user },
         });
       } catch (err) {
         console.error(err);
         dispatch({
-          type: 'INITIALIZE',
-          payload: { isAuthenticated: false, user: null },
+          type: Types.init,
+          payload: { isAuthenticated: false, user },
         });
       }
     };
@@ -69,11 +113,12 @@ function AuthProvider({ children }) {
       initialize();
     }
     if (!isLoading && !isAuthenticated) {
-      dispatch({
-        type: 'INITIALIZE',
-        payload: { isAuthenticated, user: null },
-      });
       loginWithPopup();
+      dispatch({
+        type: Types.init,
+        payload: { isAuthenticated, user },
+      });
+      
     }
 
   }, [isLoading, getAccessTokenSilently, loginWithPopup, user, isAuthenticated]);
@@ -82,18 +127,18 @@ function AuthProvider({ children }) {
     await loginWithPopup();
 
     if (isAuthenticated) {
-      dispatch({ type: 'LOGIN', payload: { user } });
+      dispatch({ type: Types.login, payload: { user} });
     }
   };
 
   const logoutLocal = () => {
     logout();
     window.location.href = PATH_AUTH.login;
-    dispatch({ type: 'LOGOUT' });
+    dispatch({ type: Types.logout });
   };
 
   return (
-    <AuthContext.Provider
+    <Auth0Context.Provider
       value={{
         ...state,
         method: 'auth0',
@@ -109,8 +154,8 @@ function AuthProvider({ children }) {
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </Auth0Context.Provider>
   );
 }
 
-export { AuthContext, AuthProvider };
+export { Auth0Context, AuthProvider };

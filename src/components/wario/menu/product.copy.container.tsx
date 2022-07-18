@@ -23,7 +23,7 @@ export interface ProductCopyContainerProps {
 const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainerProps) => {
   const product_instances = useAppSelector(s => s.ws.catalog?.products[product.id].instances ?? []);
   const [price, setPrice] = useState(product.price);
-  const [disabled, setDisabled] = useState(product.disabled);
+  const [disabled, setDisabled] = useState(product.disabled ?? null);
   const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
   const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
   const [bakeMax, setBakeMax] = useState(product.display_flags?.bake_max ?? 10);

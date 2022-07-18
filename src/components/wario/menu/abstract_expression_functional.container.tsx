@@ -349,7 +349,7 @@ const LITERAL_TYPES = {"Text": (x : string) => x, "Number": parseFloat };
 ConstLiteralFunctionalComponent = ({ value, setValue }) => {
   // TODO FINISH getting the value in the correct type after changing the literalType flag
   const [literalType, setLiteralType] = useState(value !== null && typeof value.value !== 'number' ? "Text" : "Number");
-  const [local_value, setLocalValue] = useState(value?.value ?? null);
+  const [local_value, setLocalValue] = useState(value !== null ? String(value.value) : "");
   const [dirty, setDirty] = useState(false);
   useEffect(() => {
     if (local_value !== null) {
@@ -372,7 +372,7 @@ ConstLiteralFunctionalComponent = ({ value, setValue }) => {
   const updateLiteralType = (e: "Text" | 'Number') => {
     setLiteralType(e);
     // @ts-ignore
-    setLocalValue(local_value !== null ? LITERAL_TYPES[e](local_value) : "");
+    setLocalValue(LITERAL_TYPES[e](local_value));
     onFinishChangingLocal();
   }
   return (
@@ -404,7 +404,7 @@ ConstLiteralFunctionalComponent = ({ value, setValue }) => {
         <TextField
           label="Literal Value"
           type={literalType === "Text" ? "text" : "number"}
-          value={dirty ? local_value : value}
+          value={dirty ? local_value : (value?.value ?? "")}
           size="small"
           fullWidth
           onChange={(e) => onChangeLocal(e)}

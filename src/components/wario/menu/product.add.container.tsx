@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 import { HOST_API } from "../../../config";
-import { CURRENCY, IMoney } from "@wcp/wcpshared";
+import { CURRENCY, IMoney, IWInterval } from "@wcp/wcpshared";
 
 interface ProductAddContainerProps { 
   onCloseCallback: VoidFunction;
@@ -13,7 +13,7 @@ const ProductAddContainer = ({ onCloseCallback } : ProductAddContainerProps) => 
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [price, setPrice] = useState<IMoney>({ amount: 0, currency: CURRENCY.USD });
-  const [disabled, setDisabled] = useState(null);
+  const [disabled, setDisabled] = useState<IWInterval | null>(null);
   const [serviceDisabled, setServiceDisabled] = useState([]);
   const [ordinal, setOrdinal] = useState(0);
   const [flavorMax, setFlavorMax] = useState(10);

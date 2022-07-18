@@ -34,7 +34,7 @@ import { store } from './redux/store';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
 
-//import { AuthProvider } from './contexts/Auth0Context';
+import { AuthProvider } from './contexts/Auth0Context';
 
 //
 import App from './App';
@@ -47,12 +47,12 @@ import { AUTH0_API } from './config';
 
 export const history = createBrowserHistory();
 
-// // A function that routes the user to the right place
-// // after login
-// const onRedirectCallback = (appState) => {
-//   // Use the router's history module to replace the url
-//   history.replace(appState?.returnTo || window.location.pathname);
-// };
+// A function that routes the user to the right place
+// after login
+const onRedirectCallback = (appState : any) => {
+  // Use the router's history module to replace the url
+  history.replace(appState?.returnTo || window.location.pathname);
+};
 
 
 // ----------------------------------------------------------------------
@@ -63,9 +63,10 @@ ReactDOM.render(
       clientId={AUTH0_API.clientId as string}
       redirectUri={window.location.origin}
       scope={AUTH0_API.scope}
+      onRedirectCallback={onRedirectCallback}
       audience={AUTH0_API.audience}
     >
-  {/* //<AuthProvider> */}
+  <AuthProvider>
       <HelmetProvider>
         <ReduxProvider store={store}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -79,7 +80,7 @@ ReactDOM.render(
             </LocalizationProvider>
         </ReduxProvider>
       </HelmetProvider>
-  {/* </AuthProvider> */}
+  </AuthProvider>
   </Auth0Provider>,
   document.getElementById('root')
 );

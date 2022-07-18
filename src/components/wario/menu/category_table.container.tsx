@@ -7,7 +7,7 @@ import { FormControlLabel, Tooltip, Switch, IconButton } from '@mui/material';
 import ProductTableContainer from "./product_table.container";
 import TableWrapperComponent from "../table_wrapper.component";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { ICatalogCategories, ICategory, IProduct, IProductInstance } from "@wcp/wcpshared";
+import { ICategory, IProduct, IProductInstance } from "@wcp/wcpshared";
 import { EntityId } from "@reduxjs/toolkit";
 import { getCategoryById } from "src/redux/slices/SocketIoSlice";
 
@@ -54,8 +54,6 @@ const CategoryTableContainer = ({
 } : CategoryTableContainerProps) => {
   const products = useAppSelector(s=>s.ws.catalog?.products ?? {});
   const categories = useAppSelector(s=>s.ws.catalog?.categories ?? {});
-  const selectCategoryById = useAppSelector(s => (id: EntityId) => getCategoryById(s.ws.categories, id));
-  const catalog = useAppSelector(s=>s.ws.catalog);
 
   const apiRef = useGridApiRef();
 
@@ -69,10 +67,16 @@ const CategoryTableContainer = ({
   }, [panelsExpandedSize]);
 
   const getProductsInCategory = useCallback((category_id : string) => Object.values(products).filter((x) =>
-  x.product.category_ids.includes(category_id) && (!hideDisabled || (x.product.disabled === null || x.product.disabled.start <= x.product.disabled.end))
-  ), [catalog?.products, hideDisabled])
+    x.product.category_ids.includes(category_id) && 
+    (!hideDisabled || 
+      (hideDisabled && (!x.product.disabled || x.product.disabled.start <= x.product.disabled.end)))
+  ), [products, hideDisabled])
 
-  const getDetailPanelHeight = useCallback(({ row } : {row:CategoryTableRow}) => getProductsInCategory(row.category.id).length ? ((Object.hasOwn(panelsExpandedSize, row.category.id) ? panelsExpandedSize[row.category.id] : 0) + 41 + (getProductsInCategory(row.category.id).length * 36)) : 0, [getProductsInCategory, panelsExpandedSize]);
+  const getDetailPanelHeight = useCallback(({ row } : {row:CategoryTableRow}) => 
+    getProductsInCategory(row.category.id).length ? 
+      ((Object.hasOwn(panelsExpandedSize, row.category.id) ? panelsExpandedSize[row.category.id] : 0) + 
+      41 + 
+      (getProductsInCategory(row.category.id).length * 36)) : 0, [getProductsInCategory, panelsExpandedSize]);
 
   const getDetailPanelContent = useCallback(({ row }: {row:CategoryTableRow}) => getProductsInCategory(row.category.id).length ? (
     <ProductTableContainer
@@ -90,7 +94,7 @@ const CategoryTableContainer = ({
       setProductInstanceToEdit={setProductInstanceToEdit}
       setPanelsExpandedSize={setPanelsExpandedSizeForRow(row.category.id)}
     />) : "",
-    [catalog, getProductsInCategory, setProductToEdit, setIsProductEditOpen, setIsProductCopyOpen, setIsProductDeleteOpen, setIsProductDisableOpen, setIsProductDisableUntilEodOpen, setIsProductEnableOpen, setIsProductInstanceAddOpen, setIsProductInstanceEditOpen, setIsProductInstanceDeleteOpen, setProductInstanceToEdit, setPanelsExpandedSizeForRow]);
+    []);
 
   const DeriveTreePath : (row: CategoryTableRow) => string[] = useCallback((row) => 
     row.category.parent_id !== null ? 
@@ -107,10 +111,6 @@ const CategoryTableContainer = ({
     setIsCategoryDeleteOpen(true);
     setCategoryToEdit(row.category);
   };
-
-  if (catalog === null) { 
-    return <>Loading...</>;
-  }
 
   return (
     <TableWrapperComponent

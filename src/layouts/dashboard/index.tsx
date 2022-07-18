@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -18,7 +18,8 @@ import Label from '../../components/Label';
 import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
-import { useAppSelector } from '../../hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { IsSocketDataLoaded, SocketIoActions } from 'src/redux/slices/SocketIoSlice';
 
 // ----------------------------------------------------------------------
 
@@ -50,8 +51,10 @@ const MainStyle = styled('main', {
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
-
+  const dispatch = useAppDispatch();
+  const socketIoState = useAppSelector((s) => s.ws.status);
   const catalog = useAppSelector(s=>s.ws.catalog);
+
   const { collapseClick, isCollapse } = useCollapseDrawer();
 
   const { themeLayout } = useSettings();
@@ -61,6 +64,12 @@ export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
   const verticalLayout = themeLayout === 'vertical';
+
+  useEffect(() => {
+    if (socketIoState === 'NONE') { 
+      dispatch(SocketIoActions.startConnection());
+    }
+  }, [socketIoState, dispatch]);
 
   if (verticalLayout) {
     return (
