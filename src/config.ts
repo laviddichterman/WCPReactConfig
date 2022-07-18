@@ -1,5 +1,6 @@
 // @mui
 import { enUS, esES } from '@mui/material/locale';
+import { SettingsValueProps } from './components/settings/type';
 // routes
 import { PATH_DASHBOARD } from './routes/paths';
 
@@ -55,7 +56,7 @@ export const ICON = {
 // Please remove `localStorage` when you change settings.
 // ----------------------------------------------------------------------
 
-export const defaultSettings = {
+export const defaultSettings: SettingsValueProps = {
   themeMode: 'light',
   themeDirection: 'ltr',
   themeContrast: 'default',

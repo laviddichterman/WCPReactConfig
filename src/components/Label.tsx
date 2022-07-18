@@ -105,6 +105,7 @@ export default function Label({
 
   return (
     <RootStyle
+    // @ts-ignore
       ownerState={{ color, variant }}
       sx={{
         ...(startIcon && { pl: 0.75 }),
