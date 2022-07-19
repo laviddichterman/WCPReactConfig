@@ -110,7 +110,7 @@ const StoreCreditIssueComponent = () => {
             type="number"
             fullWidth
             label="Dollar Amount"
-            inputProps={{ inputMode: 'numeric', min: 1.00, max: 500.00, pattern: '[0-9]*' }}
+            inputProps={{ inputMode: 'numeric', min: 1.00, max: 500.00, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
             value={amount}
             className="form-control"
             disabled={isProcessing}
@@ -173,7 +173,3 @@ const StoreCreditIssueComponent = () => {
 };
 
 export default StoreCreditIssueComponent;
-function setAmount(e: any) {
-  throw new Error("Function not implemented.");
-}
-

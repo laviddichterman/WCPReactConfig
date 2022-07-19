@@ -260,7 +260,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     type="number"
                     fullWidth
                     label="Amount to debit"
-                    inputProps={{ inputMode: 'numeric', min: 0.01, max: validationResponse.amount, pattern: '[0-9]*' }}
+                    inputProps={{ inputMode: 'numeric', min: 0.01, max: validationResponse.amount, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
                     value={amount}
                     className="form-control"
                     disabled={isProcessing || debitResponse !== null}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { format, setDay } from 'date-fns';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { Card, CardHeader, Grid, Button, IconButton, Autocomplete, TextField } from '@mui/material';
@@ -81,15 +81,19 @@ const OperatingHoursIntervalForm = ({
   );
 }
 
-const GenerateInitialOperatingHoursFormIntervals = (num_services: number) => Array(num_services).fill(Array(7).fill({ start: null, end: null }))
-
-const SettingsComponent = ({ }) => {
+const SettingsComponent = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [isProcessing, setIsProcessing] = useState(false);
   const services = useAppSelector(s => s.ws.services);
   const settings = useAppSelector(s => s.ws.settings);
   const numServices = useMemo(() => services !== null ? Object.keys(services).length : 3, [services]);
   const [localSettings, setLocalSettings] = useState<IWSettings>(settings as IWSettings);
+  const onChangeTimeStep = useCallback((value: number, service_idx: number) => {
+    const new_settings = structuredClone(localSettings);
+    new_settings.time_step[service_idx] = value;
+    setLocalSettings(new_settings);
+  }, [localSettings, setLocalSettings]);
+
   const timestep_html = useMemo(() => services !== null && settings !== null && Object.keys(services).map((key, i) => (
     <Grid item xs={Math.floor(12 / numServices)} key={key}>
       <CheckedNumericInput
@@ -103,7 +107,7 @@ const SettingsComponent = ({ }) => {
         parseFunction={parseInt}
         allowEmpty={false} />
     </Grid>
-  )), []);
+  )), [isProcessing, numServices, onChangeTimeStep, services, settings]);
   if (!services || !services.length || !settings) {
     return <>Loading...</>;
   }
@@ -135,11 +139,6 @@ const SettingsComponent = ({ }) => {
     setLocalSettings({ ...localSettings, additional_pizza_lead_time: e });
   }
 
-  const onChangeTimeStep = (value: number, service_idx: number) => {
-    const new_settings = structuredClone(localSettings);
-    new_settings.time_step[service_idx] = value;
-    setLocalSettings(new_settings);
-  }
 
   const onAddOperatingHours = (service_index: number, day_index: number, interval: WIntervalTuple) => {
     const new_settings = structuredClone(localSettings);
@@ -215,7 +214,7 @@ const SettingsComponent = ({ }) => {
             <CheckedNumericInput
               type="number"
               label="Additional lead time per pizza beyond the first"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 64, pattern: '[0-9]*' }}
+              inputProps={{ inputMode: 'numeric', min: 0, max: 64, pattern: '[0-9]*', step: 1 }}
               value={localSettings.additional_pizza_lead_time}
               className="form-control"
               disabled={isProcessing}

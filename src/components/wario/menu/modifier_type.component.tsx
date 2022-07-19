@@ -158,7 +158,7 @@ const ModifierTypeComponent = ({
         <CheckedNumericInput
           label="Ordinal"
           type="number"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*' }}
+          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
           value={ordinal}
           disabled={isProcessing}
           onChange={(e) => setOrdinal(e)}
@@ -169,7 +169,7 @@ const ModifierTypeComponent = ({
         <CheckedNumericInput
           label="Min Selected"
           type="number"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*' }}
+          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
           value={minSelected}
           disabled={isProcessing}
           onChange={(e) => handleSetMinSelected(e)}
@@ -181,7 +181,7 @@ const ModifierTypeComponent = ({
         <CheckedNumericInput
           label="Max Selected"
           type="number"
-          inputProps={{ inputMode: 'numeric', min: minSelected, pattern: '[0-9]*' }}
+          inputProps={{ inputMode: 'numeric', min: minSelected, pattern: '[0-9]*', step: 1 }}
           value={maxSelected}
           disabled={isProcessing}
           onChange={(e) => handleSetMaxSelected(e)}

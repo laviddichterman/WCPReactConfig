@@ -8,10 +8,6 @@ import Page from '../../components/Page';
 import SettingsComp from "../../components/wario/settings.component";
 import DeliveryAreaComp from "../../components/wario/deliveryarea.component";
 import KeyValuesComponent from "../../components/wario/keyvalues.component";
-import LoadingScreen from '../../components/LoadingScreen';
-
-import {HOST_API} from '../../config';
-
 
 // ----------------------------------------------------------------------
 

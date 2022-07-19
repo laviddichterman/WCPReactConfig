@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProductInstanceActionContainer } from "./product_instance.component";
 import { HOST_API } from "../../../config";
-import { useAppSelector } from "src/hooks/useRedux";
 import { IProduct, IProductInstance } from "@wcp/wcpshared";
 
 interface ProductInstanceEditContainerProps {

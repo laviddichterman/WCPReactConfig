@@ -84,7 +84,7 @@ const AbstractExpressionFunctionalContainer = ({
     if (discriminator !== null && expr !== null) { 
       setValue({ discriminator: discriminator, expr: expr } as IAbstractExpression);
     }
-  }, [discriminator, expr]);
+  }, [discriminator, expr, setValue]);
   const updateDiscriminator = (val: ProductInstanceFunctionType) => {
     setDiscriminator(val);
     setExpr(null);
@@ -130,8 +130,6 @@ const AbstractExpressionFunctionalContainer = ({
   );
 };
 
-
-const operators = ["AND", "OR", "NOT", "EQ", "NE", "GT", "GE", "LT", "LE"];
 LogicalFunctionalComponent = ({
   value,
   setValue,
@@ -145,7 +143,7 @@ LogicalFunctionalComponent = ({
       (operator !== ProductInstanceFunctionOperator.NOT || operandB !== null)) {
       setValue({ operator, operandA, operandB: operandB ?? undefined });
     }
-  }, [operator, operandA, operandB])
+  }, [operator, operandA, operandB, setValue])
   const updateOperator = (val : string) => {
     const value = ProductInstanceFunctionOperator[val as keyof typeof ProductInstanceFunctionOperator];
     if ((operator === ProductInstanceFunctionOperator.NOT || value === ProductInstanceFunctionOperator.NOT) && operator !== value) {
@@ -225,9 +223,9 @@ IfElseFunctionalComponent = ({
   );
   useEffect(() => {
     if (testExpr !== null && trueBranchExpr !== null && falseBranchExpr !== null) {
-      setValue({test: testExpr, true_branch: trueBranchExpr, false_branch: falseBranchExpr});
+      setValue({ test: testExpr, true_branch: trueBranchExpr, false_branch: falseBranchExpr });
     }
-  }, [testExpr, trueBranchExpr, falseBranchExpr]);
+  }, [testExpr, trueBranchExpr, falseBranchExpr, setValue]);
   return (
     <div>
       <List>
@@ -279,7 +277,7 @@ HasAnyOfModifierTypeFunctionalComponent = ({
     if (modifier !== null) {
       setValue({ mtid: modifier });
     }
-  }, [modifier]);
+  }, [modifier, setValue]);
   return (
     <Grid container>
       <Grid item>
@@ -305,14 +303,14 @@ ModifierPlacementFunctionalComponent = ({
   const modifier_types = useAppSelector(s=>s.ws.catalog?.modifiers ?? {});
   const [modifier, setModifier] = useState(value?.mtid ?? null);
   const modifierOptionsForType = useMemo(() => modifier !== null ? 
-    modifier_types[modifier].options.reduce((acc : Record<string, IOption>, o) => ({...acc, [o.id]: o}), {}) : 
-    {}, [modifier])
+    modifier_types[modifier].options.reduce((acc : Record<string, IOption>, o) => ({ ...acc, [o.id]: o }), {}) : 
+    {}, [modifier, modifier_types])
   const [modifierOption, setModifierOption] = useState(value?.moid ?? null);
   useEffect(() => {
     if (modifier !== null && modifierOption !== null) {
       setValue({ mtid: modifier, moid: modifierOption });
     }
-  }, [modifier, modifierOption]);
+  }, [modifier, modifierOption, setValue]);
   return (
     <Grid container>
       <Grid item>
@@ -355,7 +353,7 @@ ConstLiteralFunctionalComponent = ({ value, setValue }) => {
     if (local_value !== null) {
       setValue({ value: local_value });
     }
-  }, [local_value]);
+  }, [local_value, setValue]);
   const onFinishChangingLocal = () => {
     // @ts-ignore
     const new_val = typeof local_value === "string" && local_value.length ? LITERAL_TYPES[literalType](local_value) : local_value;

@@ -126,10 +126,10 @@ const ModifierOptionComponent = ({
             <CheckedNumericInput
               type="number"
               label="Price"
-              inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([\.,][0-9]+)?', step: .25 }}
+              inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
               value={price.amount / 100}
               disabled={isProcessing}
-              onChange={(e) => setPrice({ ...price, amount: e })}
+              onChange={(e) => setPrice({ ...price, amount: e * 100 })}
               parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
               allowEmpty={false} />
           </Grid>
@@ -159,7 +159,7 @@ const ModifierOptionComponent = ({
             <CheckedNumericInput
               label="Flavor Factor"
               type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]+([\.,][0-9]+)?', step: 1 }}
+              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={flavorFactor}
               disabled={isProcessing}
               onChange={(e) => setFlavorFactor(e)}
@@ -170,7 +170,7 @@ const ModifierOptionComponent = ({
             <CheckedNumericInput
               label="Bake Factor"
               type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]+([\.,][0-9]+)?', step: 1 }}
+              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={bakeFactor}
               disabled={isProcessing}
               onChange={(e) => setBakeFactor(e)}

@@ -19,7 +19,8 @@ import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { IsSocketDataLoaded, SocketIoActions } from 'src/redux/slices/SocketIoSlice';
+import { IsSocketDataLoaded, SocketIoActions } from '../../redux/slices/SocketIoSlice';
+import LoadingScreen from '../../components/LoadingScreen';
 
 // ----------------------------------------------------------------------
 
@@ -53,6 +54,7 @@ const MainStyle = styled('main', {
 export default function DashboardLayout() {
   const dispatch = useAppDispatch();
   const socketIoState = useAppSelector((s) => s.ws.status);
+  const isLoaded = useAppSelector(s=>IsSocketDataLoaded(s.ws));
   const catalog = useAppSelector(s=>s.ws.catalog);
 
   const { collapseClick, isCollapse } = useCollapseDrawer();
@@ -71,6 +73,9 @@ export default function DashboardLayout() {
     }
   }, [socketIoState, dispatch]);
 
+  if (!isLoaded) {
+    return <LoadingScreen />;
+  }
   if (verticalLayout) {
     return (
       <>

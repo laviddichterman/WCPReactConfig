@@ -137,7 +137,7 @@ const ProductComponent = ({
         <CheckedNumericInput
           label="Ordinal"
           type="number"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*' }}
+          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
           value={ordinal}
           disabled={isProcessing}
           onChange={(e) => setOrdinal(e)}
@@ -195,10 +195,10 @@ const ProductComponent = ({
             <CheckedNumericInput
               type="number"
               label="Price"
-              inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([\.,][0-9]+)?', step: .25 }}
+              inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
               value={price.amount  / 100}
               disabled={isProcessing}
-              onChange={(e) => setPrice({...price, amount: e})}
+              onChange={(e) => setPrice({...price, amount: e * 100})}
               parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
               allowEmpty={false} />
           </Grid>
@@ -220,7 +220,7 @@ const ProductComponent = ({
             <CheckedNumericInput
               type="number"
               label="Flavor Max"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
+              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={flavorMax}
               disabled={isProcessing}
               onChange={(e) => setFlavorMax(e)}
@@ -231,7 +231,7 @@ const ProductComponent = ({
           <CheckedNumericInput
               type="number"
               label="Bake Max"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
+              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={bakeMax}
               disabled={isProcessing}
               onChange={(e) => setBakeMax(e)}
@@ -242,7 +242,7 @@ const ProductComponent = ({
           <CheckedNumericInput
               type="number"
               label="Bake Differential Max"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
+              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={bakeDifferentialMax}
               disabled={isProcessing}
               onChange={(e) => setBakeDifferentialMax(e)}

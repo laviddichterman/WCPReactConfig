@@ -5,11 +5,11 @@ import ModifierOptionComponent from "./modifier_option.component";
 import { HOST_API } from "../../../config";
 import { IOption } from "@wcp/wcpshared";
 
-interface ModifierOptionEditContainer { 
+interface ModifierOptionEditContainerProps { 
   modifier_option: IOption;
   onCloseCallback: VoidFunction;
 }
-const ModifierOptionEditContainer = ({modifier_option, onCloseCallback } : ModifierOptionEditContainer) => {
+const ModifierOptionEditContainer = ({modifier_option, onCloseCallback } : ModifierOptionEditContainerProps) => {
   const [displayName, setDisplayName] = useState(modifier_option.item.display_name);
   const [description, setDescription] = useState(modifier_option.item.description);
   const [shortcode, setShortcode] = useState(modifier_option.item.shortcode);

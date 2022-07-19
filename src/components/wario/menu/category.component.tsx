@@ -115,7 +115,7 @@ const CategoryComponent = ({
             <CheckedNumericInput
               label="Ordinal"
               type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*' }}
+              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
               value={ordinal}
               disabled={isProcessing}
               onChange={(e) => setOrdinal(e)}

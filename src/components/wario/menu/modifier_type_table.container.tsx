@@ -68,7 +68,7 @@ const ModifierTypeTableContainer = ({
     />
   ) : (
     ""
-  ), []);
+  ), [setModifierOptionToEdit, setIsModifierOptionEditOpen, setIsModifierOptionDeleteOpen, setIsModifierOptionEnableOpen, setIsModifierOptionDisableOpen, setIsModifierOptionDisableUntilEodOpen]);
 
   return (
     <TableWrapperComponent

@@ -240,7 +240,7 @@ const ProductInstanceComponent = ({
         <CheckedNumericInput
           type="number"
           label="Ordinal"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
+          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*', step: 1 }}
           value={ordinal}
           onChange={setOrdinal}
           parseFunction={parseInt}
@@ -379,7 +379,7 @@ const ProductInstanceComponent = ({
         <CheckedNumericInput
           type="number"
           label="Order Ordinal"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
+          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*', step: 1 }}
           value={orderOrdinal}
           onChange={setOrderOrdinal}
           parseFunction={parseInt}

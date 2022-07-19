@@ -6,7 +6,7 @@ import { GridActionsCellItem, GridRenderCellParams } from "@mui/x-data-grid";
 import TableWrapperComponent from "./table_wrapper.component";
 import { HOST_API } from "../../config";
 
-function isOverflown<T>(element : any) {
+function isOverflown(element : any) {
   return element.scrollHeight > element.clientHeight ||
     element.scrollWidth > element.clientWidth;
 }
@@ -140,7 +140,7 @@ const KeyValuesComponent = () => {
     if (!isLoading && !isAuthenticated) {
       loginWithRedirect();
     }
-  }, [isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout, HOST_API]);
+  }, [isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout]);
 
   const onAddNewKeyValuePair = (key : string, value: string) => {
     const new_dict = JSON.parse(JSON.stringify(KEYVALUES));

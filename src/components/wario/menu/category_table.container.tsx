@@ -86,7 +86,19 @@ const CategoryTableContainer = ({
       setProductInstanceToEdit={setProductInstanceToEdit}
       setPanelsExpandedSize={setPanelsExpandedSizeForRow(row.category.id)}
     />) : "",
-    []);
+    [getProductsInCategory, 
+      setProductToEdit, 
+      setIsProductEditOpen, 
+      setIsProductCopyOpen, 
+      setIsProductDeleteOpen, 
+      setIsProductDisableOpen, 
+      setIsProductDisableUntilEodOpen, 
+      setIsProductEnableOpen, 
+      setIsProductInstanceAddOpen,
+      setIsProductInstanceEditOpen,
+      setIsProductInstanceDeleteOpen,
+      setProductInstanceToEdit,
+      setPanelsExpandedSizeForRow]);
 
   const DeriveTreePath : (row: CatalogCategoryEntry) => string[] = useCallback((row) => 
     row.category.parent_id !== null ? 

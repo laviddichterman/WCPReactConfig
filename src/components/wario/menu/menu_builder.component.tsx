@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 
 import Grid from "@mui/material/Grid";
 import InterstitialDialog from "../interstitial.dialog.component";
@@ -34,13 +34,11 @@ import ModifierTypeTableContainer from "./modifier_type_table.container";
 import ProductTableContainer from "./product_table.container";
 import ProductInstanceFunctionTableContainer from "./product_instance_function_table.container";
 
-import { HOST_API } from "../../../config";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { ICatalog, ICategory, IOption, IOptionType, IProduct, IProductInstance, IProductInstanceFunction } from "@wcp/wcpshared";
+import { ICategory, IOption, IOptionType, IProduct, IProductInstance, IProductInstanceFunction } from "@wcp/wcpshared";
 
 const MenuBuilderComponent = () => {
-  const catalog = useAppSelector(s=>s.ws.catalog);
-  const services = useAppSelector(s=>s.ws.services);
+  const catalog = useAppSelector(s=>s.ws.catalog!);
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
   const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
   const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
@@ -86,9 +84,9 @@ const MenuBuilderComponent = () => {
   // this assumes a single base product instance per product class.
   // assumption is that this precondition is enforced by the service
   const nameOfBaseProductInstance = useMemo(() => {
-    const pididx = productToEdit !== null && catalog !== null && Object.hasOwn(catalog.products, productToEdit.id) ? catalog.products[productToEdit.id].instances.findIndex((pi) => pi.is_base) : -1;
-    return pididx !== -1 ? (catalog as ICatalog).products[(productToEdit as IProduct).id].instances[pididx].item.display_name : "Incomplete Product";
-  }, [catalog?.products, productToEdit]);
+    const pididx = productToEdit !== null && Object.hasOwn(catalog.products, productToEdit.id) ? catalog.products[productToEdit.id].instances.findIndex((pi) => pi.is_base) : -1;
+    return pididx !== -1 ? catalog.products[(productToEdit as IProduct).id].instances[pididx].item.display_name : "Incomplete Product";
+  }, [catalog, productToEdit]);
 
 
   const orphanedProducts = useMemo(
@@ -97,7 +95,7 @@ const MenuBuilderComponent = () => {
         (x) =>
           x.product.category_ids.filter((x) => x && x.length > 0).length === 0
       ) : [],
-    [catalog?.products]
+    [catalog]
   );
 
   if (catalog === null) {
