@@ -1,7 +1,5 @@
 import React from 'react';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
-import Divider from '@mui/material/Divider';
+import { Divider, DialogTitle, Dialog, DialogProps } from '@mui/material';
 
 // TODO: move to commmon react library
 

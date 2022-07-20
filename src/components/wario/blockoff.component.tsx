@@ -54,6 +54,7 @@ const BlockOffComp = () => {
   const BLOCKED_OFF = useAppSelector(s => s.ws.blockedOff!);
   const SETTINGS = useAppSelector(s => s.ws.settings!);
   const LEAD_TIME = useAppSelector(s => s.ws.leadtime!);
+  const CURRENT_TIME = useAppSelector(s=>s.timing.currentTime!);
   const NUM_SERVICES = useMemo(() => SERVICES !== null ? Object.keys(SERVICES).length : 3, [SERVICES]);
   const [upper_time, setUpperTime] = useState<number | null>(null);
   const [lower_time, setLowerTime] = useState<number | null>(null);
@@ -64,18 +65,12 @@ const BlockOffComp = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const GetInfoMapForAvailability = useCallback((date: Date | number) => WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, date, service_selection, { cart_based_lead_time: 0, size: 1 }), [BLOCKED_OFF, LEAD_TIME, SETTINGS, service_selection])
-  const GetOptionsForDate = useCallback((date: Date | number) => {
-    const INFO = GetInfoMapForAvailability(date);
-    return WDateUtils.GetOptionsForDate(INFO, date, new Date())
-  }, [GetInfoMapForAvailability]);
-  const HasOptionsForDate = useCallback((date: Date | number) => GetOptionsForDate(date).filter(x => !x.disabled).length, [GetOptionsForDate])
-  const startOptions = useMemo(() => selected_date !== null ?
-    GetOptionsForDate(selected_date).reduce((acc, o) => ({ ...acc, [String(o.value)]: o }), {} as Record<string, { value: number, disabled: boolean }>) : {}
-    , [selected_date, GetOptionsForDate])
+  const GetOptionsForDate = useCallback((date: Date | number) => WDateUtils.GetOptionsForDate(GetInfoMapForAvailability(date), date, CURRENT_TIME), [GetInfoMapForAvailability, CURRENT_TIME]);
+  const HasOptionsForDate = useCallback((date: Date | number) => GetOptionsForDate(date).filter(x => !x.disabled).length, [GetOptionsForDate]);
+  const startOptions = useMemo(() => selected_date !== null ? GetOptionsForDate(selected_date) : [], [selected_date, GetOptionsForDate]);
   const endOptions = useMemo(() => selected_date !== null && lower_time !== null ?
-    TrimOptionsBeforeDisabled(GetOptionsForDate(selected_date).filter(x => x.value >= lower_time))
-      .reduce((acc, o) => ({ ...acc, [String(o.value)]: o }), {} as Record<string, { value: number, disabled: boolean }>) : {},
-    [selected_date, lower_time, GetOptionsForDate])
+    TrimOptionsBeforeDisabled(startOptions.filter(x => x.value >= lower_time)) : [],
+    [selected_date, lower_time, startOptions])
   const postBlockedOff = useCallback(async (new_blocked_off: JSFEBlockedOff) => {
     try {
       const token = await getAccessTokenSilently({ scope: "write:order_config" });
@@ -101,7 +96,7 @@ const BlockOffComp = () => {
   const addBlockedOffInterval = useCallback((parsed_date: string, interval: WIntervalTuple) => {
     if (!isProcessing) {
       setIsProcessing(true);
-      const new_blocked_off = BLOCKED_OFF.slice();
+      const new_blocked_off = structuredClone(BLOCKED_OFF);
       // iterate over services
       service_selection.forEach((enabled, i) => {
         if (enabled) {
@@ -115,7 +110,7 @@ const BlockOffComp = () => {
   const removeBlockedOffForDate = (service_index: number, day_index: number) => {
     if (!isProcessing) {
       setIsProcessing(true);
-      let new_blocked_off = BLOCKED_OFF;
+      let new_blocked_off = structuredClone(BLOCKED_OFF);
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < BLOCKED_OFF[service_index][day_index][1].length; ++i) {
         new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
@@ -131,8 +126,6 @@ const BlockOffComp = () => {
   if (SERVICES === null || SETTINGS === null || LEAD_TIME === null) {
     return <>Loading...</>;
   }
-
-
 
   const removeBlockedOffInterval = (service_index: number, day_index: number, interval_index: number) => {
     if (!isProcessing) {
@@ -221,7 +214,7 @@ const BlockOffComp = () => {
       return (
         <Container key={j}>
           <ListItem>
-            {format(parse(BLOCKED_OFF[i][j][0], WDateUtils.DATE_STRING_INTERNAL_FORMAT, new Date()), 'EEEE, MMMM dd, y')}
+            {format(parse(BLOCKED_OFF[i][j][0], WDateUtils.DATE_STRING_INTERNAL_FORMAT, CURRENT_TIME), 'EEEE, MMMM dd, y')}
             <ListItemSecondaryAction>
               <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(i, j)}>
                 <HighlightOff />
@@ -260,8 +253,8 @@ const BlockOffComp = () => {
                 renderInput={(props) => <TextField {...props} />}
                 closeOnSelect
                 showToolbar={false}
-                minDate={new Date()}
-                maxDate={add(new Date(), { days: 60 })}
+                minDate={new Date(CURRENT_TIME)}
+                maxDate={add(CURRENT_TIME, { days: 60 })}
                 shouldDisableDate={e => !HasOptionsForDate(e)}
                 value={selected_date}
                 onChange={(date) => setDate(date)}
@@ -273,10 +266,9 @@ const BlockOffComp = () => {
                 sx={{ m: 2 }}
                 disableClearable
                 className="col"
-                options={Object.values(startOptions).map(x => x.value)}
+                options={startOptions.filter(x=>!x.disabled).map(x=>x.value)}
                 isOptionEqualToValue={(o, v) => o === v}
                 getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
-                getOptionDisabled={x => startOptions[String(x)].disabled}
                 // @ts-ignore
                 value={lower_time}
                 onChange={(_, v) => onChangeLowerBound(v)}
@@ -290,10 +282,9 @@ const BlockOffComp = () => {
                 sx={{ m: 2 }}
                 disableClearable
                 className="col"
-                options={Object.values(endOptions).map(x => x.value)}
+                options={endOptions.filter(x=>!x.disabled).map(x=>x.value)}
                 isOptionEqualToValue={(o, v) => o === v}
                 getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
-                getOptionDisabled={x => endOptions[String(x)].disabled}
                 // @ts-ignore
                 value={upper_time}
                 onChange={(_, v) => onChangeUpperBound(v)}

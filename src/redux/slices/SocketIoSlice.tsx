@@ -10,6 +10,7 @@ export const ICategoriesAdapter = createEntityAdapter<ICategory>({selectId: entr
 export const { selectAll: getCategories, selectById: getCategoryById, selectIds: getCategoryIds } =
   ICategoriesAdapter.getSelectors();
 export interface SocketIoState { 
+  serverTime: number | null;
   catalog: ICatalog | null;
   modifiers: EntityState<IOptionType>;
   modifierOptions: EntityState<IOption>;
@@ -26,6 +27,7 @@ export interface SocketIoState {
 }
 
 const initialState: SocketIoState = {
+  serverTime: null,
   catalog: null,
   modifiers: IOptionTypesAdapter.getInitialState(),
   modifierOptions: IOptionsAdapter.getInitialState(),
@@ -53,6 +55,9 @@ const SocketIoSlice = createSlice({
     },
     setConnected(state) {
       state.status = 'CONNECTED';
+    },
+    receiveServerTime(state, action : PayloadAction<number>) {
+      state.serverTime = action.payload;
     },
     receiveCatalog(state, action : PayloadAction<ICatalog>) {
       state.catalog = action.payload;
@@ -85,6 +90,6 @@ const SocketIoSlice = createSlice({
 
 export const SocketIoActions = SocketIoSlice.actions;
 
-export const IsSocketDataLoaded = (s : SocketIoState) => s.blockedOff !== null && s.catalog !== null && s.settings !== null && s.services !== null && s.leadtime !== null && s.deliveryArea !== null;
+export const IsSocketDataLoaded = (s : SocketIoState) => s.serverTime !== null && s.blockedOff !== null && s.catalog !== null && s.settings !== null && s.services !== null && s.leadtime !== null && s.deliveryArea !== null;
 
 export default SocketIoSlice.reducer;

@@ -50,7 +50,6 @@ const StoreCreditIssueComponent = () => {
             expiration: expiration && isValid(expiration) ? format(expiration, WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
           })
         });
-        console.log(JSON.stringify(response));
         setAddedBy("");
         setAmount(5.00);
         setReason("");

@@ -24,7 +24,9 @@ const SocketIoMiddleware: Middleware = store => {
         console.log(data);
         store.dispatch(SocketIoActions.receiveServices(data));
       });
-
+      socket.on("WCP_SERVER_TIME", (data: number) => {
+        store.dispatch(SocketIoActions.receiveServerTime(data));
+      });
       socket.on("WCP_BLOCKED_OFF", (data: JSFEBlockedOff) => {
         console.log(data);
         store.dispatch(SocketIoActions.receiveBlockedOff(data));
