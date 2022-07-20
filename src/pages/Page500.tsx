@@ -6,8 +6,6 @@ import { Button, Typography, Container } from '@mui/material';
 // components
 import Page from '../components/Page';
 import { MotionContainer, varBounce } from '../components/animate';
-// assets
-import { SeverErrorIllustration } from '../assets';
 
 // ----------------------------------------------------------------------
 
@@ -38,10 +36,6 @@ export default function Page500() {
             <Typography sx={{ color: 'text.secondary' }}>
               There was an error, please try again later.
             </Typography>
-          </m.div>
-
-          <m.div variants={varBounce().in}>
-            <SeverErrorIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
           </m.div>
 
           <Button to="/" size="large" variant="contained" component={RouterLink}>

@@ -6,6 +6,7 @@ import useSettings from '../../hooks/useSettings';
 import Page from '../../components/Page';
 // sections
 import SettingsComp from "../../components/wario/settings.component";
+import StoreSettingsComponent from "../../components/wario/store_settings.component";
 import DeliveryAreaComp from "../../components/wario/deliveryarea.component";
 import KeyValuesComponent from "../../components/wario/keyvalues.component";
 
@@ -19,8 +20,11 @@ export default function GeneralSettings() {
     <Page title="WARIO Store Settings">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={12}>
             <SettingsComp />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <StoreSettingsComponent />
           </Grid>
           <Grid item xs={12} md={12}>
             <DeliveryAreaComp/>

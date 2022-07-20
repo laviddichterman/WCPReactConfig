@@ -201,7 +201,6 @@ const SettingsComponent = () => {
       </Card>
     );
   });
-  // eslint-disable-next-line consistent-return
   return (
     <div>
       <Card>

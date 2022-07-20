@@ -91,7 +91,7 @@ const CategoryComponent = ({
             <Autocomplete
               options={categoryIds}
               value={parent}
-              onChange={(e, v) => setParent(String(v))}
+              onChange={(e, v) => setParent(v !== null ? String(v) : null)}
               getOptionLabel={(o) => selectCategoryById(o)?.name ?? "Undefined"}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => (

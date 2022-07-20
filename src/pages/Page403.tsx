@@ -6,8 +6,6 @@ import { Button, Typography, Container } from '@mui/material';
 // components
 import Page from '../components/Page';
 import { MotionContainer, varBounce } from '../components/animate';
-// assets
-import { ForbiddenIllustration } from '../assets';
 
 // ----------------------------------------------------------------------
 
@@ -41,11 +39,7 @@ export default function Page403() {
               Please refer to your system administrator
             </Typography>
           </m.div>
-
-          <m.div variants={varBounce().in}>
-            <ForbiddenIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
-          </m.div>
-
+          
           <Button to="/" size="large" variant="contained" component={RouterLink}>
             Go to Home
           </Button>

@@ -185,7 +185,7 @@ const ModifierTypeComponent = ({
           value={maxSelected}
           disabled={isProcessing}
           onChange={(e) => handleSetMaxSelected(e)}
-          parseFunction={parseInt}
+          parseFunction={(v) => v !== null && v? parseInt(v) : null}
           allowEmpty={true} />
         </Grid>
         <Grid item xs={6}>

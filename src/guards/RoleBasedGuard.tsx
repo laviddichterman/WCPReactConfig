@@ -5,8 +5,6 @@ import { Container, Typography } from '@mui/material';
 import useAuth from '../hooks/useAuth';
 // components
 import { MotionContainer, varBounce } from '../components/animate';
-// assets
-import { ForbiddenIllustration } from '../assets';
 
 // ----------------------------------------------------------------------
 
@@ -38,9 +36,6 @@ export default function RoleBasedGuard({ hasContent, roles, children }: RoleBase
           </Typography>
         </m.div>
 
-        <m.div variants={varBounce().in}>
-          <ForbiddenIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
-        </m.div>
       </Container>
     ) : null;
   }
