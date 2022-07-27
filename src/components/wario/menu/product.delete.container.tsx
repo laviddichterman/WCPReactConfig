@@ -10,7 +10,7 @@ export interface ProductQuickActionProps {
   productName: string;
   onCloseCallback: VoidFunction;
 }
-const ProductDeleteContainer = ({ product, productName, onCloseCallback } : ProductQuickActionProps) => {
+const ProductDeleteContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -18,7 +18,7 @@ const ProductDeleteContainer = ({ product, productName, onCloseCallback } : Prod
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "delete:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "DELETE",
           headers: {
@@ -38,7 +38,7 @@ const ProductDeleteContainer = ({ product, productName, onCloseCallback } : Prod
   };
 
   return (
-    <ElementDeleteComponent 
+    <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteProduct}
       name={productName}

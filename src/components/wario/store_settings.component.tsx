@@ -22,7 +22,7 @@ const StoreSettingsComponent = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({...settings, config: values} as IWSettings)
+          body: JSON.stringify({ ...settings, config: values } as IWSettings)
         });
         if (response.status === 201) {
           await response.json()

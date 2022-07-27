@@ -54,7 +54,7 @@ interface ProductComponentProps {
   setModifiers: Dispatch<SetStateAction<{ mtid: string, enable: string | null }[]>>;
   children?: React.ReactNode;
 }
-type ProductComponentPropsTypes = (({ suppressNonProductInstanceFields: true ; } & Partial<ProductInstanceComponentProps>) | ({  suppressNonProductInstanceFields: false ; } & ProductInstanceComponentProps));
+type ProductComponentPropsTypes = (({ suppressNonProductInstanceFields: true; } & Partial<ProductInstanceComponentProps>) | ({ suppressNonProductInstanceFields: false; } & ProductInstanceComponentProps));
 
 const ProductComponent = ({
   confirmText,
@@ -100,9 +100,9 @@ const ProductComponent = ({
   }
 
   const handleSetModifiers = (mods: string[]) => {
-    const oldModsAsRecord = modifiers.reduce((acc, m) => ({...acc, [m.mtid]: m.enable}), {} as Record<string, string | null>)
+    const oldModsAsRecord = modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m.enable }), {} as Record<string, string | null>)
     const sorted = mods.sort((a, b) => catalog.modifiers[a].modifier_type.ordinal - catalog.modifiers[b].modifier_type.ordinal)
-      .map(x=>({mtid: x, enable: oldModsAsRecord[x] ?? null }));
+      .map(x => ({ mtid: x, enable: oldModsAsRecord[x] ?? null }));
     if (sorted.length === 0 && !showNameOfBaseProduct) {
       setShowNameOfBaseProduct(true);
     }
@@ -158,7 +158,7 @@ const ProductComponent = ({
               options={Object.keys(catalog.product_instance_functions)}
               value={modifier.enable}
               // this makes a copy of the modifiers array with the updated enable function value
-              onChange={(_, v) => setModifiers(Object.assign([], modifiers, {[idx]: {...modifier, enable: v}}))}
+              onChange={(_, v) => setModifiers(Object.assign([], modifiers, { [idx]: { ...modifier, enable: v } }))}
               getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
@@ -196,9 +196,9 @@ const ProductComponent = ({
               type="number"
               label="Price"
               inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
-              value={price.amount  / 100}
+              value={price.amount / 100}
               disabled={isProcessing}
-              onChange={(e) => setPrice({...price, amount: e * 100})}
+              onChange={(e) => setPrice({ ...price, amount: e * 100 })}
               parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
               allowEmpty={false} />
           </Grid>
@@ -228,7 +228,7 @@ const ProductComponent = ({
               allowEmpty={false} />
           </Grid>
           <Grid item xs={2}>
-          <CheckedNumericInput
+            <CheckedNumericInput
               type="number"
               label="Bake Max"
               inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
@@ -239,7 +239,7 @@ const ProductComponent = ({
               allowEmpty={false} />
           </Grid>
           <Grid item xs={2}>
-          <CheckedNumericInput
+            <CheckedNumericInput
               type="number"
               label="Bake Differential Max"
               inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
@@ -277,7 +277,7 @@ const ProductComponent = ({
               multiple
               filterSelectedOptions
               options={Object.keys(catalog.modifiers)}
-              value={modifiers.map(x=>x.mtid)}
+              value={modifiers.map(x => x.mtid)}
               onChange={(e, v) => handleSetModifiers(v)}
               getOptionLabel={(option) => catalog.modifiers[option].modifier_type.name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(o, v) => o === v}

@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { format } from 'date-fns'
-import {GridActionsCellItem}  from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 import { Edit, DeleteOutline, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
 import { DisableDataCheck, IOption, IOptionType } from '@wcp/wcpshared';
@@ -25,27 +25,27 @@ const ModifierOptionTableContainer = ({
   setIsModifierOptionEnableOpen,
   setIsModifierOptionDisableOpen,
   setIsModifierOptionDisableUntilEodOpen
-} : ModifierOptionTableContainerProps) => {
-  const modifier_types_map = useAppSelector(s=>s.ws.catalog?.modifiers ?? {});
-  const editModifierOption = (row : IOption) => () => {
+}: ModifierOptionTableContainerProps) => {
+  const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const editModifierOption = (row: IOption) => () => {
     setIsModifierOptionEditOpen(true);
     setModifierOptionToEdit(row);
   };
 
-  const deleteModifierOption = (row : IOption) => () => {
+  const deleteModifierOption = (row: IOption) => () => {
     setIsModifierOptionDeleteOpen(true);
     setModifierOptionToEdit(row);
   };
 
-  const disableOptionUntilEOD = (row : IOption) => () => { 
+  const disableOptionUntilEOD = (row: IOption) => () => {
     setIsModifierOptionDisableUntilEodOpen(true);
     setModifierOptionToEdit(row);
   };
-  const disableOption = (row : IOption) => () => { 
+  const disableOption = (row: IOption) => () => {
     setIsModifierOptionDisableOpen(true);
     setModifierOptionToEdit(row);
   };
-  const enableOption = (row : IOption) => () => { 
+  const enableOption = (row: IOption) => () => {
     setIsModifierOptionEnableOpen(true);
     setModifierOptionToEdit(row);
   };
@@ -63,18 +63,18 @@ const ModifierOptionTableContainer = ({
           getActions: (params) => {
             const title = params.row.item.display_name ? params.row.item.display_name : "Modifier Option";
             const EDIT_MODIFIER_OPTION = (<GridActionsCellItem
-              icon={<Tooltip title={`Edit ${title}`}><Edit/></Tooltip>}
+              icon={<Tooltip title={`Edit ${title}`}><Edit /></Tooltip>}
               label={`Edit ${title}`}
               onClick={editModifierOption(params.row)}
             />);
             const DELETE_MODIFIER_OPTION = (<GridActionsCellItem
-              icon={<Tooltip title={`Delete ${title}`}><DeleteOutline/></Tooltip>}
+              icon={<Tooltip title={`Delete ${title}`}><DeleteOutline /></Tooltip>}
               label={`Delete ${title}`}
               onClick={deleteModifierOption(params.row)}
               showInMenu
             />);
             const ENABLE_MODIFIER_OPTION = (<GridActionsCellItem
-              icon={<Tooltip title={`Enable ${title}`}><CheckCircle/></Tooltip>}
+              icon={<Tooltip title={`Enable ${title}`}><CheckCircle /></Tooltip>}
               label={`Enable ${title}`}
               onClick={enableOption(params.row)}
               showInMenu
@@ -95,16 +95,16 @@ const ModifierOptionTableContainer = ({
           }
         },
         { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name, flex: 1 },
-        { headerName: "Price", field: "item.price.amount", valueGetter: v => `$${Number(v.row.item.price.amount / 100).toFixed(2)}`},
+        { headerName: "Price", field: "item.price.amount", valueGetter: v => `$${Number(v.row.item.price.amount / 100).toFixed(2)}` },
         { headerName: "Shortcode", field: "item.shortcode", valueGetter: v => v.row.item.shortcode, },
         { headerName: "Description", field: "item.description", valueGetter: v => v.row.item.description, },
         { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.ordinal },
-        { headerName: "FFactor", field: "metadata.flavor_factor", valueGetter: v => v.row.metadata.flavor_factor},
-        { headerName: "BFactor", field: "metadata.bake_factor", valueGetter: v => v.row.metadata.bake_factor},
-        { headerName: "Can Split?", field: "metadata.can_split", valueGetter: v => v.row.metadata.can_split},
-        { headerName: "EnableFxn", field: "enable_function.name", valueGetter: v => v.row.enable_function ? v.row.enable_function.name : ""},
+        { headerName: "FFactor", field: "metadata.flavor_factor", valueGetter: v => v.row.metadata.flavor_factor },
+        { headerName: "BFactor", field: "metadata.bake_factor", valueGetter: v => v.row.metadata.bake_factor },
+        { headerName: "Can Split?", field: "metadata.can_split", valueGetter: v => v.row.metadata.can_split },
+        { headerName: "EnableFxn", field: "enable_function.name", valueGetter: v => v.row.enable_function ? v.row.enable_function.name : "" },
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "item.disabled", valueGetter: v => (!DisableDataCheck(v.row.item.disabled, new Date()) ? (v.row.item.disabled.start > v.row.item.disabled.end ? "True" : `${format(v.row.item.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.item.disabled.end, "MMMM dd, y hh:mm a")}`) : "False" )},
+        { headerName: "Disabled", field: "item.disabled", valueGetter: v => (!DisableDataCheck(v.row.item.disabled, new Date()) ? (v.row.item.disabled.start > v.row.item.disabled.end ? "True" : `${format(v.row.item.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.item.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
       ]}
       getRowId={(row) => row._id}
       rows={modifier_types_map[modifier_type.id].options}

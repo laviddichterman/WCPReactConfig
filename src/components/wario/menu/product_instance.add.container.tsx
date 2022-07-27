@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import {ProductInstanceActionContainer} from "./product_instance.component";
+import { ProductInstanceActionContainer } from "./product_instance.component";
 import { IProduct, IWModifiersInstance, PriceDisplay } from "@wcp/wcpshared";
 import { HOST_API } from "../../../config";
 
-interface ProductInstanceAddContainerProps { 
+interface ProductInstanceAddContainerProps {
   parent_product: IProduct;
   onCloseCallback: VoidFunction;
 }
 
-const ProductInstanceAddContainer = ({ parent_product, onCloseCallback } : ProductInstanceAddContainerProps) => {
+const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: ProductInstanceAddContainerProps) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
@@ -29,7 +29,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback } : Produ
 
   // order
   const [orderOrdinal, setOrderOrdinal] = useState(0);
-  const [orderMenuHide, setOrderMenuHide] = useState(false);        
+  const [orderMenuHide, setOrderMenuHide] = useState(false);
   const [skipCustomization, setSkipCustomization] = useState(true);
   const [orderPriceDisplay, setOrderPriceDisplay] = useState<keyof typeof PriceDisplay>("ALWAYS");
   const [orderAdornment, setOrderAdornment] = useState("");
@@ -41,7 +41,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback } : Produ
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${parent_product.id}`, {
           method: "POST",
           headers: {
@@ -83,7 +83,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback } : Produ
           setShortcode("");
           setOrdinal(0);
           setRevelID("");
-          setSquareID("");  
+          setSquareID("");
           setModifiers([]);
           setIsBase(false);
           setMenuOrdinal(0);
@@ -109,7 +109,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback } : Produ
   };
 
   return (
-    <ProductInstanceActionContainer 
+    <ProductInstanceActionContainer
       confirmText="Add"
       onCloseCallback={onCloseCallback}
       onConfirmClick={addProductInstance}

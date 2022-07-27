@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
 import { HOST_API } from "../../../config";
 import { CategoryEditProps } from "./category.component";
 
-const CategoryDeleteContainer = ({ category, onCloseCallback } : CategoryEditProps) => {
+const CategoryDeleteContainer = ({ category, onCloseCallback }: CategoryEditProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -13,7 +13,7 @@ const CategoryDeleteContainer = ({ category, onCloseCallback } : CategoryEditPro
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "delete:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/category/${category.id}`, {
           method: "DELETE",
           headers: {
@@ -32,9 +32,9 @@ const CategoryDeleteContainer = ({ category, onCloseCallback } : CategoryEditPro
     }
   };
 
-  
+
   return (
-    <ElementDeleteComponent 
+    <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteCategory}
       name={category.name}

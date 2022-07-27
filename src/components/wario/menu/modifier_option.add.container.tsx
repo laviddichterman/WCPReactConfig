@@ -11,13 +11,13 @@ export interface ModifierOptionUiContainerProps {
   onCloseCallback: VoidFunction;
 }
 
-const ModifierOptionAddContainer = ({ parent, onCloseCallback } : ModifierOptionUiContainerProps) => {
+const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionUiContainerProps) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
-  const [price, setPrice] = useState<IMoney>({amount: 0, currency: CURRENCY.USD});
-  const [enableFunction, setEnableFunction] = useState<string|null>(null);
+  const [price, setPrice] = useState<IMoney>({ amount: 0, currency: CURRENCY.USD });
+  const [enableFunction, setEnableFunction] = useState<string | null>(null);
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
   const [canSplit, setCanSplit] = useState(true);
@@ -33,7 +33,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback } : ModifierOption
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${parent.id}/`, {
           method: "POST",
           headers: {
@@ -64,7 +64,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback } : ModifierOption
           setDescription("");
           setShortcode("");
           setOrdinal(0);
-          setPrice({amount: 0, currency: CURRENCY.USD});
+          setPrice({ amount: 0, currency: CURRENCY.USD });
           setEnableFunction(null);
           setFlavorFactor(0);
           setBakeFactor(0);
@@ -73,7 +73,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback } : ModifierOption
           setOmitFromName(false);
           setDisabled(null);
           setRevelID("");
-          setSquareID("");  
+          setSquareID("");
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -85,7 +85,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback } : ModifierOption
   };
 
   return (
-    <ModifierOptionComponent 
+    <ModifierOptionComponent
       confirmText="Add"
       onCloseCallback={onCloseCallback}
       onConfirmClick={addModifierOption}

@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import { addDays, isValid, format } from "date-fns";
-import IconButton from "@mui/material/IconButton";
+import { TextField, IconButton, Button, Grid, Card, CardHeader, Divider } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import Button from "@mui/material/Button";
-import TextField from '@mui/material/TextField';
 import { DatePicker } from '@mui/x-date-pickers';
-import { Grid, Card, CardHeader, Divider } from "@mui/material";
 
 import { RoundToTwoDecimalPlaces, WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
 import { HOST_API } from "../../config";

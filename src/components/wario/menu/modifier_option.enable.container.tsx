@@ -7,14 +7,14 @@ import { HOST_API } from "../../../config";
 import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
 
 
-const ModifierOptionEnableContainer = ({ modifier_option, onCloseCallback } : ModifierOptionQuickActionProps) => {
+const ModifierOptionEnableContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editModifierOption = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option.id}`, {
           method: "PATCH",
           headers: {
@@ -52,7 +52,7 @@ const ModifierOptionEnableContainer = ({ modifier_option, onCloseCallback } : Mo
   };
 
   return (
-    <ElementActionComponent 
+    <ElementActionComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={editModifierOption}
       isProcessing={isProcessing}
@@ -63,7 +63,7 @@ const ModifierOptionEnableContainer = ({ modifier_option, onCloseCallback } : Mo
           Are you sure you'd like to enable {modifier_option.item.display_name}?
         </Grid>
       }
-    />    
+    />
   );
 };
 

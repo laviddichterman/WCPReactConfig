@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ModifierOptionComponent from "./modifier_option.component";
 import { HOST_API } from "../../../config";
 import { IOption } from "@wcp/wcpshared";
 
-interface ModifierOptionEditContainerProps { 
+interface ModifierOptionEditContainerProps {
   modifier_option: IOption;
   onCloseCallback: VoidFunction;
 }
-const ModifierOptionEditContainer = ({modifier_option, onCloseCallback } : ModifierOptionEditContainerProps) => {
+const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: ModifierOptionEditContainerProps) => {
   const [displayName, setDisplayName] = useState(modifier_option.item.display_name);
   const [description, setDescription] = useState(modifier_option.item.description);
   const [shortcode, setShortcode] = useState(modifier_option.item.shortcode);
@@ -30,7 +30,7 @@ const ModifierOptionEditContainer = ({modifier_option, onCloseCallback } : Modif
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option.id}`, {
           method: "PATCH",
           headers: {
@@ -68,7 +68,7 @@ const ModifierOptionEditContainer = ({modifier_option, onCloseCallback } : Modif
   };
 
   return (
-    <ModifierOptionComponent 
+    <ModifierOptionComponent
       confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editModifierOption}

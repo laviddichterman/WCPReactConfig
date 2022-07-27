@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
 import { HOST_API } from "../../../config";
 import { ModifierTypeModifyUiProps } from "./modifier_type.component";
 
-const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback } : ModifierTypeModifyUiProps) => {
+const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback }: ModifierTypeModifyUiProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -13,7 +13,7 @@ const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback } : Modifi
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "delete:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_type.id}`, {
           method: "DELETE",
           headers: {
@@ -33,7 +33,7 @@ const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback } : Modifi
   };
 
   return (
-    <ElementDeleteComponent 
+    <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteModifierType}
       name={modifier_type.name}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { getTime, endOfDay } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
 import Grid from "@mui/material/Grid";
@@ -7,14 +7,14 @@ import { ElementActionComponent } from "./element.action.component";
 import { HOST_API } from "../../../config";
 import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
 
-const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallback } : ModifierOptionQuickActionProps) => {
+const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editModifierOption = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option.id}`, {
           method: "PATCH",
           headers: {
@@ -50,7 +50,7 @@ const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallba
   };
 
   return (
-    <ElementActionComponent 
+    <ElementActionComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={editModifierOption}
       isProcessing={isProcessing}
@@ -61,7 +61,7 @@ const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallba
           Are you sure you'd like to disable {modifier_option.item.display_name} until end-of-day?
         </Grid>
       }
-    />    
+    />
   );
 };
 

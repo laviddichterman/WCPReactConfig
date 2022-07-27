@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierTypeComponent, {ModifierTypeUiProps} from "./modifier_type.component";
+import ModifierTypeComponent, { ModifierTypeUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../config";
 import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wcpshared";
 
@@ -10,7 +10,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
   const [name, setName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [minSelected, setMinSelected] = useState(0);
-  const [maxSelected, setMaxSelected] = useState<number|null>(null);
+  const [maxSelected, setMaxSelected] = useState<number | null>(null);
   const [revelID, setRevelID] = useState("");
   const [squareID, setSquareID] = useState("");
   const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(false);
@@ -30,7 +30,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/`, {
           method: "POST",
           headers: {
@@ -80,7 +80,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
           onCloseCallback();
         }
         setIsProcessing(false);
-          
+
       } catch (error) {
         console.error(error);
         setIsProcessing(false);
@@ -89,7 +89,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
   };
 
   return (
-    <ModifierTypeComponent 
+    <ModifierTypeComponent
       confirmText="Add"
       onCloseCallback={onCloseCallback}
       onConfirmClick={addModifierType}
@@ -100,9 +100,9 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
       setName={setName}
       displayName={displayName}
       setDisplayName={setDisplayName}
-      minSelected={minSelected} 
+      minSelected={minSelected}
       setMinSelected={setMinSelected}
-      maxSelected={maxSelected} 
+      maxSelected={maxSelected}
       setMaxSelected={setMaxSelected}
       templateString={templateString}
       setTemplateString={setTemplateString}
@@ -114,7 +114,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
       setNonEmptyGroupSuffix={setNonEmptyGroupSuffix}
       revelID={revelID}
       setRevelID={setRevelID}
-      squareID={squareID} 
+      squareID={squareID}
       setSquareID={setSquareID}
       omitOptionIfNotAvailable={omitOptionIfNotAvailable}
       setOmitOptionIfNotAvailable={setOmitOptionIfNotAvailable}

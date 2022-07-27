@@ -10,7 +10,7 @@ export interface ProductEditContainerProps {
   onCloseCallback: VoidFunction;
 };
 
-const ProductEditContainer = ({ product, onCloseCallback } : ProductEditContainerProps) => {
+const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainerProps) => {
   const [price, setPrice] = useState(product.price);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
   const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
@@ -28,7 +28,7 @@ const ProductEditContainer = ({ product, onCloseCallback } : ProductEditContaine
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "PATCH",
           headers: {
@@ -62,7 +62,7 @@ const ProductEditContainer = ({ product, onCloseCallback } : ProductEditContaine
   };
 
   return (
-    <ProductComponent 
+    <ProductComponent
       confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editProduct}

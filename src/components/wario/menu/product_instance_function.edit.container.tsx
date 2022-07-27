@@ -6,7 +6,7 @@ import { HOST_API } from "../../../config";
 
 import { ProductInstanceFunctionQuickActionProps } from './product_instance_function.delete.container';
 
-const ProductInstanceFunctionEditContainer = ({ product_instance_function, onCloseCallback } : ProductInstanceFunctionQuickActionProps) => {
+const ProductInstanceFunctionEditContainer = ({ product_instance_function, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
   const [functionName, setFunctionName] = useState(product_instance_function.name);
   const [expression, setExpression] = useState(product_instance_function.expression);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -16,7 +16,7 @@ const ProductInstanceFunctionEditContainer = ({ product_instance_function, onClo
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/${product_instance_function.id}`, {
           method: "PATCH",
           headers: {
@@ -40,7 +40,7 @@ const ProductInstanceFunctionEditContainer = ({ product_instance_function, onClo
   };
 
   return (
-    <ProductInstanceFunctionComponent 
+    <ProductInstanceFunctionComponent
       confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editProductInstanceFunction}

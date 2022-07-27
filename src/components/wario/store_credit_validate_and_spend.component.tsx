@@ -1,4 +1,4 @@
-import { RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
+import { RoundToTwoDecimalPlaces, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
 
 import { useState, useEffect } from "react";
 
@@ -17,34 +17,15 @@ const US_MONEY_FORMATTER = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-export interface ValidateResponse {
-  enc: string;
-  iv: string;
-  auth: string;
-  validated: boolean;
-  amount: number;
-  credit_type: "MONEY" | "DISCOUNT"
- }
-
-type StoreCreditDebitSuccessResponse = {
-  success: true;
-  balance: number;
-}
-type StoreCreditDebitFailureResponse = {
-  success: false;
-  result: {errors: [{detail: "Unable to debit store credit."}]}
-}
-type StoreCreditDebitResponse = StoreCreditDebitSuccessResponse | StoreCreditDebitFailureResponse;
-
 const StoreCreditValidateAndSpendComponent = () => {
   const [creditCode, setCreditCode] = useState("");
   const [scanCode, setScanCode] = useState(false);
   const [hasCamera, setHasCamera] = useState(false);
-  const [validationResponse, setValidationResponse] = useState<ValidateResponse|null>(null);
+  const [validationResponse, setValidationResponse] = useState<ValidateAndLockCreditResponse | null>(null);
   const [amount, setAmount] = useState(0);
   const [processedBy, setProcessedBy] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [debitResponse, setDebitResponse] = useState<StoreCreditDebitResponse|null>(null);
+  const [debitResponse, setDebitResponse] = useState<SpendCreditResponse | null>(null);
 
   useEffect(() => {
     const CheckForCamera = async () => {
@@ -84,6 +65,7 @@ const StoreCreditValidateAndSpendComponent = () => {
           { method: "GET" }
         );
         const response_data = await response.json();
+        console.log(response_data);
         setValidationResponse(response_data);
         setIsProcessing(false);
       } catch (error) {
@@ -94,7 +76,7 @@ const StoreCreditValidateAndSpendComponent = () => {
   };
 
   const processDebit = async () => {
-    if (!isProcessing && validationResponse !== null ) {
+    if (!isProcessing && validationResponse !== null) {
       setIsProcessing(true);
       try {
         const response = await fetch(
@@ -107,13 +89,9 @@ const StoreCreditValidateAndSpendComponent = () => {
             body: JSON.stringify({
               code: creditCode,
               amount,
-              lock: {
-                iv: validationResponse.iv,
-                enc: validationResponse.enc,
-                auth: validationResponse.auth,
-              },
-              processed_by: processedBy,
-            }),
+              lock: validationResponse.lock,
+              updatedBy: processedBy,
+            } as ValidateLockAndSpendRequest),
           }
         );
         const response_data = await response.json();
@@ -145,7 +123,7 @@ const StoreCreditValidateAndSpendComponent = () => {
         aria-label="upload picture"
         component="span"
         onClick={() => setScanCode(true)}
-        disabled={isProcessing || (validationResponse !== null && validationResponse.validated)}
+        disabled={isProcessing || (validationResponse !== null && validationResponse.valid)}
         size="large">
         <PhotoCamera />
       </IconButton>
@@ -161,7 +139,7 @@ const StoreCreditValidateAndSpendComponent = () => {
             type="text"
             fullWidth
             inputProps={{ size: 19 }}
-            disabled={isProcessing || (validationResponse !== null && validationResponse.validated)}
+            disabled={isProcessing || (validationResponse !== null && validationResponse.valid)}
             value={creditCode}
             size="small"
             onChange={(e) => setCreditCode(e.target.value)}
@@ -190,7 +168,7 @@ const StoreCreditValidateAndSpendComponent = () => {
         </Grid>
 
         {validationResponse !== null ? (
-          !validationResponse.validated ?
+          !validationResponse.valid ?
             (<Grid item xs={12}>
               <ErrorOutline />
               FAILED TO FIND
@@ -260,7 +238,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     type="number"
                     fullWidth
                     label="Amount to debit"
-                    inputProps={{ inputMode: 'numeric', min: 0.01, max: validationResponse.amount, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
+                    inputProps={{ inputMode: 'decimal', min: 0.01, max: validationResponse.amount, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
                     value={amount}
                     className="form-control"
                     disabled={isProcessing || debitResponse !== null}

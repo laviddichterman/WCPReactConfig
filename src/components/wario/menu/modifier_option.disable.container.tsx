@@ -6,14 +6,14 @@ import { ElementActionComponent } from "./element.action.component";
 import { HOST_API } from "../../../config";
 import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
 
-const ModifierOptionDisableContainer = ({ modifier_option, onCloseCallback } : ModifierOptionQuickActionProps) => {
+const ModifierOptionDisableContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editModifierOption = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option.id}`, {
           method: "PATCH",
           headers: {
@@ -51,7 +51,7 @@ const ModifierOptionDisableContainer = ({ modifier_option, onCloseCallback } : M
   };
 
   return (
-    <ElementActionComponent 
+    <ElementActionComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={editModifierOption}
       isProcessing={isProcessing}
@@ -62,7 +62,7 @@ const ModifierOptionDisableContainer = ({ modifier_option, onCloseCallback } : M
           Are you sure you'd like to disable {modifier_option.item.display_name}?
         </Grid>
       }
-    />    
+    />
   );
 };
 

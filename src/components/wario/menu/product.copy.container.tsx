@@ -73,7 +73,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
     return numBase === 1 ? idxOfBase : -1;
   }, [piIsBases, copyPIFlags]);
 
-  const getProductInstanceEditor = useCallback((i : number) => (
+  const getProductInstanceEditor = useCallback((i: number) => (
     <Accordion sx={{ p: 2 }} key={i} expanded={expandedPanels[i] && copyPIFlags[i]} onChange={(e, ex) => setExpandedPanel(i)(ex)}  >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Grid container>
@@ -177,8 +177,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
           const json_response = await response.json();
           const parent_id = json_response._id;
           await new Promise((res) => setTimeout(res, 200));
-          const create_child_requests : Promise<void>[] = [];
-          const addChildIndex = (i : number) => {
+          const create_child_requests: Promise<void>[] = [];
+          const addChildIndex = (i: number) => {
             const add_child_body = JSON.stringify({
               display_name: piDisplayNames[i],
               description: piDescriptions[i],
@@ -273,7 +273,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
       modifiers={modifiers}
       setModifiers={setModifiers}
       children={product_instances.map((_, i) => getProductInstanceEditor(i)
-      )}       
+      )}
     />
   );
 };

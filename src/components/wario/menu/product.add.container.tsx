@@ -5,10 +5,10 @@ import ProductComponent from "./product.component";
 import { HOST_API } from "../../../config";
 import { CURRENCY, IMoney, IWInterval } from "@wcp/wcpshared";
 
-interface ProductAddContainerProps { 
+interface ProductAddContainerProps {
   onCloseCallback: VoidFunction;
 }
-const ProductAddContainer = ({ onCloseCallback } : ProductAddContainerProps) => {
+const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
@@ -30,7 +30,7 @@ const ProductAddContainer = ({ onCloseCallback } : ProductAddContainerProps) => 
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
           method: "POST",
           headers: {
@@ -61,12 +61,12 @@ const ProductAddContainer = ({ onCloseCallback } : ProductAddContainerProps) => 
           setDisplayName("");
           setDescription("");
           setShortcode("");
-          setPrice({amount: 0, currency: CURRENCY.USD});
+          setPrice({ amount: 0, currency: CURRENCY.USD });
           setDisabled(null);
           setServiceDisabled([]);
           setOrdinal(0);
           setFlavorMax(10);
-          setBakeMax(10);  
+          setBakeMax(10);
           setBakeDifferentialMax(100);
           setShowNameOfBaseProduct(true);
           setSingularNoun("");
@@ -83,7 +83,7 @@ const ProductAddContainer = ({ onCloseCallback } : ProductAddContainerProps) => 
   };
 
   return (
-    <ProductComponent 
+    <ProductComponent
       confirmText="Add"
       suppressNonProductInstanceFields={false}
       onCloseCallback={onCloseCallback}

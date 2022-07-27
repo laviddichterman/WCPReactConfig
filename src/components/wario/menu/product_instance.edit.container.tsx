@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProductInstanceActionContainer } from "./product_instance.component";
@@ -11,7 +11,7 @@ interface ProductInstanceEditContainerProps {
   onCloseCallback: VoidFunction;
 }
 
-const ProductInstanceEditContainer = ({ parent_product, product_instance, onCloseCallback} : ProductInstanceEditContainerProps) => {
+const ProductInstanceEditContainer = ({ parent_product, product_instance, onCloseCallback }: ProductInstanceEditContainerProps) => {
   const [displayName, setDisplayName] = useState(product_instance.item.display_name);
   const [description, setDescription] = useState(product_instance.item.description);
   const [shortcode, setShortcode] = useState(product_instance.item.shortcode);
@@ -39,7 +39,7 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${parent_product.id}/${product_instance.id}`, {
           method: "PATCH",
           headers: {
@@ -87,7 +87,7 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
   };
 
   return (
-    <ProductInstanceActionContainer 
+    <ProductInstanceActionContainer
       confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editProductInstance}
@@ -109,7 +109,7 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
       setModifiers={setModifiers}
       isBase={isBase}
       setIsBase={setIsBase}
-      
+
       // menu
       menuOrdinal={menuOrdinal}
       setMenuOrdinal={setMenuOrdinal}
@@ -135,7 +135,7 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
       orderAdornment={orderAdornment}
       setOrderAdornment={setOrderAdornment}
       orderSuppressExhaustiveModifierList={orderSuppressExhaustiveModifierList}
-      setOrderSuppressExhaustiveModifierList={setOrderSuppressExhaustiveModifierList}      
+      setOrderSuppressExhaustiveModifierList={setOrderSuppressExhaustiveModifierList}
     />
   );
 };

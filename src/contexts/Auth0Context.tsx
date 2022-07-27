@@ -127,7 +127,7 @@ function AuthProvider({ children } : AuthProviderProps) {
     await loginWithPopup();
 
     if (isAuthenticated) {
-      dispatch({ type: Types.login, payload: { user} });
+      dispatch({ type: Types.login, payload: { user } });
     }
   };
 

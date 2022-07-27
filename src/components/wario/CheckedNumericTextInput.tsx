@@ -3,16 +3,18 @@ import { InputBaseComponentProps, TextField, TextFieldProps } from '@mui/materia
 
 // TODO: centralize this in a shared react repo
 
-type MinMax = { min: number; max: number; };
+type MinMax = { min: number; max: number; } | { min: number } | { max: number };
 type ChkFxnAllowEmptyFalse = { inputProps: MinMax & InputBaseComponentProps } & { parseFunction: (v: string | null) => number; allowEmpty: false; };
 type ChkFxnAllowEmptyTrue = { inputProps: Partial<MinMax> & InputBaseComponentProps } & { parseFunction: (v: string | null) => number | null; allowEmpty: true; };
 type CheckedNumericInputCanBeEmptyProps = {
   onChange: ((value: number | null) => void);
   value: number | null;
+  allowEmpty: true;
 };
 type CheckedNumericInputNeverEmptyProps = {
   onChange: ((value: number) => void);
   value: number;
+  allowEmpty: false;
 };
 
 type ICheckFxnGenProps = ChkFxnAllowEmptyFalse | ChkFxnAllowEmptyTrue;

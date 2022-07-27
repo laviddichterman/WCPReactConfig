@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Button, TextField, Grid, Card, CardHeader } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -7,15 +7,15 @@ import { HOST_API } from '../../config';
 
 
 const DeliveryAreaComponent = () => {
-  const deliveryArea = useAppSelector(s=>s.ws.deliveryArea);
-  const [ localDeliveryArea, setLocalDeliveryArea ] = useState(deliveryArea);
-  const [ stringified, setStringified ] = useState(JSON.stringify(deliveryArea));
-  const [ dirty, setDirty ] = useState(false);
-  const [ isJsonError, setIsJsonError ] = useState(false);
+  const deliveryArea = useAppSelector(s => s.ws.deliveryArea);
+  const [localDeliveryArea, setLocalDeliveryArea] = useState(deliveryArea);
+  const [stringified, setStringified] = useState(JSON.stringify(deliveryArea));
+  const [dirty, setDirty] = useState(false);
+  const [isJsonError, setIsJsonError] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  if (deliveryArea === null) { 
+  if (deliveryArea === null) {
     return <>Loading...</>;
   }
 
@@ -23,7 +23,7 @@ const DeliveryAreaComponent = () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:order_config"} );
+        const token = await getAccessTokenSilently({ scope: "write:order_config" });
         const response = await fetch(`${HOST_API}/api/v1/addresses`, {
           method: "POST",
           headers: {
@@ -44,7 +44,7 @@ const DeliveryAreaComponent = () => {
       }
     }
   };
-  const onBlurLocal = (val : string) => {
+  const onBlurLocal = (val: string) => {
     try {
       setLocalDeliveryArea(JSON.parse(val));
       setIsJsonError(false);
@@ -53,33 +53,33 @@ const DeliveryAreaComponent = () => {
       setIsJsonError(true);
     }
   }
-  const onChangeLocal = (val : string) => {
+  const onChangeLocal = (val: string) => {
     setDirty(true);
     setStringified(val);
   }
 
   return (
-      <Card>
-        <CardHeader title={"Delivery Area GeoJSON (polygon)"} />
-        <Grid container spacing={3} justifyContent="center">   
-          <Grid item xs={10}>
-          <TextField 
-            aria-label="textarea" 
-            rows={15} 
+    <Card>
+      <CardHeader title={"Delivery Area GeoJSON (polygon)"} />
+      <Grid container spacing={3} justifyContent="center">
+        <Grid item xs={10}>
+          <TextField
+            aria-label="textarea"
+            rows={15}
             fullWidth
-            multiline 
-            value={dirty ? stringified : JSON.stringify(localDeliveryArea)} 
-            onChange={e => onChangeLocal(e.target.value)} 
+            multiline
+            value={dirty ? stringified : JSON.stringify(localDeliveryArea)}
+            onChange={e => onChangeLocal(e.target.value)}
             onBlur={() => onBlurLocal(stringified)}
             error={isJsonError}
             helperText={isJsonError ? "JSON Parsing Error" : ""}
           />
-          </Grid>
-          <Grid item xs={2}>
-            <Button disabled={isJsonError || isProcessing} onClick={postDeliveryArea}>Push Changes</Button>
-          </Grid>
-          </Grid>
-      </Card>
+        </Grid>
+        <Grid item xs={2}>
+          <Button disabled={isJsonError || isProcessing} onClick={postDeliveryArea}>Push Changes</Button>
+        </Grid>
+      </Grid>
+    </Card>
   );
 }
 export default DeliveryAreaComponent;

@@ -13,19 +13,19 @@ import { useAppSelector } from "src/hooks/useRedux";
 import { HOST_API } from "src/config";
 
 
-const InternalCSVReader = ({onAccepted} : {onAccepted : any}) => {
+const InternalCSVReader = ({ onAccepted }: { onAccepted: any }) => {
   const { CSVReader } = useCSVReader();
   return (
     <CSVReader
       onUploadAccepted={onAccepted}
-      config={{header:true}}
+      config={{ header: true }}
     >
       {({
         getRootProps,
         acceptedFile,
         ProgressBar,
         getRemoveFileProps,
-      } : any) => (
+      }: any) => (
         <Grid container>
           <Grid item xs={4}>
             <Button variant="contained" {...getRootProps()} color="primary">
@@ -48,13 +48,13 @@ const InternalCSVReader = ({onAccepted} : {onAccepted : any}) => {
     </CSVReader>
   );
 };
-interface ProductComponentProps { 
+interface ProductComponentProps {
   confirmText: string;
   onCloseCallback: VoidFunction;
   onConfirmClick: VoidFunction;
   isProcessing: boolean;
   disableConfirmOn: boolean;
-  parentCategories : string[];
+  parentCategories: string[];
   setParentCategories: Dispatch<SetStateAction<string[]>>;
   setFileData: Dispatch<SetStateAction<any>>;
 }
@@ -67,50 +67,50 @@ const ProductComponent = ({
   parentCategories,
   setParentCategories,
   setFileData,
-} : ProductComponentProps) => {
-  const categories = useAppSelector(s=>s.ws.catalog?.categories ?? {});
+}: ProductComponentProps) => {
+  const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
   return (
-    <ElementActionComponent 
-    onCloseCallback={onCloseCallback}
-    onConfirmClick={onConfirmClick}
-    isProcessing={isProcessing}
-    disableConfirmOn={disableConfirmOn}
-    confirmText={confirmText}
-    body={
-    <>
-        <Grid item xs={12}>
-          <Autocomplete
-            multiple
-            filterSelectedOptions
-            options={Object.keys(categories)}
-            value={parentCategories.filter((x) => x)}
-            onChange={(e, v) => setParentCategories(v)}
-            getOptionLabel={(option) => categories[option].category.name}
-            isOptionEqualToValue={(o, v) => o === v}
-            renderInput={(params) => (
-              <TextField {...params} label="Categories" />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12}>
-        <InternalCSVReader onAccepted={setFileData} />
-        </Grid>
-    </>}
+    <ElementActionComponent
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={onConfirmClick}
+      isProcessing={isProcessing}
+      disableConfirmOn={disableConfirmOn}
+      confirmText={confirmText}
+      body={
+        <>
+          <Grid item xs={12}>
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              options={Object.keys(categories)}
+              value={parentCategories.filter((x) => x)}
+              onChange={(e, v) => setParentCategories(v)}
+              getOptionLabel={(option) => categories[option].category.name}
+              isOptionEqualToValue={(o, v) => o === v}
+              renderInput={(params) => (
+                <TextField {...params} label="Categories" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <InternalCSVReader onAccepted={setFileData} />
+          </Grid>
+        </>}
     />
   );
 };
 
-interface CSVProduct { 
+interface CSVProduct {
   Name: string;
   Description: string | null | undefined;
   Shortname: string;
   Price: string;
 };
 
-const ProductAddContainer = ({ onCloseCallback } : { onCloseCallback: VoidFunction }) => {
+const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
   const [parentCategories, setParentCategories] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data, setData] = useState<{data: CSVProduct[]}>({ data: [] })
+  const [data, setData] = useState<{ data: CSVProduct[] }>({ data: [] })
   const { getAccessTokenSilently } = useAuth0();
 
   const addProducts = async () => {
@@ -119,7 +119,7 @@ const ProductAddContainer = ({ onCloseCallback } : { onCloseCallback: VoidFuncti
       if (!isProcessing) {
         setIsProcessing(true);
         try {
-          const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+          const token = await getAccessTokenSilently({ scope: "write:catalog" });
           const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
             method: "POST",
             headers: {
@@ -158,7 +158,7 @@ const ProductAddContainer = ({ onCloseCallback } : { onCloseCallback: VoidFuncti
   };
 
   return (
-    <ProductComponent 
+    <ProductComponent
       confirmText="Import"
       onCloseCallback={onCloseCallback}
       onConfirmClick={() => addProducts()}

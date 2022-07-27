@@ -54,7 +54,7 @@ const BlockOffComp = () => {
   const BLOCKED_OFF = useAppSelector(s => s.ws.blockedOff!);
   const SETTINGS = useAppSelector(s => s.ws.settings!);
   const LEAD_TIME = useAppSelector(s => s.ws.leadtime!);
-  const CURRENT_TIME = useAppSelector(s=>s.timing.currentTime!);
+  const CURRENT_TIME = useAppSelector(s => s.timing.currentTime!);
   const NUM_SERVICES = useMemo(() => SERVICES !== null ? Object.keys(SERVICES).length : 3, [SERVICES]);
   const [upper_time, setUpperTime] = useState<number | null>(null);
   const [lower_time, setLowerTime] = useState<number | null>(null);
@@ -266,7 +266,7 @@ const BlockOffComp = () => {
                 sx={{ m: 2 }}
                 disableClearable
                 className="col"
-                options={startOptions.filter(x=>!x.disabled).map(x=>x.value)}
+                options={startOptions.filter(x => !x.disabled).map(x => x.value)}
                 isOptionEqualToValue={(o, v) => o === v}
                 getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
                 // @ts-ignore
@@ -278,11 +278,11 @@ const BlockOffComp = () => {
               />
             </Grid>
             <Grid item xs={5}>
-            <Autocomplete
+              <Autocomplete
                 sx={{ m: 2 }}
                 disableClearable
                 className="col"
-                options={endOptions.filter(x=>!x.disabled).map(x=>x.value)}
+                options={endOptions.filter(x => !x.disabled).map(x => x.value)}
                 isOptionEqualToValue={(o, v) => o === v}
                 getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
                 // @ts-ignore

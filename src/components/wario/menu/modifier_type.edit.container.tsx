@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ModifierTypeComponent, { ModifierTypeModifyUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../config";
 
-const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback } : ModifierTypeModifyUiProps) => {
+const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierTypeModifyUiProps) => {
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
   const [displayName, setDisplayName] = useState(modifier_type.display_name ?? "");
@@ -29,7 +29,7 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback } : Modifier
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_type.id}`, {
           method: "PATCH",
           headers: {
@@ -70,7 +70,7 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback } : Modifier
   };
 
   return (
-    <ModifierTypeComponent 
+    <ModifierTypeComponent
       confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editModifierType}
@@ -81,13 +81,13 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback } : Modifier
       setName={setName}
       displayName={displayName}
       setDisplayName={setDisplayName}
-      minSelected={minSelected} 
+      minSelected={minSelected}
       setMinSelected={setMinSelected}
-      maxSelected={maxSelected} 
+      maxSelected={maxSelected}
       setMaxSelected={setMaxSelected}
       revelID={revelID}
       setRevelID={setRevelID}
-      squareID={squareID} 
+      squareID={squareID}
       setSquareID={setSquareID}
       omitOptionIfNotAvailable={omitOptionIfNotAvailable}
       setOmitOptionIfNotAvailable={setOmitOptionIfNotAvailable}

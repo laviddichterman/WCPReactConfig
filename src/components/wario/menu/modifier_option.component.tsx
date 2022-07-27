@@ -151,7 +151,7 @@ const ModifierOptionComponent = ({
               value={enableFunction}
               onChange={(e, v) => setEnableFunction(v)}
               getOptionLabel={(option) => productInstanceFunctions[option].name ?? "CORRUPT DATA"}
-              isOptionEqualToValue={(o, v) => o===v}
+              isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
             />
           </Grid>

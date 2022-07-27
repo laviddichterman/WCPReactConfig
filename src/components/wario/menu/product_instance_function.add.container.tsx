@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductInstanceFunctionComponent from "./product_instance_function.component";
 import { HOST_API } from "../../../config";
 import { IAbstractExpression } from "@wcp/wcpshared";
 
-interface ProductInstanceFunctionAddContainerProps { 
+interface ProductInstanceFunctionAddContainerProps {
   onCloseCallback: VoidFunction;
 }
-const ProductInstanceFunctionAddContainer = ({ onCloseCallback } : ProductInstanceFunctionAddContainerProps) => {
+const ProductInstanceFunctionAddContainer = ({ onCloseCallback }: ProductInstanceFunctionAddContainerProps) => {
   const [functionName, setFunctionName] = useState("");
-  const [expression, setExpression] = useState<IAbstractExpression|null>(null);
+  const [expression, setExpression] = useState<IAbstractExpression | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -18,7 +18,7 @@ const ProductInstanceFunctionAddContainer = ({ onCloseCallback } : ProductInstan
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/`, {
           method: "POST",
           headers: {
@@ -44,7 +44,7 @@ const ProductInstanceFunctionAddContainer = ({ onCloseCallback } : ProductInstan
   };
 
   return (
-    <ProductInstanceFunctionComponent 
+    <ProductInstanceFunctionComponent
       confirmText="Add"
       onCloseCallback={onCloseCallback}
       onConfirmClick={addProductInstanceFunction}

@@ -1,17 +1,14 @@
-import React, {Dispatch, SetStateAction, useState} from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { endOfDay, getTime } from 'date-fns'
-import Grid from "@mui/material/Grid";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import TextField from '@mui/material/TextField';
+import { Grid, FormControlLabel, Switch, TextField } from "@mui/material";
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { IWInterval } from "@wcp/wcpshared";
 
-export interface DatetimeBasedDisableComponentProps { 
+export interface DatetimeBasedDisableComponentProps {
   disabled: IWInterval | null;
   setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
 }
-const DatetimeBasedDisableComponent = ({ disabled, setDisabled } : DatetimeBasedDisableComponentProps) => {
+const DatetimeBasedDisableComponent = ({ disabled, setDisabled }: DatetimeBasedDisableComponentProps) => {
   const [enabled, setEnabled] = useState(disabled === null);
   const [isDatetimeBased, setIsDatetimeBased] = useState<boolean>(
     disabled !== null && disabled.start <= disabled.end
@@ -34,7 +31,7 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled } : DatetimeBased
       else {
         setDisabled({ start: 1, end: 0 });
       }
-      
+
     }
     else {
       setEnabled(true);
@@ -52,12 +49,12 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled } : DatetimeBased
   };
 
   // TODO: BEFORE COMMITTING THIS, CHECK THAT THE "EMPTY" DATES returned by the datetimepicker make sense.
-  const updateDisabledStart = (start : number) => {
+  const updateDisabledStart = (start: number) => {
     setDisabledStart(start);
     setDisabled({ start: getTime(start), end: disabledEnd });
   };
 
-  const updateDisabledEnd = (end : number) => {
+  const updateDisabledEnd = (end: number) => {
     setDisabledEnd(end);
     setDisabled({ start: disabledStart, end: getTime(end) });
   };

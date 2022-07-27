@@ -49,7 +49,7 @@ export const history = createBrowserHistory();
 
 // A function that routes the user to the right place
 // after login
-const onRedirectCallback = (appState : any) => {
+const onRedirectCallback = (appState: any) => {
   // Use the router's history module to replace the url
   history.replace(appState?.returnTo || window.location.pathname);
 };
@@ -59,28 +59,28 @@ const onRedirectCallback = (appState : any) => {
 
 ReactDOM.render(
   <Auth0Provider
-      domain={AUTH0_API.domain as string}
-      clientId={AUTH0_API.clientId as string}
-      redirectUri={window.location.origin}
-      scope={AUTH0_API.scope}
-      onRedirectCallback={onRedirectCallback}
-      audience={AUTH0_API.audience}
-    >
-  <AuthProvider>
+    domain={AUTH0_API.domain as string}
+    clientId={AUTH0_API.clientId as string}
+    redirectUri={window.location.origin}
+    scope={AUTH0_API.scope}
+    onRedirectCallback={onRedirectCallback}
+    audience={AUTH0_API.audience}
+  >
+    <AuthProvider>
       <HelmetProvider>
         <ReduxProvider store={store}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <SettingsProvider>
-                <CollapseDrawerProvider>
-                  <BrowserRouter>
-                    <App />
-                  </BrowserRouter>
-                </CollapseDrawerProvider>
-              </SettingsProvider>
-            </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <SettingsProvider>
+              <CollapseDrawerProvider>
+                <BrowserRouter>
+                  <App />
+                </BrowserRouter>
+              </CollapseDrawerProvider>
+            </SettingsProvider>
+          </LocalizationProvider>
         </ReduxProvider>
       </HelmetProvider>
-  </AuthProvider>
+    </AuthProvider>
   </Auth0Provider>,
   document.getElementById('root')
 );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
@@ -9,7 +9,7 @@ export interface ModifierOptionQuickActionProps {
   modifier_option: IOption;
   onCloseCallback: VoidFunction;
 }
-const ModifierOptionDeleteContainer = ({ modifier_option, onCloseCallback } : ModifierOptionQuickActionProps) => {
+const ModifierOptionDeleteContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -17,7 +17,7 @@ const ModifierOptionDeleteContainer = ({ modifier_option, onCloseCallback } : Mo
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "delete:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.option_type_id}/${modifier_option.id}`, {
           method: "DELETE",
           headers: {
@@ -37,7 +37,7 @@ const ModifierOptionDeleteContainer = ({ modifier_option, onCloseCallback } : Mo
   };
 
   return (
-    <ElementDeleteComponent 
+    <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteModifierOption}
       name={modifier_option.item.display_name}

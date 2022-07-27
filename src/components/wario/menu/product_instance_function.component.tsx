@@ -6,12 +6,12 @@ import AbstractExpressionFunctionalContainer from './abstract_expression_functio
 import { ElementActionComponent, ElementActionComponentProps } from "./element.action.component";
 import { IAbstractExpression } from "@wcp/wcpshared";
 
-export interface ProductInstanceFunctionComponentProps { 
+export interface ProductInstanceFunctionComponentProps {
   isProcessing: boolean;
   functionName: string;
   setFunctionName: Dispatch<SetStateAction<string>>;
-  expression: IAbstractExpression| null;
-  setExpression: Dispatch<SetStateAction<IAbstractExpression|null>>;
+  expression: IAbstractExpression | null;
+  setExpression: Dispatch<SetStateAction<IAbstractExpression | null>>;
 }
 
 const ProductInstanceFunctionComponent = ({
@@ -21,12 +21,12 @@ const ProductInstanceFunctionComponent = ({
   expression,
   setExpression,
   ...forwardRefs
-} : ProductInstanceFunctionComponentProps & Omit<ElementActionComponentProps, 'disableConfirmOn' | 'body'>) => (
-    <ElementActionComponent 
-      {...forwardRefs}
-      isProcessing={isProcessing}
-      disableConfirmOn={functionName.length === 0 || isProcessing}
-      body={
+}: ProductInstanceFunctionComponentProps & Omit<ElementActionComponentProps, 'disableConfirmOn' | 'body'>) => (
+  <ElementActionComponent
+    {...forwardRefs}
+    isProcessing={isProcessing}
+    disableConfirmOn={functionName.length === 0 || isProcessing}
+    body={
       <>
         <Grid item xs={12}>
           <TextField
@@ -45,7 +45,7 @@ const ProductInstanceFunctionComponent = ({
           />
         </Grid>
       </>}
-    />
-  );
+  />
+);
 
 export default ProductInstanceFunctionComponent;

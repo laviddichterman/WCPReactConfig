@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
 import { HOST_API } from "../../../config";
 import { IProductInstanceFunction } from "@wcp/wcpshared";
 
-export interface ProductInstanceFunctionQuickActionProps { 
+export interface ProductInstanceFunctionQuickActionProps {
   product_instance_function: IProductInstanceFunction;
   onCloseCallback: VoidFunction;
 }
 
-const ProductInstanceFunctionDeleteContainer = ({ product_instance_function, onCloseCallback } : ProductInstanceFunctionQuickActionProps) => {
+const ProductInstanceFunctionDeleteContainer = ({ product_instance_function, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -18,7 +18,7 @@ const ProductInstanceFunctionDeleteContainer = ({ product_instance_function, onC
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "delete:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "delete:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/${product_instance_function.id}`, {
           method: "DELETE",
           headers: {
@@ -38,12 +38,12 @@ const ProductInstanceFunctionDeleteContainer = ({ product_instance_function, onC
   };
 
   return (
-    <ElementDeleteComponent 
+    <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deletePIF}
       name={product_instance_function.name}
       isProcessing={isProcessing}
-    />    
+    />
   );
 };
 

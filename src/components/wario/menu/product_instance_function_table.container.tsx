@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 
-import {GridActionsCellItem}  from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
 import { IProductInstanceFunction, WFunctional } from "@wcp/wcpshared";
@@ -19,14 +19,14 @@ const ProductInstanceFunctionTableContainer = ({
   setProductInstanceFunctionToEdit,
 }: PIFTableContainerProps) => {
 
-  const productInstanceFunctions = useAppSelector(s=>s.ws.catalog?.product_instance_functions ?? {});
-  const modifierTypes = useAppSelector(s=>s.ws.catalog?.modifiers ?? {});
-  const editProductFunction = (row : IProductInstanceFunction) => () => {
+  const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.product_instance_functions ?? {});
+  const modifierTypes = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const editProductFunction = (row: IProductInstanceFunction) => () => {
     setIsProductInstanceFunctionEditOpen(true);
     setProductInstanceFunctionToEdit(row);
   };
 
-  const deleteProductFunction = (row : IProductInstanceFunction) => () => {
+  const deleteProductFunction = (row: IProductInstanceFunction) => () => {
     setIsProductInstanceFunctionDeleteOpen(true);
     setProductInstanceFunctionToEdit(row);
   };
@@ -35,7 +35,7 @@ const ProductInstanceFunctionTableContainer = ({
       disableToolbar={false}
       title="Product Instance Functions"
       toolbarActions={[{
-        size: 1, 
+        size: 1,
         elt:
           <Tooltip key="AddNew" title="Add Product Function"><IconButton onClick={() => setIsProductInstanceFunctionAddOpen(true)}><AddBox /></IconButton></Tooltip>
       }]}
@@ -48,21 +48,21 @@ const ProductInstanceFunctionTableContainer = ({
           type: 'actions',
           getActions: (params) => [
             <GridActionsCellItem
-              icon={<Tooltip title="Edit Product Function"><Edit/></Tooltip>}
+              icon={<Tooltip title="Edit Product Function"><Edit /></Tooltip>}
               label="Edit Product Function"
               onClick={editProductFunction(params.row)}
               key="EditPF"
             />,
             <GridActionsCellItem
-              icon={<Tooltip title="Delete Product Function"><DeleteOutline/></Tooltip>}
+              icon={<Tooltip title="Delete Product Function"><DeleteOutline /></Tooltip>}
               label="Delete Product Function"
               onClick={deleteProductFunction(params.row)}
               key="DelPF"
             />
           ]
         },
-        { headerName: "Name", field: "name", valueGetter: v => v.row.name, flex: 1},
-        { headerName: "Function", field: "expression", valueGetter: v => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifierTypes), flex: 3},
+        { headerName: "Name", field: "name", valueGetter: v => v.row.name, flex: 1 },
+        { headerName: "Function", field: "expression", valueGetter: v => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifierTypes), flex: 3 },
       ]}
     />
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import CategoryComponent, { CategoryEditProps } from "./category.component";
@@ -6,7 +6,7 @@ import { HOST_API } from "../../../config";
 import { getCategoryIds } from "src/redux/slices/SocketIoSlice";
 import { useAppSelector } from "src/hooks/useRedux";
 
-const CategoryEditContainer = ({ category, onCloseCallback } : CategoryEditProps) => {
+const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps) => {
   const categoryIds = useAppSelector(s => getCategoryIds(s.ws.categories));
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
@@ -23,7 +23,7 @@ const CategoryEditContainer = ({ category, onCloseCallback } : CategoryEditProps
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/category/${category.id}`, {
           method: "PATCH",
           headers: {
@@ -55,13 +55,12 @@ const CategoryEditContainer = ({ category, onCloseCallback } : CategoryEditProps
   };
 
   return (
-    <CategoryComponent 
+    <CategoryComponent
       confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editCategory}
       isProcessing={isProcessing}
-      // intentional != instead of !==
-      categoryIds={categoryIds.filter(c=>c != category.id)}
+      categoryIds={categoryIds.filter(c => c !== category.id)}
       description={description}
       setDescription={setDescription}
       name={name}

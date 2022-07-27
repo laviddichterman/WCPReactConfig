@@ -1,18 +1,16 @@
 import React from "react";
-import LinearProgress from '@mui/material/LinearProgress';
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
+import { Grid, Button, LinearProgress } from '@mui/material';
 
-const GenerateActionsHtmlFromList = (actions : React.ReactNode[]) => actions.length === 0 ? "" : 
-    (<Grid container justifyContent="flex-end" item xs={12}>
-      {actions.map((action, idx) => (
-        <Grid item key={idx}>
-          {action}
-        </Grid>
-      ))}
-    </Grid>)
+const GenerateActionsHtmlFromList = (actions: React.ReactNode[]) => actions.length === 0 ? "" :
+  (<Grid container justifyContent="flex-end" item xs={12}>
+    {actions.map((action, idx) => (
+      <Grid item key={idx}>
+        {action}
+      </Grid>
+    ))}
+  </Grid>)
 
-export interface ElementActionComponentProps { 
+export interface ElementActionComponentProps {
   onCloseCallback: React.MouseEventHandler<HTMLButtonElement>;
   onConfirmClick: React.MouseEventHandler<HTMLButtonElement>;
   isProcessing: boolean;
@@ -20,14 +18,14 @@ export interface ElementActionComponentProps {
   confirmText: string;
   body: React.ReactNode;
 }
-const ElementActionComponent = ({ 
+const ElementActionComponent = ({
   body,
   onCloseCallback,
   onConfirmClick,
   isProcessing,
   disableConfirmOn,
   confirmText
-} : ElementActionComponentProps) => {
+}: ElementActionComponentProps) => {
 
   const actions_html = GenerateActionsHtmlFromList([
     <Button
@@ -43,16 +41,16 @@ const ElementActionComponent = ({
       {confirmText}
     </Button>
   ]);
-      
+
   return (
     <div>
       <Grid container spacing={3} justifyContent="center">
         {body}
         {actions_html}
-        {isProcessing ? <LinearProgress /> : "" }
+        {isProcessing ? <LinearProgress /> : ""}
       </Grid>
     </div>
   );
 };
 
-export {GenerateActionsHtmlFromList, ElementActionComponent};
+export { GenerateActionsHtmlFromList, ElementActionComponent };

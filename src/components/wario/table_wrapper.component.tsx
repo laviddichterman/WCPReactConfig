@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { DataGridPro, DataGridProProps } from '@mui/x-data-grid-pro';
 import {
   GridToolbarContainer,
@@ -22,7 +22,7 @@ export interface CustomToolbarProps {
   actions: ToolbarAction[];
 }
 
-function CustomToolbar({quickFilterProps, title, actions=[]} : CustomToolbarProps) {
+function CustomToolbar({ quickFilterProps, title, actions=[] } : CustomToolbarProps) {
   return (
     <GridToolbarContainer >
       <Grid container  item xs={12}>

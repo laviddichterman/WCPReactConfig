@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import CategoryComponent from "./category.component";
@@ -7,18 +7,18 @@ import { CALL_LINE_DISPLAY } from "@wcp/wcpshared";
 import { useAppSelector } from "src/hooks/useRedux";
 import { getCategoryIds } from "src/redux/slices/SocketIoSlice";
 
-export interface CategoryAddContainerProps { 
+export interface CategoryAddContainerProps {
   onCloseCallback: VoidFunction;
 }
 
-const CategoryAddContainer = ({ onCloseCallback } : CategoryAddContainerProps) => {
+const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) => {
   const categoryIds = useAppSelector(s => getCategoryIds(s.ws.categories));
   const [description, setDescription] = useState("");
   const [subheading, setSubheading] = useState("");
   const [footnotes, setFootnotes] = useState("");
   const [name, setName] = useState("");
   const [ordinal, setOrdinal] = useState(0);
-  const [parent, setParent] = useState<string|null>(null);
+  const [parent, setParent] = useState<string | null>(null);
   const [callLineName, setCallLineName] = useState("");
   const [callLineDisplay, setCallLineDisplay] = useState<CALL_LINE_DISPLAY>(CALL_LINE_DISPLAY.SHORTNAME);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -28,7 +28,7 @@ const CategoryAddContainer = ({ onCloseCallback } : CategoryAddContainerProps) =
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/category`, {
           method: "POST",
           headers: {
@@ -68,7 +68,7 @@ const CategoryAddContainer = ({ onCloseCallback } : CategoryAddContainerProps) =
   };
 
   return (
-    <CategoryComponent 
+    <CategoryComponent
       categoryIds={categoryIds}
       confirmText="Add"
       onCloseCallback={onCloseCallback}

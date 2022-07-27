@@ -5,16 +5,16 @@ import Grid from "@mui/material/Grid";
 import { ElementActionComponent } from "./element.action.component";
 import { HOST_API } from "../../../config";
 
-import {ProductQuickActionProps} from './product.delete.container';
+import { ProductQuickActionProps } from './product.delete.container';
 
-const ProductEnableContainer = ({ product, productName, onCloseCallback } : ProductQuickActionProps) => {
+const ProductEnableContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently( { scope: "write:catalog"} );
+        const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "PATCH",
           headers: {
@@ -41,7 +41,7 @@ const ProductEnableContainer = ({ product, productName, onCloseCallback } : Prod
   };
 
   return (
-    <ElementActionComponent 
+    <ElementActionComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={editProduct}
       isProcessing={isProcessing}
