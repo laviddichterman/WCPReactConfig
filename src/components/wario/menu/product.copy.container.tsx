@@ -28,6 +28,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
   const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
   const [bakeMax, setBakeMax] = useState(product.display_flags?.bake_max ?? 10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.display_flags?.bake_differential ?? 100);
+  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.display_flags.order_guide.suggestions);
+  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.display_flags.order_guide.warnings);
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.display_flags?.show_name_of_base_product ?? true);
   const [singularNoun, setSingularNoun] = useState(product.display_flags?.singular_noun ?? "");
   const [parentCategories, setParentCategories] = useState(product.category_ids);
@@ -165,6 +167,10 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
               flavor_max: flavorMax,
               bake_max: bakeMax,
               singular_noun: singularNoun,
+              order_guide: { 
+                suggestions: orderGuideSuggestionFunctions,
+                warnings: orderGuideWarningFunctions
+              }
             },
             category_ids: parentCategories,
             modifiers: modifiers,
@@ -264,6 +270,10 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
       setBakeMax={setBakeMax}
       bakeDifferentialMax={bakeDifferentialMax}
       setBakeDifferentialMax={setBakeDifferentialMax}
+      orderGuideSuggestionFunctions={orderGuideSuggestionFunctions}
+      setOrderGuideSuggestionFunctions={setOrderGuideSuggestionFunctions}
+      orderGuideWarningFunctions={orderGuideWarningFunctions}
+      setOrderGuideWarningFunctions={setOrderGuideWarningFunctions}
       showNameOfBaseProduct={showNameOfBaseProduct}
       setShowNameOfBaseProduct={setShowNameOfBaseProduct}
       singularNoun={singularNoun}

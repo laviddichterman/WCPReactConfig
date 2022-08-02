@@ -17,6 +17,8 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
   const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
   const [bakeMax, setBakeMax] = useState(product.display_flags?.bake_max ?? 10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.display_flags?.bake_differential ?? 100);
+  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.display_flags.order_guide.suggestions);
+  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.display_flags.order_guide.warnings);
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.display_flags?.show_name_of_base_product ?? true);
   const [singularNoun, setSingularNoun] = useState(product.display_flags?.singular_noun ?? "");
   const [parentCategories, setParentCategories] = useState(product.category_ids);
@@ -45,10 +47,14 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
               flavor_max: flavorMax,
               bake_max: bakeMax,
               singular_noun: singularNoun,
+              order_guide: { 
+                suggestions: orderGuideSuggestionFunctions,
+                warnings: orderGuideWarningFunctions
+              }
             },
             category_ids: parentCategories,
             modifiers: modifiers,
-          }),
+          } as IProduct),
         });
         if (response.status === 200) {
           onCloseCallback();
@@ -81,6 +87,10 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
       setBakeMax={setBakeMax}
       bakeDifferentialMax={bakeDifferentialMax}
       setBakeDifferentialMax={setBakeDifferentialMax}
+      orderGuideSuggestionFunctions={orderGuideSuggestionFunctions}
+      setOrderGuideSuggestionFunctions={setOrderGuideSuggestionFunctions}
+      orderGuideWarningFunctions={orderGuideWarningFunctions}
+      setOrderGuideWarningFunctions={setOrderGuideWarningFunctions}
       showNameOfBaseProduct={showNameOfBaseProduct}
       setShowNameOfBaseProduct={setShowNameOfBaseProduct}
       singularNoun={singularNoun}

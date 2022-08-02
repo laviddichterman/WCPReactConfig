@@ -25,7 +25,7 @@ const ProductInstanceFunctionComponent = ({
   <ElementActionComponent
     {...forwardRefs}
     isProcessing={isProcessing}
-    disableConfirmOn={functionName.length === 0 || isProcessing}
+    disableConfirmOn={functionName.length === 0 || expression === null || isProcessing}
     body={
       <>
         <Grid item xs={12}>

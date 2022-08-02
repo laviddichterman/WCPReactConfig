@@ -1,17 +1,16 @@
 import React, { Dispatch, SetStateAction } from 'react';
-
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Switch from '@mui/material/Switch';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Autocomplete from '@mui/material/Autocomplete';
+import { Grid, 
+  TextField, 
+  Switch, 
+  Card, 
+  CardContent, 
+  FormControl, 
+  FormLabel, 
+  FormControlLabel, 
+  Autocomplete } from '@mui/material';
 import DatetimeBasedDisableComponent from '../datetime_based_disable.component';
 import { ElementActionComponent } from './element.action.component';
-import { IMoney, IWInterval, RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
+import { IMoney, IProductModifier, IWInterval, RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
 import { useAppSelector } from 'src/hooks/useRedux';
 import { CheckedNumericInput } from '../CheckedNumericTextInput';
 
@@ -44,14 +43,18 @@ interface ProductComponentProps {
   setBakeMax: Dispatch<SetStateAction<number>>;
   bakeDifferentialMax: number;
   setBakeDifferentialMax: Dispatch<SetStateAction<number>>;
+  orderGuideWarningFunctions: string[];
+  setOrderGuideWarningFunctions: Dispatch<SetStateAction<string[]>>;
+  orderGuideSuggestionFunctions: string[];
+  setOrderGuideSuggestionFunctions: Dispatch<SetStateAction<string[]>>;
   showNameOfBaseProduct: boolean;
   setShowNameOfBaseProduct: Dispatch<SetStateAction<boolean>>;
   singularNoun: string;
   setSingularNoun: Dispatch<SetStateAction<string>>;
   parentCategories: string[];
   setParentCategories: Dispatch<SetStateAction<string[]>>;
-  modifiers: { mtid: string, enable: string | null }[]
-  setModifiers: Dispatch<SetStateAction<{ mtid: string, enable: string | null }[]>>;
+  modifiers: IProductModifier[];
+  setModifiers: Dispatch<SetStateAction<IProductModifier[]>>;
   children?: React.ReactNode;
 }
 type ProductComponentPropsTypes = (({ suppressNonProductInstanceFields: true; } & Partial<ProductInstanceComponentProps>) | ({ suppressNonProductInstanceFields: false; } & ProductInstanceComponentProps));
@@ -81,6 +84,10 @@ const ProductComponent = ({
   setFlavorMax,
   bakeMax,
   setBakeMax,
+  orderGuideWarningFunctions,
+  setOrderGuideWarningFunctions,
+  orderGuideSuggestionFunctions,
+  setOrderGuideSuggestionFunctions,
   bakeDifferentialMax,
   setBakeDifferentialMax,
   showNameOfBaseProduct,
@@ -100,52 +107,14 @@ const ProductComponent = ({
   }
 
   const handleSetModifiers = (mods: string[]) => {
-    const oldModsAsRecord = modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m.enable }), {} as Record<string, string | null>)
-    const sorted = mods.sort((a, b) => catalog.modifiers[a].modifier_type.ordinal - catalog.modifiers[b].modifier_type.ordinal)
-      .map(x => ({ mtid: x, enable: oldModsAsRecord[x] ?? null }));
+    const oldModsAsRecord = modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier | null>)
+    const sorted: IProductModifier[] = mods.sort((a, b) => catalog.modifiers[a].modifier_type.ordinal - catalog.modifiers[b].modifier_type.ordinal)
+      .map(x => ({ mtid: x, service_disable: oldModsAsRecord[x]?.service_disable ?? [], enable: oldModsAsRecord[x]?.enable ?? null }));
     if (sorted.length === 0 && !showNameOfBaseProduct) {
       setShowNameOfBaseProduct(true);
     }
     setModifiers(sorted);
   };
-
-  const displayNameDescriptionOrdinalFields = suppressNonProductInstanceFields ? (
-    ''
-  ) : (
-    <>
-      <Grid item xs={5}>
-        <TextField
-          label="Display Name"
-          type="text"
-          inputProps={{ size: 60 }}
-          value={displayName}
-          size="small"
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={5}>
-        <TextField
-          label="Description"
-          type="text"
-          inputProps={{ size: 60 }}
-          value={description}
-          size="small"
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={2}>
-        <CheckedNumericInput
-          label="Ordinal"
-          type="number"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
-          value={ordinal}
-          disabled={isProcessing}
-          onChange={(e) => setOrdinal(e)}
-          parseFunction={parseInt}
-          allowEmpty={false} />
-      </Grid>
-    </>
-  );
 
   const modifierEnableFunctionSpecificationList = modifiers.map((modifier, idx) => (
     <Grid item xs={6} key={idx}>
@@ -162,6 +131,18 @@ const ProductComponent = ({
               getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
+            />
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              options={Object.keys(services)}
+              value={modifier.service_disable.map((x) => String(x))}
+              onChange={(_, v) => {
+                setModifiers(Object.assign([], modifiers, { [idx]: { ...modifier, service_disable: v.map((x) => Number(x)) } }))}
+              }
+              getOptionLabel={(option) => services[option]}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />
           </FormControl>
         </CardContent>
@@ -190,21 +171,53 @@ const ProductComponent = ({
               renderInput={(params) => <TextField {...params} label="Categories" />}
             />
           </Grid>
-          {displayNameDescriptionOrdinalFields}
+          {!suppressNonProductInstanceFields && (
+            <>
+              <Grid item xs={5}>
+                <TextField
+                  label="Display Name"
+                  type="text"
+                  inputProps={{ size: 60 }}
+                  value={displayName}
+                  size="small"
+                  onChange={(e) => setDisplayName(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <TextField
+                  label="Description"
+                  type="text"
+                  inputProps={{ size: 60 }}
+                  value={description}
+                  size="small"
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <CheckedNumericInput
+                  label="Ordinal"
+                  type="number"
+                  inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
+                  value={ordinal}
+                  disabled={isProcessing}
+                  onChange={(e) => setOrdinal(e)}
+                  parseFunction={parseInt}
+                  allowEmpty={false} />
+              </Grid>
+            </>
+          )}
           <Grid item xs={4}>
             <CheckedNumericInput
               type="number"
               label="Price"
-              inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
+              inputProps={{ inputMode: 'decimal', min: 0.0, max: 999999, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
               value={price.amount / 100}
               disabled={isProcessing}
               onChange={(e) => setPrice({ ...price, amount: e * 100 })}
               parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
               allowEmpty={false} />
           </Grid>
-          {suppressNonProductInstanceFields ? (
-            ''
-          ) : (
+          {!suppressNonProductInstanceFields && (
             <Grid item xs={2}>
               <TextField
                 label="Short Code"
@@ -220,7 +233,7 @@ const ProductComponent = ({
             <CheckedNumericInput
               type="number"
               label="Flavor Max"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
+              inputProps={{ inputMode: 'decimal', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={flavorMax}
               disabled={isProcessing}
               onChange={(e) => setFlavorMax(e)}
@@ -231,7 +244,7 @@ const ProductComponent = ({
             <CheckedNumericInput
               type="number"
               label="Bake Max"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
+              inputProps={{ inputMode: 'decimal', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={bakeMax}
               disabled={isProcessing}
               onChange={(e) => setBakeMax(e)}
@@ -242,12 +255,38 @@ const ProductComponent = ({
             <CheckedNumericInput
               type="number"
               label="Bake Differential Max"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
+              inputProps={{ inputMode: 'decimal', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={bakeDifferentialMax}
               disabled={isProcessing}
               onChange={(e) => setBakeDifferentialMax(e)}
               parseFunction={parseFloat}
               allowEmpty={false} />
+          </Grid>
+          <Grid item xs={6}>
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              fullWidth
+              options={Object.keys(catalog.product_instance_functions)}
+              value={orderGuideSuggestionFunctions}
+              onChange={(_, v) => setOrderGuideSuggestionFunctions(v)}
+              getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderInput={(params) => <TextField {...params} label="Order Guide Suggestion Functions" />}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              fullWidth
+              options={Object.keys(catalog.product_instance_functions)}
+              value={orderGuideWarningFunctions}
+              onChange={(_, v) => setOrderGuideWarningFunctions(v)}
+              getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderInput={(params) => <TextField {...params} label="Order Guide Warning Functions" />}
+            />
           </Grid>
           <Grid item xs={6}>
             <FormControlLabel

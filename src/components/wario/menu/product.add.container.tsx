@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 import { HOST_API } from "../../../config";
-import { CURRENCY, IMoney, IWInterval } from "@wcp/wcpshared";
+import { CURRENCY, IMoney, IProductModifier, IWInterval } from "@wcp/wcpshared";
 
 interface ProductAddContainerProps {
   onCloseCallback: VoidFunction;
@@ -19,10 +19,12 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [flavorMax, setFlavorMax] = useState(10);
   const [bakeMax, setBakeMax] = useState(10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(100);
+  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState<string[]>([]);
+  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState<string[]>([]);
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(true);
   const [singularNoun, setSingularNoun] = useState("");
   const [parentCategories, setParentCategories] = useState<string[]>([]);
-  const [modifiers, setModifiers] = useState<{ mtid: string, enable: string | null }[]>([]);
+  const [modifiers, setModifiers] = useState<IProductModifier[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -51,6 +53,10 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
               flavor_max: flavorMax,
               bake_max: bakeMax,
               singular_noun: singularNoun,
+              order_guide: { 
+                suggestions: orderGuideSuggestionFunctions,
+                warnings: orderGuideWarningFunctions
+              }
             },
             category_ids: parentCategories,
             modifiers: modifiers,
@@ -68,6 +74,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
           setFlavorMax(10);
           setBakeMax(10);
           setBakeDifferentialMax(100);
+          setOrderGuideSuggestionFunctions([]);
+          setOrderGuideWarningFunctions([]);
           setShowNameOfBaseProduct(true);
           setSingularNoun("");
           setModifiers([]);
@@ -110,6 +118,10 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
       setBakeMax={setBakeMax}
       bakeDifferentialMax={bakeDifferentialMax}
       setBakeDifferentialMax={setBakeDifferentialMax}
+      orderGuideSuggestionFunctions={orderGuideSuggestionFunctions}
+      setOrderGuideSuggestionFunctions={setOrderGuideSuggestionFunctions}
+      orderGuideWarningFunctions={orderGuideWarningFunctions}
+      setOrderGuideWarningFunctions={setOrderGuideWarningFunctions}
       showNameOfBaseProduct={showNameOfBaseProduct}
       setShowNameOfBaseProduct={setShowNameOfBaseProduct}
       singularNoun={singularNoun}

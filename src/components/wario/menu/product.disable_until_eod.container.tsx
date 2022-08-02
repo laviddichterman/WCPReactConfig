@@ -6,6 +6,7 @@ import { ElementActionComponent } from "./element.action.component";
 import { HOST_API } from "../../../config";
 
 import { ProductQuickActionProps } from './product.delete.container';
+import { IProduct } from "@wcp/wcpshared";
 
 const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -22,13 +23,13 @@ const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            disabled: { start: getTime(new Date()), end: getTime(endOfDay(new Date())) },
+            disabled: { start: Date.now(), end: getTime(endOfDay(Date.now())) },
             service_disable: product.service_disable,
             price: product.price,
             display_flags: product.display_flags,
             category_ids: product.category_ids,
             modifiers: product.modifiers,
-          }),
+          } as IProduct),
         });
         if (response.status === 200) {
           onCloseCallback();

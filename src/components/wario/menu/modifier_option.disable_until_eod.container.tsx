@@ -25,7 +25,7 @@ const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallba
             display_name: modifier_option.item.display_name,
             description: modifier_option.item.description,
             shortcode: modifier_option.item.shortcode,
-            disabled: { start: getTime(new Date()), end: getTime(endOfDay(new Date())) },
+            disabled: { start: Date.now(), end: getTime(endOfDay(Date.now())) },
             price: modifier_option.item.price,
             ordinal: modifier_option.ordinal,
             enable_function: modifier_option.enable_function,
