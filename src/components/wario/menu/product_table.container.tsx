@@ -1,6 +1,6 @@
 import { useCallback, Dispatch, SetStateAction } from "react";
 import { format } from 'date-fns';
-import { DisableDataCheck, ICatalog, IProduct, IProductInstance } from '@wcp/wcpshared';
+import { DisableDataCheck, DISABLE_REASON, ICatalog, IProduct, IProductInstance } from '@wcp/wcpshared';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
@@ -40,7 +40,7 @@ const ProductTableContainer = ({
   setProductInstanceToEdit,
   setPanelsExpandedSize
 }: ProductTableContainerProps) => {
-  const catalog = useAppSelector(s => s.ws.catalog) as ICatalog;
+  const catalog = useAppSelector(s => s.ws.catalog!);
 
   const apiRef = useGridApiRef();
 
@@ -176,14 +176,14 @@ const ProductTableContainer = ({
               onClick={deleteProduct(params.row)}
               showInMenu
             />);
-            return !DisableDataCheck(params.row.product.disabled, new Date()) ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
+            return DisableDataCheck(params.row.product.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           }
         },
         { headerName: "Name", field: "display_name", valueGetter: (v: { row: RowType }) => GetIndexOfBaseProductInstance(v.row.instances) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.instances)].item.display_name : "Incomplete Product", flex: 6 },
         { headerName: "Price", field: "product.price.amount", valueGetter: v => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
         { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: { row: RowType }) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "", flex: 3 },
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "product.disabled", valueGetter: v => !DisableDataCheck(v.row.product.disabled, new Date()) ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(new Date(v.row.product.disabled.start), "MMMM dd, y hh:mm a")} to ${format(new Date(v.row.product.disabled.end), "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
+        { headerName: "Disabled", field: "product.disabled", valueGetter: v => DisableDataCheck(v.row.product.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
         ]}
         rows={products}
         getRowId={(row) => row.product._id}

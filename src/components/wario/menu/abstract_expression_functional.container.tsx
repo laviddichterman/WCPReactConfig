@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useMemo, useState, useEffect } from "r
 import type { ValSetVal } from "../../../utils/common";
 import { Autocomplete, Grid, TextField, FormControlLabel, FormLabel, Card, CardContent, CardHeader, Radio, RadioGroup, List, ListItem, FormControl, Switch } from "@mui/material";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { ConstLiteralDiscriminator, IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, MetadataField, OptionPlacement, OptionQualifier, ProductInstanceFunctionOperator, ProductInstanceFunctionType, ProductMetadataExpression, PRODUCT_LOCATION } from "@wcp/wcpshared";
+import { ConstLiteralDiscriminator, IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, MetadataField, OptionPlacement, OptionQualifier, ProductInstanceFunctionOperator, ProductInstanceFunctionType, ProductMetadataExpression, PRODUCT_LOCATION, WFunctional } from "@wcp/wcpshared";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 
 export interface DiscriminatedFunctionalComponentProps<T> {
@@ -13,20 +13,23 @@ export interface DiscriminatedFunctionalComponentProps<T> {
 
 
 export interface AbstractExpressionFunctionalComponentProps {
+  title: string | null;
   expression_types: Record<keyof typeof ProductInstanceFunctionType, React.ReactNode>;
   discriminator: ProductInstanceFunctionType | null;
   setDiscriminator: Dispatch<SetStateAction<ProductInstanceFunctionType | null>>;
 }
 
 const AbstractExpressionFunctionalComponent = ({
+  title,
   expression_types,
   discriminator,
   setDiscriminator,
-}: DiscriminatedFunctionalComponentProps<ProductInstanceFunctionType>) => (
+}: AbstractExpressionFunctionalComponentProps) => (
   <div>
     <List>
       <ListItem>
         <Card>
+          { title !== null ? <CardHeader title={title} /> : ""}
           <CardContent>
             <FormControl component="fieldset">
               <FormLabel>Expression Type</FormLabel>
@@ -72,6 +75,7 @@ const AbstractExpressionFunctionalContainer = ({
   value,
   setValue
 }: ValSetVal<IAbstractExpression | null>) => {
+  const modifiers = useAppSelector(s=>s.ws.catalog!.modifiers);
   const [discriminator, setDiscriminator] = useState<ProductInstanceFunctionType | null>(value?.discriminator ?? null);
   const [expr, setExpr] = useState<IAbstractExpression['expr'] | null>(value?.expr ?? null);
   useEffect(() => {
@@ -123,6 +127,7 @@ const AbstractExpressionFunctionalContainer = ({
   };
   return (
     <AbstractExpressionFunctionalComponent
+      title={value !== null ? WFunctional.AbstractExpressionStatementToString(value, modifiers) : null}
       expression_types={expression_types}
       discriminator={discriminator}
       setDiscriminator={updateDiscriminator}
@@ -413,7 +418,7 @@ const ConstLiteralFunctionalComponentInner = ({
   expression_types,
   discriminator,
   setDiscriminator,
-}: DiscriminatedFunctionalComponentProps<ConstLiteralDiscriminator>) => (
+}: ConstLiteralFunctionalComponentInnerProps) => (
   <List>
     <ListItem>
       <Card>

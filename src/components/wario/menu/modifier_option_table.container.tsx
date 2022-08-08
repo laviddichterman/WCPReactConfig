@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { Edit, DeleteOutline, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
-import { DisableDataCheck, IOption, IOptionType } from '@wcp/wcpshared';
+import { DisableDataCheck, DISABLE_REASON, IOption, IOptionType } from '@wcp/wcpshared';
 import TableWrapperComponent from "../table_wrapper.component";
 import { useAppSelector } from "../../../hooks/useRedux";
 
@@ -91,7 +91,7 @@ const ModifierOptionTableContainer = ({
               onClick={disableOption(params.row)}
               showInMenu
             />)
-            return !DisableDataCheck(params.row.item.disabled, new Date()) ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
+            return DisableDataCheck(params.row.item.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
           }
         },
         { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name, flex: 1 },
@@ -104,7 +104,7 @@ const ModifierOptionTableContainer = ({
         { headerName: "Can Split?", field: "metadata.can_split", valueGetter: v => v.row.metadata.can_split },
         { headerName: "EnableFxn", field: "enable_function.name", valueGetter: v => v.row.enable_function ? v.row.enable_function.name : "" },
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "item.disabled", valueGetter: v => (!DisableDataCheck(v.row.item.disabled, new Date()) ? (v.row.item.disabled.start > v.row.item.disabled.end ? "True" : `${format(v.row.item.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.item.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
+        { headerName: "Disabled", field: "item.disabled", valueGetter: v => (DisableDataCheck(v.row.item.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? (v.row.item.disabled.start > v.row.item.disabled.end ? "True" : `${format(v.row.item.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.item.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
       ]}
       getRowId={(row) => row._id}
       rows={modifier_types_map[modifier_type.id].options}

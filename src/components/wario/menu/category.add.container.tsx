@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import CategoryComponent from "./category.component";
 import { HOST_API } from "../../../config";
-import { CALL_LINE_DISPLAY } from "@wcp/wcpshared";
+import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wcpshared";
 import { useAppSelector } from "src/hooks/useRedux";
 import { getCategoryIds } from "src/redux/slices/SocketIoSlice";
 
@@ -21,6 +21,8 @@ const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) =>
   const [parent, setParent] = useState<string | null>(null);
   const [callLineName, setCallLineName] = useState("");
   const [callLineDisplay, setCallLineDisplay] = useState<CALL_LINE_DISPLAY>(CALL_LINE_DISPLAY.SHORTNAME);
+  const [nestedDisplay, setNestedDisplay] = useState<CategoryDisplay>(CategoryDisplay.TAB);
+  const [serviceDisable, setServiceDisable] = useState<number[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -57,6 +59,8 @@ const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) =>
           setParent(null);
           setCallLineName("");
           setCallLineDisplay(CALL_LINE_DISPLAY.SHORTNAME);
+          setNestedDisplay(CategoryDisplay.TAB);
+          setServiceDisable([]);
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -90,6 +94,10 @@ const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) =>
       setCallLineName={setCallLineName}
       callLineDisplay={callLineDisplay}
       setCallLineDisplay={setCallLineDisplay}
+      nestedDisplay={nestedDisplay}
+      setNestedDisplay={setNestedDisplay}
+      serviceDisable={serviceDisable}
+      setServiceDisable={setServiceDisable}
     />
   );
 };

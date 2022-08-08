@@ -18,7 +18,7 @@ import FormLabel from "@mui/material/FormLabel";
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "src/hooks/useRedux";
 import { ICatalogModifiers, IProduct, IWModifiersInstance, IWOptionInstance, PriceDisplay } from "@wcp/wcpshared";
-import { isUndefined } from "lodash";
+import { isUndefined, snakeCase, startCase } from "lodash";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 
 export interface ProductInstanceComponentProps {
@@ -370,7 +370,7 @@ const ProductInstanceComponent = ({
                 key={i}
                 value={val}
                 control={<Radio />}
-                label={val}
+                label={startCase(snakeCase(val))}
               />)}
           </RadioGroup>
         </FormControl>
@@ -453,7 +453,7 @@ const ProductInstanceComponent = ({
                 key={i}
                 value={val}
                 control={<Radio />}
-                label={val}
+                label={startCase(snakeCase(val))}
               />)}
           </RadioGroup>
         </FormControl>

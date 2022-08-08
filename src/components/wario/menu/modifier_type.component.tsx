@@ -11,7 +11,7 @@ import Switch from "@mui/material/Switch";
 import { ElementActionComponent } from "./element.action.component";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
-import { camelCase } from 'lodash';
+import { startCase, snakeCase } from 'lodash';
 
 export interface ModifierTypeUiProps {
   onCloseCallback: VoidFunction;
@@ -261,7 +261,7 @@ const ModifierTypeComponent = ({
                     key={i}
                     value={opt}
                     control={<Radio />}
-                    label={camelCase(opt)}
+                    label={startCase(snakeCase(opt))}
                   />
                 )}
               </RadioGroup>
@@ -284,7 +284,7 @@ const ModifierTypeComponent = ({
                     value={opt}
                     disabled={opt === "LIST_CHOICES" && maxSelected !== 1}
                     control={<Radio />}
-                    label={camelCase(opt)}
+                    label={startCase(snakeCase(opt))}
                   />
                 )}
               </RadioGroup>

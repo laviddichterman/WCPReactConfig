@@ -12,8 +12,8 @@ import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "src/hooks/useRedux";
 import { getCategoryById } from "src/redux/slices/SocketIoSlice";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
-import { CALL_LINE_DISPLAY, ICategory } from "@wcp/wcpshared";
-import { camelCase } from "lodash";
+import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
+import { startCase, snakeCase} from "lodash";
 import { EntityId } from "@reduxjs/toolkit";
 
 export interface CategoryEditProps {
@@ -41,8 +41,12 @@ export interface CategoryComponentProps {
   setCallLineName: Dispatch<SetStateAction<string>>;
   callLineDisplay: CALL_LINE_DISPLAY
   setCallLineDisplay: Dispatch<SetStateAction<CALL_LINE_DISPLAY>>;
+  nestedDisplay: CategoryDisplay;
+  setNestedDisplay: Dispatch<SetStateAction<CategoryDisplay>>;
   parent: string | null;
   setParent: Dispatch<SetStateAction<string | null>>;
+  serviceDisable: number[];
+  setServiceDisable: Dispatch<SetStateAction<number[]>>;
 };
 
 const CategoryComponent = ({
@@ -65,9 +69,15 @@ const CategoryComponent = ({
   setCallLineName,
   callLineDisplay,
   setCallLineDisplay,
+  nestedDisplay,
+  setNestedDisplay,
   parent,
-  setParent }: CategoryComponentProps) => {
+  setParent,
+  serviceDisable,
+  setServiceDisable
+}: CategoryComponentProps) => {
   const selectCategoryById = useAppSelector(s => (id: EntityId) => getCategoryById(s.ws.categories, id));
+  const services = useAppSelector(s => s.ws.services!);
   return (
     <ElementActionComponent
       onCloseCallback={onCloseCallback}
@@ -156,6 +166,20 @@ const CategoryComponent = ({
               onChange={(e) => setCallLineName(e.target.value)}
             />
           </Grid>
+          <Grid item xs={6}>
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              options={Object.keys(services)}
+              value={serviceDisable.map((x) => String(x))}
+              onChange={(e, v) => {
+                setServiceDisable(v.map((x) => Number(x)));
+              }}
+              getOptionLabel={(option) => services[option]}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderInput={(params) => <TextField {...params} label="Disabled Services" />}
+            />
+          </Grid>
           <Grid container item xs={6}>
             <FormControl component="fieldset">
               <FormLabel component="legend">Call Line Display</FormLabel>
@@ -172,7 +196,29 @@ const CategoryComponent = ({
                     key={i}
                     value={opt}
                     control={<Radio />}
-                    label={camelCase(opt)}
+                    label={startCase(snakeCase(opt))}
+                  />
+                )}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid container item xs={6}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Nested Display</FormLabel>
+              <RadioGroup
+                defaultValue={CategoryDisplay.TAB}
+                aria-label="nested-display"
+                name="nested-display"
+                row
+                value={nestedDisplay}
+                onChange={(e) => setNestedDisplay(CategoryDisplay[e.target.value as keyof typeof CategoryDisplay])}
+              >
+                {Object.values(CategoryDisplay).map((opt, i) =>
+                  <FormControlLabel
+                    key={i}
+                    value={opt}
+                    control={<Radio />}
+                    label={startCase(snakeCase(opt))}
                   />
                 )}
               </RadioGroup>

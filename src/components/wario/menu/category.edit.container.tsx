@@ -5,6 +5,7 @@ import CategoryComponent, { CategoryEditProps } from "./category.component";
 import { HOST_API } from "../../../config";
 import { getCategoryIds } from "src/redux/slices/SocketIoSlice";
 import { useAppSelector } from "src/hooks/useRedux";
+import { ICategory } from "@wcp/wcpshared";
 
 const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps) => {
   const categoryIds = useAppSelector(s => getCategoryIds(s.ws.categories));
@@ -16,6 +17,8 @@ const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps)
   const [parent, setParent] = useState(category.parent_id ?? null);
   const [callLineName, setCallLineName] = useState(category.display_flags.call_line_name);
   const [callLineDisplay, setCallLineDisplay] = useState(category.display_flags.call_line_display);
+  const [nestedDisplay, setNestedDisplay] = useState(category.display_flags.nesting);
+  const [serviceDisable, setServiceDisable] = useState(category.serviceDisable);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -39,9 +42,11 @@ const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps)
             parent_id: parent,
             display_flags: {
               call_line_name: callLineName,
-              call_line_display: callLineDisplay
-            }
-          }),
+              call_line_display: callLineDisplay,
+              nesting: nestedDisplay
+            },
+            serviceDisable
+          } as ICategory),
         });
         if (response.status === 200) {
           onCloseCallback();
@@ -77,6 +82,10 @@ const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps)
       setCallLineName={setCallLineName}
       callLineDisplay={callLineDisplay}
       setCallLineDisplay={setCallLineDisplay}
+      nestedDisplay={nestedDisplay}
+      setNestedDisplay={setNestedDisplay}
+      serviceDisable={serviceDisable}
+      setServiceDisable={setServiceDisable}
     />
   );
 };
