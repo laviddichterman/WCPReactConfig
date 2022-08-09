@@ -143,15 +143,19 @@ LogicalFunctionalComponent = ({
   const [operandA, setOperandA] = useState(value?.operandA ?? null);
   const [operandB, setOperandB] = useState(value?.operandB ?? null);
   useEffect(() => {
-    if (operator !== null &&
-      operandA !== null &&
-      (operator !== ProductInstanceFunctionOperator.NOT || operandB !== null)) {
-      setValue({ operator, operandA, operandB: operandB ?? undefined });
+    if (operator !== null) {
+      if (operandA !== null) {
+        if (operator === ProductInstanceFunctionOperator.NOT) {
+          setValue({ operator, operandA });
+        } else if (operandB !== null) {
+          setValue({ operator, operandA, operandB });
+        }
+      }
     }
   }, [operator, operandA, operandB, setValue])
   const updateOperator = (val: string) => {
     const value = ProductInstanceFunctionOperator[val as keyof typeof ProductInstanceFunctionOperator];
-    if ((operator === ProductInstanceFunctionOperator.NOT || value === ProductInstanceFunctionOperator.NOT) && operator !== value) {
+    if (operator === ProductInstanceFunctionOperator.NOT) {
       setOperandB(null);
     }
     setOperator(value);
