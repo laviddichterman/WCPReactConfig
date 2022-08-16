@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ModifierOptionComponent from "./modifier_option.component";
 
 import { HOST_API } from "../../../config";
-import { IOptionType, IMoney, CURRENCY } from "@wcp/wcpshared";
+import { IOptionType, IMoney, CURRENCY, IOption } from "@wcp/wcpshared";
 
 export interface ModifierOptionUiContainerProps {
   parent: IOptionType;
@@ -24,8 +24,6 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
   const [omitFromShortname, setOmitFromShortname] = useState(false);
   const [omitFromName, setOmitFromName] = useState(false);
   const [disabled, setDisabled] = useState(null);
-  const [revelID, setRevelID] = useState("");
-  const [squareID, setSquareID] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -34,30 +32,32 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body: Omit<IOption, "id" | 'modifierTypeId'> = {
+          displayName,
+          description,
+          shortcode,
+          disabled,
+          price,
+          ordinal,
+          enable: enableFunction,
+          externalIDs: {},
+          metadata: {
+            flavor_factor: flavorFactor,
+            bake_factor: bakeFactor,
+            can_split: canSplit,
+          },
+          displayFlags: {
+            omit_from_shortname: omitFromShortname,
+            omit_from_name: omitFromName
+          }
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${parent.id}/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            display_name: displayName,
-            description,
-            shortcode,
-            disabled,
-            price,
-            ordinal,
-            enable_function: enableFunction,
-            flavor_factor: flavorFactor,
-            bake_factor: bakeFactor,
-            can_split: canSplit,
-            revelID,
-            squareID,
-            display_flags: {
-              omit_from_shortname: omitFromShortname,
-              omit_from_name: omitFromName
-            }
-          }),
+          body: JSON.stringify(body),
         });
         if (response.status === 201) {
           setDisplayName("");
@@ -72,8 +72,6 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
           setOmitFromShortname(false);
           setOmitFromName(false);
           setDisabled(null);
-          setRevelID("");
-          setSquareID("");
           onCloseCallback();
         }
         setIsProcessing(false);
@@ -114,10 +112,6 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
       setOmitFromName={setOmitFromName}
       disabled={disabled}
       setDisabled={setDisabled}
-      revelID={revelID}
-      setRevelID={setRevelID}
-      squareID={squareID}
-      setSquareID={setSquareID}
     />
   );
 };

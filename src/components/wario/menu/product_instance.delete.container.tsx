@@ -19,7 +19,7 @@ const ProductInstanceDeleteContainer = ({ product_instance, onCloseCallback }: P
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "delete:catalog" });
-        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product_instance.product_id}/${product_instance.id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product_instance.productId}/${product_instance.id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ const ProductInstanceDeleteContainer = ({ product_instance, onCloseCallback }: P
     <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteProductInstance}
-      name={product_instance.item.display_name}
+      name={product_instance.displayName}
       isProcessing={isProcessing}
     />
   );

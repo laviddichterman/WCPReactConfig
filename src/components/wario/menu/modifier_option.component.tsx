@@ -40,10 +40,6 @@ interface ModifierOptionComponentProps {
   setOmitFromName: Dispatch<SetStateAction<boolean>>;
   disabled: IWInterval | null;
   setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
-  revelID: string
-  setRevelID: Dispatch<SetStateAction<string>>;
-  squareID: string
-  setSquareID: Dispatch<SetStateAction<string>>;
 }
 
 const ModifierOptionComponent = ({
@@ -74,11 +70,7 @@ const ModifierOptionComponent = ({
   omitFromName,
   setOmitFromName,
   disabled,
-  setDisabled,
-  revelID,
-  setRevelID,
-  squareID,
-  setSquareID,
+  setDisabled
 }: ModifierOptionComponentProps) => {
   const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.product_instance_functions) as RecordProductInstanceFunctions;
   return (
@@ -211,26 +203,6 @@ const ModifierOptionComponent = ({
                 />
               }
               label="Omit from name"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Revel ID"
-              type="text"
-              inputProps={{ size: 40 }}
-              value={revelID}
-              size="small"
-              onChange={(e) => setRevelID(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Square ID"
-              type="text"
-              inputProps={{ size: 40 }}
-              value={squareID}
-              size="small"
-              onChange={(e) => setSquareID(e.target.value)}
             />
           </Grid>
           <Grid item xs={12}>
