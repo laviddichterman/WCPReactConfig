@@ -45,8 +45,8 @@ export interface CategoryComponentProps {
   setNestedDisplay: Dispatch<SetStateAction<CategoryDisplay>>;
   parent: string | null;
   setParent: Dispatch<SetStateAction<string | null>>;
-  serviceDisable: number[];
-  setServiceDisable: Dispatch<SetStateAction<number[]>>;
+  serviceDisable: string[];
+  setServiceDisable: Dispatch<SetStateAction<string[]>>;
 };
 
 const CategoryComponent = ({
@@ -77,7 +77,7 @@ const CategoryComponent = ({
   setServiceDisable
 }: CategoryComponentProps) => {
   const selectCategoryById = useAppSelector(s => (id: EntityId) => getCategoryById(s.ws.categories, id));
-  const services = useAppSelector(s => s.ws.services!);
+  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
   return (
     <ElementActionComponent
       onCloseCallback={onCloseCallback}
@@ -170,12 +170,12 @@ const CategoryComponent = ({
             <Autocomplete
               multiple
               filterSelectedOptions
-              options={Object.keys(services)}
+              options={Object.keys(fulfillments)}
               value={serviceDisable.map((x) => String(x))}
-              onChange={(e, v) => {
-                setServiceDisable(v.map((x) => Number(x)));
+              onChange={(_, v) => {
+                setServiceDisable(v);
               }}
-              getOptionLabel={(option) => services[option]}
+              getOptionLabel={(option) => fulfillments[option].displayName}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />

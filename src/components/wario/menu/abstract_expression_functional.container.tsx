@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useMemo, useState, useEffect } from "r
 import type { ValSetVal } from "../../../utils/common";
 import { Autocomplete, Grid, TextField, FormControlLabel, FormLabel, Card, CardContent, CardHeader, Radio, RadioGroup, List, ListItem, FormControl, Switch } from "@mui/material";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { ConstLiteralDiscriminator, IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, MetadataField, OptionPlacement, OptionQualifier, ProductInstanceFunctionOperator, ProductInstanceFunctionType, ProductMetadataExpression, PRODUCT_LOCATION, WFunctional } from "@wcp/wcpshared";
+import { ConstLiteralDiscriminator, IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, MetadataField, OptionPlacement, OptionQualifier, LogicalFunctionOperator, ProductInstanceFunctionType, ProductMetadataExpression, PRODUCT_LOCATION, WFunctional } from "@wcp/wcpshared";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 
 export interface DiscriminatedFunctionalComponentProps<T> {
@@ -65,8 +65,8 @@ const AbstractExpressionFunctionalComponent = ({
 );
 
 let ConstLiteralFunctionalComponent: ({ value, setValue }: ValSetVal<IConstLiteralExpression | null>) => JSX.Element;
-let LogicalFunctionalComponent: ({ value, setValue }: ValSetVal<ILogicalExpression | null>) => JSX.Element;
-let IfElseFunctionalComponent: ({ value, setValue }: ValSetVal<IIfElseExpression | null>) => JSX.Element;
+let LogicalFunctionalComponent: ({ value, setValue }: ValSetVal<ILogicalExpression<IAbstractExpression> | null>) => JSX.Element;
+let IfElseFunctionalComponent: ({ value, setValue }: ValSetVal<IIfElseExpression<IAbstractExpression> | null>) => JSX.Element;
 let ModifierPlacementFunctionalComponent: ({ value, setValue }: ValSetVal<IModifierPlacementExpression | null>) => JSX.Element;
 let HasAnyOfModifierTypeFunctionalComponent: ({ value, setValue }: ValSetVal<IHasAnyOfModifierExpression | null>) => JSX.Element;
 let ProductMetadataFunctionalComponent: ({ value, setValue }: ValSetVal<ProductMetadataExpression | null>) => JSX.Element;
@@ -90,7 +90,7 @@ const AbstractExpressionFunctionalContainer = ({
   const expression_types = {
     Logical: (
       <LogicalFunctionalComponent
-        value={expr as ILogicalExpression}
+        value={expr as ILogicalExpression<IAbstractExpression>}
         setValue={setExpr}
       />
     ),
@@ -102,7 +102,7 @@ const AbstractExpressionFunctionalContainer = ({
     ),
     IfElse: (
       <IfElseFunctionalComponent
-        value={expr as IIfElseExpression}
+        value={expr as IIfElseExpression<IAbstractExpression>}
         setValue={setExpr}
       />
     ),
@@ -145,7 +145,7 @@ LogicalFunctionalComponent = ({
   useEffect(() => {
     if (operator !== null) {
       if (operandA !== null) {
-        if (operator === ProductInstanceFunctionOperator.NOT) {
+        if (operator === LogicalFunctionOperator.NOT) {
           setValue({ operator, operandA });
         } else if (operandB !== null) {
           setValue({ operator, operandA, operandB });
@@ -154,8 +154,8 @@ LogicalFunctionalComponent = ({
     }
   }, [operator, operandA, operandB, setValue])
   const updateOperator = (val: string) => {
-    const value = ProductInstanceFunctionOperator[val as keyof typeof ProductInstanceFunctionOperator];
-    if (operator === ProductInstanceFunctionOperator.NOT) {
+    const value = LogicalFunctionOperator[val as keyof typeof LogicalFunctionOperator];
+    if (operator === LogicalFunctionOperator.NOT) {
       setOperandB(null);
     }
     setOperator(value);
@@ -175,7 +175,7 @@ LogicalFunctionalComponent = ({
                   value={operator}
                   onChange={(_, value) => updateOperator(value)}
                 >
-                  {Object.keys(ProductInstanceFunctionOperator).map((val, idx) => (
+                  {Object.keys(LogicalFunctionOperator).map((val, idx) => (
                     <FormControlLabel
                       key={idx}
                       control={<Radio disableRipple />}
@@ -200,7 +200,7 @@ LogicalFunctionalComponent = ({
           </Card>
         </ListItem>
       </List>
-      {operator !== ProductInstanceFunctionOperator.NOT ? (
+      {operator !== LogicalFunctionOperator.NOT ? (
         <ListItem>
           <Card>
             <CardHeader title="Right Operand" />
@@ -341,7 +341,7 @@ ModifierPlacementFunctionalComponent = ({
             options={Object.keys(modifierOptionsForType)}
             value={modifierOption}
             onChange={(_, v) => setModifierOption(v)}
-            getOptionLabel={(o) => modifierOptionsForType[o].item.display_name ?? "CORRUPT DATA"}
+            getOptionLabel={(o) => modifierOptionsForType[o].displayName ?? "CORRUPT DATA"}
             isOptionEqualToValue={(o, v) => o === v}
             renderInput={(params) => <TextField {...params} label="Option" />}
           />

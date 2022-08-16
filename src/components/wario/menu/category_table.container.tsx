@@ -149,11 +149,11 @@ const CategoryTableContainer = ({
         minWidth: 400,
         flex: 400
       },
-      { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.category.ordinal, width: 30 },
-      { headerName: "Call Line Name", field: "category.display_flags.call_line_name", valueGetter: v => v.row.category.display_flags.call_line_name },
-      { headerName: "Description", field: "category.description", valueGetter: v => v.row.category.description },
-      { headerName: "Subheading", field: "category.subheading", valueGetter: v => v.row.category.subheading },
-      { headerName: "Footer", field: "category.footer", valueGetter: v => v.row.category.footer },
+      { headerName: "Ordinal", field: "ordinal", valueGetter: (v: { row: CatalogCategoryEntry }) => v.row.category.ordinal, width: 30 },
+      { headerName: "Call Line Name", field: "category.display_flags.call_line_name", valueGetter: (v: { row: CatalogCategoryEntry }) => v.row.category.display_flags.call_line_name },
+      { headerName: "Description", field: "category.description", valueGetter: (v: { row: CatalogCategoryEntry }) => v.row.category.description },
+      { headerName: "Subheading", field: "category.subheading", valueGetter: (v: { row: CatalogCategoryEntry }) => v.row.category.subheading },
+      { headerName: "Footnotes", field: "category.footnotes", valueGetter: (v: { row: CatalogCategoryEntry }) => v.row.category.footnotes },
       ]}
       toolbarActions={[
         {

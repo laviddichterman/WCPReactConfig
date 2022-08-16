@@ -27,26 +27,27 @@ const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps)
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body : Omit<ICategory, "id"> = {
+          description,
+          subheading,
+          footnotes,
+          name,
+          ordinal,
+          serviceDisable,
+          parent_id: parent,
+          display_flags: {
+            call_line_name: callLineName,
+            call_line_display: callLineDisplay,
+            nesting: nestedDisplay
+          }
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/category/${category.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            description,
-            name,
-            ordinal,
-            subheading,
-            footnotes,
-            parent_id: parent,
-            display_flags: {
-              call_line_name: callLineName,
-              call_line_display: callLineDisplay,
-              nesting: nestedDisplay
-            },
-            serviceDisable
-          } as ICategory),
+          body: JSON.stringify(body),
         });
         if (response.status === 200) {
           onCloseCallback();

@@ -104,7 +104,7 @@ const ModifierTypeTableContainer = ({
         { headerName: "Ordinal", field: "ordinal", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.ordinal },
         { headerName: "Min Selected", field: "min_selected", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.min_selected, },
         { headerName: "Max Selected", field: "max_selected", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.max_selected },
-        { headerName: "Display Name", field: "display_name", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.display_name },
+        { headerName: "Display Name", field: "display_name", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.displayName },
       ]}
       toolbarActions={[{
         size: 1,

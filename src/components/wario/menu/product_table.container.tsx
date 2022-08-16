@@ -76,7 +76,7 @@ const ProductTableContainer = ({
   // this assumes a single base product instance per product class.
   // assumption is that this precondition is enforced by the service
   const GetIndexOfBaseProductInstance = useCallback((instances: IProductInstance[]) =>
-    instances.findIndex((pi) => pi.is_base), []);
+    instances.findIndex((pi) => pi.isBase), []);
 
   const getDetailPanelHeight = useCallback(({ row }: { row: RowType }) => row.instances.length ? (41 + (row.instances.length * 36)) : 0, []);
 
@@ -110,12 +110,12 @@ const ProductTableContainer = ({
             />
           ]
         },
-        { headerName: "Name", field: "item.display_name", valueGetter: (v: { row: IProductInstance }) => v.row.item.display_name, flex: 1 },
+        { headerName: "Name", field: "item.display_name", valueGetter: (v: { row: IProductInstance }) => v.row.displayName, flex: 1 },
         { headerName: "Ordinal", field: "ordinal", valueGetter: (v: { row: IProductInstance }) => v.row.ordinal },
-        { headerName: "Menu Ordinal", field: "menuOrdinal", valueGetter: (v: { row: IProductInstance }) => v.row.display_flags?.menu?.ordinal || 0 },
-        { headerName: "Order Ordinal", field: "orderOrdinal", valueGetter: (v: { row: IProductInstance }) => v.row.display_flags?.order?.ordinal || 0 },
-        { headerName: "Shortcode", field: "item.shortcode", valueGetter: (v: { row: IProductInstance }) => v.row.item.shortcode },
-        { headerName: "Description", field: "item.description", valueGetter: (v: { row: IProductInstance }) => v.row.item.description },
+        { headerName: "Menu Ordinal", field: "menuOrdinal", valueGetter: (v: { row: IProductInstance }) => v.row.displayFlags.menu.ordinal || 0 },
+        { headerName: "Order Ordinal", field: "orderOrdinal", valueGetter: (v: { row: IProductInstance }) => v.row.displayFlags.order.ordinal || 0 },
+        { headerName: "Shortcode", field: "item.shortcode", valueGetter: (v: { row: IProductInstance }) => v.row.shortcode },
+        { headerName: "Description", field: "item.description", valueGetter: (v: { row: IProductInstance }) => v.row.description },
 
       ]}
       rows={row.instances}
@@ -179,11 +179,11 @@ const ProductTableContainer = ({
             return DisableDataCheck(params.row.product.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           }
         },
-        { headerName: "Name", field: "display_name", valueGetter: (v: { row: RowType }) => GetIndexOfBaseProductInstance(v.row.instances) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.instances)].item.display_name : "Incomplete Product", flex: 6 },
+        { headerName: "Name", field: "display_name", valueGetter: (v: { row: RowType }) => GetIndexOfBaseProductInstance(v.row.instances) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.instances)].displayName : "Incomplete Product", flex: 6 },
         { headerName: "Price", field: "product.price.amount", valueGetter: v => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
         { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: { row: RowType }) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "", flex: 3 },
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "product.disabled", valueGetter: v => DisableDataCheck(v.row.product.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
+        { headerName: "Disabled", field: "product.disabled", valueGetter: (v: { row: RowType }) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
         ]}
         rows={products}
         getRowId={(row) => row.product._id}

@@ -65,7 +65,7 @@ const StoreCreditValidateAndSpendComponent = () => {
           { method: "GET" }
         );
         const response_data = await response.json();
-        console.log(response_data);
+        console.log(JSON.stringify(response_data));
         setValidationResponse(response_data);
         setIsProcessing(false);
       } catch (error) {
@@ -259,7 +259,6 @@ const StoreCreditValidateAndSpendComponent = () => {
                 </Grid>
                 <Grid item xs={4}>
                   <Button
-                    className="btn btn-light"
                     onClick={processDebit}
                     disabled={
                       isProcessing ||

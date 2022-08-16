@@ -61,8 +61,8 @@ const ProductInstanceFunctionTableContainer = ({
             />
           ]
         },
-        { headerName: "Name", field: "name", valueGetter: v => v.row.name, flex: 1 },
-        { headerName: "Function", field: "expression", valueGetter: v => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifierTypes), flex: 3 },
+        { headerName: "Name", field: "name", valueGetter: (v: {row: IProductInstanceFunction}) => v.row.name, flex: 1 },
+        { headerName: "Function", field: "expression", valueGetter: (v: {row: IProductInstanceFunction}) => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifierTypes), flex: 3 },
       ]}
     />
   );

@@ -27,6 +27,7 @@ const ModifierOptionTableContainer = ({
   setIsModifierOptionDisableUntilEodOpen
 }: ModifierOptionTableContainerProps) => {
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const productInstanceFunctions = useAppSelector(s => s.ws.catalog!.product_instance_functions!);
   const editModifierOption = (row: IOption) => () => {
     setIsModifierOptionEditOpen(true);
     setModifierOptionToEdit(row);
@@ -94,17 +95,17 @@ const ModifierOptionTableContainer = ({
             return DisableDataCheck(params.row.item.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
           }
         },
-        { headerName: "Name", field: "item.display_name", valueGetter: v => v.row.item.display_name, flex: 1 },
-        { headerName: "Price", field: "item.price.amount", valueGetter: v => `$${Number(v.row.item.price.amount / 100).toFixed(2)}` },
-        { headerName: "Shortcode", field: "item.shortcode", valueGetter: v => v.row.item.shortcode, },
-        { headerName: "Description", field: "item.description", valueGetter: v => v.row.item.description, },
-        { headerName: "Ordinal", field: "ordinal", valueGetter: v => v.row.ordinal },
-        { headerName: "FFactor", field: "metadata.flavor_factor", valueGetter: v => v.row.metadata.flavor_factor },
-        { headerName: "BFactor", field: "metadata.bake_factor", valueGetter: v => v.row.metadata.bake_factor },
-        { headerName: "Can Split?", field: "metadata.can_split", valueGetter: v => v.row.metadata.can_split },
-        { headerName: "EnableFxn", field: "enable_function.name", valueGetter: v => v.row.enable_function ? v.row.enable_function.name : "" },
+        { headerName: "Name", field: "item.display_name", valueGetter: (v : {row: IOption}) => v.row.displayName, flex: 1 },
+        { headerName: "Price", field: "item.price.amount", valueGetter: (v : {row: IOption}) => `$${Number(v.row.price.amount / 100).toFixed(2)}` },
+        { headerName: "Shortcode", field: "item.shortcode", valueGetter: (v : {row: IOption}) => v.row.shortcode, },
+        { headerName: "Description", field: "item.description", valueGetter: (v : {row: IOption}) => v.row.description, },
+        { headerName: "Ordinal", field: "ordinal", valueGetter: (v : {row: IOption}) => v.row.ordinal },
+        { headerName: "FFactor", field: "metadata.flavor_factor", valueGetter: (v : {row: IOption}) => v.row.metadata.flavor_factor },
+        { headerName: "BFactor", field: "metadata.bake_factor", valueGetter: (v : {row: IOption}) => v.row.metadata.bake_factor },
+        { headerName: "Can Split?", field: "metadata.can_split", valueGetter: (v : {row: IOption}) => v.row.metadata.can_split },
+        { headerName: "EnableFxn", field: "enable_function.name", valueGetter: (v : {row: IOption}) => v.row.enable ? productInstanceFunctions[v.row.enable].name : "" },
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "item.disabled", valueGetter: v => (DisableDataCheck(v.row.item.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? (v.row.item.disabled.start > v.row.item.disabled.end ? "True" : `${format(v.row.item.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.item.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
+        { headerName: "Disabled", field: "item.disabled", valueGetter: (v : {row: IOption}) => (v.row.disabled !== null && DisableDataCheck(v.row.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? (v.row.disabled.start > v.row.disabled.end ? "True" : `${format(v.row.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
       ]}
       getRowId={(row) => row._id}
       rows={modifier_types_map[modifier_type.id].options}

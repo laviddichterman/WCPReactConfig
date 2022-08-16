@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import CategoryComponent from "./category.component";
 import { HOST_API } from "../../../config";
-import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wcpshared";
+import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
 import { useAppSelector } from "src/hooks/useRedux";
 import { getCategoryIds } from "src/redux/slices/SocketIoSlice";
 
@@ -22,7 +22,7 @@ const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) =>
   const [callLineName, setCallLineName] = useState("");
   const [callLineDisplay, setCallLineDisplay] = useState<CALL_LINE_DISPLAY>(CALL_LINE_DISPLAY.SHORTNAME);
   const [nestedDisplay, setNestedDisplay] = useState<CategoryDisplay>(CategoryDisplay.TAB);
-  const [serviceDisable, setServiceDisable] = useState<number[]>([]);
+  const [serviceDisable, setServiceDisable] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -31,24 +31,27 @@ const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) =>
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body : Omit<ICategory, "id"> = {
+          description,
+          subheading,
+          footnotes,
+          name,
+          ordinal,
+          serviceDisable,
+          parent_id: parent,
+          display_flags: {
+            call_line_name: callLineName,
+            call_line_display: callLineDisplay,
+            nesting: nestedDisplay
+          }
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/category`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            description,
-            subheading,
-            footnotes,
-            name,
-            ordinal,
-            parent_id: parent,
-            display_flags: {
-              call_line_name: callLineName,
-              call_line_display: callLineDisplay
-            }
-          }),
+          body: JSON.stringify(body),
         });
         if (response.status === 201) {
           setDescription("");
