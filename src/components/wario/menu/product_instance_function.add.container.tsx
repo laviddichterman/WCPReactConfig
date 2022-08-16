@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductInstanceFunctionComponent from "./product_instance_function.component";
 import { HOST_API } from "../../../config";
-import { IAbstractExpression } from "@wcp/wcpshared";
+import { IAbstractExpression, IProductInstanceFunction } from "@wcp/wcpshared";
 
 interface ProductInstanceFunctionAddContainerProps {
   onCloseCallback: VoidFunction;
@@ -15,20 +15,21 @@ const ProductInstanceFunctionAddContainer = ({ onCloseCallback }: ProductInstanc
   const { getAccessTokenSilently } = useAuth0();
 
   const addProductInstanceFunction = async () => {
-    if (!isProcessing) {
+    if (!isProcessing && expression != null) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body: Omit<IProductInstanceFunction, "id"> = {
+          name: functionName,
+          expression
+        };
         const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            name: functionName,
-            expression
-          }),
+          body: JSON.stringify(body),
         });
         if (response.status === 201) {
           setFunctionName("");

@@ -5,6 +5,7 @@ import ProductInstanceFunctionComponent from "./product_instance_function.compon
 import { HOST_API } from "../../../config";
 
 import { ProductInstanceFunctionQuickActionProps } from './product_instance_function.delete.container';
+import { IProductInstanceFunction } from "@wcp/wcpshared";
 
 const ProductInstanceFunctionEditContainer = ({ product_instance_function, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
   const [functionName, setFunctionName] = useState(product_instance_function.name);
@@ -17,16 +18,17 @@ const ProductInstanceFunctionEditContainer = ({ product_instance_function, onClo
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body: Omit<IProductInstanceFunction, "id"> = {
+          name: functionName,
+          expression
+        };
         const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/${product_instance_function.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            name: functionName,
-            expression
-          }),
+          body: JSON.stringify(body),
         });
         if (response.status === 200) {
           onCloseCallback();
