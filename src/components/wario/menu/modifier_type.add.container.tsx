@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ModifierTypeComponent, { ModifierTypeUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../config";
-import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 
 const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
   const [ordinal, setOrdinal] = useState(0);
@@ -11,14 +11,12 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
   const [displayName, setDisplayName] = useState("");
   const [minSelected, setMinSelected] = useState(0);
   const [maxSelected, setMaxSelected] = useState<number | null>(null);
-  const [revelID, setRevelID] = useState("");
-  const [squareID, setSquareID] = useState("");
   const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(false);
   const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(true);
   const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(false);
   const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(false);
-  const [emptyDisplayAs, setEmptyDisplayAs] = useState<keyof typeof DISPLAY_AS>("OMIT");
-  const [modifierClass, setModifierClass] = useState<keyof typeof MODIFIER_CLASS>("ADD");
+  const [emptyDisplayAs, setEmptyDisplayAs] = useState<DISPLAY_AS>(DISPLAY_AS.OMIT);
+  const [modifierClass, setModifierClass] = useState<MODIFIER_CLASS>(MODIFIER_CLASS.ADD);
   const [templateString, setTemplateString] = useState("");
   const [multipleItemSeparator, setMultipleItemSeparator] = useState(" + ");
   const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState("");
@@ -31,33 +29,33 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body: Omit<IOptionType, "id"> = {
+          name,
+          displayName,
+          ordinal,
+          min_selected: minSelected,
+          max_selected: maxSelected || null,
+          externalIDs: {},
+          displayFlags: {
+            omit_options_if_not_available: omitOptionIfNotAvailable,
+            omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,
+            use_toggle_if_only_two_options: (useToggleIfOnlyTwoOptions && minSelected === 1 && maxSelected === 1),
+            hidden: isHiddenDuringCustomization,
+            empty_display_as: emptyDisplayAs,
+            modifier_class: modifierClass,
+            template_string: templateString || "",
+            multiple_item_separator: multipleItemSeparator || "",
+            non_empty_group_prefix: nonEmptyGroupPrefix || "",
+            non_empty_group_suffix: nonEmptyGroupSuffix || ""
+          }
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/option/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            name,
-            display_name: displayName,
-            ordinal,
-            min_selected: minSelected,
-            max_selected: maxSelected || null,
-            revelID,
-            squareID,
-            display_flags: {
-              omit_options_if_not_available: omitOptionIfNotAvailable,
-              omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,
-              use_toggle_if_only_two_options: (useToggleIfOnlyTwoOptions && minSelected === 1 && maxSelected === 1),
-              hidden: isHiddenDuringCustomization,
-              empty_display_as: emptyDisplayAs,
-              modifier_class: modifierClass,
-              template_string: templateString || "",
-              multiple_item_separator: multipleItemSeparator || "",
-              non_empty_group_prefix: nonEmptyGroupPrefix || "",
-              non_empty_group_suffix: nonEmptyGroupSuffix || ""
-            }
-          }),
+          body: JSON.stringify(body),
         });
         if (response.status === 201) {
           setOrdinal(0);
@@ -65,14 +63,12 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
           setDisplayName("");
           setMinSelected(0);
           setMaxSelected(null);
-          setRevelID("");
-          setSquareID("");
           setOmitOptionIfNotAvailable(false);
           setOmitSectionIfNoAvailableOptions(false);
           setUseToggleIfOnlyTwoOptions(false);
           setIsHiddenDuringCustomization(false);
-          setEmptyDisplayAs("OMIT");
-          setModifierClass("ADD");
+          setEmptyDisplayAs(DISPLAY_AS.OMIT);
+          setModifierClass(MODIFIER_CLASS.ADD);
           setTemplateString("");
           setMultipleItemSeparator(" + ");
           setNonEmptyGroupPrefix("");
@@ -112,10 +108,6 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
       setNonEmptyGroupPrefix={setNonEmptyGroupPrefix}
       nonEmptyGroupSuffix={nonEmptyGroupSuffix}
       setNonEmptyGroupSuffix={setNonEmptyGroupSuffix}
-      revelID={revelID}
-      setRevelID={setRevelID}
-      squareID={squareID}
-      setSquareID={setSquareID}
       omitOptionIfNotAvailable={omitOptionIfNotAvailable}
       setOmitOptionIfNotAvailable={setOmitOptionIfNotAvailable}
       omitSectionIfNoAvailableOptions={omitSectionIfNoAvailableOptions}

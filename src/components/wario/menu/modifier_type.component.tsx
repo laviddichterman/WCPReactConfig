@@ -43,10 +43,6 @@ export interface ModifierTypeComponentProps {
   setNonEmptyGroupPrefix: Dispatch<SetStateAction<string>>;
   nonEmptyGroupSuffix: string;
   setNonEmptyGroupSuffix: Dispatch<SetStateAction<string>>;
-  revelID: string;
-  setRevelID: Dispatch<SetStateAction<string>>;
-  squareID: string;
-  setSquareID: Dispatch<SetStateAction<string>>;
   omitOptionIfNotAvailable: boolean;
   setOmitOptionIfNotAvailable: Dispatch<SetStateAction<boolean>>;
   omitSectionIfNoAvailableOptions: boolean;
@@ -83,10 +79,6 @@ const ModifierTypeComponent = ({
   setNonEmptyGroupPrefix,
   nonEmptyGroupSuffix,
   setNonEmptyGroupSuffix,
-  revelID,
-  setRevelID,
-  squareID,
-  setSquareID,
   omitOptionIfNotAvailable,
   setOmitOptionIfNotAvailable,
   omitSectionIfNoAvailableOptions,
@@ -332,26 +324,6 @@ const ModifierTypeComponent = ({
               value={nonEmptyGroupSuffix}
               size="small"
               onChange={(e) => setNonEmptyGroupSuffix(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Revel ID"
-              type="text"
-              inputProps={{ size: 40 }}
-              value={revelID}
-              size="small"
-              onChange={(e) => setRevelID(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Square ID"
-              type="text"
-              inputProps={{ size: 40 }}
-              value={squareID}
-              size="small"
-              onChange={(e) => setSquareID(e.target.value)}
             />
           </Grid>
         </>}
