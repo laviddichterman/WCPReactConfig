@@ -1,6 +1,6 @@
 import { useCallback, Dispatch, SetStateAction } from "react";
 import { format } from 'date-fns';
-import { DisableDataCheck, DISABLE_REASON, ICatalog, IProduct, IProductInstance } from '@wcp/wcpshared';
+import { DisableDataCheck, DISABLE_REASON, IProduct, IProductInstance } from '@wcp/wcpshared';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";

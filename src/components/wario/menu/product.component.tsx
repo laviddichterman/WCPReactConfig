@@ -1,13 +1,15 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Grid, 
-  TextField, 
-  Switch, 
-  Card, 
-  CardContent, 
-  FormControl, 
-  FormLabel, 
-  FormControlLabel, 
-  Autocomplete } from '@mui/material';
+import {
+  Grid,
+  TextField,
+  Switch,
+  Card,
+  CardContent,
+  FormControl,
+  FormLabel,
+  FormControlLabel,
+  Autocomplete
+} from '@mui/material';
 import DatetimeBasedDisableComponent from '../datetime_based_disable.component';
 import { ElementActionComponent } from './element.action.component';
 import { IMoney, IProductModifier, IWInterval, RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
@@ -35,8 +37,8 @@ interface ProductComponentProps {
   setPrice: Dispatch<SetStateAction<IMoney>>;
   disabled: IWInterval | null;
   setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
-  serviceDisabled: number[];
-  setServiceDisabled: Dispatch<SetStateAction<number[]>>;
+  serviceDisable: string[];
+  setServiceDisable: Dispatch<SetStateAction<string[]>>;
   flavorMax: number;
   setFlavorMax: Dispatch<SetStateAction<number>>;
   bakeMax: number;
@@ -76,8 +78,8 @@ const ProductComponent = ({
   setPrice,
   disabled,
   setDisabled,
-  serviceDisabled,
-  setServiceDisabled,
+  serviceDisable,
+  setServiceDisable,
   ordinal,
   setOrdinal,
   flavorMax,
@@ -100,16 +102,14 @@ const ProductComponent = ({
   setModifiers,
   children
 }: ProductComponentPropsTypes & ProductComponentProps) => {
-  const catalog = useAppSelector(s => s.ws.catalog);
-  const services = useAppSelector(s => s.ws.services);
-  if (catalog === null || services === null) {
-    return <>Loading...</>;
-  }
+  const catalog = useAppSelector(s => s.ws.catalog!);
+  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
+
 
   const handleSetModifiers = (mods: string[]) => {
-    const oldModsAsRecord = modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier | null>)
+    const oldModsAsRecord = modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)
     const sorted: IProductModifier[] = mods.sort((a, b) => catalog.modifiers[a].modifier_type.ordinal - catalog.modifiers[b].modifier_type.ordinal)
-      .map(x => ({ mtid: x, service_disable: oldModsAsRecord[x]?.service_disable ?? [], enable: oldModsAsRecord[x]?.enable ?? null }));
+      .map(x => ({ mtid: x, serviceDisable: oldModsAsRecord[x]?.serviceDisable ?? [], enable: oldModsAsRecord[x]?.enable ?? null }));
     if (sorted.length === 0 && !showNameOfBaseProduct) {
       setShowNameOfBaseProduct(true);
     }
@@ -135,12 +135,10 @@ const ProductComponent = ({
             <Autocomplete
               multiple
               filterSelectedOptions
-              options={Object.keys(services)}
-              value={modifier.service_disable.map((x) => String(x))}
-              onChange={(_, v) => {
-                setModifiers(Object.assign([], modifiers, { [idx]: { ...modifier, service_disable: v.map((x) => Number(x)) } }))}
-              }
-              getOptionLabel={(option) => services[option]}
+              options={Object.keys(fulfillments)}
+              value={modifier.serviceDisable}
+              onChange={(_, v) => setModifiers(Object.assign([], modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
+              getOptionLabel={(option) => fulfillments[option].displayName}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />
@@ -328,12 +326,12 @@ const ProductComponent = ({
             <Autocomplete
               multiple
               filterSelectedOptions
-              options={Object.keys(services)}
-              value={serviceDisabled.map((x) => String(x))}
-              onChange={(e, v) => {
-                setServiceDisabled(v.map((x) => Number(x)));
+              options={Object.keys(fulfillments)}
+              value={serviceDisable}
+              onChange={(_, v) => {
+                setServiceDisable(v);
               }}
-              getOptionLabel={(option) => services[option]}
+              getOptionLabel={(option) => fulfillments[option].displayName}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />

@@ -11,6 +11,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "src/hooks/useRedux";
 import { HOST_API } from "src/config";
+import { ProductAddRequestType } from "./product.add.container";
 
 
 const InternalCSVReader = ({ onAccepted }: { onAccepted: any }) => {
@@ -120,30 +121,37 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
         setIsProcessing(true);
         try {
           const token = await getAccessTokenSilently({ scope: "write:catalog" });
+          const body: ProductAddRequestType = {
+            displayName: prod.Name, // displayName,
+            description: prod.Description || "",
+            shortcode: prod.Shortname,
+            disabled: null,
+            ordinal: index * 10,
+            externalIDs: {},
+            serviceDisable: [],
+            price: { amount: Number.parseFloat(prod.Price) * 100, currency: "USD" },
+            displayFlags: {
+              bake_differential: 100,
+              show_name_of_base_product: true,
+              flavor_max: 10,
+              bake_max: 10,
+              singular_noun: "",
+              order_guide: {
+                suggestions: [],
+                warnings: []
+              }
+            },
+            category_ids: parentCategories,
+            modifiers: [],
+            create_product_instance: true
+          };
           const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
             method: "POST",
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              display_name: prod.Name, // displayName,
-              description: prod.Description || "",
-              shortcode: prod.Shortname,
-              disabled: null,
-              ordinal: index * 10,
-              price: { amount: Number.parseFloat(prod.Price) * 100, currency: "USD" },
-              display_flags: {
-                bake_differential: 100,
-                show_name_of_base_product: true,
-                flavor_max: 10,
-                bake_max: 10,
-                singular_noun: "",
-              },
-              category_ids: parentCategories,
-              modifiers: [],
-              create_product_instance: true
-            }),
+            body: JSON.stringify(body),
           });
           // eslint-disable-next-line no-empty
           if (response.status === 201) {

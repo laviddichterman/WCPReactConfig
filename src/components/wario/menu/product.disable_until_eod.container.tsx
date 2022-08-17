@@ -16,20 +16,17 @@ const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body: IProduct = {
+          ...product,
+          disabled: { start: Date.now(), end: getTime(endOfDay(Date.now())) }
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            disabled: { start: Date.now(), end: getTime(endOfDay(Date.now())) },
-            service_disable: product.service_disable,
-            price: product.price,
-            display_flags: product.display_flags,
-            category_ids: product.category_ids,
-            modifiers: product.modifiers,
-          } as IProduct),
+          body: JSON.stringify(body),
         });
         if (response.status === 200) {
           onCloseCallback();

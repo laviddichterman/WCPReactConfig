@@ -16,20 +16,17 @@ const ProductDisableContainer = ({ product, productName, onCloseCallback }: Prod
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body: IProduct = {
+          ...product,
+          disabled: { start: 1, end: 0 }
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            disabled: { start: 1, end: 0 },
-            service_disable: product.service_disable,
-            price: product.price,
-            display_flags: product.display_flags,
-            category_ids: product.category_ids,
-            modifiers: product.modifiers,
-          } as IProduct),
+          body: JSON.stringify(body),
         });
         if (response.status === 200) {
           onCloseCallback();

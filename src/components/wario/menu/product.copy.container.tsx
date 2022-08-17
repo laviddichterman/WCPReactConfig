@@ -7,7 +7,9 @@ import ProductComponent from "./product.component";
 import { ProductInstanceContainer } from "./product_instance.component";
 import { HOST_API } from "../../../config";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { IProduct } from "@wcp/wcpshared";
+import { IProduct, IProductInstance } from "@wcp/wcpshared";
+
+type ProductCopyRequestType = Omit<IProduct, "id"> & { create_product_instance: boolean; suppress_catalog_recomputation: boolean; };
 
 function useIndexedState<S>(x: [S[], Dispatch<SetStateAction<S[]>>]) {
   return [x[0], (i: number) => (v: S) => {
@@ -24,40 +26,38 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
   const product_instances = useAppSelector(s => s.ws.catalog?.products[product.id].instances ?? []);
   const [price, setPrice] = useState(product.price);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
-  const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
-  const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
-  const [bakeMax, setBakeMax] = useState(product.display_flags?.bake_max ?? 10);
-  const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.display_flags?.bake_differential ?? 100);
-  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.display_flags.order_guide.suggestions);
-  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.display_flags.order_guide.warnings);
-  const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.display_flags?.show_name_of_base_product ?? true);
-  const [singularNoun, setSingularNoun] = useState(product.display_flags?.singular_noun ?? "");
+  const [serviceDisable, setServiceDisable] = useState(product.serviceDisable)
+  const [flavorMax, setFlavorMax] = useState(product.displayFlags?.flavor_max ?? 10);
+  const [bakeMax, setBakeMax] = useState(product.displayFlags?.bake_max ?? 10);
+  const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.displayFlags?.bake_differential ?? 100);
+  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.displayFlags.order_guide.suggestions);
+  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.displayFlags.order_guide.warnings);
+  const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.displayFlags?.show_name_of_base_product ?? true);
+  const [singularNoun, setSingularNoun] = useState(product.displayFlags?.singular_noun ?? "");
   const [parentCategories, setParentCategories] = useState(product.category_ids);
   const [modifiers, setModifiers] = useState(product.modifiers);
 
   // product instance indexed state
   const [expandedPanels, setExpandedPanel] = useIndexedState(useState(Array(product_instances.length).fill(false)));
   const [copyPIFlags, setCopyPIFlag] = useIndexedState(useState(Array(product_instances.length).fill(true)));
-  const [piDisplayNames, setPiDisplayName] = useIndexedState(useState(product_instances.map(pi => pi.item.display_name)));
-  const [piDescriptions, setPiDescription] = useIndexedState(useState(product_instances.map(pi => pi.item.description)));
-  const [piShortcodes, setPiShortcode] = useIndexedState(useState(product_instances.map(pi => pi.item.shortcode)));
+  const [piDisplayNames, setPiDisplayName] = useIndexedState(useState(product_instances.map(pi => pi.displayName)));
+  const [piDescriptions, setPiDescription] = useIndexedState(useState(product_instances.map(pi => pi.description)));
+  const [piShortcodes, setPiShortcode] = useIndexedState(useState(product_instances.map(pi => pi.shortcode)));
   const [piOrdinals, setPiOrdinal] = useIndexedState(useState(product_instances.map(pi => (pi.ordinal || 0))));
-  const [piRevelIDs, setPiRevelID] = useIndexedState(useState(product_instances.map(pi => (pi.item?.externalIDs?.revelID ?? ""))));
-  const [piSquareIDs, setPiSquareID] = useIndexedState(useState(product_instances.map(pi => (pi.item?.externalIDs?.squareID ?? ""))));
   const [piModifierss, setPiModifiers] = useIndexedState(useState(product_instances.map(pi => pi.modifiers)));
-  const [piIsBases, setPiIsBase] = useIndexedState(useState(product_instances.map(pi => (pi.is_base ?? false))));
-  const [piMenuOrdinals, setPiMenuOrdinal] = useIndexedState(useState(product_instances.map(pi => (pi.display_flags?.menu?.ordinal || 0))));
-  const [piMenuHides, setPiMenuHide] = useIndexedState(useState(product_instances.map(pi => (pi.display_flags?.menu?.hide ?? false))));
-  const [piMenuPriceDisplays, setPiMenuPriceDisplay] = useIndexedState(useState(product_instances.map(pi => (pi.display_flags?.menu?.price_display ?? "IF_COMPLETE"))));
-  const [piMenuAdornments, setPiMenuAdornment] = useIndexedState(useState(product_instances.map(pi => (pi.display_flags?.menu?.adornment ?? ""))));
-  const [piMenuSuppressExhaustiveModifierLists, setPiMenuSuppressExhaustiveModifierList] = useIndexedState(useState(product_instances.map(pi => (pi.display_flags?.menu?.suppress_exhaustive_modifier_list ?? false))));
-  const [piMenuShowModifierOptionss, setPiMenuShowModifierOptions] = useIndexedState(useState(product_instances.map(pi => (pi.display_flags?.menu?.show_modifier_options ?? false))));
-  const [piOrderOrdinals, setPiOrderOrdinal] = useIndexedState(useState(product_instances.map(pi => (pi.display_flags?.order?.ordinal || 0))));
-  const [piOrderMenuHides, setPiOrderMenuHide] = useIndexedState(useState(product_instances.map(pi => (pi.display_flags?.order?.hide ?? false))));
-  const [piSkipCustomizations, setPiSkipCustomization] = useIndexedState(useState(product_instances.map(pi => pi.display_flags?.order?.skip_customization ?? false)));
-  const [piOrderPriceDisplays, setPiOrderPriceDisplay] = useIndexedState(useState(product_instances.map(pi => pi.display_flags?.order?.price_display ?? "IF_COMPLETE")));
-  const [piOrderAdornments, setPiOrderAdornment] = useIndexedState(useState(product_instances.map(pi => pi.display_flags?.order?.adornment ?? "")));
-  const [piOrderSuppressExhaustiveModifierLists, setPiOrderSuppressExhaustiveModifierList] = useIndexedState(useState(product_instances.map(pi => pi.display_flags?.order?.suppress_exhaustive_modifier_list ?? false)));
+  const [piIsBases, setPiIsBase] = useIndexedState(useState(product_instances.map(pi => (pi.isBase ?? false))));
+  const [piMenuOrdinals, setPiMenuOrdinal] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.ordinal || 0))));
+  const [piMenuHides, setPiMenuHide] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.hide ?? false))));
+  const [piMenuPriceDisplays, setPiMenuPriceDisplay] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.price_display ?? "IF_COMPLETE"))));
+  const [piMenuAdornments, setPiMenuAdornment] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.adornment ?? ""))));
+  const [piMenuSuppressExhaustiveModifierLists, setPiMenuSuppressExhaustiveModifierList] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.suppress_exhaustive_modifier_list ?? false))));
+  const [piMenuShowModifierOptionss, setPiMenuShowModifierOptions] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.show_modifier_options ?? false))));
+  const [piOrderOrdinals, setPiOrderOrdinal] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.order?.ordinal || 0))));
+  const [piOrderMenuHides, setPiOrderMenuHide] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.order?.hide ?? false))));
+  const [piSkipCustomizations, setPiSkipCustomization] = useIndexedState(useState(product_instances.map(pi => pi.displayFlags?.order?.skip_customization ?? false)));
+  const [piOrderPriceDisplays, setPiOrderPriceDisplay] = useIndexedState(useState(product_instances.map(pi => pi.displayFlags?.order?.price_display ?? "IF_COMPLETE")));
+  const [piOrderAdornments, setPiOrderAdornment] = useIndexedState(useState(product_instances.map(pi => pi.displayFlags?.order?.adornment ?? "")));
+  const [piOrderSuppressExhaustiveModifierLists, setPiOrderSuppressExhaustiveModifierList] = useIndexedState(useState(product_instances.map(pi => pi.displayFlags?.order?.suppress_exhaustive_modifier_list ?? false)));
 
   // API state
   const [isProcessing, setIsProcessing] = useState(false);
@@ -107,10 +107,6 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
             setShortcode={setPiShortcode(i)}
             ordinal={piOrdinals[i]}
             setOrdinal={setPiOrdinal(i)}
-            revelID={piRevelIDs[i]}
-            setRevelID={setPiRevelID(i)}
-            squareID={piSquareIDs[i]}
-            setSquareID={setPiSquareID(i)}
             isBase={piIsBases[i]}
             setIsBase={setPiIsBase(i)}
             modifiers={piModifierss[i]}
@@ -145,39 +141,41 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
           />
         </Grid>
       </AccordionDetails>
-    </Accordion>), [copyPIFlags, expandedPanels, piDescriptions, piDisplayNames, piIsBases, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piRevelIDs, piShortcodes, piSkipCustomizations, piSquareIDs, product, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiIsBase, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiRevelID, setPiShortcode, setPiSkipCustomization, setPiSquareID])
+    </Accordion>), [copyPIFlags, expandedPanels, piDescriptions, piDisplayNames, piIsBases, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piSkipCustomizations, product, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiIsBase, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiSkipCustomization])
 
   const copyProduct = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const productCopyBody: ProductCopyRequestType = {
+          price: price,
+          serviceDisable,
+          externalIDs: {},
+          displayFlags: {
+            bake_differential: bakeDifferentialMax,
+            show_name_of_base_product: showNameOfBaseProduct,
+            flavor_max: flavorMax,
+            bake_max: bakeMax,
+            singular_noun: singularNoun,
+            order_guide: { 
+              suggestions: orderGuideSuggestionFunctions,
+              warnings: orderGuideWarningFunctions
+            }
+          },
+          category_ids: parentCategories,
+          modifiers: modifiers,
+          disabled,
+          create_product_instance: false,
+          suppress_catalog_recomputation: true
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            price: price,
-            service_disable: serviceDisabled,
-            display_flags: {
-              bake_differential: bakeDifferentialMax,
-              show_name_of_base_product: showNameOfBaseProduct,
-              flavor_max: flavorMax,
-              bake_max: bakeMax,
-              singular_noun: singularNoun,
-              order_guide: { 
-                suggestions: orderGuideSuggestionFunctions,
-                warnings: orderGuideWarningFunctions
-              }
-            },
-            category_ids: parentCategories,
-            modifiers: modifiers,
-            disabled,
-            create_product_instance: false,
-            suppress_catalog_recomputation: true
-          }),
+          body: JSON.stringify(productCopyBody),
         });
         if (response.status === 201) {
           const json_response = await response.json();
@@ -191,11 +189,9 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
               shortcode: piShortcodes[i],
               ordinal: piOrdinals[i],
               price: null,
-              revelID: piRevelIDs[i],
-              squareID: piSquareIDs[i],
               modifiers: piModifierss[i],
               is_base: piIsBases[i],
-              display_flags: {
+              displayFlags: {
                 menu: {
                   ordinal: piMenuOrdinals[i],
                   hide: piMenuHides[i],
@@ -262,8 +258,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
       setPrice={setPrice}
       disabled={disabled}
       setDisabled={setDisabled}
-      serviceDisabled={serviceDisabled}
-      setServiceDisabled={setServiceDisabled}
+      serviceDisable={serviceDisable}
+      setServiceDisable={setServiceDisable}
       flavorMax={flavorMax}
       setFlavorMax={setFlavorMax}
       bakeMax={bakeMax}

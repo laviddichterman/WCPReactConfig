@@ -13,14 +13,14 @@ export interface ProductEditContainerProps {
 const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainerProps) => {
   const [price, setPrice] = useState(product.price);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
-  const [serviceDisabled, setServiceDisabled] = useState(product.service_disable)
-  const [flavorMax, setFlavorMax] = useState(product.display_flags?.flavor_max ?? 10);
-  const [bakeMax, setBakeMax] = useState(product.display_flags?.bake_max ?? 10);
-  const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.display_flags?.bake_differential ?? 100);
-  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.display_flags.order_guide.suggestions);
-  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.display_flags.order_guide.warnings);
-  const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.display_flags?.show_name_of_base_product ?? true);
-  const [singularNoun, setSingularNoun] = useState(product.display_flags?.singular_noun ?? "");
+  const [serviceDisable, setServiceDisable] = useState(product.serviceDisable)
+  const [flavorMax, setFlavorMax] = useState(product.displayFlags.flavor_max ?? 10);
+  const [bakeMax, setBakeMax] = useState(product.displayFlags.bake_max ?? 10);
+  const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.displayFlags.bake_differential ?? 100);
+  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.displayFlags.order_guide.suggestions);
+  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.displayFlags.order_guide.warnings);
+  const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.displayFlags.show_name_of_base_product ?? true);
+  const [singularNoun, setSingularNoun] = useState(product.displayFlags.singular_noun ?? "");
   const [parentCategories, setParentCategories] = useState(product.category_ids);
   const [modifiers, setModifiers] = useState(product.modifiers);
   // create an Object mapping MTID to enable function object
@@ -31,30 +31,32 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body: Omit<IProduct, "id"> = {
+          disabled,
+          serviceDisable,
+          price,
+          externalIDs: {},
+          displayFlags: {
+            bake_differential: bakeDifferentialMax,
+            show_name_of_base_product: showNameOfBaseProduct,
+            flavor_max: flavorMax,
+            bake_max: bakeMax,
+            singular_noun: singularNoun,
+            order_guide: { 
+              suggestions: orderGuideSuggestionFunctions,
+              warnings: orderGuideWarningFunctions
+            }
+          },
+          category_ids: parentCategories,
+          modifiers: modifiers,
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            disabled,
-            service_disable: serviceDisabled,
-            price,
-            display_flags: {
-              bake_differential: bakeDifferentialMax,
-              show_name_of_base_product: showNameOfBaseProduct,
-              flavor_max: flavorMax,
-              bake_max: bakeMax,
-              singular_noun: singularNoun,
-              order_guide: { 
-                suggestions: orderGuideSuggestionFunctions,
-                warnings: orderGuideWarningFunctions
-              }
-            },
-            category_ids: parentCategories,
-            modifiers: modifiers,
-          } as IProduct),
+          body: JSON.stringify(body),
         });
         if (response.status === 200) {
           onCloseCallback();
@@ -79,8 +81,8 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
       setPrice={setPrice}
       disabled={disabled}
       setDisabled={setDisabled}
-      serviceDisabled={serviceDisabled}
-      setServiceDisabled={setServiceDisabled}
+      serviceDisable={serviceDisable}
+      setServiceDisable={setServiceDisable}
       flavorMax={flavorMax}
       setFlavorMax={setFlavorMax}
       bakeMax={bakeMax}

@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 import { HOST_API } from "../../../config";
-import { CURRENCY, IMoney, IProductModifier, IWInterval } from "@wcp/wcpshared";
+import { CURRENCY, IMoney, IProduct, IProductInstance, IProductModifier, IWInterval } from "@wcp/wcpshared";
+
+export type ProductAddRequestType = Omit<IProductInstance, 'id' | 'displayFlags' | 'externalIDs' | 'modifiers' | 'isBase' | 'productId'> &
+  Omit<IProduct, "id"> & { create_product_instance: boolean };
 
 interface ProductAddContainerProps {
   onCloseCallback: VoidFunction;
@@ -14,7 +17,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [shortcode, setShortcode] = useState("");
   const [price, setPrice] = useState<IMoney>({ amount: 0, currency: CURRENCY.USD });
   const [disabled, setDisabled] = useState<IWInterval | null>(null);
-  const [serviceDisabled, setServiceDisabled] = useState([]);
+  const [serviceDisable, setServiceDisable] = useState([]);
   const [ordinal, setOrdinal] = useState(0);
   const [flavorMax, setFlavorMax] = useState(10);
   const [bakeMax, setBakeMax] = useState(10);
@@ -33,35 +36,37 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const body: ProductAddRequestType = {
+          displayName,
+          description,
+          shortcode,
+          disabled,
+          serviceDisable,
+          ordinal,
+          price,
+          externalIDs: {},
+          displayFlags: {
+            bake_differential: bakeDifferentialMax,
+            show_name_of_base_product: showNameOfBaseProduct,
+            flavor_max: flavorMax,
+            bake_max: bakeMax,
+            singular_noun: singularNoun,
+            order_guide: {
+              suggestions: orderGuideSuggestionFunctions,
+              warnings: orderGuideWarningFunctions
+            }
+          },
+          category_ids: parentCategories,
+          modifiers: modifiers,
+          create_product_instance: true
+        };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            display_name: displayName,
-            description,
-            shortcode,
-            disabled,
-            service_disable: serviceDisabled,
-            ordinal,
-            price,
-            display_flags: {
-              bake_differential: bakeDifferentialMax,
-              show_name_of_base_product: showNameOfBaseProduct,
-              flavor_max: flavorMax,
-              bake_max: bakeMax,
-              singular_noun: singularNoun,
-              order_guide: { 
-                suggestions: orderGuideSuggestionFunctions,
-                warnings: orderGuideWarningFunctions
-              }
-            },
-            category_ids: parentCategories,
-            modifiers: modifiers,
-            create_product_instance: true
-          }),
+          body: JSON.stringify(body),
         });
         if (response.status === 201) {
           setDisplayName("");
@@ -69,7 +74,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
           setShortcode("");
           setPrice({ amount: 0, currency: CURRENCY.USD });
           setDisabled(null);
-          setServiceDisabled([]);
+          setServiceDisable([]);
           setOrdinal(0);
           setFlavorMax(10);
           setBakeMax(10);
@@ -108,8 +113,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
       setPrice={setPrice}
       disabled={disabled}
       setDisabled={setDisabled}
-      serviceDisabled={serviceDisabled}
-      setServiceDisabled={setServiceDisabled}
+      serviceDisable={serviceDisable}
+      setServiceDisable={setServiceDisable}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
       flavorMax={flavorMax}

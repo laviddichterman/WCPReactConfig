@@ -17,7 +17,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "src/hooks/useRedux";
-import { ICatalogModifiers, IProduct, IWModifiersInstance, IWOptionInstance, PriceDisplay } from "@wcp/wcpshared";
+import { ICatalogModifiers, IProduct, ModifiersMap, OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wcpshared";
 import { isUndefined, snakeCase, startCase } from "lodash";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 
@@ -31,12 +31,8 @@ export interface ProductInstanceComponentProps {
   setShortcode: Dispatch<SetStateAction<string>>;
   ordinal: number;
   setOrdinal: Dispatch<SetStateAction<number>>;
-  revelID: string;
-  setRevelID: Dispatch<SetStateAction<string>>;
-  squareID: string;
-  setSquareID: Dispatch<SetStateAction<string>>;
-  modifiers: IWModifiersInstance[];
-  setModifiers: Dispatch<SetStateAction<IWModifiersInstance[]>>;
+  modifiers: ModifiersMap;
+  setModifiers: Dispatch<SetStateAction<ModifiersMap>>;
   isBase: boolean;
   setIsBase: Dispatch<SetStateAction<boolean>>;
   // menu
@@ -67,91 +63,35 @@ export interface ProductInstanceComponentProps {
   setOrderSuppressExhaustiveModifierList: Dispatch<SetStateAction<boolean>>;
 }
 
-const ProductInstanceComponent = ({
-  parent_product,
-  displayName,
-  setDisplayName,
-  description,
-  setDescription,
-  shortcode,
-  setShortcode,
-  ordinal,
-  setOrdinal,
-  revelID,
-  setRevelID,
-  squareID,
-  setSquareID,
-  modifiers,
-  setModifiers,
-  isBase,
-  setIsBase,
-  // menu
-  menuOrdinal,
-  setMenuOrdinal,
-  menuHide,
-  setMenuHide,
-  menuPriceDisplay,
-  setMenuPriceDisplay,
-  menuAdornment,
-  setMenuAdornment,
-  menuSuppressExhaustiveModifierList,
-  setMenuSuppressExhaustiveModifierList,
-  menuShowModifierOptions,
-  setMenuShowModifierOptions,
-  // order
-  orderOrdinal,
-  setOrderOrdinal,
-  orderMenuHide,
-  setOrderMenuHide,
-  skipCustomization,
-  setSkipCustomization,
-  orderPriceDisplay,
-  setOrderPriceDisplay,
-  orderAdornment,
-  setOrderAdornment,
-  orderSuppressExhaustiveModifierList,
-  setOrderSuppressExhaustiveModifierList
-}: ProductInstanceComponentProps) => {
+const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
-  const handleToggle = (mtid: number, oidx: number) => {
-    const new_normalized_mod = modifiers.slice();
-    new_normalized_mod[mtid].options = modifiers[mtid].options.slice();
-    Object.assign(
-      new_normalized_mod[mtid].options[oidx],
-      modifiers[mtid].options[oidx]
-    );
-
-    switch (modifiers[mtid].options[oidx].placement) {
-      case 'WHOLE':
-        new_normalized_mod[mtid].options[oidx].placement = 'NONE';
-        break;
-      case 'NONE':
-        new_normalized_mod[mtid].options[oidx].placement = 'WHOLE';
-        new_normalized_mod[mtid].options[oidx].qualifier = 'REGULAR';
-        break;
-      default:
-        console.error("messed up option value!");
-    }
-    setModifiers(new_normalized_mod);
+  const handleToggle = (mtid: string, oidx: number) => {
+    props.setModifiers({
+      ...props.modifiers,
+      [mtid]: Object.assign(
+        [], 
+        props.modifiers[mtid], 
+        {[oidx]: { 
+          ...props.modifiers[mtid][oidx], 
+          placement: props.modifiers[mtid][oidx].placement === OptionPlacement.WHOLE ? OptionPlacement.NONE : OptionPlacement.WHOLE 
+        }})
+    });
   };
 
-  const handleRadioChange = (mtidx: number, oidx: number) => {
-    const new_normalized_mod = modifiers.slice();
-    new_normalized_mod[mtidx].options = modifiers[mtidx].options.map(
-      (opt, idx) =>
-      // specifically using a == comparison since oidx is likely a string
+  const handleRadioChange = (mtid: string, oidx: number) => {
+    props.setModifiers({
+      ...(props.modifiers),
+      [mtid]: props.modifiers[mtid].map((opt, idx) =>
       ({
-        option_id: opt.option_id,
+        optionId: opt.optionId,
         // eslint-disable-next-line
-        placement: idx == oidx ? 'WHOLE' : 'NONE',
-        qualifier: 'REGULAR'
-      })
-
-    );
-    setModifiers(new_normalized_mod);
+        placement: idx == oidx ? OptionPlacement.WHOLE : OptionPlacement.NONE,
+        qualifier: OptionQualifier.REGULAR
+      }))
+    });
   };
 
-  const modifier_html = parent_product.modifiers.map((modifier_entry, mtidx) => {
+  const modifier_html = props.parent_product.modifiers.map((modifier_entry) => {
     const { mtid } = modifier_entry;
     const mt = modifier_types_map[mtid].modifier_type;
     const mt_options = modifier_types_map[mtid].options;
@@ -162,17 +102,17 @@ const ProductInstanceComponent = ({
           aria-label={mt.id}
           name={mt.name}
           row
-          value={modifiers[mtidx].options.findIndex(
-            (o) => o.placement === "WHOLE"
+          value={props.modifiers[mtid].findIndex(
+            (o) => o.placement === OptionPlacement.WHOLE
           )}
-          onChange={(e) => handleRadioChange(mtidx, parseInt(e.target.value))}
+          onChange={(e) => handleRadioChange(mtid, parseInt(e.target.value))}
         >
           {mt_options.map((option, oidx) => (
             <FormControlLabel
               key={oidx}
               control={<Radio disableRipple />}
               value={oidx}
-              label={mt_options[oidx].item.display_name}
+              label={mt_options[oidx].displayName}
             />
           ))}
         </RadioGroup>
@@ -186,21 +126,21 @@ const ProductInstanceComponent = ({
               control={
                 <Checkbox
                   checked={
-                    modifiers[mtidx].options[oidx].placement === "WHOLE"
+                    props.modifiers[mtid][oidx].placement === OptionPlacement.WHOLE
                   }
-                  onChange={() => handleToggle(mtidx, oidx)}
+                  onChange={() => handleToggle(mtid, oidx)}
                   disableRipple
                   inputProps={{ "aria-labelledby": String(oidx) }}
                 />
               }
-              label={mt_options[oidx].item.display_name}
+              label={option.displayName}
             />
           ))}
         </FormGroup>
       );
     }
     return (
-      <Grid item xs={6} key={mtidx}>
+      <Grid item xs={6} key={mtid}>
         <Card>
           <CardContent>
             <FormControl component="fieldset">
@@ -220,9 +160,9 @@ const ProductInstanceComponent = ({
           label="Display Name"
           type="text"
           inputProps={{ size: 60 }}
-          value={displayName}
+          value={props.displayName}
           size="small"
-          onChange={(e) => setDisplayName(e.target.value)}
+          onChange={(e) => props.setDisplayName(e.target.value)}
         />
       </Grid>
       <Grid item xs={8}>
@@ -231,18 +171,18 @@ const ProductInstanceComponent = ({
           type="text"
           fullWidth
           inputProps={{ size: 60 }}
-          value={description}
+          value={props.description}
           size="small"
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) => props.setDescription(e.target.value)}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
         <CheckedNumericInput
           type="number"
           label="Ordinal"
           inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*', step: 1 }}
-          value={ordinal}
-          onChange={setOrdinal}
+          value={props.ordinal}
+          onChange={props.setOrdinal}
           parseFunction={parseInt}
           allowEmpty={false} />
 
@@ -251,20 +191,20 @@ const ProductInstanceComponent = ({
         <TextField
           label="Short Code"
           type="text"
-          value={shortcode}
+          value={props.shortcode}
           inputProps={{ size: 40 }}
           size="small"
-          onChange={(e) => setShortcode(e.target.value)}
+          onChange={(e) => props.setShortcode(e.target.value)}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
         <FormControlLabel
           control={
             <Switch
               sx={{ ml: 1 }}
-              checked={isBase}
+              checked={props.isBase}
               onChange={(e) =>
-                setIsBase(e.target.checked)
+                props.setIsBase(e.target.checked)
               }
               name="Is Base"
             />
@@ -273,32 +213,12 @@ const ProductInstanceComponent = ({
         />
       </Grid>
       <Grid item xs={2}>
-        <TextField
-          label="Revel ID"
-          type="text"
-          value={revelID}
-          inputProps={{ size: 50 }}
-          size="small"
-          onChange={(e) => setRevelID(e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={2}>
-        <TextField
-          label="Square ID"
-          type="text"
-          value={squareID}
-          inputProps={{ size: 50 }}
-          size="small"
-          onChange={(e) => setSquareID(e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={2}>
         <CheckedNumericInput
           type="number"
           label="Menu Ordinal"
           inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
-          value={menuOrdinal}
-          onChange={setMenuOrdinal}
+          value={props.menuOrdinal}
+          onChange={props.setMenuOrdinal}
           parseFunction={parseInt}
           allowEmpty={false} />
       </Grid>
@@ -306,9 +226,9 @@ const ProductInstanceComponent = ({
         <FormControlLabel
           control={
             <Switch
-              checked={menuHide}
+              checked={props.menuHide}
               onChange={(e) =>
-                setMenuHide(e.target.checked)
+                props.setMenuHide(e.target.checked)
               }
               name="Hide From Menu"
             />
@@ -320,9 +240,9 @@ const ProductInstanceComponent = ({
         <FormControlLabel
           control={
             <Switch
-              checked={menuSuppressExhaustiveModifierList}
+              checked={props.menuSuppressExhaustiveModifierList}
               onChange={(e) =>
-                setMenuSuppressExhaustiveModifierList(e.target.checked)
+                props.setMenuSuppressExhaustiveModifierList(e.target.checked)
               }
               name="Menu Suppress Exhaustive Modifier List"
             />
@@ -334,9 +254,9 @@ const ProductInstanceComponent = ({
         <FormControlLabel
           control={
             <Switch
-              checked={menuShowModifierOptions}
+              checked={props.menuShowModifierOptions}
               onChange={(e) =>
-                setMenuShowModifierOptions(e.target.checked)
+                props.setMenuShowModifierOptions(e.target.checked)
               }
               name="Show Modifier Options in Menu Display"
             />
@@ -349,9 +269,9 @@ const ProductInstanceComponent = ({
           label="Menu Adornment (Optional, HTML allowed)"
           type="text"
           inputProps={{ size: 60 }}
-          value={menuAdornment}
+          value={props.menuAdornment}
           size="small"
-          onChange={(e) => setMenuAdornment(e.target.value)}
+          onChange={(e) => props.setMenuAdornment(e.target.value)}
         />
       </Grid>
       <Grid container item xs={6}>
@@ -362,8 +282,8 @@ const ProductInstanceComponent = ({
             aria-label="menu-price-display"
             name="menu-price-display"
             row
-            value={menuPriceDisplay}
-            onChange={(e) => setMenuPriceDisplay(e.target.value as keyof typeof PriceDisplay)}
+            value={props.menuPriceDisplay}
+            onChange={(e) => props.setMenuPriceDisplay(e.target.value as keyof typeof PriceDisplay)}
           >
             {Object.keys(PriceDisplay).map((val, i) =>
               <FormControlLabel
@@ -380,8 +300,8 @@ const ProductInstanceComponent = ({
           type="number"
           label="Order Ordinal"
           inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*', step: 1 }}
-          value={orderOrdinal}
-          onChange={setOrderOrdinal}
+          value={props.orderOrdinal}
+          onChange={props.setOrderOrdinal}
           parseFunction={parseInt}
           allowEmpty={false} />
       </Grid>
@@ -389,9 +309,9 @@ const ProductInstanceComponent = ({
         <FormControlLabel
           control={
             <Switch
-              checked={orderMenuHide}
+              checked={props.orderMenuHide}
               onChange={(e) =>
-                setOrderMenuHide(e.target.checked)
+                props.setOrderMenuHide(e.target.checked)
               }
               name="Hide From Order Menu"
             />
@@ -403,9 +323,9 @@ const ProductInstanceComponent = ({
         <FormControlLabel
           control={
             <Switch
-              checked={orderSuppressExhaustiveModifierList}
+              checked={props.orderSuppressExhaustiveModifierList}
               onChange={(e) =>
-                setOrderSuppressExhaustiveModifierList(e.target.checked)
+                props.setOrderSuppressExhaustiveModifierList(e.target.checked)
               }
               name="Order Menu Suppress Exhaustive Modifier List"
             />
@@ -417,9 +337,9 @@ const ProductInstanceComponent = ({
         <FormControlLabel
           control={
             <Switch
-              checked={skipCustomization}
+              checked={props.skipCustomization}
               onChange={(e) =>
-                setSkipCustomization(e.target.checked)
+                props.setSkipCustomization(e.target.checked)
               }
               name="Skip Customization"
             />
@@ -432,9 +352,9 @@ const ProductInstanceComponent = ({
           label="Order Menu Adornment (Optional, HTML allowed)"
           type="text"
           inputProps={{ size: 60 }}
-          value={orderAdornment}
+          value={props.orderAdornment}
           size="small"
-          onChange={(e) => setOrderAdornment(e.target.value)}
+          onChange={(e) => props.setOrderAdornment(e.target.value)}
         />
       </Grid>
       <Grid container item xs={6}>
@@ -445,8 +365,8 @@ const ProductInstanceComponent = ({
             aria-label="order-menu-price-display"
             name="order-menu-price-display"
             row
-            value={orderPriceDisplay}
-            onChange={(e) => setOrderPriceDisplay(e.target.value as keyof typeof PriceDisplay)}
+            value={props.orderPriceDisplay}
+            onChange={(e) => props.setOrderPriceDisplay(e.target.value as keyof typeof PriceDisplay)}
           >
             {Object.keys(PriceDisplay).map((val, i) =>
               <FormControlLabel
@@ -466,57 +386,37 @@ const ProductInstanceComponent = ({
 const normalizeModifiersAndOptions = (
   parent_product: IProduct,
   modifier_types_map: ICatalogModifiers,
-  modifiers: IWModifiersInstance[]
+  minimizedModifiers: ModifiersMap
 ) => {
-  const normalized_modifiers: IWModifiersInstance[] = [];
-  parent_product.modifiers.forEach((modifier_entry) => {
-    const { mtid } = modifier_entry;
-    const options: IWOptionInstance[] = modifier_types_map[mtid].options.map((option,) => ({
-      option_id: option.id,
-      placement: "NONE",
-      qualifier: 'REGULAR'
-    }));
-    normalized_modifiers.push({ modifier_type_id: mtid, options });
-  });
-  // copy the selected modifiers over to the normalized
-  modifiers.forEach((mod) => {
-    const normalized_modifier = normalized_modifiers.find(
-      (x) => x.modifier_type_id === mod.modifier_type_id
-    );
-    if (!isUndefined(normalized_modifier)) {
-      mod.options.forEach((opt) => {
-        if (opt.placement !== "NONE") {
-          const found_modifier_option = normalized_modifier.options.find(
-            (x) => x.option_id === opt.option_id
-          );
-          if (found_modifier_option) {
-            Object.assign(found_modifier_option, opt);
+  return parent_product.modifiers.reduce(
+    (acc, modifier_entry) => {
+      const modOptions = minimizedModifiers[modifier_entry.mtid] ?? [];
+      return {
+        ...acc,
+        [modifier_entry.mtid]: modifier_types_map[modifier_entry.mtid].options.map((option,) => {
+          const foundOptionState = modOptions.find(x => x.optionId === option.id);
+          return {
+            optionId: option.id,
+            placement: foundOptionState ? foundOptionState.placement : OptionPlacement.NONE,
+            qualifier: foundOptionState ? foundOptionState.qualifier : OptionQualifier.REGULAR
           }
-        }
-      }
-      );
-    }
-  });
-  return normalized_modifiers;
+        })
+      };
+    }, {});
 };
 
-const minimizeModifiers = (normalized_modifiers: IWModifiersInstance[]) =>
-  normalized_modifiers.reduce((acc, mod) => {
-    const filtered_options = mod.options.filter(
-      (x) => x.placement !== "NONE"
-    );
-    return filtered_options.length ? [...acc, { modifier_type_id: mod.modifier_type_id, options: filtered_options }] : acc;
-  }, []);
+const minimizeModifiers = (normalized_modifiers: ModifiersMap) =>
+  Object.entries(normalized_modifiers).reduce((acc, [mtid, options]) => {
+    const filtered_options = options.filter(x => x.placement !== OptionPlacement.NONE);
+    return filtered_options.length ? { ...acc, [mtid]: filtered_options } : acc;
+  }, {});
 
 
-export const ProductInstanceContainer = ({ parent_product, modifiers, setModifiers, ...forwardRefs
-}: ProductInstanceComponentProps) => {
-  const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
-  const [normalizedModifers, setNormalizedModifiers] = useState<IWModifiersInstance[]>(
-    normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers)
-  );
+export const ProductInstanceContainer = ({ parent_product, modifiers, setModifiers, ...otherProps }: ProductInstanceComponentProps) => {
+  const modifier_types_map = useAppSelector(s => s.ws.catalog!.modifiers);
+  const [normalizedModifers, setNormalizedModifiers] = useState<ModifiersMap>(normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers));
 
-  const setNormalizedModifiersIntermediate = (mods: IWModifiersInstance[]) => {
+  const setNormalizedModifiersIntermediate = (mods: ModifiersMap) => {
     setNormalizedModifiers(mods);
     setModifiers(minimizeModifiers(mods));
   };
@@ -526,7 +426,7 @@ export const ProductInstanceContainer = ({ parent_product, modifiers, setModifie
       parent_product={parent_product}
       modifiers={normalizedModifers}
       setModifiers={setNormalizedModifiersIntermediate}
-      {...forwardRefs}
+      {...otherProps}
     />
   );
 };
@@ -547,7 +447,7 @@ export const ProductInstanceActionContainer = ({
   isProcessing,
   displayName,
   shortcode,
-  ...forwardRefs
+  ...otherProps
 }: ProductInstanceActionContainerProps & ProductInstanceComponentProps) => (
   <ElementActionComponent
     onCloseCallback={onCloseCallback}
@@ -557,7 +457,7 @@ export const ProductInstanceActionContainer = ({
     confirmText={confirmText}
     body={
       <ProductInstanceContainer
-        {...forwardRefs}
+        {...otherProps}
         displayName={displayName}
         shortcode={shortcode}
       />}
