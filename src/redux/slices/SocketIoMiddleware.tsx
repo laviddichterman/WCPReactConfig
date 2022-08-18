@@ -1,4 +1,4 @@
-import { FulfillmentConfig, ICatalog, IWSettings, JSFEBlockedOff } from '@wcp/wcpshared';
+import { FulfillmentConfig, ICatalog, IWSettings } from '@wcp/wcpshared';
 import { Middleware } from 'redux'
 import { io, Socket } from "socket.io-client";
 import { SOCKETIO, HOST_API } from '../../config';

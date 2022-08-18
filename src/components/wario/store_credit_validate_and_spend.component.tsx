@@ -76,9 +76,15 @@ const StoreCreditValidateAndSpendComponent = () => {
   };
 
   const processDebit = async () => {
-    if (!isProcessing && validationResponse !== null) {
+    if (!isProcessing && validationResponse !== null && validationResponse.lock !== null) {
       setIsProcessing(true);
       try {
+        const body: ValidateLockAndSpendRequest = {
+          code: creditCode,
+          amount,
+          lock: validationResponse.lock,
+          updatedBy: processedBy,
+        };
         const response = await fetch(
           `${HOST_API}/api/v1/payments/storecredit/spend`,
           {
@@ -86,12 +92,7 @@ const StoreCreditValidateAndSpendComponent = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              code: creditCode,
-              amount,
-              lock: validationResponse.lock,
-              updatedBy: processedBy,
-            } as ValidateLockAndSpendRequest),
+            body: JSON.stringify(body),
           }
         );
         const response_data = await response.json();
@@ -262,6 +263,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     onClick={processDebit}
                     disabled={
                       isProcessing ||
+                      validationResponse.lock === null || 
                       debitResponse !== null ||
                       processedBy.length === 0 ||
                       amount <= 0

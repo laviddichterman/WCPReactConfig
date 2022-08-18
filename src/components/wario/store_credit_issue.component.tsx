@@ -1,29 +1,33 @@
 import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-import { addDays, isValid, format } from "date-fns";
+import { addDays, isValid, format, parseISO } from "date-fns";
 import { TextField, IconButton, Button, Grid, Card, CardHeader, Divider } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { DatePicker } from '@mui/x-date-pickers';
 
-import { RoundToTwoDecimalPlaces, WDateUtils, EMAIL_REGEX } from "@wcp/wcpshared";
+import { CURRENCY, IMoney, IssueStoreCreditRequest, RoundToTwoDecimalPlaces, StoreCreditType, WDateUtils } from "@wcp/wcpshared";
 import { HOST_API } from "../../config";
 import { CheckedNumericInput } from "./CheckedNumericTextInput";
+import { useAppSelector } from "../../hooks/useRedux";
 
+const DEFAULT_MONEY = { amount: 500, currency: CURRENCY.USD };
 const StoreCreditIssueComponent = () => {
-  const [amount, setAmount] = useState(5.00);
+  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
+  const [amount, setAmount] = useState<IMoney>(DEFAULT_MONEY);
   const [addedBy, setAddedBy] = useState("");
   const [reason, setReason] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientEmailError, setRecipientEmailError] = useState(false);
-  const [expiration, setExpiration] = useState<Date | null>(addDays(new Date(), 60));
+  const [expiration, setExpiration] = useState<string | null>(WDateUtils.formatISODate(addDays(CURRENT_TIME, 60)));
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
 
   const validateRecipientEmail = () => {
-    setRecipientEmailError(recipientEmail.length >= 1 && !EMAIL_REGEX.test(recipientEmail))
+    //setRecipientEmailError(recipientEmail.length >= 1 && !EMAIL_REGEX.test(recipientEmail))
+    // TODO: use yup.isEmail
   }
 
   const handleSubmit = async () => {
@@ -31,30 +35,32 @@ const StoreCreditIssueComponent = () => {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "edit:store_credit" });
+        const body: IssueStoreCreditRequest = {
+          amount,
+          addedBy,
+          reason,
+          expiration,
+          creditType: StoreCreditType.DISCOUNT,
+          recipientEmail,
+          recipientNameFirst: firstName,
+          recipientNameLast: lastName
+        };
         const response = await fetch(`${HOST_API}/api/v1/payments/storecredit/discount`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            amount,
-            recipient_name_first: firstName,
-            recipient_name_last: lastName,
-            recipient_email: recipientEmail,
-            added_by: addedBy,
-            reason,
-            expiration: expiration && isValid(expiration) ? format(expiration, WDateUtils.DATE_STRING_INTERNAL_FORMAT) : ""
-          })
+          body: JSON.stringify(body)
         });
         setAddedBy("");
-        setAmount(5.00);
+        setAmount(DEFAULT_MONEY);
         setReason("");
         setFirstName("");
         setLastName("");
         setRecipientEmail("");
         setRecipientEmailError(false);
-        setExpiration(addDays(new Date(), 60))
+        setExpiration(WDateUtils.formatISODate(addDays(CURRENT_TIME, 60)))
         setIsProcessing(false);
       } catch (error) {
         console.error(error);
@@ -107,11 +113,10 @@ const StoreCreditIssueComponent = () => {
             fullWidth
             label="Dollar Amount"
             inputProps={{ inputMode: 'numeric', min: 1.00, max: 500.00, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
-            value={amount}
-            className="form-control"
+            value={amount.amount / 100}
+            onChange={(e) => setAmount({ ...amount, amount: e * 100 })}
             disabled={isProcessing}
-            onChange={(e) => setAmount(e)}
-            parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e as string))}
+            parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e ?? "0"))}
             allowEmpty={false} />
         </Grid>
         <Grid item xs={4}>
@@ -119,11 +124,11 @@ const StoreCreditIssueComponent = () => {
             renderInput={(props) => <TextField sx={{ height: '10%' }} {...props} />}
             disableMaskedInput
             showToolbar={false}
-            minDate={addDays(new Date(), 30)}
+            minDate={addDays(CURRENT_TIME, 30)}
             label="Expiration"
-            value={expiration}
-            onChange={(date) => { setExpiration(date) }}
-            inputFormat="EEEE, MMMM dd, y"
+            value={expiration ? parseISO(expiration) : null}
+            onChange={(date) => { setExpiration(date ? WDateUtils.formatISODate(date) : null) }}
+            inputFormat={WDateUtils.ServiceDateDisplayFormat}
           />
           <IconButton
             sx={{ p: 2 }}
@@ -158,7 +163,7 @@ const StoreCreditIssueComponent = () => {
         <Grid item xs={2}>
           <Button
             onClick={handleSubmit}
-            disabled={!(!isProcessing && amount >= 1 && addedBy.length >= 2 && firstName.length >= 2 && lastName.length >= 2 && reason.length > 2 && recipientEmail.length > 3 && EMAIL_REGEX.test(recipientEmail))}
+            disabled={!(!isProcessing && amount.amount >= 1 && addedBy.length >= 2 && firstName.length >= 2 && lastName.length >= 2 && reason.length > 2 && recipientEmail.length > 3)}
           >
             Generate
           </Button>
