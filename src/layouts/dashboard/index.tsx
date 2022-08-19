@@ -19,8 +19,7 @@ import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { IsSocketDataLoaded, SocketIoActions } from '../../redux/slices/SocketIoSlice';
-import { setPageLoadTime, setCurrentTime, TIMING_POLLING_INTERVAL } from '../../redux/slices/TimingSlice';
+import { IsSocketDataLoaded } from '../../redux/slices/SocketIoSlice';
 import LoadingScreen from '../../components/LoadingScreen';
 
 // ----------------------------------------------------------------------
@@ -53,10 +52,6 @@ const MainStyle = styled('main', {
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
-  const dispatch = useAppDispatch();
-  const socketIoState = useAppSelector((s) => s.ws.status);
-  const SERVER_TIME = useAppSelector(s=>s.ws.serverTime);
-  const PAGE_LOAD_TIME = useAppSelector(s=>s.timing.pageLoadTime);
   const isLoaded = useAppSelector(s=>IsSocketDataLoaded(s.ws));
   const catalog = useAppSelector(s=>s.ws.catalog);
 
@@ -67,30 +62,6 @@ export default function DashboardLayout() {
   const isDesktop = useResponsive('up', 'lg');
 
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (socketIoState === 'NONE') { 
-      dispatch(SocketIoActions.startConnection());
-    }
-  }, [socketIoState, dispatch]);
-
-  useEffect(() => {
-    const checkTiming = () => {
-      dispatch(setCurrentTime(Date.now()));
-      // TODO: need to add a check how fulfillment is impacted by the change of availability from the new "current time"
-      // then we need to check how the cart is impacted by those changes
-      // hopefully we can keep all that logic out of here and just update the current time
-    }
-    checkTiming();
-    const interval = setInterval(checkTiming, TIMING_POLLING_INTERVAL);
-    return () => clearInterval(interval);
-  }, [PAGE_LOAD_TIME]);
-
-  useEffect(() => {
-    if (PAGE_LOAD_TIME === null && SERVER_TIME !== null){ 
-      dispatch(setPageLoadTime(SERVER_TIME));
-    }
-  }, [PAGE_LOAD_TIME, SERVER_TIME]);
 
   const verticalLayout = themeLayout === 'vertical';
 

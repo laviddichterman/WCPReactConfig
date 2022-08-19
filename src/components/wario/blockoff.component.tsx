@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from "react";
-import { add, format, parse } from "date-fns";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
+import { add, format, formatISO, parseISO } from "date-fns";
 import {
   Card,
   CardHeader,
@@ -18,10 +18,11 @@ import {
 import { Done, HighlightOff } from '@mui/icons-material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { JSFEBlockedOff, WDateUtils, WIntervalTuple } from "@wcp/wcpshared";
+import { GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wcpshared";
 
-import { useAppSelector } from "../../hooks/useRedux";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { HOST_API } from '../../config';
+import { setSelectedDate, setStartTime, setEndTime, toggleSelectedService } from "src/redux/slices/BlockOffSlice";
 
 
 const TrimOptionsBeforeDisabled = function <T extends { disabled: boolean; }>(opts: T[]) {
@@ -50,194 +51,134 @@ const ServiceSelectionCheckbox = (props: ServiceSelectionCheckboxProps) => {
 }
 
 const BlockOffComp = () => {
-  const SERVICES = useAppSelector(s => s.ws.services!);
-  const BLOCKED_OFF = useAppSelector(s => s.ws.blockedOff!);
-  const SETTINGS = useAppSelector(s => s.ws.settings!);
-  const LEAD_TIME = useAppSelector(s => s.ws.leadtime!);
-  const CURRENT_TIME = useAppSelector(s => s.timing.currentTime!);
-  const NUM_SERVICES = useMemo(() => SERVICES !== null ? Object.keys(SERVICES).length : 3, [SERVICES]);
-  const [upper_time, setUpperTime] = useState<number | null>(null);
-  const [lower_time, setLowerTime] = useState<number | null>(null);
-  const [selected_date, setSelectedDate] = useState<Date | null>(new Date());
-  const [parsed_date, setParsedDate] = useState(format(new Date(), WDateUtils.DATE_STRING_INTERNAL_FORMAT));
-  const [service_selection, setServiceSelection] = useState<boolean[]>(Array(NUM_SERVICES).fill(true));
-  const can_submit = useMemo(() => upper_time !== null && lower_time !== null && selected_date !== null, [upper_time, lower_time, selected_date]);
+  const dispatch = useAppDispatch();
+  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
+  const CURRENT_TIME = useAppSelector(s => s.metrics.currentTime);
+  const NUM_SERVICES = useMemo(() => Object.keys(fulfillments).length, [fulfillments]);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
-  const GetInfoMapForAvailability = useCallback((date: Date | number) => WDateUtils.GetInfoMapForAvailabilityComputation(BLOCKED_OFF, SETTINGS, LEAD_TIME, date, service_selection, { cart_based_lead_time: 0, size: 1 }), [BLOCKED_OFF, LEAD_TIME, SETTINGS, service_selection])
-  const GetOptionsForDate = useCallback((date: Date | number) => WDateUtils.GetOptionsForDate(GetInfoMapForAvailability(date), date, CURRENT_TIME), [GetInfoMapForAvailability, CURRENT_TIME]);
-  const HasOptionsForDate = useCallback((date: Date | number) => GetOptionsForDate(date).filter(x => !x.disabled).length, [GetOptionsForDate]);
-  const startOptions = useMemo(() => selected_date !== null ? GetOptionsForDate(selected_date) : [], [selected_date, GetOptionsForDate]);
-  const endOptions = useMemo(() => selected_date !== null && lower_time !== null ?
-    TrimOptionsBeforeDisabled(startOptions.filter(x => x.value >= lower_time)) : [],
-    [selected_date, lower_time, startOptions])
-  const postBlockedOff = useCallback(async (new_blocked_off: JSFEBlockedOff) => {
+
+  const startTime = useAppSelector(s => s.blockOff.startTime);
+  const endTime = useAppSelector(s => s.blockOff.endTime);
+  const selectedDate = useAppSelector(s => s.blockOff.selectedDate);
+  const selectedServices = useAppSelector(s => s.blockOff.selectedServices);
+
+  const canPostBlockedOff = useMemo(() => selectedDate !== null && startTime !== null && endTime !== null, [selectedDate, startTime, endTime]);
+
+  const GetInfoMapForAvailability = useCallback((isoDate: string) => WDateUtils.GetInfoMapForAvailabilityComputation(selectedServices.map(x=>fulfillments[x]), isoDate, { cart_based_lead_time: 0, size: 1 }), [selectedServices])
+  const GetOptionsForDate = useCallback((isoDate: string) => WDateUtils.GetOptionsForDate(GetInfoMapForAvailability(isoDate), isoDate, formatISO(CURRENT_TIME)), [GetInfoMapForAvailability, CURRENT_TIME]);
+  const HasOptionsForDate = useCallback((isoDate: string) => GetOptionsForDate(isoDate).filter(x => !x.disabled).length, [GetOptionsForDate]);
+  const startOptions = useMemo(() => {
+    return selectedDate !== null ? GetOptionsForDate(selectedDate) : []
+  }, [selectedDate, GetOptionsForDate]);
+  const endOptions = useMemo(() => {
+    return selectedDate !== null && startTime !== null ?
+      TrimOptionsBeforeDisabled(startOptions.filter(x => x.value >= startTime)) : [];
+  }, [selectedDate, startTime, startOptions]);
+  useEffect(() => {
+    if (selectedDate === null) {
+      // get next available date and time
+      const next = GetNextAvailableServiceDate(selectedServices.map(x=>fulfillments[x]), 1, formatISO(CURRENT_TIME))
+      if (next !== null) {
+        dispatch(setSelectedDate(next[0]));
+        dispatch(setStartTime(next[1]));
+        dispatch(setEndTime(next[1]));
+      }
+    }
+  }, [selectedDate, fulfillments, selectedServices]);
+
+  const postBlockedOff = async () => {
+    if (!isProcessing && selectedDate !== null && startTime !== null && endTime !== null) {
+      try {
+        const token = await getAccessTokenSilently({ scope: "write:order_config" });
+        const body: PostBlockedOffToFulfillmentsRequest = {
+          date: selectedDate,
+          fulfillmentIds: selectedServices,
+          interval: {
+            start: startTime,
+            end: endTime
+          }
+        };
+        const response = await fetch(
+          `${HOST_API}/api/v1/config/timing/blockoff`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          }
+        );
+        if (response.status === 201) {
+          dispatch(setStartTime(null))
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const deleteBlockedOff = async (fulfillmentId: string, isoDate: string, interval: IWInterval) => {
     try {
       const token = await getAccessTokenSilently({ scope: "write:order_config" });
+      const body: PostBlockedOffToFulfillmentsRequest = {
+        date: isoDate,
+        fulfillmentIds: [fulfillmentId],
+        interval: interval
+      };
       const response = await fetch(
         `${HOST_API}/api/v1/config/timing/blockoff`,
         {
-          method: "POST",
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(new_blocked_off),
+          body: JSON.stringify(body),
         }
       );
-      // eslint-disable-next-line no-empty
       if (response.status === 201) {
       }
     } catch (error) {
       console.error(error);
     }
-  }, [getAccessTokenSilently]);
+  };
 
-  const addBlockedOffInterval = useCallback((parsed_date: string, interval: WIntervalTuple) => {
+  const removeBlockedOffForDate = async (fulfillmentId: string, isoDate: string) => {
     if (!isProcessing) {
       setIsProcessing(true);
-      const new_blocked_off = structuredClone(BLOCKED_OFF);
-      // iterate over services
-      service_selection.forEach((enabled, i) => {
-        if (enabled) {
-          WDateUtils.AddIntervalToService(i, parsed_date, interval, new_blocked_off);
-        }
-      });
-      postBlockedOff(new_blocked_off);
-      setIsProcessing(false);
-    }
-  }, [service_selection, isProcessing, postBlockedOff, BLOCKED_OFF])
-  const removeBlockedOffForDate = (service_index: number, day_index: number) => {
-    if (!isProcessing) {
-      setIsProcessing(true);
-      let new_blocked_off = structuredClone(BLOCKED_OFF);
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < BLOCKED_OFF[service_index][day_index][1].length; ++i) {
-        new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
-          service_index,
-          day_index,
-          0,
-          new_blocked_off);
-      }
-      postBlockedOff(new_blocked_off);
-      setIsProcessing(false);
-    }
-  }
-  if (SERVICES === null || SETTINGS === null || LEAD_TIME === null) {
-    return <>Loading...</>;
-  }
-
-  const removeBlockedOffInterval = (service_index: number, day_index: number, interval_index: number) => {
-    if (!isProcessing) {
-      setIsProcessing(true);
-      const new_blocked_off = WDateUtils.RemoveIntervalFromBlockedOffWireFormat(
-        service_index,
-        day_index,
-        interval_index,
-        BLOCKED_OFF);
-      postBlockedOff(new_blocked_off);
+      await deleteBlockedOff(fulfillmentId, isoDate, { start: 0, end: 1440 });
       setIsProcessing(false);
     }
   }
 
-  const onChangeServiceSelection = (i: number) => {
-    const new_service_selection = service_selection.slice();
-    new_service_selection[i] = !new_service_selection[i];
-    setServiceSelection(new_service_selection);
-    if (selected_date && !HasOptionsForDate(selected_date)) {
-      setDate(null);
+  const removeBlockedOffInterval = async (fulfillmentId: string, isoDate: string, interval: IWInterval) => {
+    if (!isProcessing) {
+      setIsProcessing(true);
+      await deleteBlockedOff(fulfillmentId, isoDate, interval);
+      setIsProcessing(false);
     }
+  }
+
+  const onChangeServiceSelection = (fulfillmentId: string) => {
+    dispatch(toggleSelectedService(fulfillmentId));
   }
 
   const onChangeLowerBound = (e: number) => {
-    let new_upper;
-    if (upper_time) {
-      new_upper = upper_time < e ? e : upper_time;
-    }
-    else {
-      new_upper = e;
-    }
-    if (!e) {
-      new_upper = null;
-    }
-    setLowerTime(e);
-    setUpperTime(new_upper);
+    dispatch(setStartTime(e));
   }
   const onChangeUpperBound = (e: number) => {
-    setUpperTime(e);
+    dispatch(setEndTime(e));
   }
-  const setDate = (date: Date | null) => {
-    setSelectedDate(date);
-    setParsedDate(date !== null ?
-      format(date, WDateUtils.DATE_STRING_INTERNAL_FORMAT) :
-      "");
-    setLowerTime(null);
-    setUpperTime(null);
-  }
-
-  const handleSubmit = () => {
-    if (selected_date && lower_time !== null && upper_time !== null) {
-      addBlockedOffInterval(parsed_date, [lower_time, upper_time]);
-      if (!HasOptionsForDate(selected_date)) {
-        setDate(null);
-      }
-      else {
-        setLowerTime(null);
-        setUpperTime(null);
-      }
+  const handleSetSelectedDate = (date: Date | null) => {
+    if (date) {
+      const isoDate = WDateUtils.formatISODate(date);
+      dispatch(setSelectedDate(isoDate));
+    } else {
+      dispatch(setSelectedDate(null));
     }
   }
-  const services_checkboxes = Object.values(SERVICES).map((x, i) => (
-    <Grid item xs={Math.floor(12 / NUM_SERVICES)} key={i}>
-      <ServiceSelectionCheckbox
-        service_name={x}
-        selected={service_selection[i]}
-        onChange={() => onChangeServiceSelection(i)}
-      />
-    </Grid>
-  ));
-  const blocked_off_html = BLOCKED_OFF ? BLOCKED_OFF.map((_, i) => {
-    const blocked_off_days_html = BLOCKED_OFF[i].map((_, j) => {
-      const blocked_off_intervals_html = BLOCKED_OFF[i][j][1].map((_, k) => {
-        const from_to = BLOCKED_OFF[i][j][1][k][0] === BLOCKED_OFF[i][j][1][k][1] ? WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][0]) : `${WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][0])} to ${WDateUtils.MinutesToPrintTime(BLOCKED_OFF[i][j][1][k][1])}`;
-        return (
-          <ListItem key={k}>
-            <ListItemText primary={from_to} />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(i, j, k)}>
-                <HighlightOff />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        );
-      })
-      return (
-        <Container key={j}>
-          <ListItem>
-            {format(parse(BLOCKED_OFF[i][j][0], WDateUtils.DATE_STRING_INTERNAL_FORMAT, CURRENT_TIME), 'EEEE, MMMM dd, y')}
-            <ListItemSecondaryAction>
-              <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(i, j)}>
-                <HighlightOff />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          <List sx={{ ml: 2 }}>
-            {blocked_off_intervals_html}
-          </List>
-        </Container>
-      );
-    })
-    return (
-      <Grid key={i} item xs={Math.floor(12 / NUM_SERVICES)}>
-        <Card>
-          <CardHeader title={SERVICES[i]} />
-          <List component="nav">
-            {blocked_off_days_html}
-          </List>
-        </Card>
-      </Grid>
-    );
-  }) : "";
 
   return (
     <>
@@ -245,8 +186,18 @@ const BlockOffComp = () => {
         <Card>
           <CardHeader title="Add Blocked-Off Time:" sx={{ mb: 3 }} />
           <Grid container justifyContent="center">
-            <Grid item xs={8}>
-              <Grid sx={{ ml: 6 }} container>{services_checkboxes}</Grid>
+            <Grid item container xs={8} sx={{ ml: 6 }}>
+              {
+                Object.values(fulfillments).map((x) => (
+                  <Grid item xs={Math.floor(12 / NUM_SERVICES)} key={x.id}>
+                    <ServiceSelectionCheckbox
+                      service_name={x.displayName}
+                      selected={selectedServices.indexOf(x.id) !== -1}
+                      onChange={() => onChangeServiceSelection(x.id)}
+                    />
+                  </Grid>
+                ))
+              }
             </Grid>
             <Grid item xs={4}>
               <MobileDatePicker
@@ -255,9 +206,9 @@ const BlockOffComp = () => {
                 showToolbar={false}
                 minDate={new Date(CURRENT_TIME)}
                 maxDate={add(CURRENT_TIME, { days: 60 })}
-                shouldDisableDate={e => !HasOptionsForDate(e)}
-                value={selected_date}
-                onChange={(date) => setDate(date)}
+                shouldDisableDate={e => !HasOptionsForDate(WDateUtils.formatISODate(e))}
+                value={selectedDate ? parseISO(selectedDate) : null}
+                onChange={(date) => handleSetSelectedDate(date)}
                 inputFormat="EEEE, MMMM dd, y"
               />
             </Grid>
@@ -270,9 +221,9 @@ const BlockOffComp = () => {
                 isOptionEqualToValue={(o, v) => o === v}
                 getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
                 // @ts-ignore
-                value={lower_time}
+                value={startTime}
                 onChange={(_, v) => onChangeLowerBound(v)}
-                disabled={!selected_date}
+                disabled={selectedDate === null}
                 renderInput={(params) => <TextField {...params} label={"Start"}
                 />}
               />
@@ -286,18 +237,52 @@ const BlockOffComp = () => {
                 isOptionEqualToValue={(o, v) => o === v}
                 getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
                 // @ts-ignore
-                value={upper_time}
+                value={endTime}
                 onChange={(_, v) => onChangeUpperBound(v)}
-                disabled={!(selected_date && lower_time)}
+                disabled={selectedDate === null || startTime === null}
                 renderInput={(params) => <TextField {...params} label={"End"}
                 />}
               />
             </Grid>
-            <Grid item xs={2}><Button sx={{ m: 3 }} onClick={() => handleSubmit()} disabled={!can_submit || isProcessing}>Add</Button></Grid>
+            <Grid item xs={2}><Button sx={{ m: 3 }} onClick={() => postBlockedOff()} disabled={!canPostBlockedOff || isProcessing}>Add</Button></Grid>
           </Grid>
         </Card>
       </Grid>
-      {blocked_off_html}
+      {Object.values(fulfillments).map(fulfillment =>
+        <Grid key={fulfillment.id} item xs={Math.floor(12 / NUM_SERVICES)}>
+          <Card>
+            <CardHeader title={fulfillment.displayName} />
+            <List component="nav">
+              {Object.entries(fulfillment.blockedOff).map(([isoDate, intervals]) => (
+                <Container key={`${fulfillment.id}.${isoDate}`}>
+                  <ListItem>
+                    {format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}
+                    <ListItemSecondaryAction>
+                      <IconButton hidden={intervals.length === 0} edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(fulfillment.id, isoDate)}>
+                        <HighlightOff />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                  <List sx={{ ml: 2 }}>
+                    {intervals.map((interval, i) => {
+                      const from_to = interval.start === interval.end ? WDateUtils.MinutesToPrintTime(interval.start) : `${WDateUtils.MinutesToPrintTime(interval.start)} to ${WDateUtils.MinutesToPrintTime(interval.end)}`;
+                      return (
+                        <ListItem key={i}>
+                          <ListItemText primary={from_to} />
+                          <ListItemSecondaryAction>
+                            <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(fulfillment.id, isoDate, interval)}>
+                              <HighlightOff />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </Container>
+              ))}
+            </List>
+          </Card>
+        </Grid>)}
     </>
   );
 }

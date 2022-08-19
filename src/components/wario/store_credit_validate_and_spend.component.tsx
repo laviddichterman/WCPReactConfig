@@ -1,4 +1,4 @@
-import { RoundToTwoDecimalPlaces, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
+import { CURRENCY, MoneyToDisplayString, RoundToTwoDecimalPlaces, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
 
 import { useState, useEffect } from "react";
 
@@ -22,7 +22,7 @@ const StoreCreditValidateAndSpendComponent = () => {
   const [scanCode, setScanCode] = useState(false);
   const [hasCamera, setHasCamera] = useState(false);
   const [validationResponse, setValidationResponse] = useState<ValidateAndLockCreditResponse | null>(null);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState({ currency: CURRENCY.USD, amount: 0 });
   const [processedBy, setProcessedBy] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [debitResponse, setDebitResponse] = useState<SpendCreditResponse | null>(null);
@@ -48,7 +48,7 @@ const StoreCreditValidateAndSpendComponent = () => {
     setCreditCode("");
     setScanCode(false);
     setValidationResponse(null);
-    setAmount(0);
+    setAmount({ currency: CURRENCY.USD, amount: 0 });
     setProcessedBy("");
     setIsProcessing(false);
     setDebitResponse(null);
@@ -76,7 +76,7 @@ const StoreCreditValidateAndSpendComponent = () => {
   };
 
   const processDebit = async () => {
-    if (!isProcessing && validationResponse !== null && validationResponse.lock !== null) {
+    if (!isProcessing && validationResponse !== null && validationResponse.valid === true) {
       setIsProcessing(true);
       try {
         const body: ValidateLockAndSpendRequest = {
@@ -182,7 +182,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                   <Typography variant="h5">
                     Found a credit code of type {validationResponse.credit_type}{" "}
                     with balance{" "}
-                    {US_MONEY_FORMATTER.format(validationResponse.amount)}
+                    {MoneyToDisplayString(validationResponse.amount, true)}
                   </Typography>
                   {validationResponse.credit_type === "MONEY" ? (
                     <List>
@@ -192,7 +192,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                       </ListItem>
                       <ListItem>
                         If the after-tax total of the order is less than{" "}
-                        {US_MONEY_FORMATTER.format(validationResponse.amount)},
+                        {MoneyToDisplayString(validationResponse.amount, true)},
                         ask the customer how much of their credit they would like
                         to apply as tip. Enter the sum of their after-tax total
                         and the applied tip below to debit the credit code. Apply
@@ -202,12 +202,12 @@ const StoreCreditValidateAndSpendComponent = () => {
                       </ListItem>
                       <ListItem>
                         If the after-tax total of the order is greater than{" "}
-                        {US_MONEY_FORMATTER.format(validationResponse.amount)},
+                        {MoneyToDisplayString(validationResponse.amount, true)},
                         split the order into two payments: the first for{" "}
-                        {US_MONEY_FORMATTER.format(validationResponse.amount)}{" "}
+                        {MoneyToDisplayString(validationResponse.amount, true)}{" "}
                         paid with store credit, and the second for the remainder.
                         Enter{" "}
-                        {US_MONEY_FORMATTER.format(validationResponse.amount)}{" "}
+                        {MoneyToDisplayString(validationResponse.amount, true)}{" "}
                         below to debit the full amount of the credit.
                       </ListItem>
                     </List>
@@ -218,14 +218,14 @@ const StoreCreditValidateAndSpendComponent = () => {
                       </ListItem>
                       <ListItem>
                         So, if the pre-tax total of the order is less than{" "}
-                        {US_MONEY_FORMATTER.format(validationResponse.amount)},
+                        {MoneyToDisplayString(validationResponse.amount, true)},
                         enter the pre-tax total below to debit that amount.
                       </ListItem>
                       <ListItem>
                         If the pre-tax total of the order is greater than or equal
-                        to {US_MONEY_FORMATTER.format(validationResponse.amount)},
+                        to {MoneyToDisplayString(validationResponse.amount, true)},
                         enter{" "}
-                        {US_MONEY_FORMATTER.format(validationResponse.amount)}{" "}
+                        {MoneyToDisplayString(validationResponse.amount, true)}{" "}
                         below.
                       </ListItem>
                       <ListItem>
@@ -239,11 +239,11 @@ const StoreCreditValidateAndSpendComponent = () => {
                     type="number"
                     fullWidth
                     label="Amount to debit"
-                    inputProps={{ inputMode: 'decimal', min: 0.01, max: validationResponse.amount, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
-                    value={amount}
+                    inputProps={{ inputMode: 'decimal', min: 0.01, max: validationResponse.amount.amount / 100, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
+                    value={RoundToTwoDecimalPlaces(amount.amount / 100)}
                     className="form-control"
                     disabled={isProcessing || debitResponse !== null}
-                    onChange={(e) => setAmount(e)}
+                    onChange={(e) => setAmount({ currency: CURRENCY.USD, amount: Math.round(e * 100)})}
                     parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
                     allowEmpty={false} />
                 </Grid>
@@ -266,10 +266,10 @@ const StoreCreditValidateAndSpendComponent = () => {
                       validationResponse.lock === null || 
                       debitResponse !== null ||
                       processedBy.length === 0 ||
-                      amount <= 0
+                      amount.amount <= 0
                     }
                   >
-                    Debit {US_MONEY_FORMATTER.format(amount)}
+                    Debit {MoneyToDisplayString(amount, true)}
                   </Button>
                 </Grid>
               </>
@@ -277,9 +277,9 @@ const StoreCreditValidateAndSpendComponent = () => {
         {debitResponse !== null ? (
           debitResponse.success ? (
             <Grid item xs={12}>
-              Successfully debited {US_MONEY_FORMATTER.format(amount)}.
+              Successfully debited {MoneyToDisplayString(amount, true)}.
               Balance remaining:{" "}
-              {US_MONEY_FORMATTER.format(debitResponse.balance)}
+              {MoneyToDisplayString(debitResponse.balance, true)}
             </Grid>
           ) : (
             <Grid item xs={12}>
