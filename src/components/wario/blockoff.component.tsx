@@ -22,7 +22,7 @@ import { GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRe
 
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { HOST_API } from '../../config';
-import { setSelectedDate, setStartTime, setEndTime, toggleSelectedService } from "src/redux/slices/BlockOffSlice";
+import { setSelectedDate, setStartTime, setEndTime, toggleSelectedService, setSelectedServices } from "src/redux/slices/BlockOffSlice";
 
 
 const TrimOptionsBeforeDisabled = function <T extends { disabled: boolean; }>(opts: T[]) {
@@ -65,8 +65,13 @@ const BlockOffComp = () => {
 
   const canPostBlockedOff = useMemo(() => selectedDate !== null && startTime !== null && endTime !== null, [selectedDate, startTime, endTime]);
 
-  const GetInfoMapForAvailability = useCallback((isoDate: string) => WDateUtils.GetInfoMapForAvailabilityComputation(selectedServices.map(x=>fulfillments[x]), isoDate, { cart_based_lead_time: 0, size: 1 }), [selectedServices])
-  const GetOptionsForDate = useCallback((isoDate: string) => WDateUtils.GetOptionsForDate(GetInfoMapForAvailability(isoDate), isoDate, formatISO(CURRENT_TIME)), [GetInfoMapForAvailability, CURRENT_TIME]);
+  const GetOptionsForDate = useCallback((isoDate: string) => {
+    if (selectedServices.length > 0) {
+      const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(selectedServices.map(x => fulfillments[x]), isoDate, { cart_based_lead_time: 0, size: 1 });
+      return WDateUtils.GetOptionsForDate(INFO, isoDate, formatISO(CURRENT_TIME));
+    }
+    return [];
+  }, [selectedServices, fulfillments, CURRENT_TIME]);
   const HasOptionsForDate = useCallback((isoDate: string) => GetOptionsForDate(isoDate).filter(x => !x.disabled).length, [GetOptionsForDate]);
   const startOptions = useMemo(() => {
     return selectedDate !== null ? GetOptionsForDate(selectedDate) : []
@@ -78,7 +83,7 @@ const BlockOffComp = () => {
   useEffect(() => {
     if (selectedDate === null) {
       // get next available date and time
-      const next = GetNextAvailableServiceDate(selectedServices.map(x=>fulfillments[x]), 1, formatISO(CURRENT_TIME))
+      const next = GetNextAvailableServiceDate(selectedServices.map(x => fulfillments[x]), 1, formatISO(CURRENT_TIME))
       if (next !== null) {
         dispatch(setSelectedDate(next[0]));
         dispatch(setStartTime(next[1]));
@@ -86,6 +91,12 @@ const BlockOffComp = () => {
       }
     }
   }, [selectedDate, fulfillments, selectedServices]);
+
+  useEffect(() => {
+    if (selectedServices.length === 0 && Object.keys(fulfillments).length > 0) {
+      dispatch(setSelectedServices(Object.keys(fulfillments)));
+    }
+  }, [selectedServices, fulfillments]);
 
   const postBlockedOff = async () => {
     if (!isProcessing && selectedDate !== null && startTime !== null && endTime !== null) {
@@ -209,7 +220,7 @@ const BlockOffComp = () => {
                 shouldDisableDate={e => !HasOptionsForDate(WDateUtils.formatISODate(e))}
                 value={selectedDate ? parseISO(selectedDate) : null}
                 onChange={(date) => handleSetSelectedDate(date)}
-                inputFormat="EEEE, MMMM dd, y"
+                inputFormat={WDateUtils.ServiceDateDisplayFormat}
               />
             </Grid>
             <Grid item xs={5}>

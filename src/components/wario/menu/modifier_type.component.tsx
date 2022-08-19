@@ -12,6 +12,7 @@ import { ElementActionComponent } from "./element.action.component";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { startCase, snakeCase } from 'lodash';
+import { ValSetValNamed } from "src/utils/common";
 
 export interface ModifierTypeUiProps {
   onCloseCallback: VoidFunction;
@@ -21,41 +22,27 @@ export type ModifierTypeModifyUiProps = {
   modifier_type: IOptionType;
 } & ModifierTypeUiProps;
 
-export interface ModifierTypeComponentProps {
+export type ModifierTypeComponentProps = 
+ValSetValNamed<number, 'ordinal'> & 
+ValSetValNamed<number, 'minSelected'> & 
+ValSetValNamed<number | null, 'maxSelected'> & 
+ValSetValNamed<string, 'name'> & 
+ValSetValNamed<string, 'displayName'> & 
+ValSetValNamed<string, 'templateString'> & 
+ValSetValNamed<string, 'multipleItemSeparator'> & 
+ValSetValNamed<string, 'nonEmptyGroupPrefix'> & 
+ValSetValNamed<string, 'nonEmptyGroupSuffix'> & 
+ValSetValNamed<boolean, 'omitOptionIfNotAvailable'> & 
+ValSetValNamed<boolean, 'omitSectionIfNoAvailableOptions'> & 
+ValSetValNamed<boolean, 'useToggleIfOnlyTwoOptions'> & 
+ValSetValNamed<boolean, 'isHiddenDuringCustomization'> & 
+ValSetValNamed<keyof typeof DISPLAY_AS, 'emptyDisplayAs'> & 
+ValSetValNamed<keyof typeof MODIFIER_CLASS, 'modifierClass'> & {
   confirmText: string;
   onConfirmClick: VoidFunction;
   isProcessing: boolean;
-  ordinal: number;
-  setOrdinal: Dispatch<SetStateAction<number>>;
-  minSelected: number;
-  setMinSelected: Dispatch<SetStateAction<number>>;
-  maxSelected: number | null;
-  setMaxSelected: Dispatch<SetStateAction<number | null>>;
-  name: string;
-  setName: Dispatch<SetStateAction<string>>;
-  displayName: string;
-  setDisplayName: Dispatch<SetStateAction<string>>;
-  templateString: string;
-  setTemplateString: Dispatch<SetStateAction<string>>;
-  multipleItemSeparator: string;
-  setMultipleItemSeparator: Dispatch<SetStateAction<string>>;
-  nonEmptyGroupPrefix: string;
-  setNonEmptyGroupPrefix: Dispatch<SetStateAction<string>>;
-  nonEmptyGroupSuffix: string;
-  setNonEmptyGroupSuffix: Dispatch<SetStateAction<string>>;
-  omitOptionIfNotAvailable: boolean;
-  setOmitOptionIfNotAvailable: Dispatch<SetStateAction<boolean>>;
-  omitSectionIfNoAvailableOptions: boolean;
-  setOmitSectionIfNoAvailableOptions: Dispatch<SetStateAction<boolean>>;
-  useToggleIfOnlyTwoOptions: boolean;
-  setUseToggleIfOnlyTwoOptions: Dispatch<SetStateAction<boolean>>;
-  isHiddenDuringCustomization: boolean;
-  setIsHiddenDuringCustomization: Dispatch<SetStateAction<boolean>>;
-  emptyDisplayAs: keyof typeof DISPLAY_AS;
-  setEmptyDisplayAs: Dispatch<SetStateAction<keyof typeof DISPLAY_AS>>;
-  modifierClass: keyof typeof MODIFIER_CLASS;
-  setModifierClass: Dispatch<SetStateAction<keyof typeof MODIFIER_CLASS>>;
-}
+};
+
 const ModifierTypeComponent = ({
   confirmText,
   onCloseCallback,
@@ -94,8 +81,8 @@ const ModifierTypeComponent = ({
 }: ModifierTypeComponentProps & ModifierTypeUiProps) => {
   const handleSetMaxSelected = (val: number | null) => {
     if (val !== 1) {
-      if (emptyDisplayAs === "LIST_CHOICES") {
-        setEmptyDisplayAs("YOUR_CHOICE_OF");
+      if (emptyDisplayAs === DISPLAY_AS.LIST_CHOICES) {
+        setEmptyDisplayAs(DISPLAY_AS.YOUR_CHOICE_OF);
       }
       setUseToggleIfOnlyTwoOptions(false);
     }

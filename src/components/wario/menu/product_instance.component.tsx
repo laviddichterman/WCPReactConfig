@@ -20,48 +20,30 @@ import { useAppSelector } from "src/hooks/useRedux";
 import { ICatalogModifiers, IProduct, ModifiersMap, OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wcpshared";
 import { isUndefined, snakeCase, startCase } from "lodash";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
+import { ValSetValNamed } from "src/utils/common";
 
-export interface ProductInstanceComponentProps {
-  parent_product: IProduct;
-  displayName: string;
-  setDisplayName: Dispatch<SetStateAction<string>>;
-  description: string;
-  setDescription: Dispatch<SetStateAction<string>>;
-  shortcode: string;
-  setShortcode: Dispatch<SetStateAction<string>>;
-  ordinal: number;
-  setOrdinal: Dispatch<SetStateAction<number>>;
-  modifiers: ModifiersMap;
-  setModifiers: Dispatch<SetStateAction<ModifiersMap>>;
-  isBase: boolean;
-  setIsBase: Dispatch<SetStateAction<boolean>>;
+export type ProductInstanceComponentProps = 
+ValSetValNamed<string, 'displayName'> & 
+ValSetValNamed<string, 'description'> & 
+ValSetValNamed<string, 'shortcode'> & 
+ValSetValNamed<number, 'ordinal'> & 
+ValSetValNamed<ModifiersMap, 'modifiers'> & 
+ValSetValNamed<boolean, 'isBase'> & 
   // menu
-  menuOrdinal: number;
-  setMenuOrdinal: Dispatch<SetStateAction<number>>;
-  menuHide: boolean;
-  setMenuHide: Dispatch<SetStateAction<boolean>>;
-  menuPriceDisplay: keyof typeof PriceDisplay;
-  setMenuPriceDisplay: Dispatch<SetStateAction<keyof typeof PriceDisplay>>;
-  menuAdornment: string;
-  setMenuAdornment: Dispatch<SetStateAction<string>>;
-  menuSuppressExhaustiveModifierList: boolean;
-  setMenuSuppressExhaustiveModifierList: Dispatch<SetStateAction<boolean>>;
-  menuShowModifierOptions: boolean;
-  setMenuShowModifierOptions: Dispatch<SetStateAction<boolean>>;
+ValSetValNamed<number, 'menuOrdinal'> & 
+ValSetValNamed<boolean, 'menuHide'> & 
+ValSetValNamed<keyof typeof PriceDisplay, 'menuPriceDisplay'> & 
+ValSetValNamed<string, 'menuAdornment'> & 
+ValSetValNamed<boolean, 'menuSuppressExhaustiveModifierList'> & 
+ValSetValNamed<boolean, 'menuShowModifierOptions'> & 
   // order
-  orderOrdinal: number;
-  setOrderOrdinal: Dispatch<SetStateAction<number>>;
-  orderMenuHide: boolean;
-  setOrderMenuHide: Dispatch<SetStateAction<boolean>>;
-  skipCustomization: boolean;
-  setSkipCustomization: Dispatch<SetStateAction<boolean>>;
-  orderPriceDisplay: keyof typeof PriceDisplay;
-  setOrderPriceDisplay: Dispatch<SetStateAction<keyof typeof PriceDisplay>>
-  orderAdornment: string;
-  setOrderAdornment: Dispatch<SetStateAction<string>>;
-  orderSuppressExhaustiveModifierList: boolean;
-  setOrderSuppressExhaustiveModifierList: Dispatch<SetStateAction<boolean>>;
-}
+ValSetValNamed<number, 'orderOrdinal'> & 
+ValSetValNamed<boolean, 'orderMenuHide'> & 
+ValSetValNamed<boolean, 'skipCustomization'> &
+ValSetValNamed<keyof typeof PriceDisplay, 'orderPriceDisplay'> & 
+ValSetValNamed<string, 'orderAdornment'> & 
+ValSetValNamed<boolean, 'orderSuppressExhaustiveModifierList'> & 
+{ parent_product: IProduct; }
 
 const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});

@@ -15,50 +15,35 @@ import { ElementActionComponent } from './element.action.component';
 import { IMoney, IProductModifier, IWInterval, RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
 import { useAppSelector } from 'src/hooks/useRedux';
 import { CheckedNumericInput } from '../CheckedNumericTextInput';
+import { ValSetValNamed } from 'src/utils/common';
 
-interface ProductInstanceComponentProps {
-  displayName: string;
-  setDisplayName: Dispatch<SetStateAction<string>>;
-  description: string;
-  setDescription: Dispatch<SetStateAction<string>>;
-  shortcode: string;
-  setShortcode: Dispatch<SetStateAction<string>>;
-  ordinal: number;
-  setOrdinal: Dispatch<SetStateAction<number>>;
-}
+type ProductInstanceComponentProps = 
+ValSetValNamed<string, 'displayName'> & 
+ValSetValNamed<string, 'description'> & 
+ValSetValNamed<string, 'shortcode'> & 
+ValSetValNamed<number, 'ordinal'>;
 
-interface ProductComponentProps {
+type ProductComponentProps = 
+ValSetValNamed<IMoney, 'price'> & 
+ValSetValNamed<IWInterval | null, 'disabled'> & 
+ValSetValNamed<string[], 'serviceDisable'> & 
+ValSetValNamed<number, 'flavorMax'> & 
+ValSetValNamed<number, 'bakeMax'> & 
+ValSetValNamed<number, 'bakeDifferentialMax'> & 
+ValSetValNamed<string[], 'orderGuideWarningFunctions'> & 
+ValSetValNamed<string[], 'orderGuideSuggestionFunctions'> & 
+ValSetValNamed<boolean, 'showNameOfBaseProduct'> & 
+ValSetValNamed<string, 'singularNoun'> & 
+ValSetValNamed<string[], 'parentCategories'> & 
+ValSetValNamed<IProductModifier[], 'modifiers'> & {  
   confirmText: string;
   onCloseCallback: VoidFunction;
   onConfirmClick: VoidFunction;
   isProcessing: boolean;
   disableConfirmOn: boolean;
-  price: IMoney;
-  setPrice: Dispatch<SetStateAction<IMoney>>;
-  disabled: IWInterval | null;
-  setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
-  serviceDisable: string[];
-  setServiceDisable: Dispatch<SetStateAction<string[]>>;
-  flavorMax: number;
-  setFlavorMax: Dispatch<SetStateAction<number>>;
-  bakeMax: number;
-  setBakeMax: Dispatch<SetStateAction<number>>;
-  bakeDifferentialMax: number;
-  setBakeDifferentialMax: Dispatch<SetStateAction<number>>;
-  orderGuideWarningFunctions: string[];
-  setOrderGuideWarningFunctions: Dispatch<SetStateAction<string[]>>;
-  orderGuideSuggestionFunctions: string[];
-  setOrderGuideSuggestionFunctions: Dispatch<SetStateAction<string[]>>;
-  showNameOfBaseProduct: boolean;
-  setShowNameOfBaseProduct: Dispatch<SetStateAction<boolean>>;
-  singularNoun: string;
-  setSingularNoun: Dispatch<SetStateAction<string>>;
-  parentCategories: string[];
-  setParentCategories: Dispatch<SetStateAction<string[]>>;
-  modifiers: IProductModifier[];
-  setModifiers: Dispatch<SetStateAction<IProductModifier[]>>;
   children?: React.ReactNode;
-}
+};
+
 type ProductComponentPropsTypes = (({ suppressNonProductInstanceFields: true; } & Partial<ProductInstanceComponentProps>) | ({ suppressNonProductInstanceFields: false; } & ProductInstanceComponentProps));
 
 const ProductComponent = ({

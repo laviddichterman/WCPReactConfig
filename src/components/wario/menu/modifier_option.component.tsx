@@ -10,36 +10,26 @@ import { ElementActionComponent } from "./element.action.component";
 import { IMoney, IWInterval, RecordProductInstanceFunctions, RoundToTwoDecimalPlaces } from "@wcp/wcpshared";
 import { useAppSelector } from '../../../hooks/useRedux';
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
+import { ValSetValNamed } from "src/utils/common";
 
-interface ModifierOptionComponentProps {
+type ModifierOptionComponentProps = 
+ValSetValNamed<string, 'displayName'> & 
+ValSetValNamed<string, 'description'> & 
+ValSetValNamed<string, 'shortcode'> & 
+ValSetValNamed<number, 'ordinal'> & 
+ValSetValNamed<IMoney, 'price'> & 
+ValSetValNamed<string | null, 'enableFunction'> & 
+ValSetValNamed<number, 'flavorFactor'> & 
+ValSetValNamed<number, 'bakeFactor'> & 
+ValSetValNamed<boolean, 'canSplit'> & 
+ValSetValNamed<boolean, 'omitFromShortname'> & 
+ValSetValNamed<boolean, 'omitFromName'> & 
+ValSetValNamed<IWInterval | null, 'disabled'> & 
+{
   confirmText: string
   onCloseCallback: VoidFunction;
   onConfirmClick: VoidFunction;
   isProcessing: boolean;
-  displayName: string
-  setDisplayName: Dispatch<SetStateAction<string>>;
-  description: string
-  setDescription: Dispatch<SetStateAction<string>>;
-  shortcode: string
-  setShortcode: Dispatch<SetStateAction<string>>;
-  ordinal: number;
-  setOrdinal: Dispatch<SetStateAction<number>>;
-  price: IMoney;
-  setPrice: Dispatch<SetStateAction<IMoney>>;
-  enableFunction: string | null;
-  setEnableFunction: Dispatch<SetStateAction<string | null>>;
-  flavorFactor: number;
-  setFlavorFactor: Dispatch<SetStateAction<number>>;
-  bakeFactor: number;
-  setBakeFactor: Dispatch<SetStateAction<number>>;
-  canSplit: boolean;
-  setCanSplit: Dispatch<SetStateAction<boolean>>;
-  omitFromShortname: boolean;
-  setOmitFromShortname: Dispatch<SetStateAction<boolean>>;
-  omitFromName: boolean;
-  setOmitFromName: Dispatch<SetStateAction<boolean>>;
-  disabled: IWInterval | null;
-  setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
 }
 
 const ModifierOptionComponent = ({

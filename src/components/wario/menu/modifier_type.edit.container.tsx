@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ModifierTypeComponent, { ModifierTypeModifyUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../config";
-import { IOptionType } from "@wcp/wcpshared";
+import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 
 const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierTypeModifyUiProps) => {
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
@@ -15,8 +15,8 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
   const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(modifier_type.displayFlags.omit_section_if_no_available_options ?? false);
   const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(modifier_type.displayFlags.use_toggle_if_only_two_options ?? false);
   const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(modifier_type.displayFlags.hidden ?? false);
-  const [modifierClass, setModifierClass] = useState(modifier_type.displayFlags.modifier_class ?? "ADD");
-  const [emptyDisplayAs, setEmptyDisplayAs] = useState(modifier_type.displayFlags.empty_display_as ?? "OMIT");
+  const [modifierClass, setModifierClass] = useState(modifier_type.displayFlags.modifier_class ?? MODIFIER_CLASS.ADD);
+  const [emptyDisplayAs, setEmptyDisplayAs] = useState(modifier_type.displayFlags.empty_display_as ?? DISPLAY_AS.OMIT);
   const [templateString, setTemplateString] = useState(modifier_type.displayFlags.template_string ?? "");
   const [multipleItemSeparator, setMultipleItemSeparator] = useState(modifier_type.displayFlags.multiple_item_separator ?? "");
   const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState(modifier_type.displayFlags.non_empty_group_prefix ?? "");
