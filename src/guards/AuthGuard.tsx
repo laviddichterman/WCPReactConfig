@@ -26,6 +26,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     if (pathname !== requestedLocation) {
       setRequestedLocation(pathname);
     }
+    return <LoadingScreen />;
   }
 
   if (requestedLocation && pathname !== requestedLocation) {

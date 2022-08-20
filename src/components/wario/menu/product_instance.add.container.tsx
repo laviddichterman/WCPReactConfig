@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProductInstanceActionContainer } from "./product_instance.component";
@@ -15,8 +15,6 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
-  const [revelID, setRevelID] = useState("");
-  const [squareID, setSquareID] = useState("");
   const [modifiers, setModifiers] = useState<ModifiersMap>({});
   const [isBase, setIsBase] = useState(false);
   // menu
@@ -82,8 +80,6 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
           setDescription("");
           setShortcode("");
           setOrdinal(0);
-          setRevelID("");
-          setSquareID("");
           setModifiers({});
           setIsBase(false);
           setMenuOrdinal(0);

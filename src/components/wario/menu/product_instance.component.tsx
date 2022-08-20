@@ -1,26 +1,11 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import Switch from "@mui/material/Switch";
+import { Grid, TextField, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, RadioGroup, FormGroup, FormControlLabel } from '@mui/material';
 
-
-// related to modifiers
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Checkbox from "@mui/material/Checkbox";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import { ElementActionComponent } from "./element.action.component";
-import { useAppSelector } from "src/hooks/useRedux";
+import { useAppSelector } from "../../../hooks/useRedux";
 import { ICatalogModifiers, IProduct, ModifiersMap, OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wcpshared";
-import { snakeCase, startCase } from "lodash";
-import { CheckedNumericInput } from "../CheckedNumericTextInput";
-import { ValSetValNamed } from "src/utils/common";
+import { ValSetValNamed } from "../../../utils/common";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
 import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";

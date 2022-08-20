@@ -7,7 +7,6 @@ import Page from '../../components/Page';
 // sections
 import SettingsComp from "../../components/wario/settings.component";
 import StoreSettingsComponent from "../../components/wario/store_settings.component";
-import DeliveryAreaComp from "../../components/wario/deliveryarea.component";
 import KeyValuesComponent from "../../components/wario/keyvalues.component";
 
 // ----------------------------------------------------------------------
@@ -25,9 +24,6 @@ export default function GeneralSettings() {
           </Grid>
           <Grid item xs={12} md={12}>
             <StoreSettingsComponent />
-          </Grid>
-          <Grid item xs={12} md={12}>
-            <DeliveryAreaComp/>
           </Grid>
           <Grid item xs={12} md={12}>
             <KeyValuesComponent />

@@ -1,21 +1,18 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import {
   Grid,
   TextField,
-  Switch,
   Card,
   CardContent,
   FormControl,
   FormLabel,
-  FormControlLabel,
   Autocomplete
 } from '@mui/material';
 import DatetimeBasedDisableComponent from '../datetime_based_disable.component';
 import { ElementActionComponent } from './element.action.component';
-import { IMoney, IProductModifier, IWInterval, RoundToTwoDecimalPlaces } from '@wcp/wcpshared';
-import { useAppSelector } from 'src/hooks/useRedux';
-import { CheckedNumericInput } from '../CheckedNumericTextInput';
-import { ValSetValNamed } from 'src/utils/common';
+import { IMoney, IProductModifier, IWInterval } from '@wcp/wcpshared';
+import { useAppSelector } from '../../../hooks/useRedux';
+import { ValSetValNamed } from '../../../utils/common';
 import { StringPropertyComponent } from '../property-components/StringPropertyComponent';
 import { FloatNumericPropertyComponent } from '../property-components/FloatNumericPropertyComponent';
 import { ToggleBooleanPropertyComponent } from '../property-components/ToggleBooleanPropertyComponent';

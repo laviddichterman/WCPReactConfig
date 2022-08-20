@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { rootReducer } from './rootReducer';
+import ListeningMiddleware from './slices/ListeningMiddleware';
 import SocketIoMiddleware from "./slices/SocketIoMiddleware";
 import { ICategoriesAdapter, 
   IOptionTypesAdapter, 
@@ -12,11 +13,9 @@ import { ICategoriesAdapter,
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      // serializableCheck: false,
-      // immutableCheck: false,
-    }).concat([SocketIoMiddleware]),
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat([SocketIoMiddleware, ListeningMiddleware.middleware])
+  },
 });
 
 export const ICategoriesSelectors = ICategoriesAdapter.getSelectors((state: RootState) => state.ws.categories);

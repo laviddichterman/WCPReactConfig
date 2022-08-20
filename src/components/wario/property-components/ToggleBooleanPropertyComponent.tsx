@@ -1,5 +1,5 @@
 import {FormControlLabel, FormControlLabelProps, Switch, SwitchProps } from "@mui/material";
-import { ValSetVal } from "src/utils/common";
+import { ValSetVal } from "../../../utils/common";
 
 export type ToggleBooleanPropertyComponentProps = {
   sx?: SwitchProps['sx'];

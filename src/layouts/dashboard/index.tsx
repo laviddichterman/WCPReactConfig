@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -18,7 +18,7 @@ import Label from '../../components/Label';
 import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
-import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { useAppSelector } from '../../hooks/useRedux';
 import { IsSocketDataLoaded } from '../../redux/slices/SocketIoSlice';
 import LoadingScreen from '../../components/LoadingScreen';
 

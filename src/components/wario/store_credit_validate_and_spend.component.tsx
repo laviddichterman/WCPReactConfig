@@ -1,21 +1,50 @@
 import { CURRENCY, MoneyToDisplayString, RoundToTwoDecimalPlaces, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from 'react';
+import { Html5QrcodeScanner, Html5QrcodeScanType, Html5Qrcode } from 'html5-qrcode';
+import { QrcodeSuccessCallback, QrcodeErrorCallback} from 'html5-qrcode/core';
 
-import QrScanner from 'qr-scanner';
-import { OneOffQrScanner } from "react-webcam-qr-scanner.ts";
-
-import ErrorOutline from "@mui/icons-material/ErrorOutline";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, TextField } from "@mui/material";
+import { ErrorOutline, PhotoCamera } from "@mui/icons-material";
+import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, TextField } from '@mui/material';
 import DialogContainer from "./dialog.container";
 import { HOST_API } from "../../config";
 import { CheckedNumericInput } from "./CheckedNumericTextInput";
+import { uniqueId } from 'lodash';
 
-const US_MONEY_FORMATTER = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
+
+
+interface QrCodeScannerProps {
+  show: boolean;
+  onSuccess: QrcodeSuccessCallback;
+  onFailure: QrcodeErrorCallback;
+}
+const QrCodeId = uniqueId("qr_code");
+const QrCodeScanner = ({ show, onSuccess, onFailure } : QrCodeScannerProps) => {
+  const [qrScanner, setQrScanner] = useState<Html5QrcodeScanner | null>(null)
+  useLayoutEffect(() => {
+    if (!qrScanner) {
+      setQrScanner(new Html5QrcodeScanner(
+        QrCodeId, { supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA], fps: 10 }, false));
+    }
+    return () => {
+      if (qrScanner) {
+        qrScanner.clear().catch(error => {
+          console.error("Failed to clear html5QrcodeScanner. ", error);
+        });
+      }
+    };
+  }, [qrScanner]);
+  useEffect(() => {
+    if (show && qrScanner) {
+      qrScanner.render(onSuccess, onFailure)
+    } else {
+      if (qrScanner) {
+        qrScanner.pause();
+      }
+    }
+  }, [show, qrScanner, onSuccess, onFailure])
+  return (<div id={QrCodeId} />);
+}
 
 const StoreCreditValidateAndSpendComponent = () => {
   const [creditCode, setCreditCode] = useState("");
@@ -29,8 +58,8 @@ const StoreCreditValidateAndSpendComponent = () => {
 
   useEffect(() => {
     const CheckForCamera = async () => {
-      const cam = await QrScanner.hasCamera();
-      setHasCamera(cam);
+      const cam = await Html5Qrcode.getCameras()
+      setHasCamera(cam.length > 0);
     };
     CheckForCamera();
   }, []);
@@ -42,6 +71,10 @@ const StoreCreditValidateAndSpendComponent = () => {
       await validateCode(qrCode);
     }
   };
+
+  const onScannedFail = (errorMessage: string) => {
+    console.log(errorMessage);
+  }
 
   const clearLookup = () => {
     setIsProcessing(true);
@@ -112,16 +145,12 @@ const StoreCreditValidateAndSpendComponent = () => {
       }}
       open={scanCode}
       inner_component={
-        <OneOffQrScanner
-          onQrCode={onScanned}
-          hidden={false}
-        />
+        <QrCodeScanner show={scanCode} onSuccess={onScanned} onFailure={onScannedFail} />
       }
     />
     <Grid item xs={3}>
       <IconButton
         color="primary"
-        aria-label="upload picture"
         component="span"
         onClick={() => setScanCode(true)}
         disabled={isProcessing || (validationResponse !== null && validationResponse.valid)}
@@ -243,7 +272,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     value={RoundToTwoDecimalPlaces(amount.amount / 100)}
                     className="form-control"
                     disabled={isProcessing || debitResponse !== null}
-                    onChange={(e) => setAmount({ currency: CURRENCY.USD, amount: Math.round(e * 100)})}
+                    onChange={(e) => setAmount({ currency: CURRENCY.USD, amount: Math.round(e * 100) })}
                     parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
                     allowEmpty={false} />
                 </Grid>
@@ -263,7 +292,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     onClick={processDebit}
                     disabled={
                       isProcessing ||
-                      validationResponse.lock === null || 
+                      validationResponse.lock === null ||
                       debitResponse !== null ||
                       processedBy.length === 0 ||
                       amount.amount <= 0

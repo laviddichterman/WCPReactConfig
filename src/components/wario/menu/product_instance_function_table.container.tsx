@@ -5,7 +5,7 @@ import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
 import { IProductInstanceFunction, WFunctional } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
-import { useAppSelector } from "src/hooks/useRedux";
+import { useAppSelector } from "../../../hooks/useRedux";
 interface PIFTableContainerProps {
   setIsProductInstanceFunctionEditOpen: Dispatch<SetStateAction<boolean>>;
   setIsProductInstanceFunctionDeleteOpen: Dispatch<SetStateAction<boolean>>;

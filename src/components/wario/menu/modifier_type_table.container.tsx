@@ -7,7 +7,7 @@ import { Tooltip, IconButton } from '@mui/material';
 import ModifierOptionTableContainer from "./modifier_option_table.container";
 import TableWrapperComponent from "../table_wrapper.component";
 import { IOption, IOptionType, CatalogModifierEntry } from "@wcp/wcpshared";
-import { useAppSelector } from "src/hooks/useRedux";
+import { useAppSelector } from "../../../hooks/useRedux";
 
 export interface ModifierTypeTableContainerProps {
   setIsModifierTypeEditOpen: Dispatch<SetStateAction<boolean>>;

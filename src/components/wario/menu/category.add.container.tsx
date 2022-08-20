@@ -4,8 +4,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import CategoryComponent from "./category.component";
 import { HOST_API } from "../../../config";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
-import { useAppSelector } from "src/hooks/useRedux";
-import { getCategoryIds } from "src/redux/slices/SocketIoSlice";
+import { useAppSelector } from "../../../hooks/useRedux";
+import { getCategoryIds } from "../../../redux/slices/SocketIoSlice";
 
 export interface CategoryAddContainerProps {
   onCloseCallback: VoidFunction;

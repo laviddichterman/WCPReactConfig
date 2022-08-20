@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-import { addDays, isValid, format, parseISO } from "date-fns";
+import { addDays, parseISO } from "date-fns";
 import { TextField, IconButton, Button, Grid, Card, CardHeader, Divider } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { DatePicker } from '@mui/x-date-pickers';
 
-import { CURRENCY, IMoney, IssueStoreCreditRequest, RoundToTwoDecimalPlaces, StoreCreditType, WDateUtils } from "@wcp/wcpshared";
+import { CURRENCY, IMoney, IssueStoreCreditRequest, StoreCreditType, WDateUtils } from "@wcp/wcpshared";
 import { HOST_API } from "../../config";
-import { CheckedNumericInput } from "./CheckedNumericTextInput";
 import { useAppSelector } from "../../hooks/useRedux";
+import { IMoneyPropertyComponent } from "./property-components/IMoneyPropertyComponent";
 
 const DEFAULT_MONEY = { amount: 500, currency: CURRENCY.USD };
 const StoreCreditIssueComponent = () => {
-  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
+  const CURRENT_TIME = useAppSelector(s => s.metrics.currentTime);
   const [amount, setAmount] = useState<IMoney>(DEFAULT_MONEY);
   const [addedBy, setAddedBy] = useState("");
   const [reason, setReason] = useState("");
@@ -108,16 +108,14 @@ const StoreCreditIssueComponent = () => {
           />
         </Grid>
         <Grid item xs={2}>
-          <CheckedNumericInput
-            type="number"
-            fullWidth
-            label="Dollar Amount"
-            inputProps={{ inputMode: 'numeric', min: 1.00, max: 500.00, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
-            value={amount.amount / 100}
-            onChange={(e) => setAmount({ ...amount, amount: e * 100 })}
+          <IMoneyPropertyComponent
             disabled={isProcessing}
-            parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e ?? "0"))}
-            allowEmpty={false} />
+            label="Dollar Amount"
+            min={1.00}
+            max={500.00}
+            value={amount}
+            setValue={setAmount}
+          />
         </Grid>
         <Grid item xs={4}>
           <DatePicker

@@ -1,13 +1,10 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Grid, TextField, Autocomplete } from "@mui/material";
+import { IMoney, IWInterval, RecordProductInstanceFunctions } from "@wcp/wcpshared";
 
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import Autocomplete from '@mui/material/Autocomplete';
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 import { ElementActionComponent } from "./element.action.component";
-import { IMoney, IWInterval, RecordProductInstanceFunctions } from "@wcp/wcpshared";
 import { useAppSelector } from '../../../hooks/useRedux';
-import { ValSetValNamed } from "src/utils/common";
+import { ValSetValNamed } from "../../../utils/common";
 import { IMoneyPropertyComponent } from "../property-components/IMoneyPropertyComponent";
 import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
 import { FloatNumericPropertyComponent } from "../property-components/FloatNumericPropertyComponent";

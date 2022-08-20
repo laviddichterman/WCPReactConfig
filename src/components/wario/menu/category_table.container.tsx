@@ -4,10 +4,10 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD, GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GridDetailPanelToggleCell } from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { FormControlLabel, Tooltip, Switch, IconButton } from '@mui/material';
+import { CatalogCategoryEntry, ICategory, IProduct, IProductInstance } from "@wcp/wcpshared";
 import ProductTableContainer from "./product_table.container";
 import TableWrapperComponent from "../table_wrapper.component";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { CatalogCategoryEntry, ICategory, IProduct, IProductInstance } from "@wcp/wcpshared";
 
 export interface CategoryTableContainerProps {
   setCategoryToEdit: Dispatch<SetStateAction<ICategory>>;

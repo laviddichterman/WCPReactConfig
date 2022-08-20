@@ -7,8 +7,6 @@ import './utils/highlight';
 // scroll bar
 import 'simplebar/src/simplebar.css';
 
-// lightbox
-import 'react-image-lightbox/style.css';
 
 // slick-carousel
 import 'slick-carousel/slick/slick.css';
@@ -19,15 +17,12 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'react-lazy-load-image-component/src/effects/opacity.css';
 import 'react-lazy-load-image-component/src/effects/black-and-white.css';
 
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { createBrowserHistory } from "history";
-// @mui
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers';
 // redux
 import { store } from './redux/store';
 // contexts
@@ -56,8 +51,9 @@ const onRedirectCallback = (appState: any) => {
 
 
 // ----------------------------------------------------------------------
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-ReactDOM.render(
+root.render(
   <Auth0Provider
     domain={AUTH0_API.domain as string}
     clientId={AUTH0_API.clientId as string}
@@ -69,7 +65,6 @@ ReactDOM.render(
     <AuthProvider>
       <HelmetProvider>
         <ReduxProvider store={store}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
             <SettingsProvider>
               <CollapseDrawerProvider>
                 <BrowserRouter>
@@ -77,13 +72,11 @@ ReactDOM.render(
                 </BrowserRouter>
               </CollapseDrawerProvider>
             </SettingsProvider>
-          </LocalizationProvider>
         </ReduxProvider>
       </HelmetProvider>
     </AuthProvider>
-  </Auth0Provider>,
-  document.getElementById('root')
-);
+  </Auth0Provider>
+  );
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

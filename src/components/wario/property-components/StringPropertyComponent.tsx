@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { ValSetVal } from "src/utils/common";
+import { ValSetVal } from "../../../utils/common";
 
 export type StringPropertyComponentProps = {
   label: string;

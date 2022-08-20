@@ -1,16 +1,12 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
+import { Grid, TextField, Button, Autocomplete } from '@mui/material';
 
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-
-import Autocomplete from '@mui/material/Autocomplete';
 import { useCSVReader } from 'react-papaparse';
 
-import Button from "@mui/material/Button";
 import { useAuth0 } from '@auth0/auth0-react';
 import { ElementActionComponent } from "./element.action.component";
-import { useAppSelector } from "src/hooks/useRedux";
-import { HOST_API } from "src/config";
+import { useAppSelector } from "../../../hooks/useRedux";
+import { HOST_API } from "../../../config";
 import { ProductAddRequestType } from "./product.add.container";
 
 

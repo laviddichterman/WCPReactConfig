@@ -22,7 +22,7 @@ import { GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRe
 
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { HOST_API } from '../../config';
-import { setSelectedDate, setStartTime, setEndTime, toggleSelectedService, setSelectedServices } from "src/redux/slices/BlockOffSlice";
+import { setSelectedDate, setStartTime, setEndTime, toggleSelectedService, setSelectedServices } from "../../redux/slices/BlockOffSlice";
 
 
 const TrimOptionsBeforeDisabled = function <T extends { disabled: boolean; }>(opts: T[]) {
@@ -90,13 +90,13 @@ const BlockOffComp = () => {
         dispatch(setEndTime(next[1]));
       }
     }
-  }, [selectedDate, fulfillments, selectedServices]);
+  }, [selectedDate, fulfillments, selectedServices, CURRENT_TIME, dispatch]);
 
   useEffect(() => {
     if (selectedServices.length === 0 && Object.keys(fulfillments).length > 0) {
       dispatch(setSelectedServices(Object.keys(fulfillments)));
     }
-  }, [selectedServices, fulfillments]);
+  }, [selectedServices, fulfillments, dispatch]);
 
   const postBlockedOff = async () => {
     if (!isProcessing && selectedDate !== null && startTime !== null && endTime !== null) {

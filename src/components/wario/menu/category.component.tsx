@@ -1,14 +1,12 @@
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import Autocomplete from '@mui/material/Autocomplete';
+import { Grid, TextField, Autocomplete } from "@mui/material";
 import { ElementActionComponent } from "./element.action.component";
-import { useAppSelector } from "src/hooks/useRedux";
-import { getCategoryById } from "src/redux/slices/SocketIoSlice";
+import { useAppSelector } from "../../../hooks/useRedux";
+import { getCategoryById } from "../../../redux/slices/SocketIoSlice";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
 import { EntityId } from "@reduxjs/toolkit";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
 import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
-import { ValSetValNamed } from "src/utils/common";
+import { ValSetValNamed } from "../../../utils/common";
 
 export interface CategoryEditProps {
   category: ICategory;

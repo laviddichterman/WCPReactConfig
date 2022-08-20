@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { ICategory } from "@wcp/wcpshared";
 import CategoryComponent, { CategoryEditProps } from "./category.component";
 import { HOST_API } from "../../../config";
-import { getCategoryIds } from "src/redux/slices/SocketIoSlice";
-import { useAppSelector } from "src/hooks/useRedux";
-import { ICategory } from "@wcp/wcpshared";
+import { getCategoryIds } from "../../../redux/slices/SocketIoSlice";
+import { useAppSelector } from "../../../hooks/useRedux";
 
 const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps) => {
   const categoryIds = useAppSelector(s => getCategoryIds(s.ws.categories));

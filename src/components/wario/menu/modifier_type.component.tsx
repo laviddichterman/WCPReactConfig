@@ -1,5 +1,3 @@
-import React, { Dispatch, SetStateAction } from "react";
-
 import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
@@ -10,7 +8,7 @@ import { ElementActionComponent } from "./element.action.component";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { startCase, snakeCase } from 'lodash';
-import { ValSetValNamed } from "src/utils/common";
+import { ValSetValNamed } from "../../../utils/common";
 import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";

@@ -1,30 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardHeader, Grid, Button } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react';
-import { HOST_API } from 'src/config';
+import { HOST_API } from '../../config';
 import { useAppSelector } from '../../hooks/useRedux';
 import { CheckedNumericInput } from './CheckedNumericTextInput';
 
+
 const LeadTimesComp = () => {
-  const SERVICES = useAppSelector(s => s.ws.services);
-  const LEADTIME = useAppSelector(s => s.ws.leadtime);
+  const FULFILLMENTS = useAppSelector(s => s.ws.fulfillments!);
+  const numServices = useMemo(() => Object.keys(FULFILLMENTS).length, [FULFILLMENTS]);
   const { getAccessTokenSilently } = useAuth0();
-  const [dirty, setDirty] = useState(Array(SERVICES ? Object.keys(SERVICES).length : 3).fill(false));
-  const [localLeadTime, setLocalLeadTime] = useState(LEADTIME || []);
+  const [dirty, setDirty] = useState<Record<string, boolean>>(Object.values(FULFILLMENTS).reduce((acc, x)=>({...acc, [x.id]: false}), {}));
+  const [localLeadTime, setLocalLeadTime] = useState<Record<string, number>>(Object.values(FULFILLMENTS).reduce((acc, x)=>({...acc, [x.id]: x.leadTime}), {}));
   const [isProcessing, setIsProcessing] = useState(false);
 
-  if (SERVICES === null || LEADTIME === null) {
-    return <>Loading...</>;
-  }
-
-  const onChangeLeadTimes = (i: number, e: number) => {
-    const newDirtyArray = dirty.slice();
-    newDirtyArray[i] = true;
-
-    const newLocalLeadTime = localLeadTime.slice();
-    newLocalLeadTime[i] = e;
-    setLocalLeadTime(newLocalLeadTime);
-    setDirty(newDirtyArray);
+  const onChangeLeadTimes = (fId: string, leadTime: number) => {
+    setLocalLeadTime({...localLeadTime, [fId]: leadTime });
+    setDirty({...dirty, [fId]: true });
   };
   const onSubmit = async () => {
     if (!isProcessing) {
@@ -40,8 +32,8 @@ const LeadTimesComp = () => {
           body: JSON.stringify(localLeadTime)
         });
         if (response.status === 201) {
-          setLocalLeadTime(await response.json());
-          setDirty(Array(Object.keys(SERVICES).length).fill(false));
+          setDirty(Object.values(FULFILLMENTS).reduce((acc, x)=>({...acc, [x.id]: false}), {}));
+
         }
         setIsProcessing(false);
       } catch (error) {
@@ -49,30 +41,29 @@ const LeadTimesComp = () => {
       }
     }
   };
-  const leadtime_html = localLeadTime ? localLeadTime.map((x, i) => (
-    <Grid item xs={Math.floor(12 / LEADTIME.length)} key={i} >
-      <CheckedNumericInput
-        type="number"
-        sx={{ ml: 3, mb: 2, mr: 1 }}
-        label={SERVICES[i]}
-        inputProps={{ inputMode: 'numeric', min: 1, max: 43200, pattern: '[0-9]*', step: 1 }}
-        value={dirty[i] ? x : LEADTIME[i]}
-        className="form-control"
-        disabled={isProcessing}
-        onChange={(e) => onChangeLeadTimes(i, e)}
-        parseFunction={parseInt}
-        allowEmpty={false} />
-    </Grid>
-  )) : "";
   return (
     <Card>
       <CardHeader title="Single pizza lead time:" sx={{ mb: 3 }} />
       <Grid container justifyContent="center">
-        <Grid item xs={10}>
-          <Grid container>{leadtime_html}</Grid>
+        <Grid item container xs={10}>
+          {Object.values(FULFILLMENTS).map(fulfillment => (
+            <Grid item xs={Math.floor(12 / numServices)} key={fulfillment.id} >
+            <CheckedNumericInput
+              type="number"
+              sx={{ ml: 3, mb: 2, mr: 1 }}
+              label={fulfillment.displayName}
+              inputProps={{ inputMode: 'numeric', min: 1, max: 43200, pattern: '[0-9]*', step: 1 }}
+              value={dirty[fulfillment.id] ? localLeadTime[fulfillment.id] : fulfillment.leadTime }
+              className="form-control"
+              disabled={isProcessing}
+              onChange={(e) => onChangeLeadTimes(fulfillment.id, e)}
+              parseFunction={parseInt}
+              allowEmpty={false} />
+          </Grid>
+          ))}
         </Grid>
         <Grid item xs={2}>
-          <Button onClick={onSubmit}>Push Changes</Button>
+          <Button disabled={isProcessing} onClick={onSubmit}>Push Changes</Button>
         </Grid>
       </Grid>
     </Card>

@@ -1,5 +1,5 @@
 import { IMoney, RoundToTwoDecimalPlaces } from "@wcp/wcpshared";
-import { ValSetVal } from "src/utils/common";
+import { ValSetVal } from "../../../utils/common";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 
 export type IMoneyPropertyComponentProps = {
@@ -13,6 +13,7 @@ export type IMoneyPropertyComponentProps = {
 export function IMoneyPropertyComponent(props: IMoneyPropertyComponentProps) {
   return (<CheckedNumericInput
     type="number"
+    size="small"
     label={props.label}
     inputProps={{ inputMode: 'decimal', min: props.min ?? 0.0, max: props.max ?? 999999, pattern: '[0-9]+([.,][0-9]+)?', step: props.step ?? .25 }}
     value={props.value.amount / 100}

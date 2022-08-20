@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography, Switch, FormControlLabel } from "@mui/material";
@@ -7,7 +7,7 @@ import ProductComponent from "./product.component";
 import { ProductInstanceContainer } from "./product_instance.component";
 import { HOST_API } from "../../../config";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { IProduct, IProductInstance } from "@wcp/wcpshared";
+import { IProduct } from "@wcp/wcpshared";
 
 type ProductCopyRequestType = Omit<IProduct, "id"> & { create_product_instance: boolean; suppress_catalog_recomputation: boolean; };
 
@@ -142,7 +142,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
           />
         </Grid>
       </AccordionDetails>
-    </Accordion>), [copyPIFlags, expandedPanels, piDescriptions, piDisplayNames, piIsBases, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piSkipCustomizations, product, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiIsBase, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiSkipCustomization])
+    </Accordion>), [isProcessing, copyPIFlags, expandedPanels, piDescriptions, piDisplayNames, piIsBases, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piSkipCustomizations, product, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiIsBase, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiSkipCustomization])
 
   const copyProduct = async () => {
     if (!isProcessing) {
