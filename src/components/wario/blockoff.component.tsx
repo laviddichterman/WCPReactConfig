@@ -264,24 +264,24 @@ const BlockOffComp = () => {
           <Card>
             <CardHeader title={fulfillment.displayName} />
             <List component="nav">
-              {Object.entries(fulfillment.blockedOff).map(([isoDate, intervals]) => (
-                <Container key={`${fulfillment.id}.${isoDate}`}>
+              {fulfillment.blockedOff.map((entry) => (
+                <Container key={`${fulfillment.id}.${entry.key}`}>
                   <ListItem>
-                    {format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}
+                    {format(parseISO(entry.key), WDateUtils.ServiceDateDisplayFormat)}
                     <ListItemSecondaryAction>
-                      <IconButton hidden={intervals.length === 0} edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(fulfillment.id, isoDate)}>
+                      <IconButton hidden={entry.value.length === 0} edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(fulfillment.id, entry.key)}>
                         <HighlightOff />
                       </IconButton>
                     </ListItemSecondaryAction>
                   </ListItem>
                   <List sx={{ ml: 2 }}>
-                    {intervals.map((interval, i) => {
+                    {entry.value.map((interval, i) => {
                       const from_to = interval.start === interval.end ? WDateUtils.MinutesToPrintTime(interval.start) : `${WDateUtils.MinutesToPrintTime(interval.start)} to ${WDateUtils.MinutesToPrintTime(interval.end)}`;
                       return (
                         <ListItem key={i}>
                           <ListItemText primary={from_to} />
                           <ListItemSecondaryAction>
-                            <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(fulfillment.id, isoDate, interval)}>
+                            <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(fulfillment.id, entry.key, interval)}>
                               <HighlightOff />
                             </IconButton>
                           </ListItemSecondaryAction>

@@ -3,7 +3,7 @@ import type { Polygon } from 'geojson';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from "../../config";
-import { DayOfTheWeek, FulfillmentConfig, FulfillmentType, IWInterval, OperatingHourSpecification } from "@wcp/wcpshared";
+import { DateIntervalsEntries, DayOfTheWeek, FulfillmentConfig, FulfillmentType, IWInterval, OperatingHourSpecification } from "@wcp/wcpshared";
 import FulfillmentComponent from "./FulfillmentComponent";
 const EmptyOperatingHours: OperatingHourSpecification = {
   [DayOfTheWeek.SUNDAY]: [],
@@ -31,8 +31,8 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
   const [serviceChargeFunctionId, setServiceChargeFunctionId] = useState<string | null>(null);
   const [leadTime, setLeadTime] = useState(35);
   const [operatingHours, setOperatingHours] = useState({ ...EmptyOperatingHours });
-  const [blockedOff, setBlockedOff] = useState<Record<string, IWInterval[]>>({ });
-  const [specialHours, setSpecialHours] = useState<Record<string, IWInterval[]>>({ });
+  const [blockedOff, setBlockedOff] = useState<DateIntervalsEntries>([]);
+  const [specialHours, setSpecialHours] = useState<DateIntervalsEntries>([]);
 
   const [minDuration, setMinDuration] = useState(0);
   const [maxDuration, setMaxDuration] = useState(0);
@@ -66,8 +66,10 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
     setServiceArea(null);
   }
 
+  const canSubmit = !isProcessing && menuCategoryId !== null && orderCategoryId !== null && confirmationMessage.length > 0 && instructions.length > 0;
+
   const addFulfillment = async () => {
-    if (!isProcessing && menuCategoryId !== null && orderCategoryId !== null) {
+    if (canSubmit) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
@@ -76,7 +78,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
           shortcode,
           ordinal,
           service,
-          terms,
+          terms: terms.filter(x=>x.length > 0),
           messages: {
             CONFIRMATION: confirmationMessage,
             INSTRUCTIONS: instructions,
@@ -89,8 +91,8 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
           serviceCharge: serviceChargeFunctionId,
           leadTime,
           operatingHours,
-          specialHours: {},
-          blockedOff: {},
+          specialHours: [],
+          blockedOff: [],
           minDuration,
           maxDuration,
           timeStep,
@@ -169,7 +171,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
       onCloseCallback={onCloseCallback}
       onConfirmClick={addFulfillment}
       isProcessing={isProcessing}
-      disableConfirmOn={false}
+      disableConfirmOn={!canSubmit}
     />
   );
 };

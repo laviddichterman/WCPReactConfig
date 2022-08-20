@@ -56,9 +56,17 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
           autograt,
           serviceCharge: serviceChargeFunctionId,
           leadTime,
-          operatingHours,
-          blockedOff,
-          specialHours,
+          operatingHours: {
+            0: operatingHours[0],
+            1: operatingHours[1],
+            2: operatingHours[2],
+            3: operatingHours[3],
+            4: operatingHours[4],
+            5: operatingHours[5],
+            6: operatingHours[6],
+          },
+          blockedOff: blockedOff,
+          specialHours: specialHours,
           minDuration,
           maxDuration,
           timeStep,
@@ -132,7 +140,7 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
       setMaxGuests={setMaxGuests}
       serviceArea={serviceArea}
       setServiceArea={setServiceArea}
-      confirmText="Edit"
+      confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editFulfillment}
       isProcessing={isProcessing}

@@ -7,6 +7,7 @@ import { EntityId } from "@reduxjs/toolkit";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
 import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
 import { ValSetValNamed } from "../../../utils/common";
+import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
 
 export interface CategoryEditProps {
   category: ICategory;
@@ -18,7 +19,8 @@ export type CategoryComponentProps = {
   onCloseCallback: VoidFunction;
   onConfirmClick: VoidFunction;
   isProcessing: boolean;
-  confirmText: string; } & 
+  confirmText: string;
+} &
   ValSetValNamed<string | null, 'description'> &
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<string | null, 'subheading'> &
@@ -43,13 +45,11 @@ const CategoryComponent = (props: CategoryComponentProps) => {
       body={
         <>
           <Grid item xs={6}>
-            <TextField
+            <StringPropertyComponent
+              disabled={props.isProcessing}
               label="Category Name"
-              type="text"
-              inputProps={{ size: 30 }}
               value={props.name}
-              size="small"
-              onChange={(e) => props.setName(e.target.value)}
+              setValue={props.setName}
             />
           </Grid>
           <Grid item xs={6}>
@@ -72,7 +72,6 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               type="text"
               inputProps={{ size: 100 }}
               value={props.description}
-              size="small"
               onChange={(e) => props.setDescription(e.target.value)}
             />
           </Grid>
@@ -88,34 +87,32 @@ const CategoryComponent = (props: CategoryComponentProps) => {
             <TextField
               multiline
               fullWidth
+              rows={props.subheading ? 4 : 1}
               label="Subheading (Optional, HTML allowed)"
               type="text"
               inputProps={{ size: 100 }}
               value={props.subheading}
-              size="small"
               onChange={(e) => props.setSubheading(e.target.value)}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               multiline
+              rows={props.footnotes ? 4 : 1}
               fullWidth
               label="Footnotes (Optional, HTML allowed)"
               type="text"
               inputProps={{ size: 100 }}
               value={props.footnotes}
-              size="small"
               onChange={(e) => props.setFootnotes(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
+          <StringPropertyComponent
+              disabled={props.isProcessing}
               label="Call Line Name"
-              type="text"
-              inputProps={{ size: 40 }}
               value={props.callLineName}
-              size="small"
-              onChange={(e) => props.setCallLineName(e.target.value)}
+              setValue={props.setCallLineName}
             />
           </Grid>
           <Grid item xs={6}>

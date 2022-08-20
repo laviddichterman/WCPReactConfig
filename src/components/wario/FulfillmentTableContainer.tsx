@@ -28,14 +28,15 @@ const FulfillmentTableContainer = ({
   // WE LAST LEFT OFF WE... NEEDED TO ADD POPUP DIALOGUES FOR ADDING/EDITING/DELETING fulfillments
   // maybe the new UX stuff we have offers an easy soluton with redux state
 
-  const editFulfillment = (fId : string) => () => {
+  const editFulfillment = (fulfillment : FulfillmentConfig) => () => {
     setIsFulfillmentEditOpen(true);
-    setFulfillmentToEdit(fulfillments[fId]);
+    setFulfillmentToEdit(fulfillment);
   };
 
-  const deleteFulfillment = (fId : string) => () => {
+  const deleteFulfillment = (fulfillment : FulfillmentConfig) => () => {
     setIsFulfillmentDeleteOpen(true);
-    setFulfillmentToEdit(fulfillments[fId]);
+    console.log(fulfillment);
+    setFulfillmentToEdit(fulfillment);
   };
 
   return (
@@ -51,7 +52,7 @@ const FulfillmentTableContainer = ({
           <GridActionsCellItem
             icon={<Tooltip title="Edit Fulfillment"><Edit /></Tooltip>}
             label="Edit Fulfillment"
-            onClick={editFulfillment(params.row.id)}
+            onClick={editFulfillment(params.row)}
             key={`EDIT${params.row.id}`} />,
           <GridActionsCellItem
             icon={<Tooltip title="Delete Fulfillment"><DeleteOutline /></Tooltip>}

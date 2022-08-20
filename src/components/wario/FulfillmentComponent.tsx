@@ -7,13 +7,15 @@ import {
   Grid,
   TextField,
   Card,
-  IconButton,
   Autocomplete,
   Button,
-  CardHeader
+  CardHeader,
+  Stack,
+  Chip
+
 } from '@mui/material';
 import { ElementActionComponent } from './menu/element.action.component';
-import { DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
+import { DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
 import { useAppSelector } from '../../hooks/useRedux';
 import { CheckedNumericInput } from './CheckedNumericTextInput';
 import { ValSetValNamed } from '../../utils/common';
@@ -59,7 +61,7 @@ const OperatingHoursIntervalForm = ({
     startOptions.filter(x => x >= start) : [], [start, startOptions]);
 
   return (
-    <Grid container spacing={3} justifyContent="center">
+    <Grid container sx={{py:2}} spacing={3} justifyContent="center">
       <Grid item xs={5}>
         <Autocomplete
           disableClearable
@@ -68,7 +70,6 @@ const OperatingHoursIntervalForm = ({
           getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
           // @ts-ignore
           value={start}
-          size='small'
           onChange={(_, v) => setStart(v)}
           renderInput={(params) => <TextField {...params} label={"Start"}
           />}
@@ -82,7 +83,6 @@ const OperatingHoursIntervalForm = ({
           getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
           // @ts-ignore
           value={end}
-          size='small'
           disabled={start === null || disabled}
           onChange={(_, v) => setEnd(v)}
           renderInput={(params) => <TextField {...params} label={"End"}
@@ -114,31 +114,25 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
   function onRemoveOperatingHours(day: DayOfTheWeek, interval: IWInterval) {
     props.setOperatingHours({...props.operatingHours, [day]: WDateUtils.ComputeSubtractionOfIntervalSets(props.operatingHours[day], [interval], props.timeStep)});
   };
+  console.log(props.operatingHours);
   return (
     <Card sx={{ p: 3 }}>
       <CardHeader title={props.label} />
       <Grid container>
-        {Object.keys(props.operatingHours).map((_, day: DayOfTheWeek) =>
+        {Object.keys(props.operatingHours).filter(x=>x !== "_id").map((key, day: DayOfTheWeek) =>
           <Grid container item xs={12} key={day}>
-            <Grid item xs={1}>
+            <Grid item xs={3} md={3} lg={1} sx={{p:2}}>
               {format(setDay(Date.now(), day), 'EEEE')}:    
             </Grid>
+            <Grid item xs={9} md={9} lg={7} sx={{p:1.5}}>
+            <Stack direction='row' spacing={1}>
             {props.operatingHours[day].map((interval, j) => (
-              <Grid item xs={2} container key={j}>
-                <Grid item xs={10}>
-                  {WDateUtils.MinutesToPrintTime(interval.start)}
-                  &nbsp;-&nbsp;
-                  {WDateUtils.MinutesToPrintTime(interval.end)}
-                </Grid>
-                <Grid item xs={2}>
-                  <IconButton edge="end" size="small" aria-label="delete" onClick={() => onRemoveOperatingHours(day, interval)}>
-                    <HighlightOff />
-                  </IconButton>
-                </Grid>
-              </Grid>
+              <Chip key={j} label={`${WDateUtils.MinutesToPrintTime(interval.start)} - ${WDateUtils.MinutesToPrintTime(interval.end)}`}
+              onDelete={()=>onRemoveOperatingHours(day, interval)} />
             ))}
-            <Grid item xs />
-            <Grid item xs={4}>
+            </Stack>
+            </Grid>
+            <Grid item xs={12} md={12} lg={4}>
               <OperatingHoursIntervalForm
                 disabled={props.disabled}
                 onAddInterval={(i) => onAddOperatingHours(day, i)}
@@ -172,8 +166,8 @@ export type FulfillmentComponentProps =
   ValSetValNamed<string | null, 'serviceChargeFunctionId'> &
   ValSetValNamed<number, 'leadTime'> &
   ValSetValNamed<OperatingHourSpecification, 'operatingHours'> &
-  ValSetValNamed<Record<string, IWInterval[]>, 'specialHours'> &
-  ValSetValNamed<Record<string, IWInterval[]>, 'blockedOff'> &
+  ValSetValNamed<DateIntervalsEntries, 'specialHours'> &
+  ValSetValNamed<DateIntervalsEntries, 'blockedOff'> &
   ValSetValNamed<number, 'minDuration'> &
   ValSetValNamed<number, 'maxDuration'> &
   ValSetValNamed<number, 'timeStep'> &
@@ -214,7 +208,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
       confirmText={props.confirmText}
       body={
         <>
-          <Grid item xs={12} >
+          <Grid item xs={12} md={9} lg={6}>
             <StringEnumPropertyComponent
               disabled={props.isProcessing}
               label="Fulfillment Type"
@@ -223,7 +217,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               options={Object.keys(FulfillmentType)}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3} md={3} lg={2}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Short Code"
@@ -232,7 +226,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
             />
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={6} md={6} lg={6}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Display Name"
@@ -240,7 +234,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setDisplayName}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3} md={3} lg={1}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Ordinal"
@@ -252,26 +246,26 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
             <TextField
               multiline
               fullWidth
+              rows={props.terms.length+1}
               label="Service Terms (Each line a new bullet point)"
               type="text"
               value={props.terms.join('\n')}
-              size="small"
-              onChange={(e) => props.setTerms(e.target.value.trim().split('\n'))}
+              onChange={(e) => props.setTerms(e.target.value.split('\n'))}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={6}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Order Confirmation Message"
-              value={props.confirmationMessage}
+              value={props.confirmationMessage || ""}
               setValue={props.setConfirmationMessage}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={6}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Order Instructions Message"
-              value={props.instructions}
+              value={props.instructions || ""}
               setValue={props.setInstructions}
             />
           </Grid>
@@ -306,7 +300,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               renderInput={(params) => <TextField {...params} label="Order Category" />}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Allow Pre-Payment"
@@ -315,7 +309,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing || !props.allowPrepayment}
               label="Require Pre-Payment"
@@ -344,7 +338,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setOperatingHours={props.setOperatingHours}
               timeStep={props.timeStep} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Lead Time"
@@ -352,7 +346,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setLeadTime}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Min Duration"
@@ -361,7 +355,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setMinDuration}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Max Duration"
@@ -370,7 +364,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setMaxDuration}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               min={1}
@@ -394,10 +388,10 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
           <Grid item xs={12}>
           <TextField
             aria-label="textarea"
-            rows={15}
+            rows={(isServiceAreaDirty && localServiceAreaString) || props.serviceArea ? 15 : 1}
             fullWidth
             multiline
-            value={JSON.stringify(props.serviceArea)}
+            value={isServiceAreaDirty ? localServiceAreaString : (props.serviceArea ? JSON.stringify(props.serviceArea) : "")}
             onChange={e => onChangeLocalServiceAreaString(e.target.value)}
             onBlur={() => onSetServiceArea(localServiceAreaString)}
             error={isServiceAreaParsingError}

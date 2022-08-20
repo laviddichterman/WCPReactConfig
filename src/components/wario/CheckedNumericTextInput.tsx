@@ -66,7 +66,7 @@ export function CheckedNumericInput({ onChange, value, inputProps, parseFunction
   return (
     <TextField
       {...other}
-      value={dirty ? local_value : value}
+      value={(dirty ? local_value : value) ?? ""}
       // helperText={dirty && local_value != value ? "Modified" : ""}
       inputProps={inputProps}
       onChange={onChangeLocal}

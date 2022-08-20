@@ -12,7 +12,6 @@ export type FloatNumericPropertyComponentProps = {
 export function FloatNumericPropertyComponent(props: FloatNumericPropertyComponentProps) {
   return (<CheckedNumericInput
     type="number"
-    size="small"  
     label={props.label}
     inputProps={{ inputMode: 'decimal', min: props.min ?? 0, max: props.max ?? 99999, pattern: '[0-9]+([.,][0-9]+)?', step: props.step ?? 1 }}
     value={props.value}

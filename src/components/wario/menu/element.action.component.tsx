@@ -44,7 +44,7 @@ const ElementActionComponent = ({
 
   return (
     <div>
-      <Grid container spacing={3} justifyContent="center">
+      <Grid container sx={{p:2}} rowSpacing={2} spacing={3} justifyContent="center">
         {body}
         {actions_html}
         {isProcessing ? <LinearProgress /> : ""}
