@@ -18,32 +18,38 @@ import FormLabel from "@mui/material/FormLabel";
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "src/hooks/useRedux";
 import { ICatalogModifiers, IProduct, ModifiersMap, OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wcpshared";
-import { isUndefined, snakeCase, startCase } from "lodash";
+import { snakeCase, startCase } from "lodash";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 import { ValSetValNamed } from "src/utils/common";
+import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
+import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
+import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
 
-export type ProductInstanceComponentProps = 
-ValSetValNamed<string, 'displayName'> & 
-ValSetValNamed<string, 'description'> & 
-ValSetValNamed<string, 'shortcode'> & 
-ValSetValNamed<number, 'ordinal'> & 
-ValSetValNamed<ModifiersMap, 'modifiers'> & 
-ValSetValNamed<boolean, 'isBase'> & 
+export type ProductInstanceComponentProps =
+  ValSetValNamed<string, 'displayName'> &
+  ValSetValNamed<string, 'description'> &
+  ValSetValNamed<string, 'shortcode'> &
+  ValSetValNamed<number, 'ordinal'> &
+  ValSetValNamed<ModifiersMap, 'modifiers'> &
+  ValSetValNamed<boolean, 'isBase'> &
   // menu
-ValSetValNamed<number, 'menuOrdinal'> & 
-ValSetValNamed<boolean, 'menuHide'> & 
-ValSetValNamed<keyof typeof PriceDisplay, 'menuPriceDisplay'> & 
-ValSetValNamed<string, 'menuAdornment'> & 
-ValSetValNamed<boolean, 'menuSuppressExhaustiveModifierList'> & 
-ValSetValNamed<boolean, 'menuShowModifierOptions'> & 
+  ValSetValNamed<number, 'menuOrdinal'> &
+  ValSetValNamed<boolean, 'menuHide'> &
+  ValSetValNamed<keyof typeof PriceDisplay, 'menuPriceDisplay'> &
+  ValSetValNamed<string, 'menuAdornment'> &
+  ValSetValNamed<boolean, 'menuSuppressExhaustiveModifierList'> &
+  ValSetValNamed<boolean, 'menuShowModifierOptions'> &
   // order
-ValSetValNamed<number, 'orderOrdinal'> & 
-ValSetValNamed<boolean, 'orderMenuHide'> & 
-ValSetValNamed<boolean, 'skipCustomization'> &
-ValSetValNamed<keyof typeof PriceDisplay, 'orderPriceDisplay'> & 
-ValSetValNamed<string, 'orderAdornment'> & 
-ValSetValNamed<boolean, 'orderSuppressExhaustiveModifierList'> & 
-{ parent_product: IProduct; }
+  ValSetValNamed<number, 'orderOrdinal'> &
+  ValSetValNamed<boolean, 'orderMenuHide'> &
+  ValSetValNamed<boolean, 'skipCustomization'> &
+  ValSetValNamed<keyof typeof PriceDisplay, 'orderPriceDisplay'> &
+  ValSetValNamed<string, 'orderAdornment'> &
+  ValSetValNamed<boolean, 'orderSuppressExhaustiveModifierList'> &
+  {
+    parent_product: IProduct;
+    isProcessing: boolean;
+  }
 
 const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
@@ -51,12 +57,14 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
     props.setModifiers({
       ...props.modifiers,
       [mtid]: Object.assign(
-        [], 
-        props.modifiers[mtid], 
-        {[oidx]: { 
-          ...props.modifiers[mtid][oidx], 
-          placement: props.modifiers[mtid][oidx].placement === OptionPlacement.WHOLE ? OptionPlacement.NONE : OptionPlacement.WHOLE 
-        }})
+        [],
+        props.modifiers[mtid],
+        {
+          [oidx]: {
+            ...props.modifiers[mtid][oidx],
+            placement: props.modifiers[mtid][oidx].placement === OptionPlacement.WHOLE ? OptionPlacement.NONE : OptionPlacement.WHOLE
+          }
+        })
     });
   };
 
@@ -66,8 +74,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
       [mtid]: props.modifiers[mtid].map((opt, idx) =>
       ({
         optionId: opt.optionId,
-        // eslint-disable-next-line
-        placement: idx == oidx ? OptionPlacement.WHOLE : OptionPlacement.NONE,
+        placement: idx === oidx ? OptionPlacement.WHOLE : OptionPlacement.NONE,
         qualifier: OptionQualifier.REGULAR
       }))
     });
@@ -159,15 +166,12 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       <Grid item xs={3}>
-        <CheckedNumericInput
-          type="number"
+        <IntNumericPropertyComponent
+          disabled={props.isProcessing}
           label="Ordinal"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*', step: 1 }}
           value={props.ordinal}
-          onChange={props.setOrdinal}
-          parseFunction={parseInt}
-          allowEmpty={false} />
-
+          setValue={props.setOrdinal}
+        />
       </Grid>
       <Grid item xs={4}>
         <TextField
@@ -180,70 +184,48 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       <Grid item xs={3}>
-        <FormControlLabel
-          control={
-            <Switch
-              sx={{ ml: 1 }}
-              checked={props.isBase}
-              onChange={(e) =>
-                props.setIsBase(e.target.checked)
-              }
-              name="Is Base"
-            />
-          }
+        <ToggleBooleanPropertyComponent
+          sx={{ ml: 1 }}
+          disabled={props.isProcessing}
           label="Is Base"
+          value={props.isBase}
+          setValue={props.setIsBase}
+          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={2}>
-        <CheckedNumericInput
-          type="number"
+        <IntNumericPropertyComponent
+          disabled={props.isProcessing}
           label="Menu Ordinal"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*' }}
           value={props.menuOrdinal}
-          onChange={props.setMenuOrdinal}
-          parseFunction={parseInt}
-          allowEmpty={false} />
+          setValue={props.setMenuOrdinal}
+        />
       </Grid>
       <Grid item xs={3} alignItems="center">
-        <FormControlLabel
-          control={
-            <Switch
-              checked={props.menuHide}
-              onChange={(e) =>
-                props.setMenuHide(e.target.checked)
-              }
-              name="Hide From Menu"
-            />
-          }
+        <ToggleBooleanPropertyComponent
+          disabled={props.isProcessing}
           label="Hide From Menu"
+          value={props.menuHide}
+          setValue={props.setMenuHide}
+          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={4}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={props.menuSuppressExhaustiveModifierList}
-              onChange={(e) =>
-                props.setMenuSuppressExhaustiveModifierList(e.target.checked)
-              }
-              name="Menu Suppress Exhaustive Modifier List"
-            />
-          }
+        <ToggleBooleanPropertyComponent
+          disabled={props.isProcessing}
           label="Menu Suppress Exhaustive Modifier List"
+          value={props.menuSuppressExhaustiveModifierList}
+          setValue={props.setMenuSuppressExhaustiveModifierList}
+          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={3}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={props.menuShowModifierOptions}
-              onChange={(e) =>
-                props.setMenuShowModifierOptions(e.target.checked)
-              }
-              name="Show Modifier Options in Menu Display"
-            />
-          }
+        <ToggleBooleanPropertyComponent
+          disabled={props.isProcessing}
           label="Show Modifier Options in Menu Display"
+          value={props.menuShowModifierOptions}
+          setValue={props.setMenuShowModifierOptions}
+          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={6}>
@@ -257,76 +239,47 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       <Grid container item xs={6}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Menu Price Display</FormLabel>
-          <RadioGroup
-            defaultValue={PriceDisplay.ALWAYS}
-            aria-label="menu-price-display"
-            name="menu-price-display"
-            row
-            value={props.menuPriceDisplay}
-            onChange={(e) => props.setMenuPriceDisplay(e.target.value as keyof typeof PriceDisplay)}
-          >
-            {Object.keys(PriceDisplay).map((val, i) =>
-              <FormControlLabel
-                key={i}
-                value={val}
-                control={<Radio />}
-                label={startCase(snakeCase(val))}
-              />)}
-          </RadioGroup>
-        </FormControl>
+        <StringEnumPropertyComponent
+          disabled={props.isProcessing}
+          label="Menu Price Display"
+          value={props.menuPriceDisplay}
+          setValue={props.setMenuPriceDisplay}
+          options={Object.keys(PriceDisplay)}
+        />
       </Grid>
       <Grid item xs={2}>
-        <CheckedNumericInput
-          type="number"
+        <IntNumericPropertyComponent
+          disabled={props.isProcessing}
           label="Order Ordinal"
-          inputProps={{ inputMode: 'numeric', min: 0, max: 99999, pattern: '[0-9]*', step: 1 }}
           value={props.orderOrdinal}
-          onChange={props.setOrderOrdinal}
-          parseFunction={parseInt}
-          allowEmpty={false} />
+          setValue={props.setOrderOrdinal}
+        />
       </Grid>
       <Grid item xs={3}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={props.orderMenuHide}
-              onChange={(e) =>
-                props.setOrderMenuHide(e.target.checked)
-              }
-              name="Hide From Order Menu"
-            />
-          }
+        <ToggleBooleanPropertyComponent
+          disabled={props.isProcessing}
           label="Hide From Order Menu"
+          value={props.orderMenuHide}
+          setValue={props.setOrderMenuHide}
+          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={4}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={props.orderSuppressExhaustiveModifierList}
-              onChange={(e) =>
-                props.setOrderSuppressExhaustiveModifierList(e.target.checked)
-              }
-              name="Order Menu Suppress Exhaustive Modifier List"
-            />
-          }
+        <ToggleBooleanPropertyComponent
+          disabled={props.isProcessing}
           label="Order Menu Suppress Exhaustive Modifier List"
+          value={props.orderSuppressExhaustiveModifierList}
+          setValue={props.setOrderSuppressExhaustiveModifierList}
+          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={3}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={props.skipCustomization}
-              onChange={(e) =>
-                props.setSkipCustomization(e.target.checked)
-              }
-              name="Skip Customization"
-            />
-          }
+        <ToggleBooleanPropertyComponent
+          disabled={props.isProcessing}
           label="Skip Customization"
+          value={props.skipCustomization}
+          setValue={props.setSkipCustomization}
+          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={6}>
@@ -340,25 +293,13 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       <Grid container item xs={6}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Order Menu Price Display</FormLabel>
-          <RadioGroup
-            defaultValue="ALWAYS"
-            aria-label="order-menu-price-display"
-            name="order-menu-price-display"
-            row
-            value={props.orderPriceDisplay}
-            onChange={(e) => props.setOrderPriceDisplay(e.target.value as keyof typeof PriceDisplay)}
-          >
-            {Object.keys(PriceDisplay).map((val, i) =>
-              <FormControlLabel
-                key={i}
-                value={val}
-                control={<Radio />}
-                label={startCase(snakeCase(val))}
-              />)}
-          </RadioGroup>
-        </FormControl>
+        <StringEnumPropertyComponent
+          disabled={props.isProcessing}
+          label="Order Menu Price Display"
+          value={props.orderPriceDisplay}
+          setValue={props.setOrderPriceDisplay}
+          options={Object.keys(PriceDisplay)}
+        />
       </Grid>
       {modifier_html}
     </>
@@ -440,6 +381,7 @@ export const ProductInstanceActionContainer = ({
     body={
       <ProductInstanceContainer
         {...otherProps}
+        isProcessing={isProcessing}
         displayName={displayName}
         shortcode={shortcode}
       />}

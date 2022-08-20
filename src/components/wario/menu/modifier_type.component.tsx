@@ -1,18 +1,20 @@
 import React, { Dispatch, SetStateAction } from "react";
 
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Switch from "@mui/material/Switch";
 import { ElementActionComponent } from "./element.action.component";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { startCase, snakeCase } from 'lodash';
 import { ValSetValNamed } from "src/utils/common";
+import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
+import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
+import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
+import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
 
 export interface ModifierTypeUiProps {
   onCloseCallback: VoidFunction;
@@ -22,26 +24,26 @@ export type ModifierTypeModifyUiProps = {
   modifier_type: IOptionType;
 } & ModifierTypeUiProps;
 
-export type ModifierTypeComponentProps = 
-ValSetValNamed<number, 'ordinal'> & 
-ValSetValNamed<number, 'minSelected'> & 
-ValSetValNamed<number | null, 'maxSelected'> & 
-ValSetValNamed<string, 'name'> & 
-ValSetValNamed<string, 'displayName'> & 
-ValSetValNamed<string, 'templateString'> & 
-ValSetValNamed<string, 'multipleItemSeparator'> & 
-ValSetValNamed<string, 'nonEmptyGroupPrefix'> & 
-ValSetValNamed<string, 'nonEmptyGroupSuffix'> & 
-ValSetValNamed<boolean, 'omitOptionIfNotAvailable'> & 
-ValSetValNamed<boolean, 'omitSectionIfNoAvailableOptions'> & 
-ValSetValNamed<boolean, 'useToggleIfOnlyTwoOptions'> & 
-ValSetValNamed<boolean, 'isHiddenDuringCustomization'> & 
-ValSetValNamed<keyof typeof DISPLAY_AS, 'emptyDisplayAs'> & 
-ValSetValNamed<keyof typeof MODIFIER_CLASS, 'modifierClass'> & {
-  confirmText: string;
-  onConfirmClick: VoidFunction;
-  isProcessing: boolean;
-};
+export type ModifierTypeComponentProps =
+  ValSetValNamed<number, 'ordinal'> &
+  ValSetValNamed<number, 'minSelected'> &
+  ValSetValNamed<number | null, 'maxSelected'> &
+  ValSetValNamed<string, 'name'> &
+  ValSetValNamed<string, 'displayName'> &
+  ValSetValNamed<string, 'templateString'> &
+  ValSetValNamed<string, 'multipleItemSeparator'> &
+  ValSetValNamed<string, 'nonEmptyGroupPrefix'> &
+  ValSetValNamed<string, 'nonEmptyGroupSuffix'> &
+  ValSetValNamed<boolean, 'omitOptionIfNotAvailable'> &
+  ValSetValNamed<boolean, 'omitSectionIfNoAvailableOptions'> &
+  ValSetValNamed<boolean, 'useToggleIfOnlyTwoOptions'> &
+  ValSetValNamed<boolean, 'isHiddenDuringCustomization'> &
+  ValSetValNamed<keyof typeof DISPLAY_AS, 'emptyDisplayAs'> &
+  ValSetValNamed<keyof typeof MODIFIER_CLASS, 'modifierClass'> & {
+    confirmText: string;
+    onConfirmClick: VoidFunction;
+    isProcessing: boolean;
+  };
 
 const ModifierTypeComponent = ({
   confirmText,
@@ -112,49 +114,36 @@ const ModifierTypeComponent = ({
       body={
         <>
           <Grid item xs={12}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Modifier Type Name"
-              type="text"
-              fullWidth
-              inputProps={{ size: 40 }}
+              setValue={setName}
               value={name}
-              size="small"
-              onChange={(e) => setName(e.target.value)}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Display Name (Optional)"
-              type="text"
-              fullWidth
-              inputProps={{ size: 40 }}
+              setValue={setDisplayName}
               value={displayName}
-              size="small"
-              onChange={(e) => setDisplayName(e.target.value)}
             />
           </Grid>
           <Grid item xs={4}>
-            <CheckedNumericInput
-              label="Ordinal"
-              type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
-              value={ordinal}
+          <IntNumericPropertyComponent
               disabled={isProcessing}
-              onChange={(e) => setOrdinal(e)}
-              parseFunction={parseInt}
-              allowEmpty={false} />
+              label="Ordinal"
+              value={ordinal}
+              setValue={setOrdinal}
+            />
           </Grid>
           <Grid item xs={4}>
-            <CheckedNumericInput
-              label="Min Selected"
-              type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
-              value={minSelected}
+          <IntNumericPropertyComponent
               disabled={isProcessing}
-              onChange={(e) => handleSetMinSelected(e)}
-              parseFunction={parseInt}
-              allowEmpty={false} />
-
+              label="Min Selected"
+              value={minSelected}
+              setValue={handleSetMinSelected}
+            />
           </Grid>
           <Grid item xs={4}>
             <CheckedNumericInput
@@ -168,89 +157,45 @@ const ModifierTypeComponent = ({
               allowEmpty={true} />
           </Grid>
           <Grid item xs={6}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={omitSectionIfNoAvailableOptions}
-                  onChange={(e) =>
-                    setOmitSectionIfNoAvailableOptions(e.target.checked)
-                  }
-                  name="Omit Section If No Available Options"
-                />
-              }
-              labelPlacement="top"
+            <ToggleBooleanPropertyComponent
+              disabled={isProcessing}
               label="Omit Section If No Available Options"
+              value={omitSectionIfNoAvailableOptions}
+              setValue={setOmitSectionIfNoAvailableOptions}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={omitOptionIfNotAvailable}
-                  onChange={(e) => setOmitOptionIfNotAvailable(e.target.checked)}
-                  name="Omit Option If Not Available"
-                />
-              }
-              labelPlacement="top"
+            <ToggleBooleanPropertyComponent
+              disabled={isProcessing}
               label="Omit Option If Not Available"
+              value={omitOptionIfNotAvailable}
+              setValue={setOmitOptionIfNotAvailable}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormControlLabel
-              control={
-                <Switch
-                  disabled={maxSelected !== 1 || minSelected !== 1}
-                  checked={useToggleIfOnlyTwoOptions}
-                  onChange={(e) => setUseToggleIfOnlyTwoOptions(e.target.checked)}
-                  name="Use Toggle If Only Two Options"
-                />
-              }
-              labelPlacement="top"
+            <ToggleBooleanPropertyComponent
+              disabled={isProcessing || maxSelected !== 1 || minSelected !== 1}
               label="Use Toggle If Only Two Options"
+              value={useToggleIfOnlyTwoOptions}
+              setValue={setUseToggleIfOnlyTwoOptions}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isHiddenDuringCustomization}
-                  onChange={(e) =>
-                    setIsHiddenDuringCustomization(e.target.checked)
-                  }
-                  name="Hide from user customization"
-                />
-              }
-              labelPlacement="top"
-              label="Hide from user customization"
-            />
+            <ToggleBooleanPropertyComponent disabled={isProcessing} label="Hide from user customization" setValue={setIsHiddenDuringCustomization} value={isHiddenDuringCustomization} />
           </Grid>
           <Grid container item xs={12}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Modifier Class</FormLabel>
-              <RadioGroup
-                defaultValue="SINGLE"
-                aria-label="selection-type"
-                name="selection-type"
-                row
-                value={modifierClass}
-                onChange={(e) => setModifierClass(e.target.value as keyof typeof MODIFIER_CLASS)}
-              >
-                {Object.keys(MODIFIER_CLASS).map((opt, i) =>
-                  <FormControlLabel
-                    key={i}
-                    value={opt}
-                    control={<Radio />}
-                    label={startCase(snakeCase(opt))}
-                  />
-                )}
-              </RadioGroup>
-            </FormControl>
+            <StringEnumPropertyComponent
+              disabled={isProcessing}
+              label="Modifier Class"
+              value={modifierClass}
+              setValue={setModifierClass}
+              options={Object.keys(MODIFIER_CLASS)}
+            />
           </Grid>
           <Grid container item xs={12}>
             <FormControl component="fieldset">
               <FormLabel component="legend">Empty modifier display in product name as...</FormLabel>
               <RadioGroup
-                defaultValue="OMIT"
                 aria-label="empty-display-as"
                 name="empty-display-as"
                 row
@@ -261,7 +206,7 @@ const ModifierTypeComponent = ({
                   <FormControlLabel
                     key={i}
                     value={opt}
-                    disabled={opt === "LIST_CHOICES" && maxSelected !== 1}
+                    disabled={opt === DISPLAY_AS.LIST_CHOICES && maxSelected !== 1}
                     control={<Radio />}
                     label={startCase(snakeCase(opt))}
                   />
@@ -270,47 +215,35 @@ const ModifierTypeComponent = ({
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Template String"
-              type="text"
-              fullWidth
-              inputProps={{ size: 40 }}
+              setValue={setTemplateString}
               value={templateString}
-              size="small"
-              onChange={(e) => setTemplateString(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Multiple Item Separator"
-              type="text"
-              fullWidth
-              inputProps={{ size: 40 }}
+              setValue={setMultipleItemSeparator}
               value={multipleItemSeparator}
-              size="small"
-              onChange={(e) => setMultipleItemSeparator(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Non-Empty Group Prefix"
-              type="text"
-              fullWidth
-              inputProps={{ size: 40 }}
+              setValue={setNonEmptyGroupPrefix}
               value={nonEmptyGroupPrefix}
-              size="small"
-              onChange={(e) => setNonEmptyGroupPrefix(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Non-Empty Group Suffix"
-              type="text"
-              fullWidth
-              inputProps={{ size: 40 }}
+              setValue={setNonEmptyGroupSuffix}
               value={nonEmptyGroupSuffix}
-              size="small"
-              onChange={(e) => setNonEmptyGroupSuffix(e.target.value)}
             />
           </Grid>
         </>}

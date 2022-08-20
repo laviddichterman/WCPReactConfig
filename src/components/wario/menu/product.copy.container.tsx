@@ -98,6 +98,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
       <AccordionDetails>
         <Grid container spacing={3} justifyContent="center">
           <ProductInstanceContainer
+            isProcessing={isProcessing}
             parent_product={product}
             displayName={piDisplayNames[i]}
             setDisplayName={setPiDisplayName(i)}

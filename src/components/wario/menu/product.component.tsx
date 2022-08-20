@@ -16,33 +16,38 @@ import { IMoney, IProductModifier, IWInterval, RoundToTwoDecimalPlaces } from '@
 import { useAppSelector } from 'src/hooks/useRedux';
 import { CheckedNumericInput } from '../CheckedNumericTextInput';
 import { ValSetValNamed } from 'src/utils/common';
+import { StringPropertyComponent } from '../property-components/StringPropertyComponent';
+import { FloatNumericPropertyComponent } from '../property-components/FloatNumericPropertyComponent';
+import { ToggleBooleanPropertyComponent } from '../property-components/ToggleBooleanPropertyComponent';
+import { IntNumericPropertyComponent } from '../property-components/IntNumericPropertyComponent';
+import { IMoneyPropertyComponent } from '../property-components/IMoneyPropertyComponent';
 
-type ProductInstanceComponentProps = 
-ValSetValNamed<string, 'displayName'> & 
-ValSetValNamed<string, 'description'> & 
-ValSetValNamed<string, 'shortcode'> & 
-ValSetValNamed<number, 'ordinal'>;
+type ProductInstanceComponentProps =
+  ValSetValNamed<string, 'displayName'> &
+  ValSetValNamed<string, 'description'> &
+  ValSetValNamed<string, 'shortcode'> &
+  ValSetValNamed<number, 'ordinal'>;
 
-type ProductComponentProps = 
-ValSetValNamed<IMoney, 'price'> & 
-ValSetValNamed<IWInterval | null, 'disabled'> & 
-ValSetValNamed<string[], 'serviceDisable'> & 
-ValSetValNamed<number, 'flavorMax'> & 
-ValSetValNamed<number, 'bakeMax'> & 
-ValSetValNamed<number, 'bakeDifferentialMax'> & 
-ValSetValNamed<string[], 'orderGuideWarningFunctions'> & 
-ValSetValNamed<string[], 'orderGuideSuggestionFunctions'> & 
-ValSetValNamed<boolean, 'showNameOfBaseProduct'> & 
-ValSetValNamed<string, 'singularNoun'> & 
-ValSetValNamed<string[], 'parentCategories'> & 
-ValSetValNamed<IProductModifier[], 'modifiers'> & {  
-  confirmText: string;
-  onCloseCallback: VoidFunction;
-  onConfirmClick: VoidFunction;
-  isProcessing: boolean;
-  disableConfirmOn: boolean;
-  children?: React.ReactNode;
-};
+type ProductComponentProps =
+  ValSetValNamed<IMoney, 'price'> &
+  ValSetValNamed<IWInterval | null, 'disabled'> &
+  ValSetValNamed<string[], 'serviceDisable'> &
+  ValSetValNamed<number, 'flavorMax'> &
+  ValSetValNamed<number, 'bakeMax'> &
+  ValSetValNamed<number, 'bakeDifferentialMax'> &
+  ValSetValNamed<string[], 'orderGuideWarningFunctions'> &
+  ValSetValNamed<string[], 'orderGuideSuggestionFunctions'> &
+  ValSetValNamed<boolean, 'showNameOfBaseProduct'> &
+  ValSetValNamed<string, 'singularNoun'> &
+  ValSetValNamed<string[], 'parentCategories'> &
+  ValSetValNamed<IProductModifier[], 'modifiers'> & {
+    confirmText: string;
+    onCloseCallback: VoidFunction;
+    onConfirmClick: VoidFunction;
+    isProcessing: boolean;
+    disableConfirmOn: boolean;
+    children?: React.ReactNode;
+  };
 
 type ProductComponentPropsTypes = (({ suppressNonProductInstanceFields: true; } & Partial<ProductInstanceComponentProps>) | ({ suppressNonProductInstanceFields: false; } & ProductInstanceComponentProps));
 
@@ -157,93 +162,72 @@ const ProductComponent = ({
           {!suppressNonProductInstanceFields && (
             <>
               <Grid item xs={5}>
-                <TextField
+                <StringPropertyComponent
+                  disabled={isProcessing}
                   label="Display Name"
-                  type="text"
-                  inputProps={{ size: 60 }}
                   value={displayName}
-                  size="small"
-                  onChange={(e) => setDisplayName(e.target.value)}
+                  setValue={setDisplayName}
                 />
               </Grid>
               <Grid item xs={5}>
-                <TextField
+                <StringPropertyComponent
+                  disabled={isProcessing}
                   label="Description"
-                  type="text"
-                  inputProps={{ size: 60 }}
                   value={description}
-                  size="small"
-                  onChange={(e) => setDescription(e.target.value)}
+                  setValue={setDescription}
                 />
               </Grid>
               <Grid item xs={2}>
-                <CheckedNumericInput
-                  label="Ordinal"
-                  type="number"
-                  inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
-                  value={ordinal}
+                <IntNumericPropertyComponent
                   disabled={isProcessing}
-                  onChange={(e) => setOrdinal(e)}
-                  parseFunction={parseInt}
-                  allowEmpty={false} />
+                  label="Ordinal"
+                  value={ordinal}
+                  setValue={setOrdinal}
+                />
               </Grid>
             </>
           )}
           <Grid item xs={4}>
-            <CheckedNumericInput
-              type="number"
-              label="Price"
-              inputProps={{ inputMode: 'decimal', min: 0.0, max: 999999, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
-              value={price.amount / 100}
+            <IMoneyPropertyComponent
               disabled={isProcessing}
-              onChange={(e) => setPrice({ ...price, amount: e * 100 })}
-              parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
-              allowEmpty={false} />
+              label="Price"
+              value={price}
+              setValue={setPrice}
+            />
           </Grid>
           {!suppressNonProductInstanceFields && (
             <Grid item xs={2}>
-              <TextField
+              <StringPropertyComponent
+                disabled={isProcessing}
                 label="Short Code"
-                type="text"
-                inputProps={{ size: 40 }}
                 value={shortcode}
-                size="small"
-                onChange={(e) => setShortcode(e.target.value)}
+                setValue={setShortcode}
               />
             </Grid>
           )}
           <Grid item xs={2}>
-            <CheckedNumericInput
-              type="number"
+            <FloatNumericPropertyComponent
+              disabled={isProcessing}
               label="Flavor Max"
-              inputProps={{ inputMode: 'decimal', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={flavorMax}
-              disabled={isProcessing}
-              onChange={(e) => setFlavorMax(e)}
-              parseFunction={parseFloat}
-              allowEmpty={false} />
+              setValue={setFlavorMax}
+            />
           </Grid>
           <Grid item xs={2}>
-            <CheckedNumericInput
-              type="number"
+            <FloatNumericPropertyComponent
+              disabled={isProcessing}
               label="Bake Max"
-              inputProps={{ inputMode: 'decimal', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
               value={bakeMax}
-              disabled={isProcessing}
-              onChange={(e) => setBakeMax(e)}
-              parseFunction={parseFloat}
-              allowEmpty={false} />
+              setValue={setBakeMax}
+            />
           </Grid>
           <Grid item xs={2}>
-            <CheckedNumericInput
-              type="number"
-              label="Bake Differential Max"
-              inputProps={{ inputMode: 'decimal', min: 0, max: 99999, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
-              value={bakeDifferentialMax}
+            <FloatNumericPropertyComponent
               disabled={isProcessing}
-              onChange={(e) => setBakeDifferentialMax(e)}
-              parseFunction={parseFloat}
-              allowEmpty={false} />
+              label="Bake Differential Max"
+              value={bakeDifferentialMax}
+              setValue={setBakeDifferentialMax}
+            />
           </Grid>
           <Grid item xs={6}>
             <Autocomplete
@@ -272,26 +256,20 @@ const ProductComponent = ({
             />
           </Grid>
           <Grid item xs={6}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={showNameOfBaseProduct || modifiers.length === 0}
-                  disabled={modifiers.length === 0}
-                  onChange={(e) => setShowNameOfBaseProduct(e.target.checked)}
-                  name="Show Name of Base Product Instead of Component Modifiers"
-                />
-              }
-              labelPlacement="end"
+            <ToggleBooleanPropertyComponent
+              disabled={isProcessing || modifiers.length === 0}
               label="Show Name of Base Product Instead of Component Modifiers"
+              value={showNameOfBaseProduct || modifiers.length === 0}
+              setValue={setShowNameOfBaseProduct}
+              labelPlacement='end'
             />
           </Grid>
           <Grid item xs={4}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Singular Noun"
-              type="text"
               value={singularNoun}
-              size="small"
-              onChange={(e) => setSingularNoun(e.target.value)}
+              setValue={setSingularNoun}
             />
           </Grid>
           <Grid item xs={12}>

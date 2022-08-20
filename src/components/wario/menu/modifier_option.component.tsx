@@ -2,35 +2,37 @@ import React, { Dispatch, SetStateAction } from "react";
 
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
 import Autocomplete from '@mui/material/Autocomplete';
 import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
 import { ElementActionComponent } from "./element.action.component";
-import { IMoney, IWInterval, RecordProductInstanceFunctions, RoundToTwoDecimalPlaces } from "@wcp/wcpshared";
+import { IMoney, IWInterval, RecordProductInstanceFunctions } from "@wcp/wcpshared";
 import { useAppSelector } from '../../../hooks/useRedux';
-import { CheckedNumericInput } from "../CheckedNumericTextInput";
 import { ValSetValNamed } from "src/utils/common";
+import { IMoneyPropertyComponent } from "../property-components/IMoneyPropertyComponent";
+import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
+import { FloatNumericPropertyComponent } from "../property-components/FloatNumericPropertyComponent";
+import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
+import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
 
-type ModifierOptionComponentProps = 
-ValSetValNamed<string, 'displayName'> & 
-ValSetValNamed<string, 'description'> & 
-ValSetValNamed<string, 'shortcode'> & 
-ValSetValNamed<number, 'ordinal'> & 
-ValSetValNamed<IMoney, 'price'> & 
-ValSetValNamed<string | null, 'enableFunction'> & 
-ValSetValNamed<number, 'flavorFactor'> & 
-ValSetValNamed<number, 'bakeFactor'> & 
-ValSetValNamed<boolean, 'canSplit'> & 
-ValSetValNamed<boolean, 'omitFromShortname'> & 
-ValSetValNamed<boolean, 'omitFromName'> & 
-ValSetValNamed<IWInterval | null, 'disabled'> & 
-{
-  confirmText: string
-  onCloseCallback: VoidFunction;
-  onConfirmClick: VoidFunction;
-  isProcessing: boolean;
-}
+type ModifierOptionComponentProps =
+  ValSetValNamed<string, 'displayName'> &
+  ValSetValNamed<string, 'description'> &
+  ValSetValNamed<string, 'shortcode'> &
+  ValSetValNamed<number, 'ordinal'> &
+  ValSetValNamed<IMoney, 'price'> &
+  ValSetValNamed<string | null, 'enableFunction'> &
+  ValSetValNamed<number, 'flavorFactor'> &
+  ValSetValNamed<number, 'bakeFactor'> &
+  ValSetValNamed<boolean, 'canSplit'> &
+  ValSetValNamed<boolean, 'omitFromShortname'> &
+  ValSetValNamed<boolean, 'omitFromName'> &
+  ValSetValNamed<IWInterval | null, 'disabled'> &
+  {
+    confirmText: string
+    onCloseCallback: VoidFunction;
+    onConfirmClick: VoidFunction;
+    isProcessing: boolean;
+  }
 
 const ModifierOptionComponent = ({
   confirmText,
@@ -74,57 +76,44 @@ const ModifierOptionComponent = ({
       body={
         <>
           <Grid item xs={6}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Display Name"
-              type="text"
-              inputProps={{ size: 40 }}
               value={displayName}
-              size="small"
-              onChange={(e) => setDisplayName(e.target.value)}
+              setValue={setDisplayName}
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Description"
-              type="text"
-              fullWidth
-              inputProps={{ size: 40 }}
               value={description}
-              size="small"
-              onChange={(e) => setDescription(e.target.value)}
+              setValue={setDescription}
             />
           </Grid>
           <Grid item xs={4}>
-            <TextField
+            <StringPropertyComponent
+              disabled={isProcessing}
               label="Short Code"
-              type="text"
-              inputProps={{ size: 40 }}
               value={shortcode}
-              size="small"
-              onChange={(e) => setShortcode(e.target.value)}
+              setValue={setShortcode}
             />
           </Grid>
           <Grid item xs={4}>
-            <CheckedNumericInput
-              type="number"
-              label="Price"
-              inputProps={{ inputMode: 'numeric', min: 0.0, max: 999999, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
-              value={price.amount / 100}
+            <IMoneyPropertyComponent
               disabled={isProcessing}
-              onChange={(e) => setPrice({ ...price, amount: e * 100 })}
-              parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
-              allowEmpty={false} />
+              label="Price"
+              value={price}
+              setValue={setPrice}
+            />
           </Grid>
           <Grid item xs={4}>
-            <CheckedNumericInput
-              label="Ordinal"
-              type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
-              value={ordinal}
+            <IntNumericPropertyComponent
               disabled={isProcessing}
-              onChange={(e) => setOrdinal(e)}
-              parseFunction={parseInt}
-              allowEmpty={false} />
+              label="Ordinal"
+              value={ordinal}
+              setValue={setOrdinal}
+            />
           </Grid>
           <Grid item xs={6}>
             <Autocomplete
@@ -138,61 +127,46 @@ const ModifierOptionComponent = ({
             />
           </Grid>
           <Grid item xs={3}>
-            <CheckedNumericInput
-              label="Flavor Factor"
-              type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
-              value={flavorFactor}
+            <FloatNumericPropertyComponent
               disabled={isProcessing}
-              onChange={(e) => setFlavorFactor(e)}
-              parseFunction={parseFloat}
-              allowEmpty={false} />
+              label="Flavor Max"
+              value={flavorFactor}
+              setValue={setFlavorFactor}
+            />
           </Grid>
           <Grid item xs={3}>
-            <CheckedNumericInput
-              label="Bake Factor"
-              type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]+([.,][0-9]+)?', step: 1 }}
-              value={bakeFactor}
+            <FloatNumericPropertyComponent
               disabled={isProcessing}
-              onChange={(e) => setBakeFactor(e)}
-              parseFunction={parseFloat}
-              allowEmpty={false} />
+              label="Bake Max"
+              value={bakeFactor}
+              setValue={setBakeFactor}
+            />
           </Grid>
           <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={canSplit}
-                  onChange={e => setCanSplit(e.target.checked)}
-                  name="Can Split"
-                />
-              }
+            <ToggleBooleanPropertyComponent
+              disabled={isProcessing}
               label="Can Split"
+              value={canSplit}
+              setValue={setCanSplit}
+              labelPlacement='end'
             />
           </Grid>
           <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={omitFromShortname}
-                  onChange={e => setOmitFromShortname(e.target.checked)}
-                  name="Omit from shortname"
-                />
-              }
+            <ToggleBooleanPropertyComponent
+              disabled={isProcessing}
               label="Omit from shortname"
+              value={omitFromShortname}
+              setValue={setOmitFromShortname}
+              labelPlacement='end'
             />
           </Grid>
           <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={omitFromName}
-                  onChange={e => setOmitFromName(e.target.checked)}
-                  name="Omit from name"
-                />
-              }
+            <ToggleBooleanPropertyComponent
+              disabled={isProcessing}
               label="Omit from name"
+              value={omitFromName}
+              setValue={setOmitFromName}
+              labelPlacement='end'
             />
           </Grid>
           <Grid item xs={12}>

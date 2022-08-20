@@ -1,90 +1,47 @@
-import React, { Dispatch, SetStateAction } from "react";
-
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Autocomplete from '@mui/material/Autocomplete';
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "src/hooks/useRedux";
 import { getCategoryById } from "src/redux/slices/SocketIoSlice";
-import { CheckedNumericInput } from "../CheckedNumericTextInput";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
-import { startCase, snakeCase} from "lodash";
 import { EntityId } from "@reduxjs/toolkit";
+import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
+import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
+import { ValSetValNamed } from "src/utils/common";
 
 export interface CategoryEditProps {
   category: ICategory;
   onCloseCallback: VoidFunction;
 }
 
-export interface CategoryComponentProps {
+export type CategoryComponentProps = {
   categoryIds: EntityId[];
   onCloseCallback: VoidFunction;
   onConfirmClick: VoidFunction;
   isProcessing: boolean;
-  confirmText: string;
-  description: string | null;
-  setDescription: Dispatch<SetStateAction<string | null>>;
-  ordinal: number;
-  setOrdinal: Dispatch<SetStateAction<number>>;
-  subheading: string | null;
-  setSubheading: Dispatch<SetStateAction<string | null>>;
-  footnotes: string | null;
-  setFootnotes: Dispatch<SetStateAction<string | null>>;
-  name: string;
-  setName: Dispatch<SetStateAction<string>>;
-  callLineName: string;
-  setCallLineName: Dispatch<SetStateAction<string>>;
-  callLineDisplay: CALL_LINE_DISPLAY
-  setCallLineDisplay: Dispatch<SetStateAction<CALL_LINE_DISPLAY>>;
-  nestedDisplay: CategoryDisplay;
-  setNestedDisplay: Dispatch<SetStateAction<CategoryDisplay>>;
-  parent: string | null;
-  setParent: Dispatch<SetStateAction<string | null>>;
-  serviceDisable: string[];
-  setServiceDisable: Dispatch<SetStateAction<string[]>>;
-};
+  confirmText: string; } & 
+  ValSetValNamed<string | null, 'description'> &
+  ValSetValNamed<number, 'ordinal'> &
+  ValSetValNamed<string | null, 'subheading'> &
+  ValSetValNamed<string | null, 'footnotes'> &
+  ValSetValNamed<string, 'name'> &
+  ValSetValNamed<string, 'callLineName'> &
+  ValSetValNamed<CALL_LINE_DISPLAY, 'callLineDisplay'> &
+  ValSetValNamed<CategoryDisplay, 'nestedDisplay'> &
+  ValSetValNamed<string | null, 'parent'> &
+  ValSetValNamed<string[], 'serviceDisable'>;
 
-const CategoryComponent = ({
-  categoryIds,
-  onCloseCallback,
-  onConfirmClick,
-  isProcessing,
-  confirmText,
-  description,
-  setDescription,
-  ordinal,
-  setOrdinal,
-  subheading,
-  setSubheading,
-  footnotes,
-  setFootnotes,
-  name,
-  setName,
-  callLineName,
-  setCallLineName,
-  callLineDisplay,
-  setCallLineDisplay,
-  nestedDisplay,
-  setNestedDisplay,
-  parent,
-  setParent,
-  serviceDisable,
-  setServiceDisable
-}: CategoryComponentProps) => {
+const CategoryComponent = (props: CategoryComponentProps) => {
   const selectCategoryById = useAppSelector(s => (id: EntityId) => getCategoryById(s.ws.categories, id));
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
   return (
     <ElementActionComponent
-      onCloseCallback={onCloseCallback}
-      onConfirmClick={onConfirmClick}
-      isProcessing={isProcessing}
-      disableConfirmOn={name.length === 0 || ordinal < 0 || isProcessing}
-      confirmText={confirmText}
+      onCloseCallback={props.onCloseCallback}
+      onConfirmClick={props.onConfirmClick}
+      isProcessing={props.isProcessing}
+      disableConfirmOn={props.name.length === 0 || props.ordinal < 0 || props.isProcessing}
+      confirmText={props.confirmText}
       body={
         <>
           <Grid item xs={6}>
@@ -92,16 +49,16 @@ const CategoryComponent = ({
               label="Category Name"
               type="text"
               inputProps={{ size: 30 }}
-              value={name}
+              value={props.name}
               size="small"
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => props.setName(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
             <Autocomplete
-              options={categoryIds}
-              value={parent}
-              onChange={(e, v) => setParent(v !== null ? String(v) : null)}
+              options={props.categoryIds}
+              value={props.parent}
+              onChange={(e, v) => props.setParent(v !== null ? String(v) : null)}
               getOptionLabel={(o) => selectCategoryById(o)?.name ?? "Undefined"}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => (
@@ -116,21 +73,18 @@ const CategoryComponent = ({
               label="Category Description (Optional, HTML allowed)"
               type="text"
               inputProps={{ size: 100 }}
-              value={description}
+              value={props.description}
               size="small"
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => props.setDescription(e.target.value)}
             />
           </Grid>
           <Grid item xs={3}>
-            <CheckedNumericInput
+            <IntNumericPropertyComponent
+              disabled={props.isProcessing}
               label="Ordinal"
-              type="number"
-              inputProps={{ inputMode: 'numeric', min: 0, max: 43200, pattern: '[0-9]*', step: 1 }}
-              value={ordinal}
-              disabled={isProcessing}
-              onChange={(e) => setOrdinal(e)}
-              parseFunction={parseInt}
-              allowEmpty={false} />
+              value={props.ordinal}
+              setValue={props.setOrdinal}
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -139,9 +93,9 @@ const CategoryComponent = ({
               label="Subheading (Optional, HTML allowed)"
               type="text"
               inputProps={{ size: 100 }}
-              value={subheading}
+              value={props.subheading}
               size="small"
-              onChange={(e) => setSubheading(e.target.value)}
+              onChange={(e) => props.setSubheading(e.target.value)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -151,9 +105,9 @@ const CategoryComponent = ({
               label="Footnotes (Optional, HTML allowed)"
               type="text"
               inputProps={{ size: 100 }}
-              value={footnotes}
+              value={props.footnotes}
               size="small"
-              onChange={(e) => setFootnotes(e.target.value)}
+              onChange={(e) => props.setFootnotes(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
@@ -161,9 +115,9 @@ const CategoryComponent = ({
               label="Call Line Name"
               type="text"
               inputProps={{ size: 40 }}
-              value={callLineName}
+              value={props.callLineName}
               size="small"
-              onChange={(e) => setCallLineName(e.target.value)}
+              onChange={(e) => props.setCallLineName(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
@@ -171,9 +125,9 @@ const CategoryComponent = ({
               multiple
               filterSelectedOptions
               options={Object.keys(fulfillments)}
-              value={serviceDisable.map((x) => String(x))}
+              value={props.serviceDisable.map((x) => String(x))}
               onChange={(_, v) => {
-                setServiceDisable(v);
+                props.setServiceDisable(v);
               }}
               getOptionLabel={(option) => fulfillments[option].displayName}
               isOptionEqualToValue={(option, value) => option === value}
@@ -181,48 +135,22 @@ const CategoryComponent = ({
             />
           </Grid>
           <Grid container item xs={6}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Call Line Display</FormLabel>
-              <RadioGroup
-                defaultValue={CALL_LINE_DISPLAY.SHORTNAME}
-                aria-label="call-line-display"
-                name="call-line-display"
-                row
-                value={callLineDisplay}
-                onChange={(e) => setCallLineDisplay(CALL_LINE_DISPLAY[e.target.value as keyof typeof CALL_LINE_DISPLAY])}
-              >
-                {Object.values(CALL_LINE_DISPLAY).map((opt, i) =>
-                  <FormControlLabel
-                    key={i}
-                    value={opt}
-                    control={<Radio />}
-                    label={startCase(snakeCase(opt))}
-                  />
-                )}
-              </RadioGroup>
-            </FormControl>
+            <StringEnumPropertyComponent
+              disabled={props.isProcessing}
+              label="Call Line Display"
+              value={props.callLineDisplay}
+              setValue={props.setCallLineDisplay}
+              options={Object.keys(CALL_LINE_DISPLAY)}
+            />
           </Grid>
           <Grid container item xs={6}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Nested Display</FormLabel>
-              <RadioGroup
-                defaultValue={CategoryDisplay.TAB}
-                aria-label="nested-display"
-                name="nested-display"
-                row
-                value={nestedDisplay}
-                onChange={(e) => setNestedDisplay(CategoryDisplay[e.target.value as keyof typeof CategoryDisplay])}
-              >
-                {Object.values(CategoryDisplay).map((opt, i) =>
-                  <FormControlLabel
-                    key={i}
-                    value={opt}
-                    control={<Radio />}
-                    label={startCase(snakeCase(opt))}
-                  />
-                )}
-              </RadioGroup>
-            </FormControl>
+            <StringEnumPropertyComponent
+              disabled={props.isProcessing}
+              label="Nested Display"
+              value={props.nestedDisplay}
+              setValue={props.setNestedDisplay}
+              options={Object.keys(CategoryDisplay)}
+            />
           </Grid>
         </>
       }
