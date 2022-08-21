@@ -21,7 +21,7 @@ export default function GeneralTiming() {
       <Container maxWidth={themeStretch ? false : 'xl'}>
         {!FULFILLMENTS || Object.keys(FULFILLMENTS).length === 0 ? "Please add some fulfillment configuration first" :
           (
-            <Grid container spacing={8}>
+            <Grid container spacing={3}>
               <Grid item xs={12} md={12}>
                 <LeadTimesComp />
               </Grid>

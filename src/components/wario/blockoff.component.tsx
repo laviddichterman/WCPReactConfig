@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { add, format, formatISO, parseISO } from "date-fns";
 import {
+  Box,
   Card,
   CardHeader,
   Chip,
@@ -16,7 +17,7 @@ import {
   Autocomplete
 } from '@mui/material'
 import { Done, HighlightOff } from '@mui/icons-material';
-import { MobileDatePicker } from '@mui/x-date-pickers';
+import { StaticDatePicker } from '@mui/x-date-pickers';
 import { useAuth0 } from '@auth0/auth0-react';
 import { GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wcpshared";
 
@@ -89,15 +90,36 @@ const BlockOffComp = () => {
         dispatch(setStartTime(next[1]));
         dispatch(setEndTime(next[1]));
       }
+    } else {
+      const options = GetOptionsForDate(selectedDate);
+      if (options.length > 0) {
+        dispatch(setStartTime(options[0].value));
+        dispatch(setEndTime(options[0].value));
+      }
     }
-  }, [selectedDate, fulfillments, selectedServices, CURRENT_TIME, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, selectedServices]);
 
   useEffect(() => {
     if (selectedServices.length === 0 && Object.keys(fulfillments).length > 0) {
       dispatch(setSelectedServices(Object.keys(fulfillments)));
     }
   }, [selectedServices, fulfillments, dispatch]);
+  useEffect(() => {
+    if (!startTime || !startOptions.find(x => x.value === startTime)) {
+      if (startOptions.length > 0) {
+        dispatch(setStartTime(startOptions[0].value));
+      }
+    }
+  }, [startTime, startOptions]);
 
+  useEffect(() => {
+    if (!endTime || !endOptions.find(x => x.value === endTime)) {
+      if (endOptions.length > 0) {
+        dispatch(setEndTime(endOptions[0].value));
+      }
+    }
+  }, [startTime, endTime, endOptions]);
   const postBlockedOff = async () => {
     if (!isProcessing && selectedDate !== null && startTime !== null && endTime !== null) {
       try {
@@ -122,7 +144,8 @@ const BlockOffComp = () => {
           }
         );
         if (response.status === 201) {
-          dispatch(setStartTime(null))
+          dispatch(setStartTime(null));
+          dispatch(setEndTime(null));
         }
       } catch (error) {
         console.error(error);
@@ -196,8 +219,8 @@ const BlockOffComp = () => {
       <Grid item xs={12}>
         <Card>
           <CardHeader title="Add Blocked-Off Time:" sx={{ mb: 3 }} />
-          <Grid container justifyContent="center">
-            <Grid item container xs={8} sx={{ ml: 6 }}>
+          <Grid container>
+            <Grid item container xs={12} sx={{ mx: 6 }}>
               {
                 Object.values(fulfillments).map((x) => (
                   <Grid item xs={Math.floor(12 / NUM_SERVICES)} key={x.id}>
@@ -210,10 +233,11 @@ const BlockOffComp = () => {
                 ))
               }
             </Grid>
-            <Grid item xs={4}>
-              <MobileDatePicker
+            <Grid item xs={12} sm={7} >
+              <StaticDatePicker
                 renderInput={(props) => <TextField {...props} />}
-                closeOnSelect
+                displayStaticWrapperAs="desktop"
+                openTo="day"
                 showToolbar={false}
                 minDate={new Date(CURRENT_TIME)}
                 maxDate={add(CURRENT_TIME, { days: 60 })}
@@ -223,47 +247,55 @@ const BlockOffComp = () => {
                 inputFormat={WDateUtils.ServiceDateDisplayFormat}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Autocomplete
-                sx={{ m: 2 }}
-                disableClearable
-                className="col"
-                options={startOptions.filter(x => !x.disabled).map(x => x.value)}
-                isOptionEqualToValue={(o, v) => o === v}
-                getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
-                // @ts-ignore
-                value={startTime}
-                onChange={(_, v) => onChangeLowerBound(v)}
-                disabled={selectedDate === null}
-                renderInput={(params) => <TextField {...params} label={"Start"}
-                />}
-              />
+            <Grid container spacing={2} sx={{ my: 'auto', px: 1, pb: 1 }} item xs={12} sm={5}>
+              <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
+                <Autocomplete
+                  sx={{ m: 'auto', maxWidth: 200 }}
+                  disableClearable
+                  className="col"
+                  options={startOptions.filter(x => !x.disabled).map(x => x.value)}
+                  isOptionEqualToValue={(o, v) => o === v}
+                  getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
+                  // @ts-ignore
+                  value={startTime}
+                  onChange={(_, v) => onChangeLowerBound(v)}
+                  disabled={selectedDate === null}
+                  renderInput={(params) => <TextField {...params} label={"Start"}
+                  />}
+                />
+              </Grid>
+              <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
+                <Autocomplete
+                  sx={{ m: 'auto', maxWidth: 200 }}
+                  disableClearable
+                  className="col"
+                  options={endOptions.filter(x => !x.disabled).map(x => x.value)}
+                  isOptionEqualToValue={(o, v) => o === v}
+                  getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
+                  // @ts-ignore
+                  value={endTime}
+                  onChange={(_, v) => onChangeUpperBound(v)}
+                  disabled={selectedDate === null || startTime === null}
+                  renderInput={(params) => <TextField  {...params} label={"End"}
+                  />}
+                />
+              </Grid>
+              <Grid item xs={2} sm={12} sx={{ mx: 'auto', py: 2, alignContent: "center" }}>
+                <Button sx={{ m: 'auto', width: '100%', height: '100%' }} onClick={() => postBlockedOff()} disabled={!canPostBlockedOff || isProcessing}>
+                  Add
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={5}>
-              <Autocomplete
-                sx={{ m: 2 }}
-                disableClearable
-                className="col"
-                options={endOptions.filter(x => !x.disabled).map(x => x.value)}
-                isOptionEqualToValue={(o, v) => o === v}
-                getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
-                // @ts-ignore
-                value={endTime}
-                onChange={(_, v) => onChangeUpperBound(v)}
-                disabled={selectedDate === null || startTime === null}
-                renderInput={(params) => <TextField {...params} label={"End"}
-                />}
-              />
-            </Grid>
-            <Grid item xs={2}><Button sx={{ m: 3 }} onClick={() => postBlockedOff()} disabled={!canPostBlockedOff || isProcessing}>Add</Button></Grid>
           </Grid>
         </Card>
       </Grid>
-      {Object.values(fulfillments).map(fulfillment =>
-        <Grid key={fulfillment.id} item xs={Math.floor(12 / NUM_SERVICES)}>
+      <Grid item container sx={{py:3}} spacing={3}>
+      {Object.values(fulfillments).filter(x=>x.blockedOff.length > 0).map((fulfillment, _, arr) =>
+        <Grid key={fulfillment.id} sx={{mx: 'auto'}} item xs={12} md={Math.min(Math.max(Math.floor(12 / arr.length), 6), 6)} lg={Math.min(Math.max(Math.floor(12 / arr.length), 4), 4)}>
           <Card>
-            <CardHeader title={fulfillment.displayName} />
+            <CardHeader title={`${fulfillment.displayName} Blocked-Off Intervals`} />
             <List component="nav">
+              { /* Note: the blocked off array should be pre-sorted */ }
               {fulfillment.blockedOff.map((entry) => (
                 <Container key={`${fulfillment.id}.${entry.key}`}>
                   <ListItem>
@@ -294,6 +326,7 @@ const BlockOffComp = () => {
             </List>
           </Card>
         </Grid>)}
+        </Grid>
     </>
   );
 }
