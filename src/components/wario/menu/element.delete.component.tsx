@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Warning } from "@mui/icons-material";
 import Grid from "@mui/material/Grid";
 import { ElementActionComponent, ElementActionComponentProps } from "./element.action.component";

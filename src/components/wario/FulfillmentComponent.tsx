@@ -204,7 +204,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
       onCloseCallback={props.onCloseCallback}
       onConfirmClick={props.onConfirmClick}
       isProcessing={props.isProcessing}
-      disableConfirmOn={props.disableConfirmOn}
+      disableConfirmOn={props.disableConfirmOn || isServiceAreaParsingError}
       confirmText={props.confirmText}
       body={
         <>
@@ -398,9 +398,6 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
             helperText={isServiceAreaParsingError ? "JSON Parsing Error" : ""}
           />
         </Grid>
-          {/* //ValSetValNamed<Polygon | null, 'serviceArea'> & */}
-
-
         </>
       }
       />);

@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
 
 import Grid from "@mui/material/Grid";
+import type { ICategory, IOption, IOptionType, IProduct, IProductInstance, IProductInstanceFunction } from "@wcp/wcpshared";
+import { DialogContainer } from "@wcp/wario-ux-shared";
 import InterstitialDialog from "../interstitial.dialog.component";
-import DialogContainer from "../dialog.container";
 import CategoryAddContainer from "./category.add.container";
 import CategoryEditContainer from "./category.edit.container";
 import CategoryDeleteContainer from "./category.delete.container";
@@ -35,7 +36,6 @@ import ProductTableContainer from "./product_table.container";
 import ProductInstanceFunctionTableContainer from "./product_instance_function_table.container";
 
 import { useAppSelector } from "../../../hooks/useRedux";
-import { ICategory, IOption, IOptionType, IProduct, IProductInstance, IProductInstanceFunction } from "@wcp/wcpshared";
 
 const MenuBuilderComponent = () => {
   const catalog = useAppSelector(s=>s.ws.catalog!);

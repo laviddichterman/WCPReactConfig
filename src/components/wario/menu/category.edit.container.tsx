@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ICategory } from "@wcp/wcpshared";
 import CategoryComponent, { CategoryEditProps } from "./category.component";
 import { HOST_API } from "../../../config";
-import { getCategoryIds } from "../../../redux/slices/SocketIoSlice";
+import { getCategoryIds } from "@wcp/wario-ux-shared";
 import { useAppSelector } from "../../../hooks/useRedux";
 
 const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps) => {

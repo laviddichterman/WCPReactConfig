@@ -5,7 +5,7 @@ import CategoryComponent from "./category.component";
 import { HOST_API } from "../../../config";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { getCategoryIds } from "../../../redux/slices/SocketIoSlice";
+import { getCategoryIds } from "@wcp/wario-ux-shared";
 
 export interface CategoryAddContainerProps {
   onCloseCallback: VoidFunction;

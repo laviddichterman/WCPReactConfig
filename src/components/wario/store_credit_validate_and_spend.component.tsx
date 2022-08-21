@@ -1,4 +1,5 @@
 import { CURRENCY, MoneyToDisplayString, RoundToTwoDecimalPlaces, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
+import { DialogContainer } from "@wcp/wario-ux-shared";
 
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { Html5QrcodeScanner, Html5QrcodeScanType, Html5Qrcode } from 'html5-qrcode';
@@ -6,7 +7,6 @@ import { QrcodeSuccessCallback, QrcodeErrorCallback} from 'html5-qrcode/core';
 
 import { ErrorOutline, PhotoCamera } from "@mui/icons-material";
 import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, TextField } from '@mui/material';
-import DialogContainer from "./dialog.container";
 import { HOST_API } from "../../config";
 import { CheckedNumericInput } from "./CheckedNumericTextInput";
 import { uniqueId } from 'lodash';

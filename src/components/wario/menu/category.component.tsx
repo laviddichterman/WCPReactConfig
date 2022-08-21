@@ -1,7 +1,7 @@
 import { Grid, TextField, Autocomplete } from "@mui/material";
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { getCategoryById } from "../../../redux/slices/SocketIoSlice";
+import { getCategoryById } from "@wcp/wario-ux-shared";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
 import { EntityId } from "@reduxjs/toolkit";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";

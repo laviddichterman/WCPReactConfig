@@ -1,10 +1,9 @@
 import { createListenerMiddleware, addListener, ListenerEffectAPI } from '@reduxjs/toolkit'
 import type { TypedStartListening, TypedAddListener } from '@reduxjs/toolkit'
 import { RootState, AppDispatch } from '../store'
-import { SocketIoActions } from './SocketIoSlice';
+import { SocketIoActions } from '@wcp/wario-ux-shared';
 import { setCurrentTimes, setPageLoadTime, setPageLoadTimeLocal, TIMING_POLLING_INTERVAL } from './WMetricsSlice';
 import { parseISO } from 'date-fns';
-
 
 export const ListeningMiddleware = createListenerMiddleware()
 

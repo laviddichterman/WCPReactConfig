@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Card, CardHeader, Grid, Button } from '@mui/material';
+import { Card } from '@mui/material';
 
 import { FulfillmentConfig, IWSettings } from "@wcp/wcpshared";
+import { DialogContainer } from '@wcp/wario-ux-shared';
 import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from '../../config';
 import { useAppSelector } from '../../hooks/useRedux';
-import DialogContainer from './dialog.container';
 import FulfillmentAddContainer from './FulfillmentAddContainer';
 import FulfillmentEditContainer from './FulfillmentEditContainer';
 import FulfillmentDeleteContainer from './FulfillmentDeleteContainer';
