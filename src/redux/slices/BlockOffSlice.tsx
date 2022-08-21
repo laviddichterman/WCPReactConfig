@@ -1,8 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { FulfillmentConfig } from "@wcp/wcpshared";
 
 export const TIMING_POLLING_INTERVAL = 30000;
 
+export interface TimeOption {
+  value: number;
+  disabled: boolean;
+};
+
 export interface BlockOffState {
+  startOptions: TimeOption[];
+  endOptions: TimeOption[];
   selectedServices: string[];
   selectedDate: string | null;
   startTime: number | null;
@@ -10,6 +18,8 @@ export interface BlockOffState {
 }
 
 const initialState: BlockOffState = {
+  startOptions: [],
+  endOptions: [],
   selectedServices: [],
   selectedDate: null,
   startTime: null,
@@ -39,11 +49,18 @@ const BlockOffSlice = createSlice({
     },
     setEndTime(state, action: PayloadAction<number | null>) {
       state.endTime = action.payload;
-    }
+    },
+    setStartOptions(state, action: PayloadAction<TimeOption[]>) {
+      state.startOptions = action.payload;
+    },
+    setEndOptions(state, action: PayloadAction<TimeOption[]>) {
+      state.endOptions = action.payload;
+    },
+    
   }
 });
 
-export const { setEndTime, setSelectedDate, setSelectedServices, setStartTime, toggleSelectedService } = BlockOffSlice.actions;
+export const { setEndTime, setSelectedDate, setSelectedServices, setStartTime, toggleSelectedService, setStartOptions, setEndOptions } = BlockOffSlice.actions;
 
 
 export default BlockOffSlice.reducer;

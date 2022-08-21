@@ -1,25 +1,31 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardHeader, Grid, Button } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from '../../config';
 import { useAppSelector } from '../../hooks/useRedux';
 import { CheckedNumericInput } from './CheckedNumericTextInput';
 
+const GenerateCleanDirtyArray = (fulfillments: Record<string, any>) => Object.entries(fulfillments).reduce((acc, [key, v])=>({...acc, [key]: false}), {})
 
 const LeadTimesComp = () => {
   const FULFILLMENTS = useAppSelector(s => s.ws.fulfillments!);
-  const numServices = useMemo(() => Object.keys(FULFILLMENTS).length, [FULFILLMENTS]);
   const { getAccessTokenSilently } = useAuth0();
-  const [dirty, setDirty] = useState<Record<string, boolean>>(Object.values(FULFILLMENTS).reduce((acc, x)=>({...acc, [x.id]: false}), {}));
+  const [dirty, setDirty] = useState<Record<string, boolean>>(GenerateCleanDirtyArray(FULFILLMENTS));
   const [localLeadTime, setLocalLeadTime] = useState<Record<string, number>>(Object.values(FULFILLMENTS).reduce((acc, x)=>({...acc, [x.id]: x.leadTime}), {}));
   const [isProcessing, setIsProcessing] = useState(false);
 
+  useEffect(() => {
+    setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({...acc, [key]: dirty[key] ? value : FULFILLMENTS[key].leadTime}), {}))
+  }, [FULFILLMENTS]);
   const onChangeLeadTimes = (fId: string, leadTime: number) => {
-    setLocalLeadTime({...localLeadTime, [fId]: leadTime });
-    setDirty({...dirty, [fId]: true });
+    if (localLeadTime[fId] !== leadTime) {
+      setLocalLeadTime({...localLeadTime, [fId]: leadTime });
+      setDirty({...dirty, [fId]: true });
+    }
   };
   const onSubmit = async () => {
     if (!isProcessing) {
+      console.log(JSON.stringify(localLeadTime));
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:order_config" });
@@ -32,7 +38,7 @@ const LeadTimesComp = () => {
           body: JSON.stringify(localLeadTime)
         });
         if (response.status === 201) {
-          setDirty(Object.values(FULFILLMENTS).reduce((acc, x)=>({...acc, [x.id]: false}), {}));
+          setDirty(GenerateCleanDirtyArray(FULFILLMENTS));
 
         }
         setIsProcessing(false);
@@ -46,16 +52,16 @@ const LeadTimesComp = () => {
       <CardHeader title="Single pizza lead time:" sx={{ mb: 3 }} />
       <Grid container justifyContent="center">
         <Grid item container xs={10}>
-          {Object.values(FULFILLMENTS).map(fulfillment => (
-            <Grid item xs={Math.floor(12 / numServices)} key={fulfillment.id} >
+          {Object.values(FULFILLMENTS).map((fulfillment, _, arr) => (
+            <Grid item xs={Math.floor(12 / arr.length)} key={fulfillment.id} >
             <CheckedNumericInput
               type="number"
               sx={{ ml: 3, mb: 2, mr: 1 }}
               label={fulfillment.displayName}
               inputProps={{ inputMode: 'numeric', min: 1, max: 43200, pattern: '[0-9]*', step: 1 }}
               value={dirty[fulfillment.id] ? localLeadTime[fulfillment.id] : fulfillment.leadTime }
-              className="form-control"
               disabled={isProcessing}
+              color={dirty[fulfillment.id] ? 'info' : 'primary'}
               onChange={(e) => onChangeLeadTimes(fulfillment.id, e)}
               parseFunction={parseInt}
               allowEmpty={false} />
