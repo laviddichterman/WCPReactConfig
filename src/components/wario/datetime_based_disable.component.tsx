@@ -3,23 +3,26 @@ import { endOfDay, getTime } from 'date-fns'
 import { Grid, FormControlLabel, Switch, TextField } from "@mui/material";
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { IWInterval } from "@wcp/wcpshared";
+import { useAppSelector } from "../../hooks/useRedux";
 
 export interface DatetimeBasedDisableComponentProps {
   disabled: IWInterval | null;
   setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
 }
 const DatetimeBasedDisableComponent = ({ disabled, setDisabled }: DatetimeBasedDisableComponentProps) => {
+  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
+
   const [enabled, setEnabled] = useState(disabled === null);
   const [isDatetimeBased, setIsDatetimeBased] = useState<boolean>(
     disabled !== null && disabled.start <= disabled.end
   );
   const [disabledStart, setDisabledStart] = useState(
-    disabled !== null && disabled.start && disabled.start !== 1 ? disabled.start : getTime(Date.now())
+    disabled !== null && disabled.start && disabled.start !== 1 ? disabled.start : getTime(CURRENT_TIME)
   );
   const [disabledEnd, setDisabledEnd] = useState(
     disabled !== null && disabled.end && disabled.end !== 0
       ? disabled.end
-      : getTime(endOfDay(Date.now()))
+      : getTime(endOfDay(CURRENT_TIME))
   );
 
   const toggleEnabled = () => {

@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { format } from 'date-fns'
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
 import { Edit, DeleteOutline, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
 import { DisableDataCheck, DISABLE_REASON, IOption, IOptionType } from '@wcp/wcpshared';
@@ -27,6 +27,7 @@ const ModifierOptionTableContainer = ({
   setIsModifierOptionDisableUntilEodOpen
 }: ModifierOptionTableContainerProps) => {
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
   const productInstanceFunctions = useAppSelector(s => s.ws.catalog!.product_instance_functions!);
   const editModifierOption = (row: IOption) => () => {
     setIsModifierOptionEditOpen(true);
@@ -61,8 +62,8 @@ const ModifierOptionTableContainer = ({
           headerName: "Actions",
           field: 'actions',
           type: 'actions',
-          getActions: (params) => {
-            const title = params.row.item.display_name ? params.row.item.display_name : "Modifier Option";
+          getActions: (params: GridRowParams<IOption>) => {
+            const title = params.row.displayName ? params.row.displayName : "Modifier Option";
             const EDIT_MODIFIER_OPTION = (<GridActionsCellItem
               icon={<Tooltip title={`Edit ${title}`}><Edit /></Tooltip>}
               label={`Edit ${title}`}
@@ -92,7 +93,7 @@ const ModifierOptionTableContainer = ({
               onClick={disableOption(params.row)}
               showInMenu
             />)
-            return DisableDataCheck(params.row.item.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
+            return DisableDataCheck(params.row.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
           }
         },
         { headerName: "Name", field: "item.display_name", valueGetter: (v : {row: IOption}) => v.row.displayName, flex: 1 },
@@ -105,7 +106,7 @@ const ModifierOptionTableContainer = ({
         { headerName: "Can Split?", field: "metadata.can_split", valueGetter: (v : {row: IOption}) => v.row.metadata.can_split },
         { headerName: "EnableFxn", field: "enable_function.name", valueGetter: (v : {row: IOption}) => v.row.enable ? productInstanceFunctions[v.row.enable].name : "" },
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "item.disabled", valueGetter: (v : {row: IOption}) => (v.row.disabled !== null && DisableDataCheck(v.row.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? (v.row.disabled.start > v.row.disabled.end ? "True" : `${format(v.row.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
+        { headerName: "Disabled", field: "item.disabled", valueGetter: (v : {row: IOption}) => (v.row.disabled !== null && DisableDataCheck(v.row.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.disabled.start > v.row.disabled.end ? "True" : `${format(v.row.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
       ]}
       getRowId={(row) => row._id}
       rows={modifier_types_map[modifier_type.id].options}

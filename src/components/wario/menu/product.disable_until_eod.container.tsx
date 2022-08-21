@@ -4,12 +4,13 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Grid from "@mui/material/Grid";
 import { ElementActionComponent } from "./element.action.component";
 import { HOST_API } from "../../../config";
-
+import { useAppSelector } from "../../../hooks/useRedux";
 import { ProductQuickActionProps } from './product.delete.container';
 import { IProduct } from "@wcp/wcpshared";
 
 const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async () => {
     if (!isProcessing) {
@@ -18,7 +19,7 @@ const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const body: IProduct = {
           ...product,
-          disabled: { start: Date.now(), end: getTime(endOfDay(Date.now())) }
+          disabled: { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) }
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "PATCH",

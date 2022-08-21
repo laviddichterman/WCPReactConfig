@@ -1,7 +1,7 @@
 import { useCallback, Dispatch, SetStateAction } from "react";
 import { format } from 'date-fns';
 import { DisableDataCheck, DISABLE_REASON, IProduct, IProductInstance } from '@wcp/wcpshared';
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
@@ -9,6 +9,7 @@ import { useAppSelector } from "../../../hooks/useRedux";
 import TableWrapperComponent from "../table_wrapper.component";
 
 type RowType = { product: IProduct; instances: IProductInstance[]; }
+type ValueGetterRow = GridValueGetterParams<any, RowType>;
 
 interface ProductTableContainerProps {
   products: RowType[];
@@ -41,6 +42,7 @@ const ProductTableContainer = ({
   setPanelsExpandedSize
 }: ProductTableContainerProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
+  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
 
   const apiRef = useGridApiRef();
 
@@ -119,7 +121,7 @@ const ProductTableContainer = ({
 
       ]}
       rows={row.instances}
-      getRowId={(row_inner) => row_inner._id}
+      getRowId={(row_inner) => row_inner.id}
     />) :
     (""),
     [setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
@@ -133,9 +135,9 @@ const ProductTableContainer = ({
           headerName: "Actions",
           field: 'actions',
           type: 'actions',
-          getActions: (params) => {
+          getActions: (params: GridRowParams<RowType>) => {
             const base_piidx = GetIndexOfBaseProductInstance(params.row.instances);
-            const title = base_piidx !== -1 ? params.row.instances[base_piidx].item.display_name : "Incomplete Product";
+            const title = base_piidx !== -1 ? params.row.instances[base_piidx].displayName : "Incomplete Product";
             const ADD_PRODUCT_INSTANCE = (<GridActionsCellItem
               icon={<Tooltip title={`Add Product Instance to ${title}`}><AddBox /></Tooltip>}
               label={`Add Product Instance to ${title}`}
@@ -176,17 +178,17 @@ const ProductTableContainer = ({
               onClick={deleteProduct(params.row)}
               showInMenu
             />);
-            return DisableDataCheck(params.row.product.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
+            return DisableDataCheck(params.row.product.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           }
         },
-        { headerName: "Name", field: "display_name", valueGetter: (v: { row: RowType }) => GetIndexOfBaseProductInstance(v.row.instances) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.instances)].displayName : "Incomplete Product", flex: 6 },
-        { headerName: "Price", field: "product.price.amount", valueGetter: v => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
-        { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: { row: RowType }) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "", flex: 3 },
+        { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => GetIndexOfBaseProductInstance(v.row.instances) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.instances)].displayName : "Incomplete Product", flex: 6 },
+        { headerName: "Price", field: "product.price.amount", valueGetter: (v : ValueGetterRow) => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
+        { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: ValueGetterRow) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "", flex: 3 },
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "product.disabled", valueGetter: (v: { row: RowType }) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, Date.now()).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
+        { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
         ]}
         rows={products}
-        getRowId={(row) => row.product._id}
+        getRowId={(row: RowType) => row.product.id}
         getDetailPanelContent={getDetailPanelContent}
         getDetailPanelHeight={getDetailPanelHeight}
         onDetailPanelExpandedRowIdsChange={(ids: number[]) => setPanelsExpandedSize(ids.reduce((acc, rid) => acc + 41 + (catalog.products[rid].instances.length * 36), 0))}

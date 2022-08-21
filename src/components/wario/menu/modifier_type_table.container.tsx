@@ -1,13 +1,15 @@
 import { Dispatch, SetStateAction, useCallback } from "react";
 
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { Tooltip, IconButton } from '@mui/material';
 import ModifierOptionTableContainer from "./modifier_option_table.container";
 import TableWrapperComponent from "../table_wrapper.component";
 import { IOption, IOptionType, CatalogModifierEntry } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../hooks/useRedux";
+
+type ValueGetterRow = GridValueGetterParams<any, CatalogModifierEntry>;
 
 export interface ModifierTypeTableContainerProps {
   setIsModifierTypeEditOpen: Dispatch<SetStateAction<boolean>>;
@@ -80,7 +82,7 @@ const ModifierTypeTableContainer = ({
           headerName: "Actions",
           field: 'actions',
           type: 'actions',
-          getActions: (params) => [
+          getActions: (params: GridRowParams<CatalogModifierEntry>) => [
             <GridActionsCellItem
               icon={<Tooltip title="Edit Modifier Type"><Edit /></Tooltip>}
               label="Edit Modifier Type"
@@ -100,11 +102,11 @@ const ModifierTypeTableContainer = ({
               key="DELMT" />
           ]
         },
-        { headerName: "Name", field: "modifier_type.name", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.name, flex: 1 },
-        { headerName: "Ordinal", field: "ordinal", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.ordinal },
-        { headerName: "Min Selected", field: "min_selected", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.min_selected, },
-        { headerName: "Max Selected", field: "max_selected", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.max_selected },
-        { headerName: "Display Name", field: "display_name", valueGetter: (v: { row: CatalogModifierEntry }) => v.row.modifier_type.displayName },
+        { headerName: "Name", field: "modifier_type.name", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.name, flex: 1 },
+        { headerName: "Ordinal", field: "ordinal", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.ordinal },
+        { headerName: "Min Selected", field: "min_selected", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.min_selected, },
+        { headerName: "Max Selected", field: "max_selected", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.max_selected },
+        { headerName: "Display Name", field: "display_name", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.displayName },
       ]}
       toolbarActions={[{
         size: 1,

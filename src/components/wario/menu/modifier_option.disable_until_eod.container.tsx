@@ -5,11 +5,13 @@ import Grid from "@mui/material/Grid";
 
 import { ElementActionComponent } from "./element.action.component";
 import { HOST_API } from "../../../config";
+import { useAppSelector } from "../../../hooks/useRedux";
 import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
 import { IOption } from "@wcp/wcpshared";
 
 const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
   const { getAccessTokenSilently } = useAuth0();
   const editModifierOption = async () => {
     if (!isProcessing) {
@@ -18,7 +20,7 @@ const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallba
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const body: IOption = {
           ...modifier_option,
-          disabled: { start: Date.now(), end: getTime(endOfDay(Date.now())) }
+          disabled: { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) }
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.modifierTypeId}/${modifier_option.id}`, {
           method: "PATCH",
