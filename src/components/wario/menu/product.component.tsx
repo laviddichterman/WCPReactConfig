@@ -243,16 +243,6 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
             />
           </Grid>
           <Grid item xs={12}>
-            <ToggleBooleanPropertyComponent
-              disabled={props.isProcessing || props.modifiers.length === 0}
-              label="Show Name of Base Product Instead of Component Modifiers"
-              value={props.showNameOfBaseProduct || props.modifiers.length === 0}
-              setValue={props.setShowNameOfBaseProduct}
-              labelPlacement='end'
-            />
-          </Grid>
-          {modifierEnableFunctionSpecificationList}
-          <Grid item xs={12}>
             <Autocomplete
               multiple
               filterSelectedOptions
@@ -266,6 +256,16 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />
           </Grid>
+          <Grid item xs={12}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing || props.modifiers.length === 0}
+              label="Show Name of Base Product Instead of Component Modifiers"
+              value={props.showNameOfBaseProduct || props.modifiers.length === 0}
+              setValue={props.setShowNameOfBaseProduct}
+              labelPlacement='end'
+            />
+          </Grid>
+          {modifierEnableFunctionSpecificationList}
           <Grid item xs={12}>
             <DatetimeBasedDisableComponent
               disabled={props.isProcessing}

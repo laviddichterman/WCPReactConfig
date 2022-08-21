@@ -43,7 +43,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
       confirmText={props.confirmText}
       body={
         <>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Display Name"
@@ -51,7 +51,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               setValue={props.setDisplayName}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Description"
@@ -59,7 +59,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               setValue={props.setDescription}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Short Code"
@@ -67,7 +67,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               setValue={props.setShortcode}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6} sm={4}>
             <IMoneyPropertyComponent
               disabled={props.isProcessing}
               label="Price"
@@ -75,7 +75,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               setValue={props.setPrice}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6} sm={4}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Ordinal"
@@ -83,18 +83,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               setValue={props.setOrdinal}
             />
           </Grid>
-          <Grid item xs={6}>
-            <Autocomplete
-              style={{ width: 300 }}
-              options={Object.keys(productInstanceFunctions)}
-              value={props.enableFunction}
-              onChange={(e, v) => props.setEnableFunction(v)}
-              getOptionLabel={(option) => productInstanceFunctions[option].name ?? "CORRUPT DATA"}
-              isOptionEqualToValue={(o, v) => o === v}
-              renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
-            />
-          </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <FloatNumericPropertyComponent
               disabled={props.isProcessing}
               label="Flavor Max"
@@ -102,7 +91,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               setValue={props.setFlavorFactor}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <FloatNumericPropertyComponent
               disabled={props.isProcessing}
               label="Bake Max"
@@ -119,7 +108,18 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12}>
+            <Autocomplete
+              fullWidth
+              options={Object.keys(productInstanceFunctions)}
+              value={props.enableFunction}
+              onChange={(e, v) => props.setEnableFunction(v)}
+              getOptionLabel={(option) => productInstanceFunctions[option].name ?? "CORRUPT DATA"}
+              isOptionEqualToValue={(o, v) => o === v}
+              renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
+            />
+          </Grid>
+          <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Omit from shortname"
@@ -128,7 +128,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Omit from name"
