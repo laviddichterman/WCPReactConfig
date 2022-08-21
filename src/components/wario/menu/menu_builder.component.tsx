@@ -108,7 +108,7 @@ const MenuBuilderComponent = () => {
         title={"Edit Category"}
         onClose={() => setIsCategoryEditOpen(false)}
         open={isCategoryEditOpen}
-        inner_component={
+        innerComponent={
           categoryToEdit !== null && 
           <CategoryEditContainer
             onCloseCallback={() => setIsCategoryEditOpen(false)}
@@ -120,7 +120,7 @@ const MenuBuilderComponent = () => {
         title={"Delete Category"}
         onClose={() => setIsCategoryDeleteOpen(false)}
         open={isCategoryDeleteOpen}
-        inner_component={
+        innerComponent={
           categoryToEdit !== null && 
           <CategoryDeleteContainer
             onCloseCallback={() => setIsCategoryDeleteOpen(false)}
@@ -132,7 +132,7 @@ const MenuBuilderComponent = () => {
         title={"Add Modifier Type"}
         onClose={() => setIsModifierTypeAddOpen(false)}
         open={isModifierTypeAddOpen}
-        inner_component={
+        innerComponent={
           <ModifierTypeAddContainer
             onCloseCallback={() => setIsModifierTypeAddOpen(false)}
           />
@@ -142,7 +142,7 @@ const MenuBuilderComponent = () => {
         title={"Edit Modifier Type"}
         onClose={() => setIsModifierTypeEditOpen(false)}
         open={isModifierTypeEditOpen}
-        inner_component={
+        innerComponent={
           modifierTypeToEdit !== null && 
           <ModifierTypeEditContainer
             onCloseCallback={() => setIsModifierTypeEditOpen(false)}
@@ -154,7 +154,7 @@ const MenuBuilderComponent = () => {
         title={"Delete Modifier Type"}
         onClose={() => setIsModifierTypeDeleteOpen(false)}
         open={isModifierTypeDeleteOpen}
-        inner_component={
+        innerComponent={
           modifierTypeToEdit !== null && 
           <ModifierTypeDeleteContainer
             onCloseCallback={() => setIsModifierTypeDeleteOpen(false)}
@@ -167,7 +167,7 @@ const MenuBuilderComponent = () => {
         title={`Add Modifier Option for Type: ${modifierTypeToEdit?.name ?? ""}`}
         onClose={() => setIsModifierOptionAddOpen(false)}
         open={isModifierOptionAddOpen}
-        inner_component={
+        innerComponent={
           modifierTypeToEdit !== null && 
           <ModifierOptionAddContainer
             onCloseCallback={() => setIsModifierOptionAddOpen(false)}
@@ -180,7 +180,7 @@ const MenuBuilderComponent = () => {
         title={"Edit Modifier Option"}
         onClose={() => setIsModifierOptionEditOpen(false)}
         open={isModifierOptionEditOpen}
-        inner_component={
+        innerComponent={
           modifierOptionToEdit !== null && 
           <ModifierOptionEditContainer
             onCloseCallback={() => setIsModifierOptionEditOpen(false)}
@@ -192,7 +192,7 @@ const MenuBuilderComponent = () => {
         title={"Disable Modifier Option Until End-of-Day"}
         onClose={() => setIsModifierOptionDisableUntilEodOpen(false)}
         open={isModifierOptionDisableUntilEodOpen}
-        inner_component={
+        innerComponent={
           modifierOptionToEdit !== null && 
           <ModifierOptionDisableUntilEodContainer
             onCloseCallback={() => setIsModifierOptionDisableUntilEodOpen(false)}
@@ -204,7 +204,7 @@ const MenuBuilderComponent = () => {
         title={"Disable Modifier Option"}
         onClose={() => setIsModifierOptionDisableOpen(false)}
         open={isModifierOptionDisableOpen}
-        inner_component={
+        innerComponent={
           modifierOptionToEdit !== null && 
           <ModifierOptionDisableContainer
             onCloseCallback={() => setIsModifierOptionDisableOpen(false)}
@@ -216,7 +216,7 @@ const MenuBuilderComponent = () => {
         title={"Enable Modifier Option"}
         onClose={() => setIsModifierOptionEnableOpen(false)}
         open={isModifierOptionEnableOpen}
-        inner_component={
+        innerComponent={
           modifierOptionToEdit !== null && 
           <ModifierOptionEnableContainer
             onCloseCallback={() => setIsModifierOptionEnableOpen(false)}
@@ -228,7 +228,7 @@ const MenuBuilderComponent = () => {
         title={"Delete Modifier Option"}
         onClose={() => setIsModifierOptionDeleteOpen(false)}
         open={isModifierOptionDeleteOpen}
-        inner_component={
+        innerComponent={
           modifierOptionToEdit !== null && 
           <ModifierOptionDeleteContainer
             onCloseCallback={() => setIsModifierOptionDeleteOpen(false)}
@@ -241,7 +241,7 @@ const MenuBuilderComponent = () => {
         title={"Edit Product"}
         onClose={() => setIsProductEditOpen(false)}
         open={isProductEditOpen}
-        inner_component={
+        innerComponent={
           productToEdit !== null && 
           <ProductEditContainer
             onCloseCallback={() => setIsProductEditOpen(false)}
@@ -253,7 +253,7 @@ const MenuBuilderComponent = () => {
         title={"Disable Product Until End-of-Day"}
         onClose={() => setIsProductDisableUntilEodOpen(false)}
         open={isProductDisableUntilEodOpen}
-        inner_component={
+        innerComponent={
           productToEdit !== null && 
           <ProductDisableUntilEodContainer
             onCloseCallback={() => setIsProductDisableUntilEodOpen(false)}
@@ -266,7 +266,7 @@ const MenuBuilderComponent = () => {
         title={"Disable Product"}
         onClose={() => setIsProductDisableOpen(false)}
         open={isProductDisableOpen}
-        inner_component={
+        innerComponent={
           productToEdit !== null &&
           <ProductDisableContainer
             onCloseCallback={() => setIsProductDisableOpen(false)}
@@ -279,7 +279,7 @@ const MenuBuilderComponent = () => {
         title={"Enable Product"}
         onClose={() => setIsProductEnableOpen(false)}
         open={isProductEnableOpen}
-        inner_component={
+        innerComponent={
           productToEdit !== null && 
           <ProductEnableContainer
             onCloseCallback={() => setIsProductEnableOpen(false)}
@@ -293,7 +293,7 @@ const MenuBuilderComponent = () => {
         title={"Copy Product"}
         onClose={() => setIsProductCopyOpen(false)}
         open={isProductCopyOpen}
-        inner_component={
+        innerComponent={
           productToEdit !== null && 
           <ProductCopyContainer
             onCloseCallback={() => setIsProductCopyOpen(false)}
@@ -305,7 +305,7 @@ const MenuBuilderComponent = () => {
         title={"Delete Product"}
         onClose={() => setIsProductDeleteOpen(false)}
         open={isProductDeleteOpen}
-        inner_component={
+        innerComponent={
           productToEdit !== null &&
           <ProductDeleteContainer
             onCloseCallback={() => setIsProductDeleteOpen(false)}
@@ -319,7 +319,7 @@ const MenuBuilderComponent = () => {
         title={`Add Product Instance for: ${nameOfBaseProductInstance}`}
         onClose={() => setIsProductInstanceAddOpen(false)}
         open={isProductInstanceAddOpen}
-        inner_component={
+        innerComponent={
           productToEdit !== null &&
           <ProductInstanceAddContainer
             onCloseCallback={() => setIsProductInstanceAddOpen(false)}
@@ -332,7 +332,7 @@ const MenuBuilderComponent = () => {
         title={"Edit Product Instance"}
         onClose={() => setIsProductInstanceEditOpen(false)}
         open={isProductInstanceEditOpen}
-        inner_component={
+        innerComponent={
           productToEdit !== null && productInstanceToEdit !== null &&
           <ProductInstanceEditContainer
             onCloseCallback={() => setIsProductInstanceEditOpen(false)}
@@ -345,7 +345,7 @@ const MenuBuilderComponent = () => {
         title={"Delete Product Instance"}
         onClose={() => setIsProductInstanceDeleteOpen(false)}
         open={isProductInstanceDeleteOpen}
-        inner_component={
+        innerComponent={
           productInstanceToEdit !== null &&
           <ProductInstanceDeleteContainer
             onCloseCallback={() => setIsProductInstanceDeleteOpen(false)}
@@ -358,7 +358,7 @@ const MenuBuilderComponent = () => {
         title={"Add Product Instance Function"}
         onClose={() => setIsProductInstanceFunctionAddOpen(false)}
         open={isProductInstanceFunctionAddOpen}
-        inner_component={
+        innerComponent={
           <ProductInstanceFunctionAddContainer
             onCloseCallback={() => setIsProductInstanceFunctionAddOpen(false)}
           />
@@ -369,7 +369,7 @@ const MenuBuilderComponent = () => {
         title={"Edit Product Instance Function"}
         onClose={() => setIsProductInstanceFunctionEditOpen(false)}
         open={isProductInstanceFunctionEditOpen}
-        inner_component={
+        innerComponent={
           productInstanceFunctionToEdit !== null &&
           <ProductInstanceFunctionEditContainer
             onCloseCallback={() => setIsProductInstanceFunctionEditOpen(false)}
@@ -383,7 +383,7 @@ const MenuBuilderComponent = () => {
           setIsProductInstanceFunctionDeleteOpen(false);
         }}
         open={isProductInstanceFunctionDeleteOpen}
-        inner_component={
+        innerComponent={
           productInstanceFunctionToEdit !== null &&
           <ProductInstanceFunctionDeleteContainer
             onCloseCallback={() => {

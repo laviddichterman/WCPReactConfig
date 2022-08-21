@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-import { Grid, TextField, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, RadioGroup, FormGroup, FormControlLabel } from '@mui/material';
+import { Grid, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, RadioGroup, FormGroup, FormControlLabel } from '@mui/material';
 
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
@@ -9,6 +9,7 @@ import { ValSetValNamed } from "../../../utils/common";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
 import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
+import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
 
 export type ProductInstanceComponentProps =
   ValSetValNamed<string, 'displayName'> &
@@ -130,25 +131,21 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
   return (
     <>
       <Grid item xs={4}>
-        <TextField
+        <StringPropertyComponent
+          disabled={props.isProcessing}
           label="Display Name"
-          type="text"
-          inputProps={{ size: 60 }}
           value={props.displayName}
-          size="small"
-          onChange={(e) => props.setDisplayName(e.target.value)}
+          setValue={props.setDisplayName}
         />
       </Grid>
       <Grid item xs={8}>
-        <TextField
+        <StringPropertyComponent
+          disabled={props.isProcessing}
           label="Description"
-          type="text"
-          fullWidth
-          inputProps={{ size: 60 }}
           value={props.description}
-          size="small"
-          onChange={(e) => props.setDescription(e.target.value)}
+          setValue={props.setDescription}
         />
+
       </Grid>
       <Grid item xs={3}>
         <IntNumericPropertyComponent
@@ -159,13 +156,11 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       <Grid item xs={4}>
-        <TextField
+        <StringPropertyComponent
+          disabled={props.isProcessing}
           label="Short Code"
-          type="text"
           value={props.shortcode}
-          inputProps={{ size: 40 }}
-          size="small"
-          onChange={(e) => props.setShortcode(e.target.value)}
+          setValue={props.setShortcode}
         />
       </Grid>
       <Grid item xs={3}>
@@ -214,13 +209,11 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       <Grid item xs={6}>
-        <TextField
+        <StringPropertyComponent
+          disabled={props.isProcessing}
           label="Menu Adornment (Optional, HTML allowed)"
-          type="text"
-          inputProps={{ size: 60 }}
           value={props.menuAdornment}
-          size="small"
-          onChange={(e) => props.setMenuAdornment(e.target.value)}
+          setValue={props.setMenuAdornment}
         />
       </Grid>
       <Grid container item xs={6}>
@@ -268,13 +261,11 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       <Grid item xs={6}>
-        <TextField
+        <StringPropertyComponent
+          disabled={props.isProcessing}
           label="Order Menu Adornment (Optional, HTML allowed)"
-          type="text"
-          inputProps={{ size: 60 }}
           value={props.orderAdornment}
-          size="small"
-          onChange={(e) => props.setOrderAdornment(e.target.value)}
+          setValue={props.setOrderAdornment}
         />
       </Grid>
       <Grid container item xs={6}>

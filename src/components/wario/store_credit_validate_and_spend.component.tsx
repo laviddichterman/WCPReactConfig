@@ -1,15 +1,15 @@
-import { CURRENCY, MoneyToDisplayString, RoundToTwoDecimalPlaces, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
+import { CURRENCY, MoneyToDisplayString, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
 import { DialogContainer } from "@wcp/wario-ux-shared";
 
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { Html5QrcodeScanner, Html5QrcodeScanType, Html5Qrcode } from 'html5-qrcode';
-import { QrcodeSuccessCallback, QrcodeErrorCallback} from 'html5-qrcode/core';
+import { QrcodeSuccessCallback, QrcodeErrorCallback } from 'html5-qrcode/core';
 
 import { ErrorOutline, PhotoCamera } from "@mui/icons-material";
 import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, TextField } from '@mui/material';
 import { HOST_API } from "../../config";
-import { CheckedNumericInput } from "./CheckedNumericTextInput";
 import { uniqueId } from 'lodash';
+import { IMoneyPropertyComponent } from './property-components/IMoneyPropertyComponent';
 
 
 
@@ -19,7 +19,7 @@ interface QrCodeScannerProps {
   onFailure: QrcodeErrorCallback;
 }
 const QrCodeId = uniqueId("qr_code");
-const QrCodeScanner = ({ show, onSuccess, onFailure } : QrCodeScannerProps) => {
+const QrCodeScanner = ({ show, onSuccess, onFailure }: QrCodeScannerProps) => {
   const [qrScanner, setQrScanner] = useState<Html5QrcodeScanner | null>(null)
   useLayoutEffect(() => {
     if (!qrScanner) {
@@ -144,7 +144,7 @@ const StoreCreditValidateAndSpendComponent = () => {
         setScanCode(false);
       }}
       open={scanCode}
-      inner_component={
+      innerComponent={
         <QrCodeScanner show={scanCode} onSuccess={onScanned} onFailure={onScannedFail} />
       }
     />
@@ -264,17 +264,14 @@ const StoreCreditValidateAndSpendComponent = () => {
                   )}
                 </Grid>
                 <Grid item xs={4}>
-                  <CheckedNumericInput
-                    type="number"
-                    fullWidth
-                    label="Amount to debit"
-                    inputProps={{ inputMode: 'decimal', min: 0.01, max: validationResponse.amount.amount / 100, pattern: '[0-9]+([.,][0-9]+)?', step: .25 }}
-                    value={RoundToTwoDecimalPlaces(amount.amount / 100)}
-                    className="form-control"
+                  <IMoneyPropertyComponent
                     disabled={isProcessing || debitResponse !== null}
-                    onChange={(e) => setAmount({ currency: CURRENCY.USD, amount: Math.round(e * 100) })}
-                    parseFunction={(e) => RoundToTwoDecimalPlaces(parseFloat(e === null ? "0" : e))}
-                    allowEmpty={false} />
+                    label="Amount to debit"
+                    min={0.01}
+                    max={validationResponse.amount.amount / 100}
+                    value={amount}
+                    setValue={setAmount}
+                  />
                 </Grid>
                 <Grid item xs={4}>
                   <TextField

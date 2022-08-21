@@ -31,93 +31,64 @@ type ModifierOptionComponentProps =
     isProcessing: boolean;
   }
 
-const ModifierOptionComponent = ({
-  confirmText,
-  onCloseCallback,
-  onConfirmClick,
-  isProcessing,
-  displayName,
-  setDisplayName,
-  description,
-  setDescription,
-  shortcode,
-  setShortcode,
-  ordinal,
-  setOrdinal,
-  price,
-  setPrice,
-  enableFunction,
-  setEnableFunction,
-  flavorFactor,
-  setFlavorFactor,
-  bakeFactor,
-  setBakeFactor,
-  canSplit,
-  setCanSplit,
-  omitFromShortname,
-  setOmitFromShortname,
-  omitFromName,
-  setOmitFromName,
-  disabled,
-  setDisabled
-}: ModifierOptionComponentProps) => {
+const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
   const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.product_instance_functions) as RecordProductInstanceFunctions;
   return (
     <ElementActionComponent
-      onCloseCallback={onCloseCallback}
-      onConfirmClick={onConfirmClick}
-      isProcessing={isProcessing}
-      disableConfirmOn={displayName.length === 0 || shortcode.length === 0 ||
-        price.amount < 0 || flavorFactor < 0 || bakeFactor < 0 || isProcessing}
-      confirmText={confirmText}
+      onCloseCallback={props.onCloseCallback}
+      onConfirmClick={props.onConfirmClick}
+      isProcessing={props.isProcessing}
+      disableConfirmOn={props.displayName.length === 0 || props.shortcode.length === 0 ||
+        props.price.amount < 0 || props.flavorFactor < 0 || props.bakeFactor < 0 || props.isProcessing}
+      confirmText={props.confirmText}
       body={
         <>
           <Grid item xs={6}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Display Name"
-              value={displayName}
-              setValue={setDisplayName}
+              value={props.displayName}
+              setValue={props.setDisplayName}
             />
           </Grid>
           <Grid item xs={6}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Description"
-              value={description}
-              setValue={setDescription}
+              value={props.description}
+              setValue={props.setDescription}
             />
           </Grid>
           <Grid item xs={4}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Short Code"
-              value={shortcode}
-              setValue={setShortcode}
+              value={props.shortcode}
+              setValue={props.setShortcode}
             />
           </Grid>
           <Grid item xs={4}>
             <IMoneyPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Price"
-              value={price}
-              setValue={setPrice}
+              value={props.price}
+              setValue={props.setPrice}
             />
           </Grid>
           <Grid item xs={4}>
             <IntNumericPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Ordinal"
-              value={ordinal}
-              setValue={setOrdinal}
+              value={props.ordinal}
+              setValue={props.setOrdinal}
             />
           </Grid>
           <Grid item xs={6}>
             <Autocomplete
               style={{ width: 300 }}
               options={Object.keys(productInstanceFunctions)}
-              value={enableFunction}
-              onChange={(e, v) => setEnableFunction(v)}
+              value={props.enableFunction}
+              onChange={(e, v) => props.setEnableFunction(v)}
               getOptionLabel={(option) => productInstanceFunctions[option].name ?? "CORRUPT DATA"}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
@@ -125,51 +96,51 @@ const ModifierOptionComponent = ({
           </Grid>
           <Grid item xs={3}>
             <FloatNumericPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Flavor Max"
-              value={flavorFactor}
-              setValue={setFlavorFactor}
+              value={props.flavorFactor}
+              setValue={props.setFlavorFactor}
             />
           </Grid>
           <Grid item xs={3}>
             <FloatNumericPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Bake Max"
-              value={bakeFactor}
-              setValue={setBakeFactor}
+              value={props.bakeFactor}
+              setValue={props.setBakeFactor}
             />
           </Grid>
           <Grid item xs={4}>
             <ToggleBooleanPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Can Split"
-              value={canSplit}
-              setValue={setCanSplit}
+              value={props.canSplit}
+              setValue={props.setCanSplit}
               labelPlacement='end'
             />
           </Grid>
           <Grid item xs={4}>
             <ToggleBooleanPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Omit from shortname"
-              value={omitFromShortname}
-              setValue={setOmitFromShortname}
+              value={props.omitFromShortname}
+              setValue={props.setOmitFromShortname}
               labelPlacement='end'
             />
           </Grid>
           <Grid item xs={4}>
             <ToggleBooleanPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Omit from name"
-              value={omitFromName}
-              setValue={setOmitFromName}
+              value={props.omitFromName}
+              setValue={props.setOmitFromName}
               labelPlacement='end'
             />
           </Grid>
           <Grid item xs={12}>
             <DatetimeBasedDisableComponent
-              disabled={disabled}
-              setDisabled={setDisabled}
+              disabled={props.disabled}
+              setDisabled={props.setDisabled}
             />
           </Grid>
         </>

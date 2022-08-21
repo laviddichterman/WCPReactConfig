@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { rootReducer } from './rootReducer';
 import ListeningMiddleware from './slices/ListeningMiddleware';
-import SocketIoMiddleware from "./slices/SocketIoMiddleware";
+import { SocketIoMiddleware } from './slices/SocketIoMiddleware';
 import { ICategoriesAdapter, 
   IOptionTypesAdapter, 
   IOptionsAdapter, 
   IProductInstancesAdapter, 
   IProductsAdapter, 
-  ProductInstanceFunctionsAdapter } from './slices/SocketIoSlice';
+  ProductInstanceFunctionsAdapter } from "@wcp/wario-ux-shared";
 // ----------------------------------------------------------------------
 
 

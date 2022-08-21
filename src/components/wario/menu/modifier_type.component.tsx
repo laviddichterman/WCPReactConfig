@@ -38,103 +38,68 @@ export type ModifierTypeComponentProps =
     isProcessing: boolean;
   };
 
-const ModifierTypeComponent = ({
-  confirmText,
-  onCloseCallback,
-  onConfirmClick,
-  isProcessing,
-  ordinal,
-  setOrdinal,
-  minSelected,
-  setMinSelected,
-  maxSelected,
-  setMaxSelected,
-  name,
-  setName,
-  displayName,
-  setDisplayName,
-  templateString,
-  setTemplateString,
-  multipleItemSeparator,
-  setMultipleItemSeparator,
-  nonEmptyGroupPrefix,
-  setNonEmptyGroupPrefix,
-  nonEmptyGroupSuffix,
-  setNonEmptyGroupSuffix,
-  omitOptionIfNotAvailable,
-  setOmitOptionIfNotAvailable,
-  omitSectionIfNoAvailableOptions,
-  setOmitSectionIfNoAvailableOptions,
-  useToggleIfOnlyTwoOptions,
-  setUseToggleIfOnlyTwoOptions,
-  isHiddenDuringCustomization,
-  setIsHiddenDuringCustomization,
-  emptyDisplayAs,
-  setEmptyDisplayAs,
-  modifierClass,
-  setModifierClass,
-}: ModifierTypeComponentProps & ModifierTypeUiProps) => {
+const ModifierTypeComponent = (props: ModifierTypeComponentProps & ModifierTypeUiProps) => {
   const handleSetMaxSelected = (val: number | null) => {
     if (val !== 1) {
-      if (emptyDisplayAs === DISPLAY_AS.LIST_CHOICES) {
-        setEmptyDisplayAs(DISPLAY_AS.YOUR_CHOICE_OF);
+      if (props.emptyDisplayAs === DISPLAY_AS.LIST_CHOICES) {
+        props.setEmptyDisplayAs(DISPLAY_AS.YOUR_CHOICE_OF);
       }
-      setUseToggleIfOnlyTwoOptions(false);
+      props.setUseToggleIfOnlyTwoOptions(false);
     }
-    setMaxSelected(val);
+    props.setMaxSelected(val);
   }
 
   const handleSetMinSelected = (val: number) => {
     if (val !== 1) {
-      setUseToggleIfOnlyTwoOptions(false);
+      props.setUseToggleIfOnlyTwoOptions(false);
     }
-    if (maxSelected !== null && maxSelected < val) {
-      setMaxSelected(val);
+    if (props.maxSelected !== null && props.maxSelected < val) {
+      props.setMaxSelected(val);
     }
-    setMinSelected(val);
+    props.setMinSelected(val);
   }
 
   return (
     <ElementActionComponent
-      onCloseCallback={onCloseCallback}
-      onConfirmClick={onConfirmClick}
-      isProcessing={isProcessing}
-      disableConfirmOn={name.length === 0 ||
-        (Number.isFinite(maxSelected) && (maxSelected as number) < minSelected) ||
-        (useToggleIfOnlyTwoOptions && ((maxSelected as number) !== 1 && minSelected !== 1)) ||
-        isProcessing}
-      confirmText={confirmText}
+      onCloseCallback={props.onCloseCallback}
+      onConfirmClick={props.onConfirmClick}
+      isProcessing={props.isProcessing}
+      disableConfirmOn={props.name.length === 0 ||
+        (Number.isFinite(props.maxSelected) && (props.maxSelected as number) < props.minSelected) ||
+        (props.useToggleIfOnlyTwoOptions && ((props.maxSelected as number) !== 1 && props.minSelected !== 1)) ||
+        props.isProcessing}
+      confirmText={props.confirmText}
       body={
         <>
           <Grid item xs={12}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Modifier Type Name"
-              setValue={setName}
-              value={name}
+              setValue={props.setName}
+              value={props.name}
             />
           </Grid>
           <Grid item xs={12}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Display Name (Optional)"
-              setValue={setDisplayName}
-              value={displayName}
+              setValue={props.setDisplayName}
+              value={props.displayName}
             />
           </Grid>
           <Grid item xs={4}>
           <IntNumericPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Ordinal"
-              value={ordinal}
-              setValue={setOrdinal}
+              value={props.ordinal}
+              setValue={props.setOrdinal}
             />
           </Grid>
           <Grid item xs={4}>
           <IntNumericPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Min Selected"
-              value={minSelected}
+              value={props.minSelected}
               setValue={handleSetMinSelected}
             />
           </Grid>
@@ -142,46 +107,50 @@ const ModifierTypeComponent = ({
             <CheckedNumericInput
               label="Max Selected"
               type="number"
-              inputProps={{ inputMode: 'numeric', min: minSelected, pattern: '[0-9]*', step: 1 }}
-              value={maxSelected}
-              disabled={isProcessing}
+              inputProps={{ inputMode: 'numeric', min: props.minSelected, pattern: '[0-9]*', step: 1 }}
+              value={props.maxSelected}
+              disabled={props.isProcessing}
               onChange={(e) => handleSetMaxSelected(e)}
               parseFunction={(v) => v !== null && v ? parseInt(v) : null}
               allowEmpty={true} />
           </Grid>
           <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Omit Section If No Available Options"
-              value={omitSectionIfNoAvailableOptions}
-              setValue={setOmitSectionIfNoAvailableOptions}
+              value={props.omitSectionIfNoAvailableOptions}
+              setValue={props.setOmitSectionIfNoAvailableOptions}
             />
           </Grid>
           <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Omit Option If Not Available"
-              value={omitOptionIfNotAvailable}
-              setValue={setOmitOptionIfNotAvailable}
+              value={props.omitOptionIfNotAvailable}
+              setValue={props.setOmitOptionIfNotAvailable}
             />
           </Grid>
           <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
-              disabled={isProcessing || maxSelected !== 1 || minSelected !== 1}
+              disabled={props.isProcessing || props.maxSelected !== 1 || props.minSelected !== 1}
               label="Use Toggle If Only Two Options"
-              value={useToggleIfOnlyTwoOptions}
-              setValue={setUseToggleIfOnlyTwoOptions}
+              value={props.useToggleIfOnlyTwoOptions}
+              setValue={props.setUseToggleIfOnlyTwoOptions}
             />
           </Grid>
           <Grid item xs={6}>
-            <ToggleBooleanPropertyComponent disabled={isProcessing} label="Hide from user customization" setValue={setIsHiddenDuringCustomization} value={isHiddenDuringCustomization} />
+            <ToggleBooleanPropertyComponent 
+              disabled={props.isProcessing} 
+              label="Hide from user customization" 
+              setValue={props.setIsHiddenDuringCustomization} 
+              value={props.isHiddenDuringCustomization} />
           </Grid>
           <Grid container item xs={12}>
             <StringEnumPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Modifier Class"
-              value={modifierClass}
-              setValue={setModifierClass}
+              value={props.modifierClass}
+              setValue={props.setModifierClass}
               options={Object.keys(MODIFIER_CLASS)}
             />
           </Grid>
@@ -192,14 +161,14 @@ const ModifierTypeComponent = ({
                 aria-label="empty-display-as"
                 name="empty-display-as"
                 row
-                value={emptyDisplayAs}
-                onChange={(e) => setEmptyDisplayAs(e.target.value as keyof typeof DISPLAY_AS)}
+                value={props.emptyDisplayAs}
+                onChange={(e) => props.setEmptyDisplayAs(e.target.value as keyof typeof DISPLAY_AS)}
               >
                 {Object.keys(DISPLAY_AS).map((opt, i) =>
                   <FormControlLabel
                     key={i}
                     value={opt}
-                    disabled={opt === DISPLAY_AS.LIST_CHOICES && maxSelected !== 1}
+                    disabled={opt === DISPLAY_AS.LIST_CHOICES && props.maxSelected !== 1}
                     control={<Radio />}
                     label={startCase(snakeCase(opt))}
                   />
@@ -209,34 +178,34 @@ const ModifierTypeComponent = ({
           </Grid>
           <Grid item xs={6}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Template String"
-              setValue={setTemplateString}
-              value={templateString}
+              setValue={props.setTemplateString}
+              value={props.templateString}
             />
           </Grid>
           <Grid item xs={6}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Multiple Item Separator"
-              setValue={setMultipleItemSeparator}
-              value={multipleItemSeparator}
+              setValue={props.setMultipleItemSeparator}
+              value={props.multipleItemSeparator}
             />
           </Grid>
           <Grid item xs={6}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Non-Empty Group Prefix"
-              setValue={setNonEmptyGroupPrefix}
-              value={nonEmptyGroupPrefix}
+              setValue={props.setNonEmptyGroupPrefix}
+              value={props.nonEmptyGroupPrefix}
             />
           </Grid>
           <Grid item xs={6}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Non-Empty Group Suffix"
-              setValue={setNonEmptyGroupSuffix}
-              value={nonEmptyGroupSuffix}
+              setValue={props.setNonEmptyGroupSuffix}
+              value={props.nonEmptyGroupSuffix}
             />
           </Grid>
         </>}

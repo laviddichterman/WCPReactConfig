@@ -1,17 +1,13 @@
 import React from 'react';
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemText from '@mui/material/ListItemText';
+import { DialogContainer, IDialogContainer } from '@wcp/wario-ux-shared';
+import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-
-import DialogContainer, { IDialogContainer } from './dialog.container';
 
 interface InterstitialDialogProps {
   onClose: IDialogContainer['onClose'];
   dialogTitle: string;
-  options: { title: string; 
+  options: { 
+    title: string; 
     onClose: IDialogContainer['onClose']; 
     open: boolean; 
     component: React.ReactNode; 
@@ -37,14 +33,14 @@ export default function InterstitialDialog(props : InterstitialDialogProps) {
           title={option.title}
           onClose={option.onClose} 
           open={option.open} 
-          inner_component={option.component} 
+          innerComponent={option.component} 
         />
       ))}
       <DialogContainer 
         onClose={onClose} 
         open={open} 
         title={dialogTitle} 
-        inner_component={(
+        innerComponent={(
           <List>
             {options.map((option) => (
               <ListItem button onClick={(e) => handleListItemClick(e, option.cb)} key={option.title}>

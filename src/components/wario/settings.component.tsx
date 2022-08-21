@@ -56,7 +56,7 @@ const SettingsComponent = () => {
         title={"Edit Fulfillment"}
         onClose={() => setIsFulfillmentEditOpen(false)}
         open={isFulfillmentEditOpen}
-        inner_component={
+        innerComponent={
           fulfillmentToEdit !== null && 
           <FulfillmentEditContainer
             onCloseCallback={() => setIsFulfillmentEditOpen(false)}
@@ -68,7 +68,7 @@ const SettingsComponent = () => {
         title={"Delete Fulfillment"}
         onClose={() => setIsFulfillmentDeleteOpen(false)}
         open={isFulfillmentDeleteOpen}
-        inner_component={
+        innerComponent={
           fulfillmentToEdit !== null && 
           <FulfillmentDeleteContainer
             onCloseCallback={() => setIsFulfillmentDeleteOpen(false)}
@@ -81,7 +81,7 @@ const SettingsComponent = () => {
         title={"Add Fulfillment"}
         onClose={() => setIsFulfillmentAddOpen(false)}
         open={isFulfillmentAddOpen}
-        inner_component={
+        innerComponent={
           <FulfillmentAddContainer
             onCloseCallback={() => setIsFulfillmentAddOpen(false)}
           />
