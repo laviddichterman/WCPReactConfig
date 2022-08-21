@@ -66,7 +66,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
     });
   };
 
-  const modifier_html = props.parent_product.modifiers.map((modifier_entry) => {
+  const modifier_html = props.parent_product.modifiers.map((modifier_entry, i) => {
     const { mtid } = modifier_entry;
     const mt = modifier_types_map[mtid].modifier_type;
     const mt_options = modifier_types_map[mtid].options;
@@ -82,7 +82,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           )}
           onChange={(e) => handleRadioChange(mtid, parseInt(e.target.value))}
         >
-          {mt_options.map((option, oidx) => (
+          {mt_options.map((_, oidx) => (
             <FormControlLabel
               key={oidx}
               control={<Radio disableRipple />}
@@ -115,7 +115,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
       );
     }
     return (
-      <Grid item xs={6} key={mtid}>
+      <Grid item xs={12} lg={(i === (props.parent_product.modifiers.length - 1) && props.parent_product.modifiers.length % 2 === 1) ? 12 : 6} key={mtid}>
         <Card>
           <CardContent>
             <FormControl component="fieldset">
@@ -130,7 +130,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
 
   return (
     <>
-      <Grid item xs={4}>
+      <Grid item xs={12} md={4}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Display Name"
@@ -138,16 +138,16 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setDisplayName}
         />
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={12} md={8}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Description"
           value={props.description}
           setValue={props.setDescription}
         />
-
       </Grid>
-      <Grid item xs={3}>
+      {/* universal break */}
+      <Grid item xs={3} sm={2}>
         <IntNumericPropertyComponent
           disabled={props.isProcessing}
           label="Ordinal"
@@ -155,7 +155,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setOrdinal}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={5} sm={8}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Short Code"
@@ -163,17 +163,17 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setShortcode}
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4} sm={2}>
         <ToggleBooleanPropertyComponent
-          sx={{ ml: 1 }}
           disabled={props.isProcessing}
           label="Is Base"
           value={props.isBase}
           setValue={props.setIsBase}
-          labelPlacement='end'
+          //labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={2}>
+      {/* universal break */}
+      <Grid item xs={2} >
         <IntNumericPropertyComponent
           disabled={props.isProcessing}
           label="Menu Ordinal"
@@ -181,13 +181,21 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setMenuOrdinal}
         />
       </Grid>
-      <Grid item xs={3} alignItems="center">
+      <Grid item xs={10}>
+        <StringPropertyComponent
+          disabled={props.isProcessing}
+          label="Menu Adornment (Optional, HTML allowed)"
+          value={props.menuAdornment}
+          setValue={props.setMenuAdornment}
+        />
+      </Grid>
+      {/* universal break */}
+      <Grid item xs={4} >
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Hide From Menu"
           value={props.menuHide}
           setValue={props.setMenuHide}
-          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={4}>
@@ -196,27 +204,18 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           label="Menu Suppress Exhaustive Modifier List"
           value={props.menuSuppressExhaustiveModifierList}
           setValue={props.setMenuSuppressExhaustiveModifierList}
-          labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Show Modifier Options in Menu Display"
           value={props.menuShowModifierOptions}
           setValue={props.setMenuShowModifierOptions}
-          labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={6}>
-        <StringPropertyComponent
-          disabled={props.isProcessing}
-          label="Menu Adornment (Optional, HTML allowed)"
-          value={props.menuAdornment}
-          setValue={props.setMenuAdornment}
-        />
-      </Grid>
-      <Grid container item xs={6}>
+      {/* universal break */}
+      <Grid container item xs={12}>
         <StringEnumPropertyComponent
           disabled={props.isProcessing}
           label="Menu Price Display"
@@ -225,6 +224,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           options={Object.keys(PriceDisplay)}
         />
       </Grid>
+      {/* universal break */}
       <Grid item xs={2}>
         <IntNumericPropertyComponent
           disabled={props.isProcessing}
@@ -233,13 +233,21 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setOrderOrdinal}
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={10}>
+        <StringPropertyComponent
+          disabled={props.isProcessing}
+          label="Order Menu Adornment (Optional, HTML allowed)"
+          value={props.orderAdornment}
+          setValue={props.setOrderAdornment}
+        />
+      </Grid>
+      {/* universal break */}
+      <Grid item xs={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Hide From Order Menu"
           value={props.orderMenuHide}
           setValue={props.setOrderMenuHide}
-          labelPlacement='end'
         />
       </Grid>
       <Grid item xs={4}>
@@ -248,27 +256,18 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           label="Order Menu Suppress Exhaustive Modifier List"
           value={props.orderSuppressExhaustiveModifierList}
           setValue={props.setOrderSuppressExhaustiveModifierList}
-          labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Skip Customization"
           value={props.skipCustomization}
           setValue={props.setSkipCustomization}
-          labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={6}>
-        <StringPropertyComponent
-          disabled={props.isProcessing}
-          label="Order Menu Adornment (Optional, HTML allowed)"
-          value={props.orderAdornment}
-          setValue={props.setOrderAdornment}
-        />
-      </Grid>
-      <Grid container item xs={6}>
+      {/* universal break */}
+      <Grid item container xs={12}>
         <StringEnumPropertyComponent
           disabled={props.isProcessing}
           label="Order Menu Price Display"

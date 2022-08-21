@@ -4,9 +4,8 @@ import {
   TextField,
   Card,
   CardContent,
-  FormControl,
-  FormLabel,
-  Autocomplete
+  Autocomplete,
+  CardHeader
 } from '@mui/material';
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../datetime_based_disable.component';
 import { ElementActionComponent } from './element.action.component';
@@ -64,32 +63,37 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
   };
 
   const modifierEnableFunctionSpecificationList = props.modifiers.map((modifier, idx) => (
-    <Grid item xs={6} key={idx}>
+    <Grid item xs={12} md={props.modifiers.length - 1 === idx && props.modifiers.length % 2 === 1 ? 12 : 6} key={idx}>
       <Card>
+        <CardHeader title={`Modifier Details: ${catalog.modifiers[modifier.mtid].modifier_type.name}`} />
         <CardContent>
-          <FormControl component="fieldset">
-            <FormLabel>Modifier Details: {catalog.modifiers[modifier.mtid].modifier_type.name}</FormLabel>
-            <Autocomplete
-              style={{ width: 225 }}
-              options={Object.keys(catalog.product_instance_functions)}
-              value={modifier.enable}
-              // this makes a copy of the modifiers array with the updated enable function value
-              onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } }))}
-              getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
-              isOptionEqualToValue={(option, value) => option === value}
-              renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
-            />
-            <Autocomplete
-              multiple
-              filterSelectedOptions
-              options={Object.keys(fulfillments)}
-              value={modifier.serviceDisable}
-              onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
-              getOptionLabel={(option) => fulfillments[option].displayName}
-              isOptionEqualToValue={(option, value) => option === value}
-              renderInput={(params) => <TextField {...params} label="Disabled Services" />}
-            />
-          </FormControl>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Autocomplete
+                fullWidth
+                options={Object.keys(catalog.product_instance_functions)}
+                value={modifier.enable}
+                // this makes a copy of the modifiers array with the updated enable function value
+                onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } }))}
+                getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
+                isOptionEqualToValue={(option, value) => option === value}
+                renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Autocomplete
+                fullWidth
+                multiple
+                filterSelectedOptions
+                options={Object.keys(fulfillments)}
+                value={modifier.serviceDisable}
+                onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
+                getOptionLabel={(option) => fulfillments[option].displayName}
+                isOptionEqualToValue={(option, value) => option === value}
+                renderInput={(params) => <TextField {...params} label="Disabled Services" />}
+              />
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
     </Grid>
@@ -116,9 +120,10 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               renderInput={(params) => <TextField {...params} label="Categories" />}
             />
           </Grid>
+          {/* universal break */}
           {!props.suppressNonProductInstanceFields && (
             <>
-              <Grid item xs={5}>
+              <Grid item xs={12} md={6}>
                 <StringPropertyComponent
                   disabled={props.isProcessing}
                   label="Display Name"
@@ -126,7 +131,7 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
                   setValue={props.setDisplayName}
                 />
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={12} md={6}>
                 <StringPropertyComponent
                   disabled={props.isProcessing}
                   label="Description"
@@ -134,17 +139,10 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
                   setValue={props.setDescription}
                 />
               </Grid>
-              <Grid item xs={2}>
-                <IntNumericPropertyComponent
-                  disabled={props.isProcessing}
-                  label="Ordinal"
-                  value={props.ordinal}
-                  setValue={props.setOrdinal}
-                />
-              </Grid>
             </>
           )}
-          <Grid item xs={4}>
+          {/* universal break */}
+          <Grid item xs={6}>
             <IMoneyPropertyComponent
               disabled={props.isProcessing}
               label="Price"
@@ -152,17 +150,16 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               setValue={props.setPrice}
             />
           </Grid>
-          {!props.suppressNonProductInstanceFields && (
-            <Grid item xs={2}>
-              <StringPropertyComponent
-                disabled={props.isProcessing}
-                label="Short Code"
-                value={props.shortcode}
-                setValue={props.setShortcode}
-              />
-            </Grid>
-          )}
-          <Grid item xs={2}>
+          <Grid item xs={6}>
+            <StringPropertyComponent
+              disabled={props.isProcessing}
+              label="Singular Noun"
+              value={props.singularNoun}
+              setValue={props.setSingularNoun}
+            />
+          </Grid>
+          {/* universal break */}
+          <Grid item xs={4}>
             <FloatNumericPropertyComponent
               disabled={props.isProcessing}
               label="Flavor Max"
@@ -170,7 +167,7 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               setValue={props.setFlavorMax}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={4}>
             <FloatNumericPropertyComponent
               disabled={props.isProcessing}
               label="Bake Max"
@@ -178,7 +175,7 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               setValue={props.setBakeMax}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={4}>
             <FloatNumericPropertyComponent
               disabled={props.isProcessing}
               label="Bake Differential Max"
@@ -186,7 +183,28 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               setValue={props.setBakeDifferentialMax}
             />
           </Grid>
-          <Grid item xs={6}>
+          {/* universal break */}
+          {!props.suppressNonProductInstanceFields && (
+            <>
+              <Grid item xs={3}>
+                <IntNumericPropertyComponent
+                  disabled={props.isProcessing}
+                  label="Ordinal"
+                  value={props.ordinal}
+                  setValue={props.setOrdinal}
+                />
+              </Grid>
+              <Grid item xs={9}>
+                <StringPropertyComponent
+                  disabled={props.isProcessing}
+                  label="Short Code"
+                  value={props.shortcode}
+                  setValue={props.setShortcode}
+                />
+              </Grid>
+            </>
+          )}
+          <Grid item xs={12} md={6}>
             <Autocomplete
               multiple
               filterSelectedOptions
@@ -199,7 +217,7 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               renderInput={(params) => <TextField {...params} label="Order Guide Suggestion Functions" />}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <Autocomplete
               multiple
               filterSelectedOptions
@@ -212,23 +230,6 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               renderInput={(params) => <TextField {...params} label="Order Guide Warning Functions" />}
             />
           </Grid>
-          <Grid item xs={6}>
-            <ToggleBooleanPropertyComponent
-              disabled={props.isProcessing || props.modifiers.length === 0}
-              label="Show Name of Base Product Instead of Component Modifiers"
-              value={props.showNameOfBaseProduct || props.modifiers.length === 0}
-              setValue={props.setShowNameOfBaseProduct}
-              labelPlacement='end'
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <StringPropertyComponent
-              disabled={props.isProcessing}
-              label="Singular Noun"
-              value={props.singularNoun}
-              setValue={props.setSingularNoun}
-            />
-          </Grid>
           <Grid item xs={12}>
             <Autocomplete
               multiple
@@ -239,6 +240,15 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               getOptionLabel={(option) => catalog.modifiers[option].modifier_type.name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => <TextField {...params} label="Modifiers" />}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing || props.modifiers.length === 0}
+              label="Show Name of Base Product Instead of Component Modifiers"
+              value={props.showNameOfBaseProduct || props.modifiers.length === 0}
+              setValue={props.setShowNameOfBaseProduct}
+              labelPlacement='end'
             />
           </Grid>
           {modifierEnableFunctionSpecificationList}

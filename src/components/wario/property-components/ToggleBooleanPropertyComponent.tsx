@@ -1,4 +1,4 @@
-import {FormControlLabel, FormControlLabelProps, Switch, SwitchProps } from "@mui/material";
+import { FormControlLabel, FormControlLabelProps, Switch, SwitchProps } from "@mui/material";
 import { ValSetVal } from "../../../utils/common";
 
 export type ToggleBooleanPropertyComponentProps = {
