@@ -1,7 +1,7 @@
 import { Grid, TextField, Autocomplete } from "@mui/material";
 import { IMoney, IWInterval, RecordProductInstanceFunctions } from "@wcp/wcpshared";
 
-import DatetimeBasedDisableComponent from "../datetime_based_disable.component";
+import DatetimeBasedDisableComponent, { IsDisableValueValid } from "../datetime_based_disable.component";
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from '../../../hooks/useRedux';
 import { ValSetValNamed } from "../../../utils/common";
@@ -38,7 +38,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
       onCloseCallback={props.onCloseCallback}
       onConfirmClick={props.onConfirmClick}
       isProcessing={props.isProcessing}
-      disableConfirmOn={props.displayName.length === 0 || props.shortcode.length === 0 ||
+      disableConfirmOn={!IsDisableValueValid(props.disabled) || props.displayName.length === 0 || props.shortcode.length === 0 ||
         props.price.amount < 0 || props.flavorFactor < 0 || props.bakeFactor < 0 || props.isProcessing}
       confirmText={props.confirmText}
       body={
@@ -139,8 +139,9 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
           </Grid>
           <Grid item xs={12}>
             <DatetimeBasedDisableComponent
-              disabled={props.disabled}
-              setDisabled={props.setDisabled}
+              disabled={props.isProcessing}
+              value={props.disabled}
+              setValue={props.setDisabled}
             />
           </Grid>
         </>

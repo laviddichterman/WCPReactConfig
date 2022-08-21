@@ -8,7 +8,7 @@ import {
   FormLabel,
   Autocomplete
 } from '@mui/material';
-import DatetimeBasedDisableComponent from '../datetime_based_disable.component';
+import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../datetime_based_disable.component';
 import { ElementActionComponent } from './element.action.component';
 import { IMoney, IProductModifier, IWInterval } from '@wcp/wcpshared';
 import { useAppSelector } from '../../../hooks/useRedux';
@@ -48,62 +48,22 @@ type ProductComponentProps =
 
 type ProductComponentPropsTypes = (({ suppressNonProductInstanceFields: true; } & Partial<ProductInstanceComponentProps>) | ({ suppressNonProductInstanceFields: false; } & ProductInstanceComponentProps));
 
-const ProductComponent = ({
-  confirmText,
-  onCloseCallback,
-  onConfirmClick,
-  isProcessing,
-  disableConfirmOn,
-  suppressNonProductInstanceFields,
-  displayName,
-  setDisplayName,
-  description,
-  setDescription,
-  shortcode,
-  setShortcode,
-  price,
-  setPrice,
-  disabled,
-  setDisabled,
-  serviceDisable,
-  setServiceDisable,
-  ordinal,
-  setOrdinal,
-  flavorMax,
-  setFlavorMax,
-  bakeMax,
-  setBakeMax,
-  orderGuideWarningFunctions,
-  setOrderGuideWarningFunctions,
-  orderGuideSuggestionFunctions,
-  setOrderGuideSuggestionFunctions,
-  bakeDifferentialMax,
-  setBakeDifferentialMax,
-  showNameOfBaseProduct,
-  setShowNameOfBaseProduct,
-  singularNoun,
-  setSingularNoun,
-  parentCategories,
-  setParentCategories,
-  modifiers,
-  setModifiers,
-  children
-}: ProductComponentPropsTypes & ProductComponentProps) => {
+const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
 
 
   const handleSetModifiers = (mods: string[]) => {
-    const oldModsAsRecord = modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)
+    const oldModsAsRecord = props.modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)
     const sorted: IProductModifier[] = mods.sort((a, b) => catalog.modifiers[a].modifier_type.ordinal - catalog.modifiers[b].modifier_type.ordinal)
       .map(x => ({ mtid: x, serviceDisable: oldModsAsRecord[x]?.serviceDisable ?? [], enable: oldModsAsRecord[x]?.enable ?? null }));
-    if (sorted.length === 0 && !showNameOfBaseProduct) {
-      setShowNameOfBaseProduct(true);
+    if (sorted.length === 0 && !props.showNameOfBaseProduct) {
+      props.setShowNameOfBaseProduct(true);
     }
-    setModifiers(sorted);
+    props.setModifiers(sorted);
   };
 
-  const modifierEnableFunctionSpecificationList = modifiers.map((modifier, idx) => (
+  const modifierEnableFunctionSpecificationList = props.modifiers.map((modifier, idx) => (
     <Grid item xs={6} key={idx}>
       <Card>
         <CardContent>
@@ -114,7 +74,7 @@ const ProductComponent = ({
               options={Object.keys(catalog.product_instance_functions)}
               value={modifier.enable}
               // this makes a copy of the modifiers array with the updated enable function value
-              onChange={(_, v) => setModifiers(Object.assign([], modifiers, { [idx]: { ...modifier, enable: v } }))}
+              onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } }))}
               getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
@@ -124,7 +84,7 @@ const ProductComponent = ({
               filterSelectedOptions
               options={Object.keys(fulfillments)}
               value={modifier.serviceDisable}
-              onChange={(_, v) => setModifiers(Object.assign([], modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
+              onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
               getOptionLabel={(option) => fulfillments[option].displayName}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
@@ -137,11 +97,11 @@ const ProductComponent = ({
 
   return (
     <ElementActionComponent
-      onCloseCallback={onCloseCallback}
-      onConfirmClick={onConfirmClick}
-      isProcessing={isProcessing}
-      disableConfirmOn={disableConfirmOn}
-      confirmText={confirmText}
+      onCloseCallback={props.onCloseCallback}
+      onConfirmClick={props.onConfirmClick}
+      isProcessing={props.isProcessing}
+      disableConfirmOn={props.disableConfirmOn || !IsDisableValueValid(props.disabled)}
+      confirmText={props.confirmText}
       body={
         <>
           <Grid item xs={12}>
@@ -149,81 +109,81 @@ const ProductComponent = ({
               multiple
               filterSelectedOptions
               options={Object.keys(catalog.categories)}
-              value={parentCategories}
-              onChange={(e, v) => setParentCategories(v)}
+              value={props.parentCategories}
+              onChange={(e, v) => props.setParentCategories(v)}
               getOptionLabel={(option) => catalog.categories[option].category.name}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Categories" />}
             />
           </Grid>
-          {!suppressNonProductInstanceFields && (
+          {!props.suppressNonProductInstanceFields && (
             <>
               <Grid item xs={5}>
                 <StringPropertyComponent
-                  disabled={isProcessing}
+                  disabled={props.isProcessing}
                   label="Display Name"
-                  value={displayName}
-                  setValue={setDisplayName}
+                  value={props.displayName}
+                  setValue={props.setDisplayName}
                 />
               </Grid>
               <Grid item xs={5}>
                 <StringPropertyComponent
-                  disabled={isProcessing}
+                  disabled={props.isProcessing}
                   label="Description"
-                  value={description}
-                  setValue={setDescription}
+                  value={props.description}
+                  setValue={props.setDescription}
                 />
               </Grid>
               <Grid item xs={2}>
                 <IntNumericPropertyComponent
-                  disabled={isProcessing}
+                  disabled={props.isProcessing}
                   label="Ordinal"
-                  value={ordinal}
-                  setValue={setOrdinal}
+                  value={props.ordinal}
+                  setValue={props.setOrdinal}
                 />
               </Grid>
             </>
           )}
           <Grid item xs={4}>
             <IMoneyPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Price"
-              value={price}
-              setValue={setPrice}
+              value={props.price}
+              setValue={props.setPrice}
             />
           </Grid>
-          {!suppressNonProductInstanceFields && (
+          {!props.suppressNonProductInstanceFields && (
             <Grid item xs={2}>
               <StringPropertyComponent
-                disabled={isProcessing}
+                disabled={props.isProcessing}
                 label="Short Code"
-                value={shortcode}
-                setValue={setShortcode}
+                value={props.shortcode}
+                setValue={props.setShortcode}
               />
             </Grid>
           )}
           <Grid item xs={2}>
             <FloatNumericPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Flavor Max"
-              value={flavorMax}
-              setValue={setFlavorMax}
+              value={props.flavorMax}
+              setValue={props.setFlavorMax}
             />
           </Grid>
           <Grid item xs={2}>
             <FloatNumericPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Bake Max"
-              value={bakeMax}
-              setValue={setBakeMax}
+              value={props.bakeMax}
+              setValue={props.setBakeMax}
             />
           </Grid>
           <Grid item xs={2}>
             <FloatNumericPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Bake Differential Max"
-              value={bakeDifferentialMax}
-              setValue={setBakeDifferentialMax}
+              value={props.bakeDifferentialMax}
+              setValue={props.setBakeDifferentialMax}
             />
           </Grid>
           <Grid item xs={6}>
@@ -232,8 +192,8 @@ const ProductComponent = ({
               filterSelectedOptions
               fullWidth
               options={Object.keys(catalog.product_instance_functions)}
-              value={orderGuideSuggestionFunctions}
-              onChange={(_, v) => setOrderGuideSuggestionFunctions(v)}
+              value={props.orderGuideSuggestionFunctions}
+              onChange={(_, v) => props.setOrderGuideSuggestionFunctions(v)}
               getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Order Guide Suggestion Functions" />}
@@ -245,8 +205,8 @@ const ProductComponent = ({
               filterSelectedOptions
               fullWidth
               options={Object.keys(catalog.product_instance_functions)}
-              value={orderGuideWarningFunctions}
-              onChange={(_, v) => setOrderGuideWarningFunctions(v)}
+              value={props.orderGuideWarningFunctions}
+              onChange={(_, v) => props.setOrderGuideWarningFunctions(v)}
               getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Order Guide Warning Functions" />}
@@ -254,19 +214,19 @@ const ProductComponent = ({
           </Grid>
           <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
-              disabled={isProcessing || modifiers.length === 0}
+              disabled={props.isProcessing || props.modifiers.length === 0}
               label="Show Name of Base Product Instead of Component Modifiers"
-              value={showNameOfBaseProduct || modifiers.length === 0}
-              setValue={setShowNameOfBaseProduct}
+              value={props.showNameOfBaseProduct || props.modifiers.length === 0}
+              setValue={props.setShowNameOfBaseProduct}
               labelPlacement='end'
             />
           </Grid>
           <Grid item xs={4}>
             <StringPropertyComponent
-              disabled={isProcessing}
+              disabled={props.isProcessing}
               label="Singular Noun"
-              value={singularNoun}
-              setValue={setSingularNoun}
+              value={props.singularNoun}
+              setValue={props.setSingularNoun}
             />
           </Grid>
           <Grid item xs={12}>
@@ -274,7 +234,7 @@ const ProductComponent = ({
               multiple
               filterSelectedOptions
               options={Object.keys(catalog.modifiers)}
-              value={modifiers.map(x => x.mtid)}
+              value={props.modifiers.map(x => x.mtid)}
               onChange={(e, v) => handleSetModifiers(v)}
               getOptionLabel={(option) => catalog.modifiers[option].modifier_type.name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(o, v) => o === v}
@@ -287,9 +247,9 @@ const ProductComponent = ({
               multiple
               filterSelectedOptions
               options={Object.keys(fulfillments)}
-              value={serviceDisable}
+              value={props.serviceDisable}
               onChange={(_, v) => {
-                setServiceDisable(v);
+                props.setServiceDisable(v);
               }}
               getOptionLabel={(option) => fulfillments[option].displayName}
               isOptionEqualToValue={(option, value) => option === value}
@@ -297,9 +257,13 @@ const ProductComponent = ({
             />
           </Grid>
           <Grid item xs={12}>
-            <DatetimeBasedDisableComponent disabled={disabled} setDisabled={setDisabled} />
+            <DatetimeBasedDisableComponent
+              disabled={props.isProcessing}
+              value={props.disabled}
+              setValue={props.setDisabled}
+            />
           </Grid>
-          {children}
+          {props.children}
         </>
       }
     />

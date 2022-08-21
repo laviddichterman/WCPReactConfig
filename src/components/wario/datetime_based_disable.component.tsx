@@ -1,105 +1,61 @@
-import { Dispatch, SetStateAction, useState } from "react";
 import { endOfDay, getTime } from 'date-fns'
-import { Grid, FormControlLabel, Switch, TextField } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { IWInterval } from "@wcp/wcpshared";
 import { useAppSelector } from "../../hooks/useRedux";
+import { ValSetVal } from "src/utils/common";
+import { ToggleBooleanPropertyComponent } from "./property-components/ToggleBooleanPropertyComponent";
 
-export interface DatetimeBasedDisableComponentProps {
-  disabled: IWInterval | null;
-  setDisabled: Dispatch<SetStateAction<IWInterval | null>>;
-}
-const DatetimeBasedDisableComponent = ({ disabled, setDisabled }: DatetimeBasedDisableComponentProps) => {
-  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
+export type DatetimeBasedDisableComponentProps = {
+  disabled: boolean;
+} & ValSetVal<IWInterval | null>;
 
-  const [enabled, setEnabled] = useState(disabled === null);
-  const [isDatetimeBased, setIsDatetimeBased] = useState<boolean>(
-    disabled !== null && disabled.start <= disabled.end
-  );
-  const [disabledStart, setDisabledStart] = useState(
-    disabled !== null && disabled.start && disabled.start !== 1 ? disabled.start : getTime(CURRENT_TIME)
-  );
-  const [disabledEnd, setDisabledEnd] = useState(
-    disabled !== null && disabled.end && disabled.end !== 0
-      ? disabled.end
-      : getTime(endOfDay(CURRENT_TIME))
-  );
+export const IsDisableValueValid = (value: IWInterval | null) => 
+  value === null || (value.start === 1 && value.end === 0) || (value.start <= value.end); 
 
-  const toggleEnabled = () => {
-    if (enabled) {
-      setEnabled(false);
-      if (isDatetimeBased) {
-        setDisabled({ start: disabledStart, end: disabledEnd });
-      }
-      else {
-        setDisabled({ start: 1, end: 0 });
-      }
+const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps) => {
+  const CURRENT_TIME = useAppSelector(s => s.metrics.currentTime);
 
-    }
-    else {
-      setEnabled(true);
-      setDisabled(null);
-    }
-  }
-  const toggleIsDatetimeBased = () => {
-    if (isDatetimeBased) {
-      setIsDatetimeBased(false);
-      setDisabled(enabled ? null : { start: 1, end: 0 });
-    } else {
-      setIsDatetimeBased(true);
-      setDisabled({ start: disabledStart, end: disabledEnd });
-    }
-  };
-
-  // TODO: BEFORE COMMITTING THIS, CHECK THAT THE "EMPTY" DATES returned by the datetimepicker make sense.
   const updateDisabledStart = (start: number) => {
-    setDisabledStart(start);
-    setDisabled({ start: getTime(start), end: disabledEnd });
+    props.setValue({ ...props.value!, start: getTime(start) });
   };
 
   const updateDisabledEnd = (end: number) => {
-    setDisabledEnd(end);
-    setDisabled({ start: disabledStart, end: getTime(end) });
+    props.setValue({ ...props.value!, end: getTime(end) });
   };
 
   return (
-    <Grid container>
+    <Grid container spacing={2}>
       <Grid item xs={6}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={enabled}
-              onChange={toggleEnabled}
-              name="Enabled"
-            />
-          }
+        <ToggleBooleanPropertyComponent
+          disabled={props.disabled}
           label="Enabled"
+          value={props.value === null}
+          setValue={(enable) => props.setValue(enable ? null : { start: 1, end: 0 })}
+          labelPlacement='end'
         />
       </Grid>
-      {enabled ? (
-        ""
-      ) : (
+      {props.value !== null &&
         <Grid item xs={6}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={!isDatetimeBased}
-                onChange={toggleIsDatetimeBased}
-                name="Blanket Disable"
-              />
-            }
+          <ToggleBooleanPropertyComponent
+            disabled={props.disabled}
             label="Blanket Disable"
+            value={props.value.start === 1 && props.value.end === 0}
+            setValue={(isBlanket) => props.setValue(isBlanket ? 
+              { start: 1, end: 0 } : 
+              { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) })}
+            labelPlacement='end'
           />
         </Grid>
-      )}
-      {(!enabled && isDatetimeBased) ? (
+      }
+      {(props.value !== null && props.value.start !== 1 && props.value.end !== 0) &&
         <>
           <Grid item xs={6}>
             <DateTimePicker
-              renderInput={(props) => <TextField {...props} />}
+              renderInput={(props) => <TextField fullWidth {...props} />}
               label={"Disabled Start"}
               disablePast
-              value={disabledStart}
+              value={props.value.start}
               onChange={(date) => date !== null && updateDisabledStart(date)}
               inputFormat="MMM dd, y hh:mm a"
               disableMaskedInput
@@ -107,20 +63,17 @@ const DatetimeBasedDisableComponent = ({ disabled, setDisabled }: DatetimeBasedD
           </Grid>
           <Grid item xs={6}>
             <DateTimePicker
-              renderInput={(props) => <TextField {...props} />}
+              renderInput={(props) => <TextField fullWidth {...props} />}
               label={"Disabled End"}
               disablePast
-              minDateTime={disabledStart}
-              value={disabledEnd}
+              minDateTime={props.value.start}
+              value={props.value.end}
               onChange={(date) => date !== null && updateDisabledEnd(date)}
               inputFormat="MMM dd, y hh:mm a"
               disableMaskedInput
             />
           </Grid>
-        </>
-      ) : (
-        ""
-      )}
+        </>}
     </Grid>
   );
 };
