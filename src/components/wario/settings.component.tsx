@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card } from '@mui/material';
+import { Card, Grid } from '@mui/material';
 
 import { FulfillmentConfig, IWSettings } from "@wcp/wcpshared";
 import { DialogContainer } from '@wcp/wario-ux-shared';

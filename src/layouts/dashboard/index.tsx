@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Container, Typography, Stack } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
+import { IsSocketDataLoaded } from '@wcp/wario-ux-shared';
 
 import useResponsive from '../../hooks/useResponsive';
 import useCollapseDrawer from '../../hooks/useCollapseDrawer';
@@ -19,7 +20,6 @@ import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
 import { useAppSelector } from '../../hooks/useRedux';
-import { IsSocketDataLoaded } from '../../redux/slices/SocketIoSlice';
 import LoadingScreen from '../../components/LoadingScreen';
 
 // ----------------------------------------------------------------------

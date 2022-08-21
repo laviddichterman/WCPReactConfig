@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 // slices
-import SocketIoReducer from './slices/SocketIoSlice';
+import { SocketIoReducer } from '@wcp/wario-ux-shared';
 import WMetricsReducer from './slices/WMetricsSlice';
 import BlockOffReducer from './slices/BlockOffSlice';
 // ----------------------------------------------------------------------
