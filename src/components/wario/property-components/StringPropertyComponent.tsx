@@ -5,6 +5,7 @@ export type StringPropertyComponentProps = {
   sx?: TextFieldProps['sx'];
   label: string;
   disabled: boolean;
+  error?: TextFieldProps['error'];
 } & ValSetVal<string>;
 
 export function StringPropertyComponent(props: StringPropertyComponentProps) {

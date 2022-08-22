@@ -6,10 +6,11 @@ import { Html5QrcodeScanner, Html5QrcodeScanType, Html5Qrcode } from 'html5-qrco
 import { QrcodeSuccessCallback, QrcodeErrorCallback } from 'html5-qrcode/core';
 
 import { ErrorOutline, PhotoCamera } from "@mui/icons-material";
-import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, TextField } from '@mui/material';
+import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, Divider } from '@mui/material';
 import { HOST_API } from "../../config";
 import { uniqueId } from 'lodash';
 import { IMoneyPropertyComponent } from './property-components/IMoneyPropertyComponent';
+import { StringPropertyComponent } from './property-components/StringPropertyComponent';
 
 
 
@@ -148,7 +149,7 @@ const StoreCreditValidateAndSpendComponent = () => {
         <QrCodeScanner show={scanCode} onSuccess={onScanned} onFailure={onScannedFail} />
       }
     />
-    <Grid item xs={3}>
+    <Grid item xs={2} md={1}>
       <IconButton
         color="primary"
         component="span"
@@ -161,37 +162,25 @@ const StoreCreditValidateAndSpendComponent = () => {
 
   return (
     <Card>
-      <CardHeader title={"Redeem Store Credit"} subtitle={"Tool to debit store credit with instructions"} />
-      <Grid sx={{ m: 1 }} container spacing={3} justifyContent="center">
-        <Grid item xs={hasCamera ? 6 : 9}>
-          <TextField
-            label="Credit Code"
-            type="text"
-            fullWidth
-            inputProps={{ size: 19 }}
+      <CardHeader title={"Redeem Store Credit"} subheader={"Tool to debit store credit with instructions"} />
+      <Divider sx={{ my: 2 }} />
+      <Grid container padding={2} spacing={2} justifyContent="center" alignItems="center">
+        <Grid item xs={hasCamera ? 10 : 12} md={hasCamera ? 8 : 9}>
+          <StringPropertyComponent
             disabled={isProcessing || (validationResponse !== null && validationResponse.valid)}
+            label="Credit Code"
             value={creditCode}
-            size="small"
-            onChange={(e) => setCreditCode(e.target.value)}
+            setValue={setCreditCode}
           />
         </Grid>
         {scanHTML}
-        <Grid item xs={3}>
+        <Grid item xs={12} md={3}>
           {validationResponse !== null ? (
-            <Button
-              onClick={clearLookup}
-              disabled={isProcessing}
-            >
+            <Button fullWidth onClick={clearLookup} disabled={isProcessing}>
               Clear
             </Button>
           ) : (
-            <Button
-              onClick={() => validateCode(creditCode)}
-              disabled={
-                isProcessing ||
-                creditCode.length !== 19
-              }
-            >
+            <Button fullWidth onClick={() => validateCode(creditCode)} disabled={isProcessing || creditCode.length !== 19}>
               Validate
             </Button>
           )}
@@ -263,7 +252,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     </List>
                   )}
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                   <IMoneyPropertyComponent
                     disabled={isProcessing || debitResponse !== null}
                     label="Amount to debit"
@@ -273,18 +262,15 @@ const StoreCreditValidateAndSpendComponent = () => {
                     setValue={setAmount}
                   />
                 </Grid>
-                <Grid item xs={4}>
-                  <TextField
-                    label="Debited by"
-                    type="text"
+                <Grid item xs={6}>
+                  <StringPropertyComponent
                     disabled={isProcessing || debitResponse !== null}
-                    inputProps={{ size: 10 }}
+                    label="Debited by"
                     value={processedBy}
-                    size="small"
-                    onChange={(e) => setProcessedBy(e.target.value)}
+                    setValue={setProcessedBy}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12}>
                   <Button
                     onClick={processDebit}
                     disabled={

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import type { Polygon } from 'geojson';
+import { format, setDay } from 'date-fns';
 
 import {
   Grid,
@@ -9,8 +10,8 @@ import {
   Button,
   CardHeader,
   Stack,
-  Chip
-
+  Chip,
+  Divider
 } from '@mui/material';
 import { ElementActionComponent } from './menu/element.action.component';
 import { DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
@@ -21,7 +22,6 @@ import { StringPropertyComponent } from './property-components/StringPropertyCom
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
 import { ToggleBooleanPropertyComponent } from './property-components/ToggleBooleanPropertyComponent';
 import { StringEnumPropertyComponent } from './property-components/StringEnumPropertyComponent';
-import { format, setDay } from 'date-fns';
 
 
 export interface OperatingHoursIntervalFormProps {
@@ -115,6 +115,7 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
   return (
     <Card>
       <CardHeader title={props.label} />
+      <Divider />
       <Grid container spacing={2} justifyContent={'center'}>
         {Object.keys(props.operatingHours).filter(x => x !== "_id").map((key, day: DayOfTheWeek) =>
           <Grid container item xs={12} key={day}>

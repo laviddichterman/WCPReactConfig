@@ -9,6 +9,7 @@ import { CURRENCY, IMoney, IssueStoreCreditRequest, StoreCreditType, WDateUtils 
 import { HOST_API } from "../../config";
 import { useAppSelector } from "../../hooks/useRedux";
 import { IMoneyPropertyComponent } from "./property-components/IMoneyPropertyComponent";
+import { StringPropertyComponent } from "./property-components/StringPropertyComponent";
 
 const DEFAULT_MONEY = { amount: 500, currency: CURRENCY.USD };
 const StoreCreditIssueComponent = () => {
@@ -72,42 +73,36 @@ const StoreCreditIssueComponent = () => {
     <Card>
       <CardHeader title="Issue a store credit for a customer"
         subheader="Note: purchased store credit MUST be done through our website!"
+        sx={{pb: 1}}
       />
       <Divider />
-      <Grid sx={{ p: 2 }} container spacing={3} justifyContent="center">
-        <Grid item xs={3}>
-          <TextField
+      <Grid sx={{ p: 1 }} container spacing={1.5} justifyContent="center">
+        <Grid item xs={5} md={3}>
+          <StringPropertyComponent
+            disabled={isProcessing}
             label="First Name"
-            type="text"
-            inputProps={{ size: 30 }}
             value={firstName}
-            size="small"
-            onChange={e => setFirstName(e.target.value)}
+            setValue={setFirstName}
           />
         </Grid>
-        <Grid item xs={3}>
-          <TextField
+        <Grid item xs={7} md={3}>
+          <StringPropertyComponent
+            disabled={isProcessing}
             label="Last Name"
-            type="text"
-            inputProps={{ size: 30 }}
             value={lastName}
-            size="small"
-            onChange={e => setLastName(e.target.value)}
+            setValue={setLastName}
           />
         </Grid>
-        <Grid item xs={6}>
-          <TextField
+        <Grid item xs={12} md={6}>
+          <StringPropertyComponent
+            disabled={isProcessing}
             label="Customer E-mail"
-            type="email"
             error={recipientEmailError}
-            inputProps={{ size: 60 }}
             value={recipientEmail}
-            size="small"
-            onChange={e => { setRecipientEmail(e.target.value); }}
-            onBlur={() => validateRecipientEmail()}
+            setValue={setRecipientEmail}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={4} md={2}>
           <IMoneyPropertyComponent
             disabled={isProcessing}
             label="Dollar Amount"
@@ -117,9 +112,17 @@ const StoreCreditIssueComponent = () => {
             setValue={setAmount}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={8} md={4}>
+          <StringPropertyComponent
+            disabled={isProcessing}
+            label="Added by"
+            value={addedBy}
+            setValue={setAddedBy}
+          />
+        </Grid>
+        <Grid item xs={10} md={5}>
           <DatePicker
-            renderInput={(props) => <TextField sx={{ height: '10%' }} {...props} />}
+            renderInput={(props) => <TextField fullWidth sx={{ height: '10%' }} {...props} />}
             disableMaskedInput
             showToolbar={false}
             minDate={addDays(CURRENT_TIME, 30)}
@@ -128,9 +131,11 @@ const StoreCreditIssueComponent = () => {
             onChange={(date) => { setExpiration(date ? WDateUtils.formatISODate(date) : null) }}
             inputFormat={WDateUtils.ServiceDateDisplayFormat}
           />
+        </Grid>
+        <Grid item xs={2} md={1} sx={{my: 'auto'}}>
           <IconButton
-            sx={{ p: 2 }}
-            edge="end"
+            sx={{ m: 'auto' }}
+            edge="start"
             size="medium"
             aria-label="delete"
             onClick={() => setExpiration(null)}
@@ -138,28 +143,18 @@ const StoreCreditIssueComponent = () => {
             <HighlightOffIcon />
           </IconButton>
         </Grid>
-        <Grid item xs={2}>
-          <TextField
-            label="Added by"
-            type="text"
-            inputProps={{ size: 5 }}
-            value={addedBy}
-            size="small"
-            onChange={e => setAddedBy(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
+
+        <Grid item xs={9} md={11}>
+          <StringPropertyComponent
+            disabled={isProcessing}
             label="Reason"
-            type="text"
-            fullWidth
             value={reason}
-            size="small"
-            onChange={e => setReason(e.target.value)}
+            setValue={setReason}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={3} md={1} sx={{my: 'auto', width: "100%"}}>
           <Button
+            sx={{ m: 'auto', width: "100%" }}
             onClick={handleSubmit}
             disabled={!(!isProcessing && amount.amount >= 1 && addedBy.length >= 2 && firstName.length >= 2 && lastName.length >= 2 && reason.length > 2 && recipientEmail.length > 3)}
           >
