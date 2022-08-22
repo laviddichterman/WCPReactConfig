@@ -1,11 +1,11 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
 import TableWrapperComponent from "./table_wrapper.component";
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { useAppSelector } from "../../hooks/useRedux";
 import { FulfillmentConfig } from "@wcp/wcpshared";
 
 export interface FulfillmentTableContainerProps {
@@ -20,13 +20,8 @@ const FulfillmentTableContainer = ({
   setIsFulfillmentAddOpen,
   setFulfillmentToEdit
 }: FulfillmentTableContainerProps) => {
-  const dispatch = useAppDispatch();
   const fulfillments = useAppSelector(s=>s.ws.fulfillments ?? {});
   const apiRef = useGridApiRef();
-
-
-  // WE LAST LEFT OFF WE... NEEDED TO ADD POPUP DIALOGUES FOR ADDING/EDITING/DELETING fulfillments
-  // maybe the new UX stuff we have offers an easy soluton with redux state
 
   const editFulfillment = (fulfillment : FulfillmentConfig) => () => {
     setIsFulfillmentEditOpen(true);
@@ -35,7 +30,6 @@ const FulfillmentTableContainer = ({
 
   const deleteFulfillment = (fulfillment : FulfillmentConfig) => () => {
     setIsFulfillmentDeleteOpen(true);
-    console.log(fulfillment);
     setFulfillmentToEdit(fulfillment);
   };
 
