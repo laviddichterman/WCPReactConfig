@@ -157,9 +157,9 @@ const CategoryTableContainer = ({
       ]}
       toolbarActions={[
         {
-          size: 3,
+          size: 5,
           elt: <FormControlLabel
-            sx={{ mr: 2 }}
+            sx={{ mx: 2 }}
             key="HIDE"
             control={<Switch
               checked={hideDisabled}

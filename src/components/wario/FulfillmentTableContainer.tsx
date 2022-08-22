@@ -37,6 +37,7 @@ const FulfillmentTableContainer = ({
     <TableWrapperComponent
       title="Fulfillment Config"
       apiRef={apiRef}
+      enableSearch={false}
       columns={[
       {
         headerName: "Actions",
@@ -65,7 +66,6 @@ const FulfillmentTableContainer = ({
       }]}
       rows={Object.values(fulfillments)}
       rowThreshold={0}
-      disableToolbar={false}    
     />
   );
 };

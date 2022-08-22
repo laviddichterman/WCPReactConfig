@@ -11,7 +11,8 @@ import {
   CardHeader,
   Stack,
   Chip,
-  Divider
+  Divider,
+  Typography
 } from '@mui/material';
 import { ElementActionComponent } from './menu/element.action.component';
 import { DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
@@ -59,10 +60,11 @@ const OperatingHoursIntervalForm = ({
     startOptions.filter(x => x >= start) : [], [start, startOptions]);
 
   return (
-    <Grid container sx={{ mx: 'auto' }} spacing={3} justifyContent="center">
+    <Grid container sx={{ mx: 'auto', width: '100%' }} spacing={1} alignContent="center" justifyContent="center">
       <Grid item xs={5}>
         <Autocomplete
           disableClearable
+          fullWidth
           options={startOptions}
           isOptionEqualToValue={(o, v) => o === v}
           getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
@@ -76,6 +78,7 @@ const OperatingHoursIntervalForm = ({
       <Grid item xs={5}>
         <Autocomplete
           disableClearable
+          fullWidth
           options={endOptions}
           isOptionEqualToValue={(o, v) => o === v}
           getOptionLabel={x => WDateUtils.MinutesToPrintTime(x)}
@@ -87,7 +90,7 @@ const OperatingHoursIntervalForm = ({
           />}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={2} sx={{m: 'auto'}}>
         <Button
           disabled={start === null || end === null || disabled}
           onClick={() => onSubmitHandler()}>Add</Button>
@@ -115,29 +118,29 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
   return (
     <Card>
       <CardHeader title={props.label} />
-      <Divider />
+      <Divider sx={{m:1}} />
       <Grid container spacing={2} justifyContent={'center'}>
         {Object.keys(props.operatingHours).filter(x => x !== "_id").map((key, day: DayOfTheWeek) =>
-          <Grid container item xs={12} key={day}>
-            <Grid item xs={3} md={3} lg={1} sx={{ p: 2 }}>
-              {format(setDay(Date.now(), day), 'EEEE')}:
+          <React.Fragment key={day}>
+            <Grid item xs={12} sm={4}>
+              <Typography sx={{ px: 1 }} variant='h6'>{format(setDay(Date.now(), day), 'EEEE')}:</Typography>
             </Grid>
-            <Grid item xs={9} md={9} lg={7} sx={{ p: 1.5 }}>
-              <Stack direction='row' spacing={1}>
+            <Grid container item xs={12} sm={8}>
                 {props.operatingHours[day].map((interval, j) => (
-                  <Chip key={j} label={`${WDateUtils.MinutesToPrintTime(interval.start)} - ${WDateUtils.MinutesToPrintTime(interval.end)}`}
-                    onDelete={() => onRemoveOperatingHours(day, interval)} />
+                  <Stack direction='row' key={j} sx={{m:1}} spacing={2}>
+                    <Chip label={`${WDateUtils.MinutesToPrintTime(interval.start)} - ${WDateUtils.MinutesToPrintTime(interval.end)}`}
+                      onDelete={() => onRemoveOperatingHours(day, interval)} />
+                  </Stack>
                 ))}
-              </Stack>
             </Grid>
-            <Grid item xs={12} md={12} lg={4}>
+            <Grid item xs={12}>
               <OperatingHoursIntervalForm
                 disabled={props.disabled}
                 onAddInterval={(i) => onAddOperatingHours(day, i)}
                 timeStep={props.timeStep}
               />
             </Grid>
-          </Grid>
+          </React.Fragment>
         )}
       </Grid>
     </Card >

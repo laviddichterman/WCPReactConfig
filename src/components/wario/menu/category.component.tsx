@@ -56,7 +56,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
             <Autocomplete
               options={props.categoryIds}
               value={props.parent}
-              onChange={(e, v) => props.setParent(v !== null ? String(v) : null)}
+              onChange={(_, v) => props.setParent(v !== null ? String(v) : null)}
               getOptionLabel={(o) => selectCategoryById(o)?.name ?? "Undefined"}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => (
@@ -68,9 +68,9 @@ const CategoryComponent = (props: CategoryComponentProps) => {
             <TextField
               multiline
               fullWidth
+              minRows={props.description ? 4 : 1}
               label="Category Description (Optional, HTML allowed)"
               type="text"
-              inputProps={{ size: 100 }}
               value={props.description}
               onChange={(e) => props.setDescription(e.target.value)}
             />
@@ -87,10 +87,9 @@ const CategoryComponent = (props: CategoryComponentProps) => {
             <TextField
               multiline
               fullWidth
-              rows={props.subheading ? 4 : 1}
+              minRows={props.subheading ? 4 : 1}
               label="Subheading (Optional, HTML allowed)"
               type="text"
-              inputProps={{ size: 100 }}
               value={props.subheading}
               onChange={(e) => props.setSubheading(e.target.value)}
             />
@@ -102,12 +101,11 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               fullWidth
               label="Footnotes (Optional, HTML allowed)"
               type="text"
-              inputProps={{ size: 100 }}
               value={props.footnotes}
               onChange={(e) => props.setFootnotes(e.target.value)}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
           <StringPropertyComponent
               disabled={props.isProcessing}
               label="Call Line Name"
@@ -115,9 +113,10 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               setValue={props.setCallLineName}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <Autocomplete
               multiple
+              fullWidth
               filterSelectedOptions
               options={Object.keys(fulfillments)}
               value={props.serviceDisable.map((x) => String(x))}

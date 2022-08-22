@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Grid, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, RadioGroup, FormGroup, FormControlLabel } from '@mui/material';
+import { Grid, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, RadioGroup, FormGroup, FormControlLabel, useMediaQuery, useTheme } from '@mui/material';
 
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
@@ -38,6 +38,8 @@ export type ProductInstanceComponentProps =
   }
 
 const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
+  const theme = useTheme();
+  const useToggleEndLabel = !useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
   const handleToggle = (mtid: string, oidx: number) => {
     props.setModifiers({
@@ -147,7 +149,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       {/* universal break */}
-      <Grid item xs={3} sm={2}>
+      <Grid item xs={3} sm={2.5}>
         <IntNumericPropertyComponent
           disabled={props.isProcessing}
           label="Ordinal"
@@ -155,7 +157,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setOrdinal}
         />
       </Grid>
-      <Grid item xs={5} sm={8}>
+      <Grid item xs={6} sm={7}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Short Code"
@@ -163,17 +165,17 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setShortcode}
         />
       </Grid>
-      <Grid item xs={4} sm={2}>
+      <Grid item xs={3} sm={2.5} >
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Is Base"
           value={props.isBase}
           setValue={props.setIsBase}
-          //labelPlacement='end'
+          labelPlacement={"top"}
         />
       </Grid>
       {/* universal break */}
-      <Grid item xs={2} >
+      <Grid item xs={3} sm={2.5}>
         <IntNumericPropertyComponent
           disabled={props.isProcessing}
           label="Menu Ordinal"
@@ -181,7 +183,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setMenuOrdinal}
         />
       </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={9} sm={9.5}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Menu Adornment (Optional, HTML allowed)"
@@ -189,29 +191,32 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setMenuAdornment}
         />
       </Grid>
-      {/* universal break */}
-      <Grid item xs={4} >
+      <Grid item xs={12} sm={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
-          label="Hide From Menu"
+          label="Menu Hide"
           value={props.menuHide}
           setValue={props.setMenuHide}
+          labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
-      <Grid item xs={4}>
+      {/* universal break */}
+      <Grid item xs={12} sm={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
-          label="Menu Suppress Exhaustive Modifier List"
+          label="Menu Suppress Exhaustive Modifiers"
           value={props.menuSuppressExhaustiveModifierList}
           setValue={props.setMenuSuppressExhaustiveModifierList}
+          labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12} sm={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Show Modifier Options in Menu Display"
           value={props.menuShowModifierOptions}
           setValue={props.setMenuShowModifierOptions}
+          labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
       {/* universal break */}
@@ -225,7 +230,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       {/* universal break */}
-      <Grid item xs={2}>
+      <Grid item xs={3} sm={2.5}>
         <IntNumericPropertyComponent
           disabled={props.isProcessing}
           label="Order Ordinal"
@@ -233,7 +238,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setOrderOrdinal}
         />
       </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={9} sm={9.5}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Order Menu Adornment (Optional, HTML allowed)"
@@ -242,28 +247,31 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       {/* universal break */}
-      <Grid item xs={4}>
+      <Grid item xs={12} sm={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
-          label="Hide From Order Menu"
+          label="Order Menu Hide"
           value={props.orderMenuHide}
           setValue={props.setOrderMenuHide}
+          labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12} sm={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
-          label="Order Menu Suppress Exhaustive Modifier List"
+          label="Order Menu Suppress Exhaustive Modifiers"
           value={props.orderSuppressExhaustiveModifierList}
           setValue={props.setOrderSuppressExhaustiveModifierList}
+          labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12} sm={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Skip Customization"
           value={props.skipCustomization}
           setValue={props.setSkipCustomization}
+          labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
       {/* universal break */}

@@ -1,4 +1,4 @@
-import { FormControlLabel, FormControlLabelProps, Switch, SwitchProps } from "@mui/material";
+import { Box, FormControlLabel, FormControlLabelProps, Switch, SwitchProps } from "@mui/material";
 import { ValSetVal } from "../../../utils/common";
 
 export type ToggleBooleanPropertyComponentProps = {
@@ -9,7 +9,11 @@ export type ToggleBooleanPropertyComponentProps = {
 } & ValSetVal<boolean>;
 
 export function ToggleBooleanPropertyComponent(props: ToggleBooleanPropertyComponentProps) {
-  return (<FormControlLabel
+  const labelPlacement = props.labelPlacement ?? 'top';
+  return (
+    <Box sx={labelPlacement==='top' ? { display: 'flex', alignContent: "center", textAlign: 'center',
+    justifyContent: 'center', width:'100%', mx: 'auto'} : {}}>
+  <FormControlLabel
     control={
       <Switch
         sx={props.sx}
@@ -21,9 +25,9 @@ export function ToggleBooleanPropertyComponent(props: ToggleBooleanPropertyCompo
         name={props.label}
       />
     }
-    labelPlacement={props.labelPlacement ?? "top"}
+    labelPlacement={labelPlacement}
     label={props.label}
-  />);
+  /></Box>);
 }
 
 

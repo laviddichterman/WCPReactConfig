@@ -74,7 +74,7 @@ const ModifierTypeTableContainer = ({
 
   return (
     <TableWrapperComponent
-      title="Modifier Types / Modifier Type Option"
+      title="Modifier Types & Options"
       apiRef={apiRef}
       getRowId={(row: CatalogModifierEntry) => row.modifier_type.id}
       columns={[
