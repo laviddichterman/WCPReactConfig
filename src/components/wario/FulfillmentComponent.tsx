@@ -208,7 +208,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
       confirmText={props.confirmText}
       body={
         <>
-          <Grid item xs={12} md={9} lg={6}>
+          <Grid item xs={12} >
             <StringEnumPropertyComponent
               disabled={props.isProcessing}
               label="Fulfillment Type"
@@ -217,16 +217,8 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               options={Object.keys(FulfillmentType)}
             />
           </Grid>
-          <Grid item xs={3} md={3} lg={2}>
-            <StringPropertyComponent
-              disabled={props.isProcessing}
-              label="Short Code"
-              value={props.shortcode}
-              setValue={props.setShortcode}
-            />
-          </Grid>
-
-          <Grid item xs={6} md={6} lg={6}>
+          { /* universal break */ }
+          <Grid item xs={12} md={9} >
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Display Name"
@@ -234,7 +226,16 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setDisplayName}
             />
           </Grid>
-          <Grid item xs={3} md={3} lg={1}>
+          { /* xs break */ }
+          <Grid item xs={6} md={2} >
+            <StringPropertyComponent
+              disabled={props.isProcessing}
+              label="Short Code"
+              value={props.shortcode}
+              setValue={props.setShortcode}
+            />
+          </Grid>
+          <Grid item xs={6} md={1} >
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Ordinal"
@@ -242,6 +243,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setOrdinal}
             />
           </Grid>
+          { /* universal break */ }
           <Grid item xs={12}>
             <TextField
               multiline
@@ -253,7 +255,8 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               onChange={(e) => props.setTerms(e.target.value.split('\n'))}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          { /* universal break */ }
+          <Grid item xs={12}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Order Confirmation Message"
@@ -261,7 +264,8 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setConfirmationMessage}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          { /* universal break */ }
+          <Grid item xs={12}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Order Instructions Message"
@@ -269,7 +273,8 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setInstructions}
             />
           </Grid>
-          <Grid item xs={6}>
+          { /* universal break */ }
+          <Grid item xs={12} md={6}>
             <Autocomplete
               unselectable='off'
               disableClearable
@@ -284,8 +289,8 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               renderInput={(params) => <TextField {...params} label="Menu Category" />}
             />
           </Grid>
-
-          <Grid item xs={6}>
+          { /* xs break */ }
+          <Grid item xs={12} md={6}>
             <Autocomplete
               unselectable='off'
               disableClearable
@@ -300,6 +305,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               renderInput={(params) => <TextField {...params} label="Order Category" />}
             />
           </Grid>
+          { /* universal break */ }
           <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
@@ -319,9 +325,9 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
             />
           </Grid>
           {/* //ValSetValNamed<{ function: string, percentage: number } | null, 'autograt'> & */}
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Autocomplete
-              style={{ width: 300 }}
+              fullWidth
               options={Object.keys(catalog.orderInstanceFunctions)}
               value={props.serviceChargeFunctionId}
               onChange={(e, v) => props.setServiceChargeFunctionId(v)}
@@ -338,7 +344,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setOperatingHours={props.setOperatingHours}
               timeStep={props.timeStep} />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Lead Time"
@@ -346,7 +352,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setLeadTime}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Min Duration"
@@ -355,7 +361,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setMinDuration}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4} >
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Max Duration"
@@ -364,7 +370,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setMaxDuration}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               min={1}
@@ -374,9 +380,10 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setTimeStep}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <CheckedNumericInput
               label="Max Guests"
+              fullWidth
               type="number"
               inputProps={{ inputMode: 'numeric', min: 0, pattern: '[0-9]*', step: 1 }}
               disabled={props.isProcessing}
@@ -388,6 +395,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
           <Grid item xs={12}>
           <TextField
             aria-label="textarea"
+            label="Service Area (GeoJSON Polygon)"
             rows={(isServiceAreaDirty && localServiceAreaString) || props.serviceArea ? 15 : 1}
             fullWidth
             multiline

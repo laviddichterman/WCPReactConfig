@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FulfillmentConfig } from "@wcp/wcpshared";
-
 export const TIMING_POLLING_INTERVAL = 30000;
 
 export interface TimeOption {

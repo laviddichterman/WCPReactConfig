@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { add, format, formatISO, parseISO } from "date-fns";
 import {
-  Box,
   Card,
   CardHeader,
   Chip,
