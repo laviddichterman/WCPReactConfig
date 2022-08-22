@@ -114,7 +114,6 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
   function onRemoveOperatingHours(day: DayOfTheWeek, interval: IWInterval) {
     props.setOperatingHours({...props.operatingHours, [day]: WDateUtils.ComputeSubtractionOfIntervalSets(props.operatingHours[day], [interval], props.timeStep)});
   };
-  console.log(props.operatingHours);
   return (
     <Card sx={{ p: 3 }}>
       <CardHeader title={props.label} />
