@@ -20,7 +20,7 @@ export default function App() {
   const dispatch = useAppDispatch();
   const socketIoState = useAppSelector((s) => s.ws.status);
   const isSocketDataLoaded = useAppSelector(s => IsSocketDataLoaded(s.ws));
-  const currentTime = useAppSelector(s => s.metrics.currentTime);
+  const currentTime = useAppSelector(s => s.ws.currentTime);
   const DateAdapter = useMemo(() => AdapterCurrentTimeOverrideUtils(isSocketDataLoaded ? currentTime : Date.now()), [isSocketDataLoaded, currentTime]);
   useEffect(() => {
     if (socketIoState === 'NONE') {

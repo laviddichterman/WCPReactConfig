@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "dependencies": {
     "@auth0/auth0-react": "^1.10.2",
     "@emotion/cache": "^11.10.1",
@@ -15,7 +15,7 @@
     "@mui/x-data-grid-pro": "^5.15.3",
     "@mui/x-date-pickers": "^5.0.0-beta.6",
     "@reduxjs/toolkit": "^1.8.5",
-    "@wcp/wario-ux-shared": "^0.0.4",
+    "@wcp/wario-ux-shared": "^0.0.5",
     "@wcp/wcpshared": "^4.1.7",
     "assert": "^2.0.0",
     "axios": "^0.27.2",

@@ -3,7 +3,7 @@ import type { Polygon } from 'geojson';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from "../../config";
-import { DateIntervalsEntries, DayOfTheWeek, FulfillmentConfig, FulfillmentType, IWInterval, OperatingHourSpecification } from "@wcp/wcpshared";
+import { DateIntervalsEntries, DayOfTheWeek, FulfillmentConfig, FulfillmentType, OperatingHourSpecification } from "@wcp/wcpshared";
 import FulfillmentComponent from "./FulfillmentComponent";
 const EmptyOperatingHours: OperatingHourSpecification = {
   [DayOfTheWeek.SUNDAY]: [],

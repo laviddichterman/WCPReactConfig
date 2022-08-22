@@ -12,7 +12,7 @@ import { IMoneyPropertyComponent } from "./property-components/IMoneyPropertyCom
 
 const DEFAULT_MONEY = { amount: 500, currency: CURRENCY.USD };
 const StoreCreditIssueComponent = () => {
-  const CURRENT_TIME = useAppSelector(s => s.metrics.currentTime);
+  const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const [amount, setAmount] = useState<IMoney>(DEFAULT_MONEY);
   const [addedBy, setAddedBy] = useState("");
   const [reason, setReason] = useState("");

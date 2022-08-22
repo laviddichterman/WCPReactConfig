@@ -13,7 +13,7 @@ import {
 
 } from '@mui/material';
 import { ElementActionComponent } from './menu/element.action.component';
-import { DateIntervalEntry, DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
+import { DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
 import { useAppSelector } from '../../hooks/useRedux';
 import { CheckedNumericInput } from './CheckedNumericTextInput';
 import { ValSetValNamed } from '../../utils/common';
@@ -143,9 +143,9 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
   )
 }
 
-const DateIntervalsComponent = function (props: IntervalsComponentBaseProps & ValSetValNamed<DateIntervalEntry[], 'dateIntervals'>) {
+// const DateIntervalsComponent = function (props: IntervalsComponentBaseProps & ValSetValNamed<DateIntervalEntry[], 'dateIntervals'>) {
 
-}
+// }
 
 export type FulfillmentComponentProps =
   ValSetValNamed<string, 'shortcode'> &

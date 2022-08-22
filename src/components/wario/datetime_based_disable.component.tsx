@@ -14,7 +14,7 @@ export const IsDisableValueValid = (value: IWInterval | null) =>
   value === null || (value.start === 1 && value.end === 0) || (value.start <= value.end); 
 
 const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps) => {
-  const CURRENT_TIME = useAppSelector(s => s.metrics.currentTime);
+  const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
 
   const updateDisabledStart = (start: number) => {
     props.setValue({ ...props.value!, start: getTime(start) });

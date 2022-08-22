@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, Grid, Button } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from '../../config';
@@ -16,7 +16,7 @@ const LeadTimesComp = () => {
 
   useEffect(() => {
     setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({ ...acc, [key]: dirty[key] ? value : FULFILLMENTS[key].leadTime }), {}))
-  }, [FULFILLMENTS]);
+  }, [FULFILLMENTS, dirty, localLeadTime]);
   const onChangeLeadTimes = (fId: string, leadTime: number) => {
     if (localLeadTime[fId] !== leadTime) {
       setLocalLeadTime({ ...localLeadTime, [fId]: leadTime });

@@ -10,7 +10,7 @@ import { IProduct } from "@wcp/wcpshared";
 
 const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
+  const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async () => {
     if (!isProcessing) {

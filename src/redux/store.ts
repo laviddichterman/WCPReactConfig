@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { rootReducer } from './rootReducer';
-import ListeningMiddleware from './slices/ListeningMiddleware';
 import { SocketIoMiddleware } from './slices/SocketIoMiddleware';
 import { ICategoriesAdapter, 
   IOptionTypesAdapter, 
@@ -14,7 +13,7 @@ import { ICategoriesAdapter,
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat([SocketIoMiddleware, ListeningMiddleware.middleware])
+    return getDefaultMiddleware().concat([SocketIoMiddleware])
   },
 });
 

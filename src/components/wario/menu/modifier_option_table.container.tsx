@@ -27,7 +27,7 @@ const ModifierOptionTableContainer = ({
   setIsModifierOptionDisableUntilEodOpen
 }: ModifierOptionTableContainerProps) => {
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
-  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
+  const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
   const productInstanceFunctions = useAppSelector(s => s.ws.catalog!.product_instance_functions!);
   const editModifierOption = (row: IOption) => () => {
     setIsModifierOptionEditOpen(true);

@@ -11,7 +11,7 @@ import { IOption } from "@wcp/wcpshared";
 
 const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
+  const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
   const { getAccessTokenSilently } = useAuth0();
   const editModifierOption = async () => {
     if (!isProcessing) {

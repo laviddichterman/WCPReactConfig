@@ -53,7 +53,7 @@ const BlockOffComp = () => {
   const dispatch = useAppDispatch();
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
   const filteredFulfillments = useMemo(() => Object.values(fulfillments).filter((x) => WDateUtils.HasOperatingHours(x.operatingHours)), [fulfillments])
-  const CURRENT_TIME = useAppSelector(s => s.metrics.currentTime);
+  const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 

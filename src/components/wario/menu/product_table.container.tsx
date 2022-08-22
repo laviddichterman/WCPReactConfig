@@ -42,7 +42,7 @@ const ProductTableContainer = ({
   setPanelsExpandedSize
 }: ProductTableContainerProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
-  const CURRENT_TIME = useAppSelector(s=>s.metrics.currentTime);
+  const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
 
   const apiRef = useGridApiRef();
 
