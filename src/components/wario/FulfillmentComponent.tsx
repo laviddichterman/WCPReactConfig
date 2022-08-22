@@ -1,6 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { HighlightOff } from '@mui/icons-material';
-
 import type { Polygon } from 'geojson';
 
 import {
@@ -15,7 +13,7 @@ import {
 
 } from '@mui/material';
 import { ElementActionComponent } from './menu/element.action.component';
-import { DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
+import { DateIntervalEntry, DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
 import { useAppSelector } from '../../hooks/useRedux';
 import { CheckedNumericInput } from './CheckedNumericTextInput';
 import { ValSetValNamed } from '../../utils/common';
@@ -61,7 +59,7 @@ const OperatingHoursIntervalForm = ({
     startOptions.filter(x => x >= start) : [], [start, startOptions]);
 
   return (
-    <Grid container sx={{py:2}} spacing={3} justifyContent="center">
+    <Grid container sx={{ mx: 'auto' }} spacing={3} justifyContent="center">
       <Grid item xs={5}>
         <Autocomplete
           disableClearable
@@ -112,24 +110,24 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
       props.operatingHours))
   };
   function onRemoveOperatingHours(day: DayOfTheWeek, interval: IWInterval) {
-    props.setOperatingHours({...props.operatingHours, [day]: WDateUtils.ComputeSubtractionOfIntervalSets(props.operatingHours[day], [interval], props.timeStep)});
+    props.setOperatingHours({ ...props.operatingHours, [day]: WDateUtils.ComputeSubtractionOfIntervalSets(props.operatingHours[day], [interval], props.timeStep) });
   };
   return (
-    <Card sx={{ p: 3 }}>
+    <Card>
       <CardHeader title={props.label} />
-      <Grid container>
-        {Object.keys(props.operatingHours).filter(x=>x !== "_id").map((key, day: DayOfTheWeek) =>
+      <Grid container spacing={2} justifyContent={'center'}>
+        {Object.keys(props.operatingHours).filter(x => x !== "_id").map((key, day: DayOfTheWeek) =>
           <Grid container item xs={12} key={day}>
-            <Grid item xs={3} md={3} lg={1} sx={{p:2}}>
-              {format(setDay(Date.now(), day), 'EEEE')}:    
+            <Grid item xs={3} md={3} lg={1} sx={{ p: 2 }}>
+              {format(setDay(Date.now(), day), 'EEEE')}:
             </Grid>
-            <Grid item xs={9} md={9} lg={7} sx={{p:1.5}}>
-            <Stack direction='row' spacing={1}>
-            {props.operatingHours[day].map((interval, j) => (
-              <Chip key={j} label={`${WDateUtils.MinutesToPrintTime(interval.start)} - ${WDateUtils.MinutesToPrintTime(interval.end)}`}
-              onDelete={()=>onRemoveOperatingHours(day, interval)} />
-            ))}
-            </Stack>
+            <Grid item xs={9} md={9} lg={7} sx={{ p: 1.5 }}>
+              <Stack direction='row' spacing={1}>
+                {props.operatingHours[day].map((interval, j) => (
+                  <Chip key={j} label={`${WDateUtils.MinutesToPrintTime(interval.start)} - ${WDateUtils.MinutesToPrintTime(interval.end)}`}
+                    onDelete={() => onRemoveOperatingHours(day, interval)} />
+                ))}
+              </Stack>
             </Grid>
             <Grid item xs={12} md={12} lg={4}>
               <OperatingHoursIntervalForm
@@ -145,7 +143,7 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
   )
 }
 
-const DateIntervalsComponent = function (props: IntervalsComponentBaseProps & ValSetValNamed<Record<string | number | symbol, IWInterval[]>, 'dateIntervals'>) {
+const DateIntervalsComponent = function (props: IntervalsComponentBaseProps & ValSetValNamed<DateIntervalEntry[], 'dateIntervals'>) {
 
 }
 
@@ -157,8 +155,8 @@ export type FulfillmentComponentProps =
   ValSetValNamed<string[], 'terms'> &
   ValSetValNamed<string, 'confirmationMessage'> &
   ValSetValNamed<string, 'instructions'> &
-  ValSetValNamed<string|null, 'menuCategoryId'> &
-  ValSetValNamed<string|null, 'orderCategoryId'> &
+  ValSetValNamed<string | null, 'menuCategoryId'> &
+  ValSetValNamed<string | null, 'orderCategoryId'> &
   ValSetValNamed<boolean, 'requirePrepayment'> &
   ValSetValNamed<boolean, 'allowPrepayment'> &
   ValSetValNamed<{ function: string, percentage: number } | null, 'autograt'> &
@@ -216,7 +214,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               options={Object.keys(FulfillmentType)}
             />
           </Grid>
-          { /* universal break */ }
+          { /* universal break */}
           <Grid item xs={12} md={9} >
             <StringPropertyComponent
               disabled={props.isProcessing}
@@ -225,7 +223,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setDisplayName}
             />
           </Grid>
-          { /* xs break */ }
+          { /* xs break */}
           <Grid item xs={6} md={2} >
             <StringPropertyComponent
               disabled={props.isProcessing}
@@ -242,19 +240,19 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setOrdinal}
             />
           </Grid>
-          { /* universal break */ }
+          { /* universal break */}
           <Grid item xs={12}>
             <TextField
               multiline
               fullWidth
-              rows={props.terms.length+1}
+              rows={props.terms.length + 1}
               label="Service Terms (Each line a new bullet point)"
               type="text"
               value={props.terms.join('\n')}
               onChange={(e) => props.setTerms(e.target.value.split('\n'))}
             />
           </Grid>
-          { /* universal break */ }
+          { /* universal break */}
           <Grid item xs={12}>
             <StringPropertyComponent
               disabled={props.isProcessing}
@@ -263,7 +261,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setConfirmationMessage}
             />
           </Grid>
-          { /* universal break */ }
+          { /* universal break */}
           <Grid item xs={12}>
             <StringPropertyComponent
               disabled={props.isProcessing}
@@ -272,7 +270,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               setValue={props.setInstructions}
             />
           </Grid>
-          { /* universal break */ }
+          { /* universal break */}
           <Grid item xs={12} md={6}>
             <Autocomplete
               unselectable='off'
@@ -288,7 +286,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               renderInput={(params) => <TextField {...params} label="Menu Category" />}
             />
           </Grid>
-          { /* xs break */ }
+          { /* xs break */}
           <Grid item xs={12} md={6}>
             <Autocomplete
               unselectable='off'
@@ -304,7 +302,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               renderInput={(params) => <TextField {...params} label="Order Category" />}
             />
           </Grid>
-          { /* universal break */ }
+          { /* universal break */}
           <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
@@ -392,22 +390,22 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               allowEmpty={true} />
           </Grid>
           <Grid item xs={12}>
-          <TextField
-            aria-label="textarea"
-            label="Service Area (GeoJSON Polygon)"
-            rows={(isServiceAreaDirty && localServiceAreaString) || props.serviceArea ? 15 : 1}
-            fullWidth
-            multiline
-            value={isServiceAreaDirty ? localServiceAreaString : (props.serviceArea ? JSON.stringify(props.serviceArea) : "")}
-            onChange={e => onChangeLocalServiceAreaString(e.target.value)}
-            onBlur={() => onSetServiceArea(localServiceAreaString)}
-            error={isServiceAreaParsingError}
-            helperText={isServiceAreaParsingError ? "JSON Parsing Error" : ""}
-          />
-        </Grid>
+            <TextField
+              aria-label="textarea"
+              label="Service Area (GeoJSON Polygon)"
+              rows={(isServiceAreaDirty && localServiceAreaString) || props.serviceArea ? 15 : 1}
+              fullWidth
+              multiline
+              value={isServiceAreaDirty ? localServiceAreaString : (props.serviceArea ? JSON.stringify(props.serviceArea) : "")}
+              onChange={e => onChangeLocalServiceAreaString(e.target.value)}
+              onBlur={() => onSetServiceArea(localServiceAreaString)}
+              error={isServiceAreaParsingError}
+              helperText={isServiceAreaParsingError ? "JSON Parsing Error" : ""}
+            />
+          </Grid>
         </>
       }
-      />);
+    />);
 };
 
 export default FulfillmentComponent;

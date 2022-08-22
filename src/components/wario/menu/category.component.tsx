@@ -44,7 +44,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
       confirmText={props.confirmText}
       body={
         <>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Category Name"
@@ -52,7 +52,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               setValue={props.setName}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <Autocomplete
               options={props.categoryIds}
               value={props.parent}
