@@ -21,10 +21,12 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
   const [shortcode, setShortcode] = useState('');
   const [service, setService] = useState(FulfillmentType.PickUp);
   const [terms, setTerms] = useState<string[]>([]);
+  const [fulfillmentDescription, setFulfillmentDescription] = useState('');
   const [confirmationMessage, setConfirmationMessage] = useState('');
   const [instructions, setInstructions] = useState('');
   const [menuCategoryId, setMenuCategoryId] = useState<string | null>(null);
   const [orderCategoryId, setOrderCategoryId] = useState<string | null>(null);
+  const [orderSupplementaryCategoryId, setOrderSupplementaryCategoryId] = useState<string | null>(null);
   const [requirePrepayment, setRequirePrepayment] = useState(true);
   const [allowPrepayment, setAllowPrepayment] = useState(true);
   const [autograt, setAutograt] = useState<{ function: string, percentage: number } | null>(null);
@@ -49,10 +51,12 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
     setShortcode('');
     setService(FulfillmentType.PickUp);
     setTerms([]);
+    setFulfillmentDescription('');
     setConfirmationMessage('');
     setInstructions('');
     setMenuCategoryId(null);
     setOrderCategoryId(null);
+    setOrderSupplementaryCategoryId(null);
     setRequirePrepayment(true);
     setAllowPrepayment(true);
     setAutograt(null);
@@ -80,11 +84,13 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
           service,
           terms: terms.filter(x=>x.length > 0),
           messages: {
+            DESCRIPTION: fulfillmentDescription ?? null,
             CONFIRMATION: confirmationMessage,
             INSTRUCTIONS: instructions,
           },
           menuBaseCategoryId: menuCategoryId,
           orderBaseCategoryId: orderCategoryId,
+          orderSupplementaryCategoryId: orderSupplementaryCategoryId,
           requirePrepayment,
           allowPrepayment,
           autograt,
@@ -133,6 +139,8 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
       setService={setService}
       terms={terms}
       setTerms={setTerms}
+      fulfillmentDescription={fulfillmentDescription}
+      setFulfillmentDescription={setFulfillmentDescription}
       confirmationMessage={confirmationMessage}
       setConfirmationMessage={setConfirmationMessage}
       instructions={instructions}
@@ -141,6 +149,8 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
       setMenuCategoryId={setMenuCategoryId}
       orderCategoryId={orderCategoryId}
       setOrderCategoryId={setOrderCategoryId}
+      orderSupplementaryCategoryId={orderSupplementaryCategoryId}
+      setOrderSupplementaryCategoryId={setOrderSupplementaryCategoryId}
       requirePrepayment={requirePrepayment}
       setRequirePrepayment={setRequirePrepayment}
       allowPrepayment={allowPrepayment}

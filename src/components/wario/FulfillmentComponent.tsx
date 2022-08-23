@@ -157,10 +157,12 @@ export type FulfillmentComponentProps =
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<FulfillmentType, 'service'> &
   ValSetValNamed<string[], 'terms'> &
+  ValSetValNamed<string, 'fulfillmentDescription'> &
   ValSetValNamed<string, 'confirmationMessage'> &
   ValSetValNamed<string, 'instructions'> &
   ValSetValNamed<string | null, 'menuCategoryId'> &
   ValSetValNamed<string | null, 'orderCategoryId'> &
+  ValSetValNamed<string | null, 'orderSupplementaryCategoryId'> &
   ValSetValNamed<boolean, 'requirePrepayment'> &
   ValSetValNamed<boolean, 'allowPrepayment'> &
   ValSetValNamed<{ function: string, percentage: number } | null, 'autograt'> &
@@ -260,6 +262,15 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
           <Grid item xs={12}>
             <StringPropertyComponent
               disabled={props.isProcessing}
+              label="Fulfillment Description"
+              value={props.fulfillmentDescription || ""}
+              setValue={props.setFulfillmentDescription}
+            />
+          </Grid>
+          { /* universal break */}
+          <Grid item xs={12}>
+            <StringPropertyComponent
+              disabled={props.isProcessing}
               label="Order Confirmation Message"
               value={props.confirmationMessage || ""}
               setValue={props.setConfirmationMessage}
@@ -275,7 +286,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
             />
           </Grid>
           { /* universal break */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Autocomplete
               unselectable='off'
               disableClearable
@@ -291,7 +302,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
             />
           </Grid>
           { /* xs break */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Autocomplete
               unselectable='off'
               disableClearable
@@ -304,6 +315,22 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               getOptionLabel={(option) => catalog.categories[option].category.name}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Order Category" />}
+            />
+          </Grid>
+          { /* xs break */}
+          <Grid item xs={12} md={4}>
+            <Autocomplete
+              unselectable='off'
+              disableClearable
+              filterSelectedOptions
+              disabled={props.isProcessing}
+              options={Object.keys(catalog.categories)}
+              // @ts-ignore
+              value={props.orderSupplementaryCategoryId}
+              onChange={(_, v) => v && props.setMenuCategoryId(v)}
+              getOptionLabel={(option) => catalog.categories[option].category.name}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderInput={(params) => <TextField {...params} label="Order Supplement Category" />}
             />
           </Grid>
           { /* universal break */}

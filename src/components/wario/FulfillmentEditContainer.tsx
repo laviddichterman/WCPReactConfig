@@ -12,10 +12,12 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
   const [shortcode, setShortcode] = useState(fulfillment.shortcode);
   const [service, setService] = useState(fulfillment.service);
   const [terms, setTerms] = useState<string[]>(fulfillment.terms);
+  const [fulfillmentDescription, setFulfillmentDescription] = useState(fulfillment.messages.DESCRIPTION ?? "");
   const [confirmationMessage, setConfirmationMessage] = useState(fulfillment.messages.CONFIRMATION);
   const [instructions, setInstructions] = useState(fulfillment.messages.INSTRUCTIONS);
   const [menuCategoryId, setMenuCategoryId] = useState<string | null>(fulfillment.menuBaseCategoryId);
   const [orderCategoryId, setOrderCategoryId] = useState<string | null>(fulfillment.orderBaseCategoryId);
+  const [orderSupplementaryCategoryId, setOrderSupplementaryCategoryId] = useState<string | null>(fulfillment.orderSupplementaryCategoryId);
   const [requirePrepayment, setRequirePrepayment] = useState(fulfillment.requirePrepayment);
   const [allowPrepayment, setAllowPrepayment] = useState(fulfillment.allowPrepayment);
   const [autograt, setAutograt] = useState<{ function: string, percentage: number } | null>(fulfillment.autograt);
@@ -46,11 +48,13 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
           service,
           terms,
           messages: {
+            DESCRIPTION: fulfillmentDescription ?? null,
             CONFIRMATION: confirmationMessage,
             INSTRUCTIONS: instructions,
           },
           menuBaseCategoryId: menuCategoryId,
           orderBaseCategoryId: orderCategoryId,
+          orderSupplementaryCategoryId: orderSupplementaryCategoryId,
           requirePrepayment,
           allowPrepayment,
           autograt,
@@ -106,6 +110,8 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
       setService={setService}
       terms={terms}
       setTerms={setTerms}
+      fulfillmentDescription={fulfillmentDescription}
+      setFulfillmentDescription={setFulfillmentDescription}
       confirmationMessage={confirmationMessage}
       setConfirmationMessage={setConfirmationMessage}
       instructions={instructions}
@@ -114,6 +120,8 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
       setMenuCategoryId={setMenuCategoryId}
       orderCategoryId={orderCategoryId}
       setOrderCategoryId={setOrderCategoryId}
+      orderSupplementaryCategoryId={orderSupplementaryCategoryId}
+      setOrderSupplementaryCategoryId={setOrderSupplementaryCategoryId}
       requirePrepayment={requirePrepayment}
       setRequirePrepayment={setRequirePrepayment}
       allowPrepayment={allowPrepayment}
