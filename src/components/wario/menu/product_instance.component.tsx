@@ -4,19 +4,20 @@ import { Grid, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, Radio
 
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { ICatalogModifiers, IProduct, ModifiersMap, OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wcpshared";
+import { ICatalogModifiers, IProduct, ProductModifierEntry, OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wcpshared";
 import { ValSetValNamed } from "../../../utils/common";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
 import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
+import { cloneDeep } from "lodash";
 
 export type ProductInstanceComponentProps =
   ValSetValNamed<string, 'displayName'> &
   ValSetValNamed<string, 'description'> &
   ValSetValNamed<string, 'shortcode'> &
   ValSetValNamed<number, 'ordinal'> &
-  ValSetValNamed<ModifiersMap, 'modifiers'> &
+  ValSetValNamed<ProductModifierEntry[], 'modifiers'> &
   ValSetValNamed<boolean, 'isBase'> &
   // menu
   ValSetValNamed<number, 'menuOrdinal'> &
@@ -35,37 +36,40 @@ export type ProductInstanceComponentProps =
   {
     parent_product: IProduct;
     isProcessing: boolean;
-  }
+  };
 
 const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
   const theme = useTheme();
   const useToggleEndLabel = !useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
   const handleToggle = (mtid: string, oidx: number) => {
-    props.setModifiers({
-      ...props.modifiers,
-      [mtid]: Object.assign(
-        [],
-        props.modifiers[mtid],
-        {
-          [oidx]: {
-            ...props.modifiers[mtid][oidx],
-            placement: props.modifiers[mtid][oidx].placement === OptionPlacement.WHOLE ? OptionPlacement.NONE : OptionPlacement.WHOLE
-          }
-        })
-    });
+    const foundModifierEntryIndex = props.modifiers.findIndex(x => x.modifierTypeId === mtid);
+
+    props.setModifiers([
+      ...props.modifiers.slice(0, foundModifierEntryIndex),
+      {
+        modifierTypeId: mtid, options: [
+          ...props.modifiers[foundModifierEntryIndex].options.slice(0, oidx),
+          { ...props.modifiers[foundModifierEntryIndex].options[oidx], placement: props.modifiers[foundModifierEntryIndex].options[oidx].placement === OptionPlacement.WHOLE ? OptionPlacement.NONE : OptionPlacement.WHOLE },
+          ...props.modifiers[foundModifierEntryIndex].options.slice(oidx + 1)]
+      },
+      ...props.modifiers.slice(foundModifierEntryIndex + 1)]);
   };
 
   const handleRadioChange = (mtid: string, oidx: number) => {
-    props.setModifiers({
-      ...(props.modifiers),
-      [mtid]: props.modifiers[mtid].map((opt, idx) =>
-      ({
-        optionId: opt.optionId,
-        placement: idx === oidx ? OptionPlacement.WHOLE : OptionPlacement.NONE,
-        qualifier: OptionQualifier.REGULAR
-      }))
-    });
+    const foundModifierEntryIndex = props.modifiers.findIndex(x => x.modifierTypeId === mtid);
+    props.setModifiers([
+      ...props.modifiers.slice(0, foundModifierEntryIndex),
+      {
+        modifierTypeId: mtid, options: props.modifiers[foundModifierEntryIndex].options.map((opt, idx) => (
+        {
+          optionId: opt.optionId,
+          placement: idx === oidx ? OptionPlacement.WHOLE : OptionPlacement.NONE,
+          qualifier: OptionQualifier.REGULAR
+
+        }))
+      },
+      ...props.modifiers.slice(foundModifierEntryIndex + 1)]);
   };
 
   const modifier_html = props.parent_product.modifiers.map((modifier_entry, i) => {
@@ -79,7 +83,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           aria-label={mt.id}
           name={mt.name}
           row
-          value={props.modifiers[mtid].findIndex(
+          value={props.modifiers.find(x => x.modifierTypeId === mtid)!.options.findIndex(
             (o) => o.placement === OptionPlacement.WHOLE
           )}
           onChange={(e) => handleRadioChange(mtid, parseInt(e.target.value))}
@@ -103,7 +107,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
               control={
                 <Checkbox
                   checked={
-                    props.modifiers[mtid][oidx].placement === OptionPlacement.WHOLE
+                    props.modifiers.find(x => x.modifierTypeId === mtid)!.options[oidx].placement === OptionPlacement.WHOLE
                   }
                   onChange={() => handleToggle(mtid, oidx)}
                   disableRipple
@@ -292,14 +296,15 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
 const normalizeModifiersAndOptions = (
   parent_product: IProduct,
   modifier_types_map: ICatalogModifiers,
-  minimizedModifiers: ModifiersMap
-) => {
-  return parent_product.modifiers.reduce(
-    (acc, modifier_entry) => {
-      const modOptions = minimizedModifiers[modifier_entry.mtid] ?? [];
+  minimizedModifiers: ProductModifierEntry[]
+): ProductModifierEntry[] => {
+  return parent_product.modifiers.map(
+    (modifier_entry) => {
+      const modEntry = minimizedModifiers.find(x => x.modifierTypeId === modifier_entry.mtid);
+      const modOptions = modEntry ? modEntry.options : [];
       return {
-        ...acc,
-        [modifier_entry.mtid]: modifier_types_map[modifier_entry.mtid].options.map((option,) => {
+        modifierTypeId: modifier_entry.mtid,
+        options: modifier_types_map[modifier_entry.mtid].options.map((option) => {
           const foundOptionState = modOptions.find(x => x.optionId === option.id);
           return {
             optionId: option.id,
@@ -308,21 +313,21 @@ const normalizeModifiersAndOptions = (
           }
         })
       };
-    }, {});
+    });
 };
 
-const minimizeModifiers = (normalized_modifiers: ModifiersMap) =>
-  Object.entries(normalized_modifiers).reduce((acc, [mtid, options]) => {
-    const filtered_options = options.filter(x => x.placement !== OptionPlacement.NONE);
-    return filtered_options.length ? { ...acc, [mtid]: filtered_options } : acc;
-  }, {});
+const minimizeModifiers = (normalized_modifiers: ProductModifierEntry[]): ProductModifierEntry[] =>
+  normalized_modifiers.reduce((acc, modifier) => {
+    const filtered_options = modifier.options.filter(x => x.placement !== OptionPlacement.NONE);
+    return filtered_options.length ? [...acc, { ...modifier, options: filtered_options }] : acc;
+  }, []);
 
 
 export const ProductInstanceContainer = ({ parent_product, modifiers, setModifiers, ...otherProps }: ProductInstanceComponentProps) => {
   const modifier_types_map = useAppSelector(s => s.ws.catalog!.modifiers);
-  const [normalizedModifers, setNormalizedModifiers] = useState<ModifiersMap>(normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers));
+  const [normalizedModifers, setNormalizedModifiers] = useState<ProductModifierEntry[]>(normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers));
 
-  const setNormalizedModifiersIntermediate = (mods: ModifiersMap) => {
+  const setNormalizedModifiersIntermediate = (mods: ProductModifierEntry[]) => {
     setNormalizedModifiers(mods);
     setModifiers(minimizeModifiers(mods));
   };

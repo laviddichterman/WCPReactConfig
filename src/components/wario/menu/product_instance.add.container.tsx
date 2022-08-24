@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProductInstanceActionContainer } from "./product_instance.component";
-import { IProduct, IProductInstance, ModifiersMap, PriceDisplay } from "@wcp/wcpshared";
+import { IProduct, IProductInstance, ProductModifierEntry, PriceDisplay } from "@wcp/wcpshared";
 import { HOST_API } from "../../../config";
 
 interface ProductInstanceAddContainerProps {
@@ -15,7 +15,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
-  const [modifiers, setModifiers] = useState<ModifiersMap>({});
+  const [modifiers, setModifiers] = useState<ProductModifierEntry[]>([]);
   const [isBase, setIsBase] = useState(false);
   // menu
   const [menuOrdinal, setMenuOrdinal] = useState(0);
@@ -80,7 +80,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
           setDescription("");
           setShortcode("");
           setOrdinal(0);
-          setModifiers({});
+          setModifiers([]);
           setIsBase(false);
           setMenuOrdinal(0);
           setMenuHide(false);
