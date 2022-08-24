@@ -320,14 +320,12 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
           { /* xs break */}
           <Grid item xs={12} md={4}>
             <Autocomplete
-              unselectable='off'
-              disableClearable
               filterSelectedOptions
               disabled={props.isProcessing}
               options={Object.keys(catalog.categories)}
               // @ts-ignore
               value={props.orderSupplementaryCategoryId}
-              onChange={(_, v) => v && props.setMenuCategoryId(v)}
+              onChange={(_, v) => v && props.setOrderSupplementaryCategoryId(v)}
               getOptionLabel={(option) => catalog.categories[option].category.name}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Order Supplement Category" />}

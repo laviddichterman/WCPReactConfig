@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.15",
+  "version": "0.4.16",
   "dependencies": {
     "@auth0/auth0-react": "^1.10.2",
     "@emotion/cache": "^11.10.3",
@@ -68,11 +68,11 @@
     "@babel/core": "^7.18.13",
     "@babel/eslint-parser": "^7.18.9",
     "@types/geojson": "^7946.0.10",
-    "@types/jest": "^28.1.7",
-    "@types/node": "^18.7.12",
+    "@types/jest": "^28.1.8",
+    "@types/node": "^18.7.13",
     "@types/nprogress": "^0.2.0",
     "@types/numeral": "^2.0.2",
-    "@types/papaparse": "^5.3.3",
+    "@types/papaparse": "^5.3.4",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@types/react-lazy-load-image-component": "^1.5.2",

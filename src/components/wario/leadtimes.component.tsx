@@ -16,7 +16,7 @@ const LeadTimesComp = () => {
 
   useEffect(() => {
     setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({ ...acc, [key]: dirty[key] ? value : FULFILLMENTS[key].leadTime }), {}))
-  }, [FULFILLMENTS, dirty, localLeadTime]);
+  }, [FULFILLMENTS, dirty]);
   const onChangeLeadTimes = (fId: string, leadTime: number) => {
     if (localLeadTime[fId] !== leadTime) {
       setLocalLeadTime({ ...localLeadTime, [fId]: leadTime });
@@ -25,7 +25,7 @@ const LeadTimesComp = () => {
   };
   const onSubmit = async () => {
     if (!isProcessing) {
-      console.log(JSON.stringify(localLeadTime));
+      const body = Object.entries(localLeadTime).reduce( (acc, [key, value]) => dirty[key] ? ({...acc, [key]: value}) : acc, {});
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:order_config" });
@@ -35,7 +35,7 @@ const LeadTimesComp = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(localLeadTime)
+          body: JSON.stringify(body)
         });
         if (response.status === 201) {
           setDirty(GenerateCleanDirtyArray(FULFILLMENTS));
