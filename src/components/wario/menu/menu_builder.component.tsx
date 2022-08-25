@@ -84,8 +84,8 @@ const MenuBuilderComponent = () => {
   // this assumes a single base product instance per product class.
   // assumption is that this precondition is enforced by the service
   const nameOfBaseProductInstance = useMemo(() => {
-    const pididx = productToEdit !== null && Object.hasOwn(catalog.products, productToEdit.id) ? catalog.products[productToEdit.id].instances.findIndex((pi) => pi.isBase) : -1;
-    return pididx !== -1 ? catalog.products[(productToEdit as IProduct).id].instances[pididx].displayName : "Incomplete Product";
+    const piid = productToEdit !== null ? catalog.products[productToEdit.id].instances.find((pi) => catalog.productInstances[pi].isBase) ?? null : null;
+    return piid !== null ? catalog.productInstances[piid].displayName : "Incomplete Product";
   }, [catalog, productToEdit]);
 
 

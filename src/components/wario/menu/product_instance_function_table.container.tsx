@@ -19,8 +19,7 @@ const ProductInstanceFunctionTableContainer = ({
   setProductInstanceFunctionToEdit,
 }: PIFTableContainerProps) => {
 
-  const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.product_instance_functions ?? {});
-  const modifierTypes = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const catalog = useAppSelector(s => s.ws.catalog!);
   const editProductFunction = (row: IProductInstanceFunction) => () => {
     setIsProductInstanceFunctionEditOpen(true);
     setProductInstanceFunctionToEdit(row);
@@ -39,7 +38,7 @@ const ProductInstanceFunctionTableContainer = ({
         elt:
           <Tooltip key="AddNew" title="Add Product Function"><IconButton onClick={() => setIsProductInstanceFunctionAddOpen(true)}><AddBox /></IconButton></Tooltip>
       }]}
-      rows={Object.values(productInstanceFunctions)}
+      rows={Object.values(catalog.productInstanceFunctions)}
       getRowId={(row) => row._id}
       columns={[
         {
@@ -62,7 +61,7 @@ const ProductInstanceFunctionTableContainer = ({
           ]
         },
         { headerName: "Name", field: "name", valueGetter: (v: {row: IProductInstanceFunction}) => v.row.name, flex: 1 },
-        { headerName: "Function", field: "expression", valueGetter: (v: {row: IProductInstanceFunction}) => WFunctional.AbstractExpressionStatementToString(v.row.expression, modifierTypes), flex: 3 },
+        { headerName: "Function", field: "expression", valueGetter: (v: {row: IProductInstanceFunction}) => WFunctional.AbstractExpressionStatementToString(v.row.expression, catalog), flex: 3 },
       ]}
     />
   );

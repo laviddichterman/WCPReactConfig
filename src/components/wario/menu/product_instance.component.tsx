@@ -10,7 +10,6 @@ import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBoo
 import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
-import { cloneDeep } from "lodash";
 
 export type ProductInstanceComponentProps =
   ValSetValNamed<string, 'displayName'> &
@@ -41,6 +40,7 @@ export type ProductInstanceComponentProps =
 const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
   const theme = useTheme();
   const useToggleEndLabel = !useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const modifierOptionsMap = useAppSelector(s=>s.ws.catalog?.options ?? {});
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
   const handleToggle = (mtid: string, oidx: number) => {
     const foundModifierEntryIndex = props.modifiers.findIndex(x => x.modifierTypeId === mtid);
@@ -74,7 +74,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
 
   const modifier_html = props.parent_product.modifiers.map((modifier_entry, i) => {
     const { mtid } = modifier_entry;
-    const mt = modifier_types_map[mtid].modifier_type;
+    const mt = modifier_types_map[mtid].modifierType;
     const mt_options = modifier_types_map[mtid].options;
     let mt_options_html;
     if (mt.min_selected === 1 && mt.max_selected === 1) {
@@ -88,12 +88,12 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           )}
           onChange={(e) => handleRadioChange(mtid, parseInt(e.target.value))}
         >
-          {mt_options.map((_, oidx) => (
+          {mt_options.map((optionId, oidx) => (
             <FormControlLabel
               key={oidx}
               control={<Radio disableRipple />}
               value={oidx}
-              label={mt_options[oidx].displayName}
+              label={modifierOptionsMap[optionId].displayName}
             />
           ))}
         </RadioGroup>
@@ -114,7 +114,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
                   inputProps={{ "aria-labelledby": String(oidx) }}
                 />
               }
-              label={option.displayName}
+              label={modifierOptionsMap[option].displayName}
             />
           ))}
         </FormGroup>
@@ -305,9 +305,9 @@ const normalizeModifiersAndOptions = (
       return {
         modifierTypeId: modifier_entry.mtid,
         options: modifier_types_map[modifier_entry.mtid].options.map((option) => {
-          const foundOptionState = modOptions.find(x => x.optionId === option.id);
+          const foundOptionState = modOptions.find(x => x.optionId === option);
           return {
-            optionId: option.id,
+            optionId: option,
             placement: foundOptionState ? foundOptionState.placement : OptionPlacement.NONE,
             qualifier: foundOptionState ? foundOptionState.qualifier : OptionQualifier.REGULAR
           }

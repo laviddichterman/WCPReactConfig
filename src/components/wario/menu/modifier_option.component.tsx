@@ -32,7 +32,7 @@ type ModifierOptionComponentProps =
   }
 
 const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
-  const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.product_instance_functions) as RecordProductInstanceFunctions;
+  const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.productInstanceFunctions) as RecordProductInstanceFunctions;
   return (
     <ElementActionComponent
       onCloseCallback={props.onCloseCallback}

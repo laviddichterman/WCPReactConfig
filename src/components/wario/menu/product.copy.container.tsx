@@ -23,6 +23,7 @@ export interface ProductCopyContainerProps {
   onCloseCallback: VoidFunction;
 };
 const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainerProps) => {
+  const allProductInstances = useAppSelector(s=>s.ws.catalog!.productInstances);
   const product_instances = useAppSelector(s => s.ws.catalog?.products[product.id].instances ?? []);
   const [price, setPrice] = useState(product.price);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
@@ -40,24 +41,24 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
   // product instance indexed state
   const [expandedPanels, setExpandedPanel] = useIndexedState(useState(Array(product_instances.length).fill(false)));
   const [copyPIFlags, setCopyPIFlag] = useIndexedState(useState(Array(product_instances.length).fill(true)));
-  const [piDisplayNames, setPiDisplayName] = useIndexedState(useState(product_instances.map(pi => pi.displayName)));
-  const [piDescriptions, setPiDescription] = useIndexedState(useState(product_instances.map(pi => pi.description)));
-  const [piShortcodes, setPiShortcode] = useIndexedState(useState(product_instances.map(pi => pi.shortcode)));
-  const [piOrdinals, setPiOrdinal] = useIndexedState(useState(product_instances.map(pi => (pi.ordinal || 0))));
-  const [piModifierss, setPiModifiers] = useIndexedState(useState(product_instances.map(pi => pi.modifiers)));
-  const [piIsBases, setPiIsBase] = useIndexedState(useState(product_instances.map(pi => (pi.isBase ?? false))));
-  const [piMenuOrdinals, setPiMenuOrdinal] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.ordinal || 0))));
-  const [piMenuHides, setPiMenuHide] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.hide ?? false))));
-  const [piMenuPriceDisplays, setPiMenuPriceDisplay] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.price_display ?? "IF_COMPLETE"))));
-  const [piMenuAdornments, setPiMenuAdornment] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.adornment ?? ""))));
-  const [piMenuSuppressExhaustiveModifierLists, setPiMenuSuppressExhaustiveModifierList] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.suppress_exhaustive_modifier_list ?? false))));
-  const [piMenuShowModifierOptionss, setPiMenuShowModifierOptions] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.menu?.show_modifier_options ?? false))));
-  const [piOrderOrdinals, setPiOrderOrdinal] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.order?.ordinal || 0))));
-  const [piOrderMenuHides, setPiOrderMenuHide] = useIndexedState(useState(product_instances.map(pi => (pi.displayFlags?.order?.hide ?? false))));
-  const [piSkipCustomizations, setPiSkipCustomization] = useIndexedState(useState(product_instances.map(pi => pi.displayFlags?.order?.skip_customization ?? false)));
-  const [piOrderPriceDisplays, setPiOrderPriceDisplay] = useIndexedState(useState(product_instances.map(pi => pi.displayFlags?.order?.price_display ?? "IF_COMPLETE")));
-  const [piOrderAdornments, setPiOrderAdornment] = useIndexedState(useState(product_instances.map(pi => pi.displayFlags?.order?.adornment ?? "")));
-  const [piOrderSuppressExhaustiveModifierLists, setPiOrderSuppressExhaustiveModifierList] = useIndexedState(useState(product_instances.map(pi => pi.displayFlags?.order?.suppress_exhaustive_modifier_list ?? false)));
+  const [piDisplayNames, setPiDisplayName] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].displayName)));
+  const [piDescriptions, setPiDescription] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].description)));
+  const [piShortcodes, setPiShortcode] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].shortcode)));
+  const [piOrdinals, setPiOrdinal] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].ordinal || 0))));
+  const [piModifierss, setPiModifiers] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].modifiers)));
+  const [piIsBases, setPiIsBase] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].isBase ?? false))));
+  const [piMenuOrdinals, setPiMenuOrdinal] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu?.ordinal || 0))));
+  const [piMenuHides, setPiMenuHide] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu?.hide ?? false))));
+  const [piMenuPriceDisplays, setPiMenuPriceDisplay] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu?.price_display ?? "IF_COMPLETE"))));
+  const [piMenuAdornments, setPiMenuAdornment] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu?.adornment ?? ""))));
+  const [piMenuSuppressExhaustiveModifierLists, setPiMenuSuppressExhaustiveModifierList] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu.suppress_exhaustive_modifier_list ?? false))));
+  const [piMenuShowModifierOptionss, setPiMenuShowModifierOptions] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu.show_modifier_options ?? false))));
+  const [piOrderOrdinals, setPiOrderOrdinal] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.order.ordinal || 0))));
+  const [piOrderMenuHides, setPiOrderMenuHide] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.order.hide ?? false))));
+  const [piSkipCustomizations, setPiSkipCustomization] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].displayFlags.order.skip_customization ?? false)));
+  const [piOrderPriceDisplays, setPiOrderPriceDisplay] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].displayFlags.order.price_display ?? "IF_COMPLETE")));
+  const [piOrderAdornments, setPiOrderAdornment] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].displayFlags.order.adornment ?? "")));
+  const [piOrderSuppressExhaustiveModifierLists, setPiOrderSuppressExhaustiveModifierList] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].displayFlags.order.suppress_exhaustive_modifier_list ?? false)));
 
   // API state
   const [isProcessing, setIsProcessing] = useState(false);

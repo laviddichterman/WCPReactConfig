@@ -8,7 +8,7 @@ import TableWrapperComponent from "../table_wrapper.component";
 import { useAppSelector } from "../../../hooks/useRedux";
 
 export interface ModifierOptionTableContainerProps {
-  modifier_type: IOptionType;
+  modifierType: IOptionType;
   setModifierOptionToEdit: Dispatch<SetStateAction<IOption>>;
   setIsModifierOptionEditOpen: Dispatch<SetStateAction<boolean>>;
   setIsModifierOptionDeleteOpen: Dispatch<SetStateAction<boolean>>;
@@ -18,7 +18,7 @@ export interface ModifierOptionTableContainerProps {
 };
 
 const ModifierOptionTableContainer = ({
-  modifier_type,
+  modifierType,
   setModifierOptionToEdit,
   setIsModifierOptionEditOpen,
   setIsModifierOptionDeleteOpen,
@@ -26,9 +26,10 @@ const ModifierOptionTableContainer = ({
   setIsModifierOptionDisableOpen,
   setIsModifierOptionDisableUntilEodOpen
 }: ModifierOptionTableContainerProps) => {
-  const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const modifier_types_map = useAppSelector(s => s.ws.catalog!.modifiers);
+  const modifierOptionsMap = useAppSelector(s=>s.ws.catalog!.options);
   const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
-  const productInstanceFunctions = useAppSelector(s => s.ws.catalog!.product_instance_functions!);
+  const productInstanceFunctions = useAppSelector(s => s.ws.catalog!.productInstanceFunctions!);
   const editModifierOption = (row: IOption) => () => {
     setIsModifierOptionEditOpen(true);
     setModifierOptionToEdit(row);
@@ -109,7 +110,7 @@ const ModifierOptionTableContainer = ({
         { headerName: "Disabled", field: "item.disabled", valueGetter: (v : {row: IOption}) => (v.row.disabled !== null && DisableDataCheck(v.row.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.disabled.start > v.row.disabled.end ? "True" : `${format(v.row.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
       ]}
       getRowId={(row) => row._id}
-      rows={modifier_types_map[modifier_type.id].options}
+      rows={modifier_types_map[modifierType.id].options.map(x=>modifierOptionsMap[x])}
     />
   );
 };

@@ -43,24 +43,24 @@ const ModifierTypeTableContainer = ({
 
   const editModifierType = (id: string) => () => {
     setIsModifierTypeEditOpen(true);
-    setModifierTypeToEdit(modifiers[id].modifier_type);
+    setModifierTypeToEdit(modifiers[id].modifierType);
   };
 
   const addModifierOption = (id: string) => () => {
     setIsModifierOptionAddOpen(true);
-    setModifierTypeToEdit(modifiers[id].modifier_type);
+    setModifierTypeToEdit(modifiers[id].modifierType);
   };
 
   const deleteModifierType = (id: string) => () => {
     setIsModifierTypeDeleteOpen(true);
-    setModifierTypeToEdit(modifiers[id].modifier_type);
+    setModifierTypeToEdit(modifiers[id].modifierType);
   };
 
   const getDetailPanelHeight = useCallback(({ row }: { row: CatalogModifierEntry }) => row.options.length ? (41 + (row.options.length * 36)) : 0, []);
 
   const getDetailPanelContent = useCallback(({ row }: { row: CatalogModifierEntry }) => row.options.length ? (
     <ModifierOptionTableContainer
-      modifier_type={row.modifier_type}
+      modifierType={row.modifierType}
       setModifierOptionToEdit={setModifierOptionToEdit}
       setIsModifierOptionEditOpen={setIsModifierOptionEditOpen}
       setIsModifierOptionDeleteOpen={setIsModifierOptionDeleteOpen}
@@ -76,7 +76,7 @@ const ModifierTypeTableContainer = ({
     <TableWrapperComponent
       title="Modifier Types & Options"
       apiRef={apiRef}
-      getRowId={(row: CatalogModifierEntry) => row.modifier_type.id}
+      getRowId={(row: CatalogModifierEntry) => row.modifierType.id}
       columns={[
         {
           headerName: "Actions",
@@ -102,11 +102,11 @@ const ModifierTypeTableContainer = ({
               key="DELMT" />
           ]
         },
-        { headerName: "Name", field: "modifier_type.name", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.name, flex: 1 },
-        { headerName: "Ordinal", field: "ordinal", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.ordinal },
-        { headerName: "Min Selected", field: "min_selected", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.min_selected, },
-        { headerName: "Max Selected", field: "max_selected", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.max_selected },
-        { headerName: "Display Name", field: "display_name", valueGetter: (v: ValueGetterRow) => v.row.modifier_type.displayName },
+        { headerName: "Name", field: "modifierType.name", valueGetter: (v: ValueGetterRow) => v.row.modifierType.name, flex: 1 },
+        { headerName: "Ordinal", field: "ordinal", valueGetter: (v: ValueGetterRow) => v.row.modifierType.ordinal },
+        { headerName: "Min Selected", field: "min_selected", valueGetter: (v: ValueGetterRow) => v.row.modifierType.min_selected, },
+        { headerName: "Max Selected", field: "max_selected", valueGetter: (v: ValueGetterRow) => v.row.modifierType.max_selected },
+        { headerName: "Display Name", field: "display_name", valueGetter: (v: ValueGetterRow) => v.row.modifierType.displayName },
       ]}
       toolbarActions={[{
         size: 1,

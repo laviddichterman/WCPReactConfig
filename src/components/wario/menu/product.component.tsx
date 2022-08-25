@@ -54,7 +54,7 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
 
   const handleSetModifiers = (mods: string[]) => {
     const oldModsAsRecord = props.modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)
-    const sorted: IProductModifier[] = mods.sort((a, b) => catalog.modifiers[a].modifier_type.ordinal - catalog.modifiers[b].modifier_type.ordinal)
+    const sorted: IProductModifier[] = mods.sort((a, b) => catalog.modifiers[a].modifierType.ordinal - catalog.modifiers[b].modifierType.ordinal)
       .map(x => ({ mtid: x, serviceDisable: oldModsAsRecord[x]?.serviceDisable ?? [], enable: oldModsAsRecord[x]?.enable ?? null }));
     if (sorted.length === 0 && !props.showNameOfBaseProduct) {
       props.setShowNameOfBaseProduct(true);
@@ -65,17 +65,17 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
   const modifierEnableFunctionSpecificationList = props.modifiers.map((modifier, idx) => (
     <Grid item xs={12} md={props.modifiers.length - 1 === idx && props.modifiers.length % 2 === 1 ? 12 : 6} key={idx}>
       <Card>
-        <CardHeader title={`Modifier Details: ${catalog.modifiers[modifier.mtid].modifier_type.name}`} />
+        <CardHeader title={`Modifier Details: ${catalog.modifiers[modifier.mtid].modifierType.name}`} />
         <CardContent>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Autocomplete
                 fullWidth
-                options={Object.keys(catalog.product_instance_functions)}
+                options={Object.keys(catalog.productInstanceFunctions)}
                 value={modifier.enable}
                 // this makes a copy of the modifiers array with the updated enable function value
                 onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } }))}
-                getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
+                getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
                 isOptionEqualToValue={(option, value) => option === value}
                 renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
               />
@@ -209,10 +209,10 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               multiple
               filterSelectedOptions
               fullWidth
-              options={Object.keys(catalog.product_instance_functions)}
+              options={Object.keys(catalog.productInstanceFunctions)}
               value={props.orderGuideSuggestionFunctions}
               onChange={(_, v) => props.setOrderGuideSuggestionFunctions(v)}
-              getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
+              getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Order Guide Suggestion Functions" />}
             />
@@ -222,10 +222,10 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               multiple
               filterSelectedOptions
               fullWidth
-              options={Object.keys(catalog.product_instance_functions)}
+              options={Object.keys(catalog.productInstanceFunctions)}
               value={props.orderGuideWarningFunctions}
               onChange={(_, v) => props.setOrderGuideWarningFunctions(v)}
-              getOptionLabel={(option) => catalog.product_instance_functions[option].name ?? 'CORRUPT DATA'}
+              getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Order Guide Warning Functions" />}
             />
@@ -237,7 +237,7 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               options={Object.keys(catalog.modifiers)}
               value={props.modifiers.map(x => x.mtid)}
               onChange={(e, v) => handleSetModifiers(v)}
-              getOptionLabel={(option) => catalog.modifiers[option].modifier_type.name ?? 'CORRUPT DATA'}
+              getOptionLabel={(option) => catalog.modifiers[option].modifierType.name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => <TextField {...params} label="Modifiers" />}
             />

@@ -75,7 +75,7 @@ const AbstractExpressionFunctionalContainer = ({
   value,
   setValue
 }: ValSetVal<IAbstractExpression | null>) => {
-  const modifiers = useAppSelector(s=>s.ws.catalog!.modifiers);
+  const catalog = useAppSelector(s=>s.ws.catalog!);
   const [discriminator, setDiscriminator] = useState<ProductInstanceFunctionType | null>(value?.discriminator ?? null);
   const [expr, setExpr] = useState<IAbstractExpression['expr'] | null>(value?.expr ?? null);
   useEffect(() => {
@@ -127,7 +127,7 @@ const AbstractExpressionFunctionalContainer = ({
   };
   return (
     <AbstractExpressionFunctionalComponent
-      title={value !== null ? WFunctional.AbstractExpressionStatementToString(value, modifiers) : null}
+      title={value !== null ? WFunctional.AbstractExpressionStatementToString(value, catalog) : null}
       expression_types={expression_types}
       discriminator={discriminator}
       setDiscriminator={updateDiscriminator}
@@ -295,7 +295,7 @@ HasAnyOfModifierTypeFunctionalComponent = ({
           options={Object.keys(modifier_types)}
           value={modifier}
           onChange={(_, v) => setModifier(v)}
-          getOptionLabel={(o) => modifier_types[o].modifier_type.name ?? "CORRUPTED DATA"}
+          getOptionLabel={(o) => modifier_types[o].modifierType.name ?? "CORRUPTED DATA"}
           isOptionEqualToValue={(o, v) => o === v}
           renderInput={(params) => <TextField {...params} label="Modifier" />}
         />
@@ -309,11 +309,11 @@ ModifierPlacementFunctionalComponent = ({
   value,
   setValue,
 }) => {
-  const modifier_types = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+  const catalog = useAppSelector(s => s.ws.catalog!);
   const [modifier, setModifier] = useState(value?.mtid ?? null);
   const modifierOptionsForType = useMemo(() => modifier !== null ?
-    modifier_types[modifier].options.reduce((acc: Record<string, IOption>, o) => ({ ...acc, [o.id]: o }), {}) :
-    {}, [modifier, modifier_types])
+    catalog.modifiers[modifier].options.reduce((acc: Record<string, IOption>, o) => ({ ...acc, [o]: catalog.options[o] }), {}) :
+    {}, [modifier, catalog.options, catalog.modifiers])
   const [modifierOption, setModifierOption] = useState(value?.moid ?? null);
   useEffect(() => {
     if (modifier !== null && modifierOption !== null) {
@@ -325,16 +325,16 @@ ModifierPlacementFunctionalComponent = ({
       <Grid item>
         <Autocomplete
           style={{ width: 200 }}
-          options={Object.keys(modifier_types)}
+          options={Object.keys(catalog.modifiers)}
           value={modifier}
           onChange={(e, v) => setModifier(v)}
-          getOptionLabel={(o) => modifier_types[o].modifier_type.name ?? "CORRUPTED DATA"}
+          getOptionLabel={(o) => catalog.modifiers[o].modifierType.name ?? "CORRUPTED DATA"}
           isOptionEqualToValue={(o, v) => o === v}
           renderInput={(params) => <TextField {...params} label="Modifier" />}
         />
       </Grid>
 
-      {modifier !== null && modifier_types[modifier].options.length && (
+      {modifier !== null && catalog.modifiers[modifier].options.length && (
         <Grid item xs={6}>
           <Autocomplete
             style={{ width: 200 }}

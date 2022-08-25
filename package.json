@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.16",
+  "version": "0.4.17",
   "dependencies": {
     "@auth0/auth0-react": "^1.10.2",
     "@emotion/cache": "^11.10.3",
@@ -15,8 +15,8 @@
     "@mui/x-data-grid-pro": "^5.15.3",
     "@mui/x-date-pickers": "^5.0.0-beta.6",
     "@reduxjs/toolkit": "^1.8.5",
-    "@wcp/wario-ux-shared": "^0.0.8",
-    "@wcp/wcpshared": "^4.1.17",
+    "@wcp/wario-ux-shared": "^0.0.10",
+    "@wcp/wcpshared": "^4.1.19",
     "assert": "^2.0.0",
     "axios": "^0.27.2",
     "browserify-zlib": "^0.2.0",
@@ -61,7 +61,7 @@
     "stylis": "^4.1.1",
     "stylis-plugin-rtl": "^2.1.1",
     "util": "^0.12.4",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^3.0.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -76,8 +76,8 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@types/react-lazy-load-image-component": "^1.5.2",
-    "@typescript-eslint/eslint-plugin": "^5.34.0",
-    "@typescript-eslint/parser": "^5.34.0",
+    "@typescript-eslint/eslint-plugin": "^5.35.1",
+    "@typescript-eslint/parser": "^5.35.1",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "react-scripts": "5.0.1",
     "typescript": "^4.7.4"

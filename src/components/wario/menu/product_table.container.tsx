@@ -8,7 +8,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useAppSelector } from "../../../hooks/useRedux";
 import TableWrapperComponent from "../table_wrapper.component";
 
-type RowType = { product: IProduct; instances: IProductInstance[]; }
+type RowType = { product: IProduct; instances: string[]; }
 type ValueGetterRow = GridValueGetterParams<any, RowType>;
 
 interface ProductTableContainerProps {
@@ -77,8 +77,8 @@ const ProductTableContainer = ({
 
   // this assumes a single base product instance per product class.
   // assumption is that this precondition is enforced by the service
-  const GetIndexOfBaseProductInstance = useCallback((instances: IProductInstance[]) =>
-    instances.findIndex((pi) => pi.isBase), []);
+  const GetIdOfBaseProductInstance = useCallback((instances: string[]) =>
+    instances.find((pi) => catalog.productInstances[pi].isBase) ?? null, [catalog.productInstances]);
 
   const getDetailPanelHeight = useCallback(({ row }: { row: RowType }) => row.instances.length ? (41 + (row.instances.length * 36)) : 0, []);
 
@@ -120,7 +120,7 @@ const ProductTableContainer = ({
         { headerName: "Description", field: "item.description", valueGetter: (v: { row: IProductInstance }) => v.row.description },
 
       ]}
-      rows={row.instances}
+      rows={row.instances.map(x=>catalog.productInstances[x])}
       getRowId={(row_inner) => row_inner.id}
     />) :
     (""),
@@ -136,8 +136,8 @@ const ProductTableContainer = ({
           field: 'actions',
           type: 'actions',
           getActions: (params: GridRowParams<RowType>) => {
-            const base_piidx = GetIndexOfBaseProductInstance(params.row.instances);
-            const title = base_piidx !== -1 ? params.row.instances[base_piidx].displayName : "Incomplete Product";
+            const base_piid = GetIdOfBaseProductInstance(params.row.instances);
+            const title = base_piid !== null ? catalog.productInstances[base_piid].displayName : "Incomplete Product";
             const ADD_PRODUCT_INSTANCE = (<GridActionsCellItem
               icon={<Tooltip title={`Add Product Instance to ${title}`}><AddBox /></Tooltip>}
               label={`Add Product Instance to ${title}`}
@@ -181,9 +181,9 @@ const ProductTableContainer = ({
             return DisableDataCheck(params.row.product.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           }
         },
-        { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => GetIndexOfBaseProductInstance(v.row.instances) !== -1 ? v.row.instances[GetIndexOfBaseProductInstance(v.row.instances)].displayName : "Incomplete Product", flex: 6 },
+        { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => GetIdOfBaseProductInstance(v.row.instances) !== null ? catalog.productInstances[GetIdOfBaseProductInstance(v.row.instances)!].displayName : "Incomplete Product", flex: 6 },
         { headerName: "Price", field: "product.price.amount", valueGetter: (v : ValueGetterRow) => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
-        { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: ValueGetterRow) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifier_type.name).join(", ") : "", flex: 3 },
+        { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: ValueGetterRow) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifierType.name).join(", ") : "", flex: 3 },
         // eslint-disable-next-line no-nested-ternary
         { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
         ]}
