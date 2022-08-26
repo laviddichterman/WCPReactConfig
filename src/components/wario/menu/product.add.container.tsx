@@ -44,7 +44,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
           serviceDisable,
           ordinal,
           price,
-          externalIDs: {},
+          externalIDs: [],
           displayFlags: {
             bake_differential: bakeDifferentialMax,
             show_name_of_base_product: showNameOfBaseProduct,

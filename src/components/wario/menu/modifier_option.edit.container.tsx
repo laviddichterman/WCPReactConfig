@@ -42,7 +42,7 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
               bake_factor: bakeFactor,
               can_split: canSplit,
             },
-            externalIDs: {},
+            externalIDs: [],
             displayFlags: {
               omit_from_shortname: omitFromShortname,
               omit_from_name: omitFromName

@@ -123,7 +123,7 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
             shortcode: prod.Shortname,
             disabled: null,
             ordinal: index * 10,
-            externalIDs: {},
+            externalIDs: [],
             serviceDisable: [],
             price: { amount: Number.parseFloat(prod.Price) * 100, currency: "USD" },
             displayFlags: {

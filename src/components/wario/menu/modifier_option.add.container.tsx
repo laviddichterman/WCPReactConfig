@@ -40,7 +40,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
           price,
           ordinal,
           enable: enableFunction,
-          externalIDs: {},
+          externalIDs: [],
           metadata: {
             flavor_factor: flavorFactor,
             bake_factor: bakeFactor,

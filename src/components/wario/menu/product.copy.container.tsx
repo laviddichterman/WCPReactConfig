@@ -153,7 +153,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
         const productCopyBody: ProductCopyRequestType = {
           price: price,
           serviceDisable,
-          externalIDs: {},
+          externalIDs: [],
           displayFlags: {
             bake_differential: bakeDifferentialMax,
             show_name_of_base_product: showNameOfBaseProduct,

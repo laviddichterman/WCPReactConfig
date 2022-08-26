@@ -47,7 +47,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
           ordinal,
           modifiers,
           isBase,
-          externalIDs: {},
+          externalIDs: [],
           displayFlags: {
             menu: {
               ordinal: menuOrdinal,

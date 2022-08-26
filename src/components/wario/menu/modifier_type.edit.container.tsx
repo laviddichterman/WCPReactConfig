@@ -35,7 +35,7 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
           ordinal,
           min_selected: minSelected,
           max_selected: maxSelected || null,
-          externalIDs: {},
+          externalIDs: [],
           displayFlags: {
             omit_options_if_not_available: omitOptionIfNotAvailable,
             omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,

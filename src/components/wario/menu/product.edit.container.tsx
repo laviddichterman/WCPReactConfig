@@ -35,7 +35,7 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
           disabled,
           serviceDisable,
           price,
-          externalIDs: {},
+          externalIDs: [],
           displayFlags: {
             bake_differential: bakeDifferentialMax,
             show_name_of_base_product: showNameOfBaseProduct,

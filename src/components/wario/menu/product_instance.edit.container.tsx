@@ -45,7 +45,7 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
           ordinal,
           modifiers,
           isBase,
-          externalIDs: {},
+          externalIDs: [],
           displayFlags: {
             menu: {
               ordinal: menuOrdinal,
