@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ModifierOptionComponent from "./modifier_option.component";
 
 import { HOST_API } from "../../../config";
-import { IOptionType, IMoney, CURRENCY, IOption } from "@wcp/wcpshared";
+import { IOptionType, IMoney, CURRENCY, IOption, KeyValue } from "@wcp/wcpshared";
 
 export interface ModifierOptionUiContainerProps {
   parent: IOptionType;
@@ -17,6 +17,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
   const [price, setPrice] = useState<IMoney>({ amount: 0, currency: CURRENCY.USD });
+  const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
   const [enableFunction, setEnableFunction] = useState<string | null>(null);
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
@@ -40,7 +41,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
           price,
           ordinal,
           enable: enableFunction,
-          externalIDs: [],
+          externalIDs: externalIds,
           metadata: {
             flavor_factor: flavorFactor,
             bake_factor: bakeFactor,
@@ -65,6 +66,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
           setShortcode("");
           setOrdinal(0);
           setPrice({ amount: 0, currency: CURRENCY.USD });
+          setExternalIds([]);
           setEnableFunction(null);
           setFlavorFactor(0);
           setBakeFactor(0);
@@ -98,6 +100,8 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
       setOrdinal={setOrdinal}
       price={price}
       setPrice={setPrice}
+      externalIds={externalIds}
+      setExternalIds={setExternalIds}
       enableFunction={enableFunction}
       setEnableFunction={setEnableFunction}
       flavorFactor={flavorFactor}

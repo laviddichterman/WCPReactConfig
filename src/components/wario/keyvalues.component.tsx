@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from "../../config";
 import KeyValuesContainer from "./keyvalues.container";
+import { KeyValue } from "@wcp/wcpshared";
 
 const KeyValuesComponent = () => {
   const [KEYVALUES, setKEYVALUES] = useState<Record<string, string> | null>(null);
@@ -28,7 +29,7 @@ const KeyValuesComponent = () => {
     }
   }, [isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout]);
 
-  const onSubmit = async (values : Record<string, string>) => {
+  const onSubmit = async (values : KeyValue[]) => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
@@ -39,7 +40,7 @@ const KeyValuesComponent = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values)
+          body: JSON.stringify(values.reduce((acc: Record<string, string>, x) => ({...acc, [x.key]: x.value }), {}))
         });
         if (response.status === 201) {
           setKEYVALUES(await response.json());
@@ -50,6 +51,13 @@ const KeyValuesComponent = () => {
       }
     }
   };
-  return KEYVALUES !== null ? <KeyValuesContainer canAdd canEdit canRemove isProcessing={isProcessing} onSubmit={onSubmit} title="Key Value Store" values={KEYVALUES}  /> : null;
+  return KEYVALUES !== null ? <KeyValuesContainer 
+    canAdd 
+    canEdit 
+    canRemove 
+    isProcessing={isProcessing} 
+    title="Key Value Store" 
+    onSubmit={onSubmit} 
+    values={Object.entries(KEYVALUES).map(([key, value])=>({ key, value }))}  /> : <></>
 };
 export default KeyValuesComponent;

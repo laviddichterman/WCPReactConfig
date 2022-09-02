@@ -12,6 +12,7 @@ export interface ProductEditContainerProps {
 
 const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainerProps) => {
   const [price, setPrice] = useState(product.price);
+  const [externalIds, setExternalIds] = useState(product.externalIDs);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
   const [serviceDisable, setServiceDisable] = useState(product.serviceDisable)
   const [flavorMax, setFlavorMax] = useState(product.displayFlags.flavor_max ?? 10);
@@ -35,7 +36,7 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
           disabled,
           serviceDisable,
           price,
-          externalIDs: [],
+          externalIDs: externalIds,
           displayFlags: {
             bake_differential: bakeDifferentialMax,
             show_name_of_base_product: showNameOfBaseProduct,
@@ -79,6 +80,8 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
       suppressNonProductInstanceFields
       price={price}
       setPrice={setPrice}
+      externalIds={externalIds}
+      setExternalIds={setExternalIds}
       disabled={disabled}
       setDisabled={setDisabled}
       serviceDisable={serviceDisable}

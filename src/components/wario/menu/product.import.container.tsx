@@ -55,24 +55,11 @@ interface ProductComponentProps {
   setParentCategories: Dispatch<SetStateAction<string[]>>;
   setFileData: Dispatch<SetStateAction<any>>;
 }
-const ProductComponent = ({
-  confirmText,
-  onCloseCallback,
-  onConfirmClick,
-  isProcessing,
-  disableConfirmOn,
-  parentCategories,
-  setParentCategories,
-  setFileData,
-}: ProductComponentProps) => {
+const ProductComponent = (props: ProductComponentProps) => {
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
   return (
     <ElementActionComponent
-      onCloseCallback={onCloseCallback}
-      onConfirmClick={onConfirmClick}
-      isProcessing={isProcessing}
-      disableConfirmOn={disableConfirmOn}
-      confirmText={confirmText}
+      {...props}
       body={
         <>
           <Grid item xs={12}>
@@ -80,8 +67,8 @@ const ProductComponent = ({
               multiple
               filterSelectedOptions
               options={Object.keys(categories)}
-              value={parentCategories.filter((x) => x)}
-              onChange={(e, v) => setParentCategories(v)}
+              value={props.parentCategories.filter((x) => x)}
+              onChange={(e, v) => props.setParentCategories(v)}
               getOptionLabel={(option) => categories[option].category.name}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => (
@@ -90,7 +77,7 @@ const ProductComponent = ({
             />
           </Grid>
           <Grid item xs={12}>
-            <InternalCSVReader onAccepted={setFileData} />
+            <InternalCSVReader onAccepted={props.setFileData} />
           </Grid>
         </>}
     />

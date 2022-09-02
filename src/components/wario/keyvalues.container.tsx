@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Box, Card, CardHeader, Grid, Button, TextField, Paper, Popper, Typography, CardContent, CardActions } from "@mui/material";
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
 import TableWrapperComponent from "./table_wrapper.component";
 
-function isOverflown(element : any) {
+function isOverflown(element: any) {
   return element.scrollHeight > element.clientHeight ||
     element.scrollWidth > element.clientWidth;
 }
@@ -14,7 +14,7 @@ interface GridCellExpandProps {
   width: number;
 };
 
-const GridCellExpand = React.memo(({ width, value } : GridCellExpandProps) => {
+const GridCellExpand = React.memo(({ width, value }: GridCellExpandProps) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cellDiv = React.useRef<HTMLDivElement>(null);
   const cellValue = React.useRef<HTMLDivElement>(null);
@@ -38,7 +38,7 @@ const GridCellExpand = React.memo(({ width, value } : GridCellExpandProps) => {
       return undefined;
     }
 
-    function handleKeyDown(nativeEvent : KeyboardEvent) {
+    function handleKeyDown(nativeEvent: KeyboardEvent) {
       // IE11, Edge (prior to using Bink?) use 'Esc'
       if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
         setShowFullCell(false);
@@ -102,107 +102,118 @@ const GridCellExpand = React.memo(({ width, value } : GridCellExpandProps) => {
   );
 });
 
-type renderCellExpandProps = { 
+type renderCellExpandProps = {
   colDef: { computedWidth: number; };
   value: string;
 } & GridRenderCellParams<any, any, any>
 
-function renderCellExpand(params : renderCellExpandProps) {
+function renderCellExpand(params: renderCellExpandProps) {
   return (
     <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
   );
 }
 
-export interface KeyValuesContainerProps {
-  values : Record<string, string | number | boolean>;
-  onSubmit: (values: Record<string, string | number | boolean>) => void;
+export interface KeyValuesRowType<T> { key: string; value: T; };
+interface RowTypeNullable<T> { key: string; value: T | null; };
+
+export type KeyValuesContainerProps<T> = {
+  values: KeyValuesRowType<T>[];
+  onSubmit?: (values: KeyValuesRowType<T>[]) => void;
+  setValues?: (values: KeyValuesRowType<T>[]) => void;
   canAdd?: boolean;
   canEdit?: boolean;
   canRemove?: boolean;
-  title: React.ReactNode;
+  title?: React.ReactNode;
   isProcessing: boolean;
 }
 
-interface RowType { id: string; data: string | number | boolean; };
 
-const KeyValuesContainer = ({ values, onSubmit, canAdd, canRemove, canEdit, title, isProcessing } : KeyValuesContainerProps) => {
-  const [localValues, setLocalValues] = useState(values);
+const KeyValuesContainer = function<T>(props: KeyValuesContainerProps<T>) {
+  // localValues keeps track of new and dirty values, everything else we should get from props.values
+  const [localValues, setLocalValues] = useState<Record<string, RowTypeNullable<T> | KeyValuesRowType<T>>>({});
+  const valuesAsRecord = useMemo(() => props.values.reduce((acc: Record<string, KeyValuesRowType<T>>, x) => ({ ...acc, [x.key]: x }), {}), [props.values]);
+  const mergedRecord = useMemo(() => ({ ...valuesAsRecord, ...localValues}), [valuesAsRecord, localValues]);
+  const mergedValues = useMemo(() => Object.values(mergedRecord).filter(x=>x.value !== null) as KeyValuesRowType<T>[], [mergedRecord]);
   const [newkey, setNewkey] = useState("");
   const [newvalue, setNewvalue] = useState<string | number | boolean>("");
 
-  
+
   const onAddNewKeyValuePair = () => {
-      setLocalValues({ ...localValues, [newkey]: newvalue! });
-      setNewkey("");
-      setNewvalue("");  
+    const newLocalValues = { ...localValues, [newkey]: { key: newkey, value: newvalue! } as KeyValuesRowType<T> };
+    setLocalValues(newLocalValues);
+    if (props.setValues) {
+      // @ts-ignore
+      props.setValues(Object.values({ ...valuesAsRecord, ...newLocalValues}).filter(x=>x.value !== null));
+    }
+    setNewkey("");
+    setNewvalue("");
   }
 
-  const removeColumn = canRemove ? [{
+  const removeColumn = props.canRemove ? [{
     headerName: "Delete",
     field: 'actions',
     type: 'actions',
-    getActions: (params : GridRowParams) => [
+    getActions: (params: GridRowParams) => [
       <GridActionsCellItem
         key={"delete"}
         icon={<HighlightOffIcon />}
         label={"Delete"}
         onClick={() => {
-          const new_dict = structuredClone(values);
-          delete new_dict[params.id];
-          setLocalValues(new_dict);
+          setLocalValues({...localValues, [params.id.toString()]: { key: params.id.toString(), value: null } });
         }} />
     ]
   }] : [];
   return (
     <div>
       <Card>
-        <CardHeader title={title} />
+        {props.title && <CardHeader title={props.title} />}
         <CardContent>
-          { canAdd && 
-          <Grid container spacing={3} justifyContent="center">
-            <Grid item xs={4}>
-              <TextField
-                label="Key"
-                type="text"
-                size="small"
-                onChange={e => setNewkey(e.target.value)}
-                value={newkey}
-              />
+          {props.canAdd &&
+            <Grid container spacing={3} justifyContent="center">
+              <Grid item xs={4}>
+                <TextField
+                  label="Key"
+                  type="text"
+                  size="small"
+                  onChange={e => setNewkey(e.target.value)}
+                  value={newkey}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Value"
+                  type="text"
+                  value={newvalue}
+                  size="small"
+                  onChange={e => setNewvalue(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <Button disabled={props.isProcessing || newkey === "" || newvalue === null} onClick={onAddNewKeyValuePair}>Add</Button>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                label="Value"
-                type="text"
-                value={newvalue}
-                size="small"
-                onChange={e => setNewvalue(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <Button disabled={isProcessing || newkey === "" || newvalue === null } onClick={onAddNewKeyValuePair}>Add</Button>
-            </Grid>
-          </Grid>
           }
           <div style={{ height: "100%", overflow: "auto" }}>
             <TableWrapperComponent
               experimentalFeatures={{ newEditingApi: true }}
-              processRowUpdate={(newRow) => {
-                setLocalValues({ ...localValues, [newRow.id]: newRow.value });
+              processRowUpdate={(newRow: KeyValuesRowType<T>) => {
+                setLocalValues({ ...localValues, [newRow.key]: newRow });
                 return newRow;
               }}
               disableToolbar
               columns={[
-                { headerName: "Key", field: "key", valueGetter: v => v.row.id, flex: 1 },
-                { headerName: "Value", editable: canEdit, field: "value", valueGetter: v => v.row.data, flex: 4, renderCell: renderCellExpand },
+                { headerName: "Key", field: "key", valueGetter: (v: GridValueGetterParams<any, KeyValuesRowType<T>>) => v.row.key, flex: 1 },
+                { headerName: "Value", editable: props.canEdit, field: "value", valueGetter: (v: GridValueGetterParams<any, KeyValuesRowType<T>>) => v.row.value, flex: 4, renderCell: renderCellExpand },
                 ...removeColumn
               ]}
-              rows={Object.entries(localValues).map((e) => ({ id: e[0], data: e[1] } as RowType))} toolbarActions={[]} />
+              getRowId={(row) => row.key}
+              rows={mergedValues} toolbarActions={[]} />
           </div>
         </CardContent>
-        <CardActions>
-          <Button disabled={isProcessing} onClick={() => onSubmit(localValues)}>PUSH CHANGES</Button>
-        </CardActions>
+        {props.onSubmit && <CardActions>
+          <Button disabled={props.isProcessing} onClick={() => props.onSubmit!(mergedValues)}>PUSH CHANGES</Button>
+        </CardActions>}
       </Card>
     </div>
   );

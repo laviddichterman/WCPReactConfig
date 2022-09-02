@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProductInstanceActionContainer } from "./product_instance.component";
-import { IProduct, IProductInstance, ProductModifierEntry, PriceDisplay } from "@wcp/wcpshared";
+import { IProduct, IProductInstance, ProductModifierEntry, PriceDisplay, KeyValue } from "@wcp/wcpshared";
 import { HOST_API } from "../../../config";
 
 interface ProductInstanceAddContainerProps {
@@ -17,6 +17,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
   const [ordinal, setOrdinal] = useState(0);
   const [modifiers, setModifiers] = useState<ProductModifierEntry[]>([]);
   const [isBase, setIsBase] = useState(false);
+  const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
   // menu
   const [menuOrdinal, setMenuOrdinal] = useState(0);
   const [menuHide, setMenuHide] = useState(false);
@@ -47,7 +48,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
           ordinal,
           modifiers,
           isBase,
-          externalIDs: [],
+          externalIDs: externalIds,
           displayFlags: {
             menu: {
               ordinal: menuOrdinal,
@@ -82,6 +83,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
           setOrdinal(0);
           setModifiers([]);
           setIsBase(false);
+          setExternalIds([]);
           setMenuOrdinal(0);
           setMenuHide(false);
           setMenuPriceDisplay(PriceDisplay.ALWAYS);
@@ -123,6 +125,8 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
       setModifiers={setModifiers}
       isBase={isBase}
       setIsBase={setIsBase}
+      externalIds={externalIds}
+      setExternalIds={setExternalIds}
 
       // menu
       menuOrdinal={menuOrdinal}

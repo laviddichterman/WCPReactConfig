@@ -27,6 +27,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
   const product_instances = useAppSelector(s => s.ws.catalog?.products[product.id].instances ?? []);
   const [price, setPrice] = useState(product.price);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
+  const [externalIds, setExternalIds] = useState(product.externalIDs);
   const [serviceDisable, setServiceDisable] = useState(product.serviceDisable)
   const [flavorMax, setFlavorMax] = useState(product.displayFlags?.flavor_max ?? 10);
   const [bakeMax, setBakeMax] = useState(product.displayFlags?.bake_max ?? 10);
@@ -47,6 +48,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
   const [piOrdinals, setPiOrdinal] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].ordinal || 0))));
   const [piModifierss, setPiModifiers] = useIndexedState(useState(product_instances.map(pi => allProductInstances[pi].modifiers)));
   const [piIsBases, setPiIsBase] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].isBase ?? false))));
+  const [piExteralIdss, setPiExternalIds] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].externalIDs ?? {}))));
   const [piMenuOrdinals, setPiMenuOrdinal] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu?.ordinal || 0))));
   const [piMenuHides, setPiMenuHide] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu?.hide ?? false))));
   const [piMenuPriceDisplays, setPiMenuPriceDisplay] = useIndexedState(useState(product_instances.map(pi => (allProductInstances[pi].displayFlags.menu?.price_display ?? "IF_COMPLETE"))));
@@ -111,6 +113,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
             setOrdinal={setPiOrdinal(i)}
             isBase={piIsBases[i]}
             setIsBase={setPiIsBase(i)}
+            externalIds={piExteralIdss[i]}
+            setExternalIds={setPiExternalIds(i)}
             modifiers={piModifierss[i]}
             setModifiers={setPiModifiers(i)}
 
@@ -143,7 +147,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
           />
         </Grid>
       </AccordionDetails>
-    </Accordion>), [isProcessing, copyPIFlags, expandedPanels, piDescriptions, piDisplayNames, piIsBases, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piSkipCustomizations, product, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiIsBase, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiSkipCustomization])
+    </Accordion>), [isProcessing, copyPIFlags, expandedPanels, piDescriptions, piDisplayNames, piExteralIdss, piIsBases, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piSkipCustomizations, product, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiIsBase, setPiExternalIds, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiSkipCustomization])
 
   const copyProduct = async () => {
     if (!isProcessing) {
@@ -258,6 +262,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
       suppressNonProductInstanceFields
       price={price}
       setPrice={setPrice}
+      externalIds={externalIds}
+      setExternalIds={setExternalIds}
       disabled={disabled}
       setDisabled={setDisabled}
       serviceDisable={serviceDisable}

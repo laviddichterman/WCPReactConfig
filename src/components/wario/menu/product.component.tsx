@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../datetime_based_disable.component';
 import { ElementActionComponent } from './element.action.component';
-import { IMoney, IProductModifier, IWInterval } from '@wcp/wcpshared';
+import { IMoney, IProductModifier, IWInterval, KeyValue } from '@wcp/wcpshared';
 import { useAppSelector } from '../../../hooks/useRedux';
 import { ValSetValNamed } from '../../../utils/common';
 import { StringPropertyComponent } from '../property-components/StringPropertyComponent';
@@ -17,6 +17,7 @@ import { FloatNumericPropertyComponent } from '../property-components/FloatNumer
 import { ToggleBooleanPropertyComponent } from '../property-components/ToggleBooleanPropertyComponent';
 import { IntNumericPropertyComponent } from '../property-components/IntNumericPropertyComponent';
 import { IMoneyPropertyComponent } from '../property-components/IMoneyPropertyComponent';
+import { ExternalIdsExpansionPanelComponent } from '../ExternalIdsExpansionPanelComponent';
 
 type ProductInstanceComponentProps =
   ValSetValNamed<string, 'displayName'> &
@@ -26,6 +27,7 @@ type ProductInstanceComponentProps =
 
 type ProductComponentProps =
   ValSetValNamed<IMoney, 'price'> &
+  ValSetValNamed<KeyValue[], 'externalIds'> & 
   ValSetValNamed<IWInterval | null, 'disabled'> &
   ValSetValNamed<string[], 'serviceDisable'> &
   ValSetValNamed<number, 'flavorMax'> &
@@ -156,6 +158,14 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               label="Singular Noun"
               value={props.singularNoun}
               setValue={props.setSingularNoun}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ExternalIdsExpansionPanelComponent
+              title='External IDs'
+              disabled={props.isProcessing}
+              value={props.externalIds}
+              setValue={props.setExternalIds}
             />
           </Grid>
           {/* universal break */}

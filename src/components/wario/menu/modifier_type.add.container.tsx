@@ -3,13 +3,14 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ModifierTypeComponent, { ModifierTypeUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../config";
-import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { DISPLAY_AS, IOptionType, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
 
 const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
   const [ordinal, setOrdinal] = useState(0);
   const [name, setName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [minSelected, setMinSelected] = useState(0);
+  const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
   const [maxSelected, setMaxSelected] = useState<number | null>(null);
   const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(false);
   const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(true);
@@ -35,7 +36,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
           ordinal,
           min_selected: minSelected,
           max_selected: maxSelected || null,
-          externalIDs: [],
+          externalIDs: externalIds,
           displayFlags: {
             omit_options_if_not_available: omitOptionIfNotAvailable,
             omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,
@@ -61,6 +62,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
           setOrdinal(0);
           setName("");
           setDisplayName("");
+          setExternalIds([]);
           setMinSelected(0);
           setMaxSelected(null);
           setOmitOptionIfNotAvailable(false);
@@ -96,6 +98,8 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
       setName={setName}
       displayName={displayName}
       setDisplayName={setDisplayName}
+      externalIds={externalIds}
+      setExternalIds={setExternalIds}
       minSelected={minSelected}
       setMinSelected={setMinSelected}
       maxSelected={maxSelected}

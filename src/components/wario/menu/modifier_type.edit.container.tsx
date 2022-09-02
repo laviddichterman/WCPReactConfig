@@ -9,6 +9,7 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
   const [displayName, setDisplayName] = useState(modifier_type.displayName ?? "");
+  const [externalIds, setExternalIds] = useState(modifier_type.externalIDs);
   const [minSelected, setMinSelected] = useState(modifier_type.min_selected || 0);
   const [maxSelected, setMaxSelected] = useState(modifier_type.max_selected || null);
   const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(modifier_type.displayFlags.omit_options_if_not_available ?? false);
@@ -35,7 +36,7 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
           ordinal,
           min_selected: minSelected,
           max_selected: maxSelected || null,
-          externalIDs: [],
+          externalIDs: externalIds,
           displayFlags: {
             omit_options_if_not_available: omitOptionIfNotAvailable,
             omit_section_if_no_available_options: omitSectionIfNoAvailableOptions,
@@ -80,6 +81,8 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
       setName={setName}
       displayName={displayName}
       setDisplayName={setDisplayName}
+      externalIds={externalIds}
+      setExternalIds={setExternalIds}
       minSelected={minSelected}
       setMinSelected={setMinSelected}
       maxSelected={maxSelected}

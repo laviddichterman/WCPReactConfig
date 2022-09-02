@@ -15,6 +15,7 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
   const [shortcode, setShortcode] = useState(modifier_option.shortcode);
   const [ordinal, setOrdinal] = useState(modifier_option.ordinal);
   const [price, setPrice] = useState(modifier_option.price);
+  const [externalIds, setExternalIds] = useState(modifier_option.externalIDs);
   const [enableFunction, setEnableFunction] = useState(modifier_option.enable ?? null);
   const [flavorFactor, setFlavorFactor] = useState(modifier_option.metadata.flavor_factor);
   const [bakeFactor, setBakeFactor] = useState(modifier_option.metadata.bake_factor);
@@ -42,7 +43,7 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
               bake_factor: bakeFactor,
               can_split: canSplit,
             },
-            externalIDs: [],
+            externalIDs: externalIds,
             displayFlags: {
               omit_from_shortname: omitFromShortname,
               omit_from_name: omitFromName
@@ -83,6 +84,8 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
       setOrdinal={setOrdinal}
       price={price}
       setPrice={setPrice}
+      externalIds={externalIds}
+      setExternalIds={setExternalIds}
       enableFunction={enableFunction}
       setEnableFunction={setEnableFunction}
       flavorFactor={flavorFactor}

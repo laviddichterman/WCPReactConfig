@@ -1,5 +1,5 @@
 import { Grid, TextField, Autocomplete } from "@mui/material";
-import { IMoney, IWInterval, RecordProductInstanceFunctions } from "@wcp/wcpshared";
+import { IMoney, IWInterval, KeyValue, RecordProductInstanceFunctions } from "@wcp/wcpshared";
 
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from "../datetime_based_disable.component";
 import { ElementActionComponent } from "./element.action.component";
@@ -10,6 +10,7 @@ import { IntNumericPropertyComponent } from "../property-components/IntNumericPr
 import { FloatNumericPropertyComponent } from "../property-components/FloatNumericPropertyComponent";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
 import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
+import { ExternalIdsExpansionPanelComponent } from "../ExternalIdsExpansionPanelComponent";
 
 type ModifierOptionComponentProps =
   ValSetValNamed<string, 'displayName'> &
@@ -17,6 +18,7 @@ type ModifierOptionComponentProps =
   ValSetValNamed<string, 'shortcode'> &
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<IMoney, 'price'> &
+  ValSetValNamed<KeyValue[], 'externalIds'> &
   ValSetValNamed<string | null, 'enableFunction'> &
   ValSetValNamed<number, 'flavorFactor'> &
   ValSetValNamed<number, 'bakeFactor'> &
@@ -135,6 +137,14 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               value={props.omitFromName}
               setValue={props.setOmitFromName}
               labelPlacement='end'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ExternalIdsExpansionPanelComponent
+              title='External IDs'
+              disabled={props.isProcessing}
+              value={props.externalIds}
+              setValue={props.setExternalIds}
             />
           </Grid>
           <Grid item xs={12}>

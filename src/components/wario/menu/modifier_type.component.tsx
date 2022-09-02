@@ -1,9 +1,10 @@
 import { Grid, FormControlLabel, Radio, RadioGroup, FormControl, FormLabel } from "@mui/material";
 import { ElementActionComponent } from "./element.action.component";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
-import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { DISPLAY_AS, IOptionType, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { startCase, snakeCase } from 'lodash';
 import { ValSetValNamed } from "../../../utils/common";
+import { ExternalIdsExpansionPanelComponent } from "../ExternalIdsExpansionPanelComponent";
 import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
@@ -23,6 +24,7 @@ export type ModifierTypeComponentProps =
   ValSetValNamed<number | null, 'maxSelected'> &
   ValSetValNamed<string, 'name'> &
   ValSetValNamed<string, 'displayName'> &
+  ValSetValNamed<KeyValue[], 'externalIds'> &
   ValSetValNamed<string, 'templateString'> &
   ValSetValNamed<string, 'multipleItemSeparator'> &
   ValSetValNamed<string, 'nonEmptyGroupPrefix'> &
@@ -65,8 +67,8 @@ const ModifierTypeComponent = (props: ModifierTypeComponentProps & ModifierTypeU
       onConfirmClick={props.onConfirmClick}
       isProcessing={props.isProcessing}
       disableConfirmOn={props.name.length === 0 ||
-        (Number.isFinite(props.maxSelected) && (props.maxSelected as number) < props.minSelected) ||
-        (props.useToggleIfOnlyTwoOptions && ((props.maxSelected as number) !== 1 && props.minSelected !== 1)) ||
+        (Number.isFinite(props.maxSelected) && (props.maxSelected!) < props.minSelected) ||
+        (props.useToggleIfOnlyTwoOptions && (props.maxSelected !== 1 || props.minSelected !== 1)) ||
         props.isProcessing}
       confirmText={props.confirmText}
       body={
@@ -206,6 +208,14 @@ const ModifierTypeComponent = (props: ModifierTypeComponentProps & ModifierTypeU
               label="Non-Empty Group Suffix"
               setValue={props.setNonEmptyGroupSuffix}
               value={props.nonEmptyGroupSuffix}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ExternalIdsExpansionPanelComponent
+              title='External IDs'
+              disabled={props.isProcessing}
+              value={props.externalIds}
+              setValue={props.setExternalIds}
             />
           </Grid>
         </>}

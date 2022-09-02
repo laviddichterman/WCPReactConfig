@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 import { HOST_API } from "../../../config";
-import { CURRENCY, IMoney, IProduct, IProductInstance, IProductModifier, IWInterval } from "@wcp/wcpshared";
+import { CURRENCY, IMoney, IProduct, IProductInstance, IProductModifier, IWInterval, KeyValue } from "@wcp/wcpshared";
 
 export type ProductAddRequestType = Omit<IProductInstance, 'id' | 'displayFlags' | 'externalIDs' | 'modifiers' | 'isBase' | 'productId'> &
   Omit<IProduct, "id"> & { create_product_instance: boolean };
@@ -16,6 +16,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [price, setPrice] = useState<IMoney>({ amount: 0, currency: CURRENCY.USD });
+  const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
   const [disabled, setDisabled] = useState<IWInterval | null>(null);
   const [serviceDisable, setServiceDisable] = useState([]);
   const [ordinal, setOrdinal] = useState(0);
@@ -44,7 +45,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
           serviceDisable,
           ordinal,
           price,
-          externalIDs: [],
+          externalIDs: externalIds,
           displayFlags: {
             bake_differential: bakeDifferentialMax,
             show_name_of_base_product: showNameOfBaseProduct,
@@ -73,6 +74,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
           setDescription("");
           setShortcode("");
           setPrice({ amount: 0, currency: CURRENCY.USD });
+          setExternalIds([]);
           setDisabled(null);
           setServiceDisable([]);
           setOrdinal(0);
@@ -109,6 +111,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
       setDescription={setDescription}
       shortcode={shortcode}
       setShortcode={setShortcode}
+      externalIds={externalIds}
+      setExternalIds={setExternalIds}
       price={price}
       setPrice={setPrice}
       disabled={disabled}

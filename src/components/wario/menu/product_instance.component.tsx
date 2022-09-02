@@ -4,12 +4,13 @@ import { Grid, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, Radio
 
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { ICatalogModifiers, IProduct, ProductModifierEntry, OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wcpshared";
+import { ICatalogModifiers, IProduct, ProductModifierEntry, OptionPlacement, OptionQualifier, PriceDisplay, KeyValue } from "@wcp/wcpshared";
 import { ValSetValNamed } from "../../../utils/common";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
 import { IntNumericPropertyComponent } from "../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
+import { ExternalIdsExpansionPanelComponent } from "../ExternalIdsExpansionPanelComponent";
 
 export type ProductInstanceComponentProps =
   ValSetValNamed<string, 'displayName'> &
@@ -32,6 +33,9 @@ export type ProductInstanceComponentProps =
   ValSetValNamed<keyof typeof PriceDisplay, 'orderPriceDisplay'> &
   ValSetValNamed<string, 'orderAdornment'> &
   ValSetValNamed<boolean, 'orderSuppressExhaustiveModifierList'> &
+
+  ValSetValNamed<KeyValue[], 'externalIds'> &
+
   {
     parent_product: IProduct;
     isProcessing: boolean;
@@ -40,7 +44,7 @@ export type ProductInstanceComponentProps =
 const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
   const theme = useTheme();
   const useToggleEndLabel = !useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const modifierOptionsMap = useAppSelector(s=>s.ws.catalog?.options ?? {});
+  const modifierOptionsMap = useAppSelector(s => s.ws.catalog?.options ?? {});
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
   const handleToggle = (mtid: string, oidx: number) => {
     const foundModifierEntryIndex = props.modifiers.findIndex(x => x.modifierTypeId === mtid);
@@ -62,12 +66,12 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
       ...props.modifiers.slice(0, foundModifierEntryIndex),
       {
         modifierTypeId: mtid, options: props.modifiers[foundModifierEntryIndex].options.map((opt, idx) => (
-        {
-          optionId: opt.optionId,
-          placement: idx === oidx ? OptionPlacement.WHOLE : OptionPlacement.NONE,
-          qualifier: OptionQualifier.REGULAR
+          {
+            optionId: opt.optionId,
+            placement: idx === oidx ? OptionPlacement.WHOLE : OptionPlacement.NONE,
+            qualifier: OptionQualifier.REGULAR
 
-        }))
+          }))
       },
       ...props.modifiers.slice(foundModifierEntryIndex + 1)]);
   };
@@ -286,6 +290,14 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           value={props.orderPriceDisplay}
           setValue={props.setOrderPriceDisplay}
           options={Object.keys(PriceDisplay)}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <ExternalIdsExpansionPanelComponent
+          title='External IDs'
+          disabled={props.isProcessing}
+          value={props.externalIds}
+          setValue={props.setExternalIds}
         />
       </Grid>
       {modifier_html}
