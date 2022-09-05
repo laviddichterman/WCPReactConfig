@@ -174,6 +174,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       <Grid item xs={3} sm={2.5} >
+        { /* TODO: remove this from the product instance and move to the product class edit which lets the user pick which item is the base product */ }
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Is Base"

@@ -17,6 +17,7 @@ import PACKAGE from '../../../../package.json';
 
 //
 import LanguagePopover from './LanguagePopover';
+import AccountPopover from './AccountPopover';
 
 // ----------------------------------------------------------------------
 
@@ -95,6 +96,7 @@ export default function DashboardHeader({
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           <LanguagePopover />
+          <AccountPopover />
         </Stack>
       </Toolbar>
     </RootStyle>
