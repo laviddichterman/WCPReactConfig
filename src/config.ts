@@ -3,7 +3,7 @@ import { enUS, esES } from '@mui/material/locale';
 import { SettingsValueProps } from './components/settings/type';
 // routes
 import { PATH_DASHBOARD } from './routes/paths';
-
+import { LicenseInfo } from '@mui/x-license-pro';
 // API
 // ----------------------------------------------------------------------
 
@@ -23,6 +23,7 @@ export const SOCKETIO = {
 export const MAPBOX_API = process.env.REACT_APP_MAPBOX_API;
 
 export const MUI_LICENSE = process.env.REACT_APP_MUI_KEY;
+LicenseInfo.setLicenseKey(MUI_LICENSE!);
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.timing;

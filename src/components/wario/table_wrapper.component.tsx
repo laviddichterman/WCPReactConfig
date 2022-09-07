@@ -8,12 +8,6 @@ import {
 } from '@mui/x-data-grid';
 import Grid from "@mui/material/Grid";
 
-import { LicenseInfo } from '@mui/x-license-pro';
-
-import { MUI_LICENSE } from '../../config';
-
-LicenseInfo.setLicenseKey(MUI_LICENSE as string);
-
 export interface ToolbarAction { 
   size: number; elt: React.ReactNode;
 }

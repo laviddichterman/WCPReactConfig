@@ -8,9 +8,17 @@ import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { HOST_API } from "../../../config";
 import { ProductAddRequestType } from "./product.add.container";
+import { ParseResult } from "papaparse";
 
+interface CSVProduct {
+  Name: string;
+  Description: string;
+  Shortname: string;
+  Price: string;
+  [index: string]: string;
+};
 
-const InternalCSVReader = ({ onAccepted }: { onAccepted: any }) => {
+const InternalCSVReader = ({ onAccepted }: { onAccepted: (data: ParseResult<CSVProduct>) => void }) => {
   const { CSVReader } = useCSVReader();
   return (
     <CSVReader
@@ -53,7 +61,7 @@ interface ProductComponentProps {
   disableConfirmOn: boolean;
   parentCategories: string[];
   setParentCategories: Dispatch<SetStateAction<string[]>>;
-  setFileData: Dispatch<SetStateAction<any>>;
+  setFileData: Dispatch<SetStateAction<CSVProduct[]>>;
 }
 const ProductComponent = (props: ProductComponentProps) => {
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
@@ -77,42 +85,37 @@ const ProductComponent = (props: ProductComponentProps) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <InternalCSVReader onAccepted={props.setFileData} />
+            <InternalCSVReader onAccepted={(data) => props.setFileData(data.data)} />
           </Grid>
         </>}
     />
   );
 };
 
-interface CSVProduct {
-  Name: string;
-  Description: string | null | undefined;
-  Shortname: string;
-  Price: string;
-};
-
 const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
   const [parentCategories, setParentCategories] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data, setData] = useState<{ data: CSVProduct[] }>({ data: [] })
+  const [data, setData] = useState<CSVProduct[]>([])
   const { getAccessTokenSilently } = useAuth0();
 
   const addProducts = async () => {
+    if (!isProcessing) {
+      setIsProcessing(true);
+      data.forEach(async (prod, index) => {
+        const { Name, Description, Shortname, Price, ...others } = prod;
+        const externalIds = Object.entries(others).map(([key, value]) => ({ key, value }));
 
-    data.data.forEach(async (prod, index) => {
-      if (!isProcessing) {
-        setIsProcessing(true);
         try {
           const token = await getAccessTokenSilently({ scope: "write:catalog" });
           const body: ProductAddRequestType = {
-            displayName: prod.Name, // displayName,
-            description: prod.Description || "",
-            shortcode: prod.Shortname,
+            displayName: Name, // displayName,
+            description: Description || "",
+            shortcode: Shortname,
             disabled: null,
             ordinal: index * 10,
-            externalIDs: [],
+            externalIDs: externalIds,
             serviceDisable: [],
-            price: { amount: Number.parseFloat(prod.Price) * 100, currency: "USD" },
+            price: { amount: Number.parseFloat(Price) * 100, currency: "USD" },
             displayFlags: {
               bake_differential: 100,
               show_name_of_base_product: true,
@@ -139,13 +142,12 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
           // eslint-disable-next-line no-empty
           if (response.status === 201) {
           }
-          setIsProcessing(false);
         } catch (error) {
           console.error(error);
-          setIsProcessing(false);
         }
-      }
-    });
+      });
+    }
+    setIsProcessing(false);
   };
 
   return (
@@ -154,7 +156,7 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
       onCloseCallback={onCloseCallback}
       onConfirmClick={() => addProducts()}
       isProcessing={isProcessing}
-      disableConfirmOn={isProcessing || !data || data.data.length === 0}
+      disableConfirmOn={isProcessing || data.length === 0}
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
       setFileData={setData}
