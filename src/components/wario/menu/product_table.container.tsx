@@ -75,11 +75,6 @@ const ProductTableContainer = ({
     setProductToEdit(row.product);
   };
 
-  // this assumes a single base product instance per product class.
-  // assumption is that this precondition is enforced by the service
-  const GetIdOfBaseProductInstance = useCallback((instances: string[]) =>
-    instances.find((pi) => catalog.productInstances[pi].isBase) ?? null, [catalog.productInstances]);
-
   const getDetailPanelHeight = useCallback(({ row }: { row: RowType }) => row.instances.length ? (41 + (row.instances.length * 36)) : 0, []);
 
   const getDetailPanelContent = useCallback(({ row }: { row: RowType }) => row.instances.length ? (
@@ -136,7 +131,7 @@ const ProductTableContainer = ({
           field: 'actions',
           type: 'actions',
           getActions: (params: GridRowParams<RowType>) => {
-            const base_piid = GetIdOfBaseProductInstance(params.row.instances);
+            const base_piid = params.row.product.baseProductId;
             const title = base_piid !== null ? catalog.productInstances[base_piid].displayName : "Incomplete Product";
             const ADD_PRODUCT_INSTANCE = (<GridActionsCellItem
               icon={<Tooltip title={`Add Product Instance to ${title}`}><AddBox /></Tooltip>}
@@ -181,7 +176,7 @@ const ProductTableContainer = ({
             return DisableDataCheck(params.row.product.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           }
         },
-        { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => GetIdOfBaseProductInstance(v.row.instances) !== null ? catalog.productInstances[GetIdOfBaseProductInstance(v.row.instances)!].displayName : "Incomplete Product", flex: 6 },
+        { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => catalog.productInstances[v.row.product.baseProductId].displayName, flex: 6 },
         { headerName: "Price", field: "product.price.amount", valueGetter: (v : ValueGetterRow) => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
         { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: ValueGetterRow) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifierType.name).join(", ") : "", flex: 3 },
         // eslint-disable-next-line no-nested-ternary

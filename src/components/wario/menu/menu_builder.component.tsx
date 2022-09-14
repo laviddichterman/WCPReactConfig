@@ -79,12 +79,12 @@ const MenuBuilderComponent = () => {
   const [isProductInstanceFunctionAddOpen, setIsProductInstanceFunctionAddOpen] = useState(false);
   const [isProductInstanceFunctionDeleteOpen, setIsProductInstanceFunctionDeleteOpen] = useState(false);
   const [isProductInstanceFunctionEditOpen, setIsProductInstanceFunctionEditOpen] = useState(false);
-  const [productInstanceFunctionToEdit, setProductInstanceFunctionToEdit] = useState<IProductInstanceFunction | null>(null);
+  const [pifIdToEdit, setPifIdToEdit] = useState<string | null>(null);
 
   // this assumes a single base product instance per product class.
   // assumption is that this precondition is enforced by the service
   const nameOfBaseProductInstance = useMemo(() => {
-    const piid = productToEdit !== null ? catalog.products[productToEdit.id].instances.find((pi) => catalog.productInstances[pi].isBase) ?? null : null;
+    const piid = productToEdit?.baseProductId ?? null;
     return piid !== null ? catalog.productInstances[piid].displayName : "Incomplete Product";
   }, [catalog, productToEdit]);
 
@@ -370,10 +370,10 @@ const MenuBuilderComponent = () => {
         onClose={() => setIsProductInstanceFunctionEditOpen(false)}
         open={isProductInstanceFunctionEditOpen}
         innerComponent={
-          productInstanceFunctionToEdit !== null &&
+          pifIdToEdit !== null &&
           <ProductInstanceFunctionEditContainer
             onCloseCallback={() => setIsProductInstanceFunctionEditOpen(false)}
-            product_instance_function={productInstanceFunctionToEdit}
+            pifId={pifIdToEdit}
           />
         }
       />
@@ -384,12 +384,12 @@ const MenuBuilderComponent = () => {
         }}
         open={isProductInstanceFunctionDeleteOpen}
         innerComponent={
-          productInstanceFunctionToEdit !== null &&
+          pifIdToEdit !== null &&
           <ProductInstanceFunctionDeleteContainer
             onCloseCallback={() => {
               setIsProductInstanceFunctionDeleteOpen(false);
             }}
-            product_instance_function={productInstanceFunctionToEdit}
+            pifId={pifIdToEdit}
           />
         }
       />
@@ -502,7 +502,7 @@ const MenuBuilderComponent = () => {
             setIsProductInstanceFunctionEditOpen={setIsProductInstanceFunctionEditOpen}
             setIsProductInstanceFunctionDeleteOpen={setIsProductInstanceFunctionDeleteOpen}
             setIsProductInstanceFunctionAddOpen={setIsProductInstanceFunctionAddOpen}
-            setProductInstanceFunctionToEdit={setProductInstanceFunctionToEdit}
+            setPifIdToEdit={setPifIdToEdit}
           />
         </Grid>
       </Grid>

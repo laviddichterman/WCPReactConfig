@@ -6,6 +6,7 @@ import { Tooltip, IconButton } from '@mui/material';
 import { OrderFunctional, OrderInstanceFunction } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
 import { useAppSelector } from "../../../hooks/useRedux";
+import { getModifierOptionById, getModifierTypeEntryById, getOrderInstanceFunctions } from "@wcp/wario-ux-shared";
 interface OIFTableContainerProps {
   setIsOrderInstanceFunctionEditOpen: Dispatch<SetStateAction<boolean>>;
   setIsOrderInstanceFunctionDeleteOpen: Dispatch<SetStateAction<boolean>>;
@@ -13,6 +14,9 @@ interface OIFTableContainerProps {
   setOrderInstanceFunctionToEdit: Dispatch<SetStateAction<OrderInstanceFunction>>;
 }
 const OrderInstanceFunctionTableContainer = (props: OIFTableContainerProps) => {
+  const modifierTypeSelector = useAppSelector(s => (id: string) => getModifierTypeEntryById(s.ws.modifierEntries, id));
+  const modifierOptionSelector = useAppSelector(s => (id: string) => getModifierOptionById(s.ws.modifierOptions, id));
+  const orderInstanceFunctions = useAppSelector(s => getOrderInstanceFunctions(s.ws.orderInstanceFunctions))
 
   const catalog = useAppSelector(s => s.ws.catalog!);
   const editOrderFunction = (row: OrderInstanceFunction) => () => {
@@ -57,7 +61,7 @@ const OrderInstanceFunctionTableContainer = (props: OIFTableContainerProps) => {
           ]
         },
         { headerName: "Name", field: "name", valueGetter: (v: {row: OrderInstanceFunction}) => v.row.name, flex: 1 },
-        { headerName: "Function", field: "expression", valueGetter: (v: {row: OrderInstanceFunction}) => OrderFunctional.AbstractOrderExpressionStatementToString(v.row.expression, catalog), flex: 3 },
+        { headerName: "Function", field: "expression", valueGetter: (v: {row: OrderInstanceFunction}) => OrderFunctional.AbstractOrderExpressionStatementToString(v.row.expression, { modifierEntry: modifierTypeSelector, option: modifierOptionSelector }), flex: 3 },
       ]}
     />
   );

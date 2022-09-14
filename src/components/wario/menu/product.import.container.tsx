@@ -9,6 +9,7 @@ import { useAppSelector } from "../../../hooks/useRedux";
 import { HOST_API } from "../../../config";
 import { ProductAddRequestType } from "./product.add.container";
 import { ParseResult } from "papaparse";
+import { KeyValue } from "@wcp/wcpshared";
 
 interface CSVProduct {
   Name: string;
@@ -103,7 +104,7 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
       setIsProcessing(true);
       data.forEach(async (prod, index) => {
         const { Name, Description, Shortname, Price, ...others } = prod;
-        const externalIds = Object.entries(others).map(([key, value]) => ({ key, value }));
+        const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
 
         try {
           const token = await getAccessTokenSilently({ scope: "write:catalog" });
@@ -148,6 +149,7 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
       });
     }
     setIsProcessing(false);
+    onCloseCallback();
   };
 
   return (

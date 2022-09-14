@@ -3,14 +3,16 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
 import { HOST_API } from "../../../config";
-import { IProductInstanceFunction } from "@wcp/wcpshared";
+import { useAppSelector } from "../../../hooks/useRedux";
+import { getProductInstanceFunctionById } from "@wcp/wario-ux-shared";
 
 export interface ProductInstanceFunctionQuickActionProps {
-  product_instance_function: IProductInstanceFunction;
+  pifId: string;
   onCloseCallback: VoidFunction;
 }
 
-const ProductInstanceFunctionDeleteContainer = ({ product_instance_function, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
+const ProductInstanceFunctionDeleteContainer = ({ pifId, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
+  const productInstanceFunction = useAppSelector(s=> getProductInstanceFunctionById(s.ws.productInstanceFunctions, pifId))
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -19,7 +21,7 @@ const ProductInstanceFunctionDeleteContainer = ({ product_instance_function, onC
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "delete:catalog" });
-        const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/${product_instance_function.id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/${pifId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,14 +39,14 @@ const ProductInstanceFunctionDeleteContainer = ({ product_instance_function, onC
     }
   };
 
-  return (
+  return productInstanceFunction ?
     <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deletePIF}
-      name={product_instance_function.name}
+      name={productInstanceFunction.name}
       isProcessing={isProcessing}
     />
-  );
+  : <></>;
 };
 
 export default ProductInstanceFunctionDeleteContainer;

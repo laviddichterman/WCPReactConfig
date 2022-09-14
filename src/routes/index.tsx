@@ -35,6 +35,7 @@ export default function Router() {
       ),
       children: [
         { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
+        { path: 'orders', element: <GeneralOrders /> },
         { path: 'timing', element: <GeneralTiming /> },
         { path: 'credit', element: <GeneralCredit /> },
         { path: 'catalog', element: <GeneralCatalog /> },
@@ -77,6 +78,7 @@ export default function Router() {
 // DASHBOARD
 
 // GENERAL
+const GeneralOrders = Loadable(lazy(() => import('../pages/dashboard/GeneralOrders')));
 const GeneralTiming = Loadable(lazy(() => import('../pages/dashboard/GeneralTiming')));
 const GeneralCredit = Loadable(lazy(() => import('../pages/dashboard/GeneralCredit')));
 const GeneralCatalog = Loadable(lazy(() => import('../pages/dashboard/GeneralCatalog')));
@@ -88,6 +90,9 @@ const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')
 // const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));
 // const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));
 // const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
+
+//const Login = Loadable(lazy(() => import('../pages/auth/Login')));
+
 
 // TEST RENDER PAGE BY ROLE
 const PermissionDenied = Loadable(lazy(() => import('../pages/dashboard/PermissionDenied')));

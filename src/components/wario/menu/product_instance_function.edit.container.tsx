@@ -6,15 +6,20 @@ import { HOST_API } from "../../../config";
 
 import { ProductInstanceFunctionQuickActionProps } from './product_instance_function.delete.container';
 import { IProductInstanceFunction } from "@wcp/wcpshared";
+import { useAppSelector } from "../../../hooks/useRedux";
+import { getProductInstanceFunctionById } from "@wcp/wario-ux-shared";
 
-const ProductInstanceFunctionEditContainer = ({ product_instance_function, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
-  const [functionName, setFunctionName] = useState(product_instance_function.name);
-  const [expression, setExpression] = useState(product_instance_function.expression);
+const ProductInstanceFunctionEditContainer = ({ pifId, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
+  // todo: look into the assertion of truthy, maybe the caller of this container should process the selection and confirm non-falsy?
+  const productInstanceFunction = useAppSelector(s=> getProductInstanceFunctionById(s.ws.productInstanceFunctions, pifId)!)
+
+  const [functionName, setFunctionName] = useState(productInstanceFunction.name);
+  const [expression, setExpression] = useState(productInstanceFunction.expression);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
   const editProductInstanceFunction = async () => {
-    if (!isProcessing) {
+    if (!isProcessing && functionName && expression) {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
@@ -22,7 +27,7 @@ const ProductInstanceFunctionEditContainer = ({ product_instance_function, onClo
           name: functionName,
           expression
         };
-        const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/${product_instance_function.id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/query/language/productinstancefunction/${pifId}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,

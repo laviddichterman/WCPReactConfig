@@ -1,7 +1,7 @@
 import { Grid, TextField, Autocomplete } from "@mui/material";
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { getCategoryById } from "@wcp/wario-ux-shared";
+import { getCategoryEntryById } from "@wcp/wario-ux-shared";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
 import { EntityId } from "@reduxjs/toolkit";
 import { StringEnumPropertyComponent } from "../property-components/StringEnumPropertyComponent";
@@ -33,7 +33,7 @@ export type CategoryComponentProps = {
   ValSetValNamed<string[], 'serviceDisable'>;
 
 const CategoryComponent = (props: CategoryComponentProps) => {
-  const selectCategoryById = useAppSelector(s => (id: EntityId) => getCategoryById(s.ws.categories, id));
+  const selectCategoryById = useAppSelector(s => (id: EntityId) => getCategoryEntryById(s.ws.categories, id));
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
   return (
     <ElementActionComponent
@@ -57,7 +57,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               options={props.categoryIds}
               value={props.parent}
               onChange={(_, v) => props.setParent(v !== null ? String(v) : null)}
-              getOptionLabel={(o) => selectCategoryById(o)?.name ?? "Undefined"}
+              getOptionLabel={(o) => selectCategoryById(o)?.category.name ?? "Undefined"}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => (
                 <TextField {...params} label="Parent Category (Optional)" />

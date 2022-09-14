@@ -4,6 +4,7 @@ import { Autocomplete, Grid, TextField, FormControlLabel, FormLabel, Card, CardC
 import { useAppSelector } from "../../../hooks/useRedux";
 import { ConstLiteralDiscriminator, IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, MetadataField, OptionPlacement, OptionQualifier, LogicalFunctionOperator, ProductInstanceFunctionType, ProductMetadataExpression, PRODUCT_LOCATION, WFunctional } from "@wcp/wcpshared";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
+import { getModifierOptionById, getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 
 export interface DiscriminatedFunctionalComponentProps<T> {
   expression_types: Record<string, React.ReactNode>;
@@ -75,7 +76,8 @@ const AbstractExpressionFunctionalContainer = ({
   value,
   setValue
 }: ValSetVal<IAbstractExpression | null>) => {
-  const catalog = useAppSelector(s=>s.ws.catalog!);
+  const modifierTypeSelector = useAppSelector(s => (id : string) => getModifierTypeEntryById(s.ws.modifierEntries, id));
+  const modifierOptionSelector = useAppSelector(s=> (id: string) => getModifierOptionById(s.ws.modifierOptions, id));
   const [discriminator, setDiscriminator] = useState<ProductInstanceFunctionType | null>(value?.discriminator ?? null);
   const [expr, setExpr] = useState<IAbstractExpression['expr'] | null>(value?.expr ?? null);
   useEffect(() => {
@@ -127,7 +129,7 @@ const AbstractExpressionFunctionalContainer = ({
   };
   return (
     <AbstractExpressionFunctionalComponent
-      title={value !== null ? WFunctional.AbstractExpressionStatementToString(value, catalog) : null}
+      title={value !== null ? WFunctional.AbstractExpressionStatementToString(value, { modifierEntry: modifierTypeSelector, option: modifierOptionSelector }) : null}
       expression_types={expression_types}
       discriminator={discriminator}
       setDiscriminator={updateDiscriminator}

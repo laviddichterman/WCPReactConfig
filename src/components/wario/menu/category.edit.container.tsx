@@ -4,11 +4,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ICategory } from "@wcp/wcpshared";
 import CategoryComponent, { CategoryEditProps } from "./category.component";
 import { HOST_API } from "../../../config";
-import { getCategoryIds } from "@wcp/wario-ux-shared";
+import { getCategoryEntryIds } from "@wcp/wario-ux-shared";
 import { useAppSelector } from "../../../hooks/useRedux";
 
 const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps) => {
-  const categoryIds = useAppSelector(s => getCategoryIds(s.ws.categories));
+  const categoryIds = useAppSelector(s => getCategoryEntryIds(s.ws.categories));
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
   const [subheading, setSubheading] = useState(category.subheading);

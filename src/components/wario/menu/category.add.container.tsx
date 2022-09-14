@@ -5,14 +5,14 @@ import CategoryComponent from "./category.component";
 import { HOST_API } from "../../../config";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { getCategoryIds } from "@wcp/wario-ux-shared";
+import { getCategoryEntryIds } from "@wcp/wario-ux-shared";
 
 export interface CategoryAddContainerProps {
   onCloseCallback: VoidFunction;
 }
 
 const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) => {
-  const categoryIds = useAppSelector(s => getCategoryIds(s.ws.categories));
+  const categoryIds = useAppSelector(s => getCategoryEntryIds(s.ws.categories));
   const [description, setDescription] = useState("");
   const [subheading, setSubheading] = useState("");
   const [footnotes, setFootnotes] = useState("");
