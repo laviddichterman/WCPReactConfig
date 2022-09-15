@@ -3,8 +3,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from "../../config";
 import KeyValuesContainer from "./keyvalues.container";
 import { KeyValue } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 const KeyValuesComponent = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [KEYVALUES, setKEYVALUES] = useState<Record<string, string> | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -43,10 +46,12 @@ const KeyValuesComponent = () => {
           body: JSON.stringify(values.reduce((acc: Record<string, string>, x) => ({...acc, [x.key]: x.value }), {}))
         });
         if (response.status === 201) {
+          enqueueSnackbar(`Updated Key Value Store.`)
           setKEYVALUES(await response.json());
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to update Key Value Store. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         setIsProcessing(false);
       }
     }

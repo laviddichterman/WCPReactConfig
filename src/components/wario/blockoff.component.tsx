@@ -23,6 +23,7 @@ import { GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRe
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { HOST_API } from '../../config';
 import { setSelectedDate, setStartTime, setEndTime, toggleSelectedService, setSelectedServices, setStartOptions, setEndOptions } from "../../redux/slices/BlockOffSlice";
+import { useSnackbar } from "notistack";
 
 const TrimOptionsBeforeDisabled = function <T extends { disabled: boolean; }>(opts: T[]) {
   const idx = opts.findIndex((elt: T) => elt.disabled);
@@ -34,6 +35,12 @@ interface ServiceSelectionCheckboxProps {
   onChange: React.MouseEventHandler<HTMLDivElement>;
   service_name: React.ReactNode;
 }
+
+const IntervalToString = (interval: IWInterval) => interval.start === interval.end ? 
+  WDateUtils.MinutesToPrintTime(interval.start) : 
+  (interval.start === 0 && interval.end === 1440 ? 
+    'all day' : 
+    `${WDateUtils.MinutesToPrintTime(interval.start)} to ${WDateUtils.MinutesToPrintTime(interval.end)}`);
 
 const ServiceSelectionCheckbox = (props: ServiceSelectionCheckboxProps) => {
   const { selected, onChange, service_name } = props;
@@ -50,6 +57,8 @@ const ServiceSelectionCheckbox = (props: ServiceSelectionCheckboxProps) => {
 }
 
 const BlockOffComp = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const dispatch = useAppDispatch();
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
   const filteredFulfillments = useMemo(() => Object.values(fulfillments).filter((x) => WDateUtils.HasOperatingHours(x.operatingHours)), [fulfillments])
@@ -142,13 +151,14 @@ const BlockOffComp = () => {
     if (!isProcessing && selectedDate !== null && startTime !== null && endTime !== null) {
       try {
         const token = await getAccessTokenSilently({ scope: "write:order_config" });
+        const interval = {
+          start: startTime,
+          end: endTime
+        };
         const body: PostBlockedOffToFulfillmentsRequest = {
           date: selectedDate,
           fulfillmentIds: selectedServices,
-          interval: {
-            start: startTime,
-            end: endTime
-          }
+          interval
         };
         const response = await fetch(
           `${HOST_API}/api/v1/config/timing/blockoff`,
@@ -162,10 +172,17 @@ const BlockOffComp = () => {
           }
         );
         if (response.status === 201) {
+          enqueueSnackbar(
+            <span>
+              Blocked off {IntervalToString(interval)} on <br />
+              {format(parseISO(selectedDate), WDateUtils.ServiceDateDisplayFormat)}<br />
+              for services: {selectedServices.map(fId => fulfillments[fId].displayName).join(', ')}
+            </span>)
           dispatch(setStartTime(null));
           dispatch(setEndTime(null));
         }
       } catch (error) {
+        enqueueSnackbar(`Unable to update blocked off intervals. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
       }
     }
@@ -191,8 +208,15 @@ const BlockOffComp = () => {
         }
       );
       if (response.status === 201) {
+        enqueueSnackbar(
+          <span>
+            Removed {IntervalToString(interval)} block on <br />
+            {format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}<br />
+            for {fulfillments[fulfillmentId].displayName}
+          </span>)
       }
     } catch (error) {
+      enqueueSnackbar(`Unable to update blocked off intervals. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
       console.error(error);
     }
   };
@@ -327,10 +351,9 @@ const BlockOffComp = () => {
                   </ListItem>
                   <List sx={{ ml: 2 }}>
                     {entry.value.map((interval, i) => {
-                      const from_to = interval.start === interval.end ? WDateUtils.MinutesToPrintTime(interval.start) : `${WDateUtils.MinutesToPrintTime(interval.start)} to ${WDateUtils.MinutesToPrintTime(interval.end)}`;
                       return (
                         <ListItem key={i}>
-                          <ListItemText primary={from_to} />
+                          <ListItemText primary={IntervalToString(interval)} />
                           <ListItemSecondaryAction>
                             <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(fulfillment.id, entry.key, interval)}>
                               <HighlightOff />

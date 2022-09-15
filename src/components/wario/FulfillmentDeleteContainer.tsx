@@ -1,15 +1,18 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { useSnackbar } from "notistack";
+import { FulfillmentConfig } from "@wcp/wcpshared";
 import ElementDeleteComponent from "./menu/element.delete.component";
 import { HOST_API } from "../../config";
-import { FulfillmentConfig } from "@wcp/wcpshared";
 
 export interface FulfillmentQuickActionProps {
   fulfillment: FulfillmentConfig;
   onCloseCallback: VoidFunction;
 }
 const FulfillmentDeleteContainer = ({ fulfillment, onCloseCallback }: FulfillmentQuickActionProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -26,10 +29,12 @@ const FulfillmentDeleteContainer = ({ fulfillment, onCloseCallback }: Fulfillmen
           }
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Deleted fulfillment: ${fulfillment.displayName}.`)
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to delete fulfillment ${fulfillment.displayName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

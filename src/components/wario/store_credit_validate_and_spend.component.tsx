@@ -1,17 +1,17 @@
 import { CURRENCY, MoneyToDisplayString, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
 import { DialogContainer } from "@wcp/wario-ux-shared";
+import { useSnackbar } from 'notistack';
 
 import { useState, useEffect, useLayoutEffect } from 'react';
+import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, Divider } from '@mui/material';
+import { ErrorOutline, PhotoCamera } from "@mui/icons-material";
 import { Html5QrcodeScanner, Html5QrcodeScanType, Html5Qrcode } from 'html5-qrcode';
 import { QrcodeSuccessCallback, QrcodeErrorCallback } from 'html5-qrcode/core';
-
-import { ErrorOutline, PhotoCamera } from "@mui/icons-material";
-import { Button, Card, CardHeader, Grid, IconButton, List, ListItem, Typography, Divider } from '@mui/material';
-import { HOST_API } from "../../config";
 import { uniqueId } from 'lodash';
+
+import { HOST_API } from "../../config";
 import { IMoneyPropertyComponent } from './property-components/IMoneyPropertyComponent';
 import { StringPropertyComponent } from './property-components/StringPropertyComponent';
-
 
 
 interface QrCodeScannerProps {
@@ -48,6 +48,8 @@ const QrCodeScanner = ({ show, onSuccess, onFailure }: QrCodeScannerProps) => {
 }
 
 const StoreCreditValidateAndSpendComponent = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [creditCode, setCreditCode] = useState("");
   const [scanCode, setScanCode] = useState(false);
   const [hasCamera, setHasCamera] = useState(false);
@@ -103,6 +105,7 @@ const StoreCreditValidateAndSpendComponent = () => {
         setValidationResponse(response_data);
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to validate ${creditCode}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }
@@ -133,6 +136,7 @@ const StoreCreditValidateAndSpendComponent = () => {
         setDebitResponse(response_data);
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to debit ${creditCode}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { Polygon } from 'geojson';
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { useSnackbar } from "notistack";
+
 import { HOST_API } from "../../config";
 import { DateIntervalsEntries, DayOfTheWeek, FulfillmentConfig, FulfillmentType, OperatingHourSpecification } from "@wcp/wcpshared";
 import FulfillmentComponent from "./FulfillmentComponent";
@@ -16,6 +18,8 @@ const EmptyOperatingHours: OperatingHourSpecification = {
 };
 
 const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [ordinal, setOrdinal] = useState(0);
   const [displayName, setDisplayName] = useState("");
   const [shortcode, setShortcode] = useState('');
@@ -62,7 +66,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
     setAutograt(null);
     setServiceChargeFunctionId(null);
     setLeadTime(35);
-    setOperatingHours({ ...EmptyOperatingHours });
+    setOperatingHours(EmptyOperatingHours);
     setMinDuration(0);
     setMaxDuration(0);
     setTimeStep(15);
@@ -115,12 +119,14 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
           body: JSON.stringify(body),
         });
         if (response.status === 201) {
+          enqueueSnackbar(`Added new fulfillment: ${displayName}.`);
           reset();
           onCloseCallback();
         }
         setIsProcessing(false);
 
       } catch (error) {
+        enqueueSnackbar(`Unable to add fulfillment: ${displayName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

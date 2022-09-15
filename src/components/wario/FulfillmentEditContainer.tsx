@@ -5,8 +5,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from "../../config";
 import { FulfillmentConfig } from "@wcp/wcpshared";
 import FulfillmentComponent from "./FulfillmentComponent";
+import { useSnackbar } from "notistack";
 
 const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillment: FulfillmentConfig; onCloseCallback: VoidFunction }) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [ordinal, setOrdinal] = useState(fulfillment.ordinal);
   const [displayName, setDisplayName] = useState(fulfillment.displayName);
   const [shortcode, setShortcode] = useState(fulfillment.shortcode);
@@ -87,11 +90,13 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Updated fulfillment ${displayName}.`)
           onCloseCallback();
         }
         setIsProcessing(false);
 
       } catch (error) {
+        enqueueSnackbar(`Unable to update fulfillment ${displayName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

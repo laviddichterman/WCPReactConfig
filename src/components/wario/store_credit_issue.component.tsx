@@ -5,14 +5,18 @@ import { TextField, IconButton, Button, Grid, Card, CardHeader, Divider } from "
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { DatePicker } from '@mui/x-date-pickers';
 
-import { CURRENCY, IMoney, IssueStoreCreditRequest, StoreCreditType, WDateUtils } from "@wcp/wcpshared";
+import { CURRENCY, IMoney, IssueStoreCreditRequest, MoneyToDisplayString, StoreCreditType, WDateUtils } from "@wcp/wcpshared";
 import { HOST_API } from "../../config";
 import { useAppSelector } from "../../hooks/useRedux";
 import { IMoneyPropertyComponent } from "./property-components/IMoneyPropertyComponent";
 import { StringPropertyComponent } from "./property-components/StringPropertyComponent";
+import { useSnackbar } from "notistack";
 
 const DEFAULT_MONEY = { amount: 500, currency: CURRENCY.USD };
 const StoreCreditIssueComponent = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { getAccessTokenSilently } = useAuth0();
+
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const [amount, setAmount] = useState<IMoney>(DEFAULT_MONEY);
   const [addedBy, setAddedBy] = useState("");
@@ -23,9 +27,7 @@ const StoreCreditIssueComponent = () => {
   const [recipientEmailError, setRecipientEmailError] = useState(false);
   const [expiration, setExpiration] = useState<string | null>(WDateUtils.formatISODate(addDays(CURRENT_TIME, 60)));
   const [isProcessing, setIsProcessing] = useState(false);
-  const { getAccessTokenSilently } = useAuth0();
-
-
+  
   const validateRecipientEmail = () => {
     //setRecipientEmailError(recipientEmail.length >= 1 && !EMAIL_REGEX.test(recipientEmail))
     // TODO: use yup.isEmail
@@ -54,6 +56,7 @@ const StoreCreditIssueComponent = () => {
           },
           body: JSON.stringify(body)
         });
+        enqueueSnackbar(`Successfully sent ${firstName} ${lastName} DISCOUNT credit for ${MoneyToDisplayString(amount, true)}.`)
         setAddedBy("");
         setAmount(DEFAULT_MONEY);
         setReason("");
@@ -64,6 +67,7 @@ const StoreCreditIssueComponent = () => {
         setExpiration(WDateUtils.formatISODate(addDays(CURRENT_TIME, 60)))
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to issue store credit. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }
