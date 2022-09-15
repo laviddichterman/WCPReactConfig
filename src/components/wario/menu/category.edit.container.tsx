@@ -6,8 +6,11 @@ import CategoryComponent, { CategoryEditProps } from "./category.component";
 import { HOST_API } from "../../../config";
 import { getCategoryEntryIds } from "@wcp/wario-ux-shared";
 import { useAppSelector } from "../../../hooks/useRedux";
+import { useSnackbar } from "notistack";
 
 const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const categoryIds = useAppSelector(s => getCategoryEntryIds(s.ws.categories));
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
@@ -50,10 +53,12 @@ const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps)
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Updated category: ${name}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to update category: ${name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

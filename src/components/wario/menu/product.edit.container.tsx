@@ -4,6 +4,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 import { HOST_API } from "../../../config";
 import { IProduct } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
+import { useAppSelector } from "src/hooks/useRedux";
+import { getProductInstanceById } from "@wcp/wario-ux-shared";
 
 export interface ProductEditContainerProps {
   product: IProduct;
@@ -11,7 +14,12 @@ export interface ProductEditContainerProps {
 };
 
 const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainerProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const productName = useAppSelector(s=> getProductInstanceById(s.ws.productInstances, product.baseProductId)?.displayName)
+  
   const [price, setPrice] = useState(product.price);
+  const [baseProductId, setBaseProductId] = useState(product.baseProductId);
   const [externalIds, setExternalIds] = useState(product.externalIDs);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
   const [serviceDisable, setServiceDisable] = useState(product.serviceDisable)
@@ -32,7 +40,7 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
-        const body: Omit<IProduct, "id"> = {
+        const body: Omit<IProduct, 'id'> = {
           disabled,
           serviceDisable,
           price,
@@ -50,6 +58,7 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
           },
           category_ids: parentCategories,
           modifiers: modifiers,
+          baseProductId
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
           method: "PATCH",
@@ -60,10 +69,12 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Updated ${productName}.`)
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to update ${productName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }
@@ -73,11 +84,13 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
   return (
     <ProductComponent
       confirmText="Save"
+      isEdit
       onCloseCallback={onCloseCallback}
       onConfirmClick={editProduct}
       isProcessing={isProcessing}
       disableConfirmOn={price.amount < 0 || isProcessing}
-      suppressNonProductInstanceFields
+      baseProductId={baseProductId}
+      setBaseProductId={setBaseProductId}
       price={price}
       setPrice={setPrice}
       externalIds={externalIds}

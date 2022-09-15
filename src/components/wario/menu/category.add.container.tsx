@@ -6,12 +6,15 @@ import { HOST_API } from "../../../config";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { getCategoryEntryIds } from "@wcp/wario-ux-shared";
+import { useSnackbar } from "notistack";
 
 export interface CategoryAddContainerProps {
   onCloseCallback: VoidFunction;
 }
 
 const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const categoryIds = useAppSelector(s => getCategoryEntryIds(s.ws.categories));
   const [description, setDescription] = useState("");
   const [subheading, setSubheading] = useState("");
@@ -54,20 +57,12 @@ const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) =>
           body: JSON.stringify(body),
         });
         if (response.status === 201) {
-          setDescription("");
-          setName("");
-          setSubheading("");
-          setFootnotes("");
-          setOrdinal(0);
-          setParent(null);
-          setCallLineName("");
-          setCallLineDisplay(CALL_LINE_DISPLAY.SHORTNAME);
-          setNestedDisplay(CategoryDisplay.TAB);
-          setServiceDisable([]);
+          enqueueSnackbar(`Added new category: ${name}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to add category: ${name}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

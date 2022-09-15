@@ -4,8 +4,10 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
 import { HOST_API } from "../../../config";
 import { ModifierTypeModifyUiProps } from "./modifier_type.component";
+import { useSnackbar } from "notistack";
 
 const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback }: ModifierTypeModifyUiProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -22,10 +24,12 @@ const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback }: Modifie
           }
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Deleted modifier type: ${modifier_type.name}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to delete modifier type: ${modifier_type.name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

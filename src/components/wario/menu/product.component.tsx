@@ -15,19 +15,13 @@ import { ValSetValNamed } from '../../../utils/common';
 import { StringPropertyComponent } from '../property-components/StringPropertyComponent';
 import { FloatNumericPropertyComponent } from '../property-components/FloatNumericPropertyComponent';
 import { ToggleBooleanPropertyComponent } from '../property-components/ToggleBooleanPropertyComponent';
-import { IntNumericPropertyComponent } from '../property-components/IntNumericPropertyComponent';
 import { IMoneyPropertyComponent } from '../property-components/IMoneyPropertyComponent';
 import { ExternalIdsExpansionPanelComponent } from '../ExternalIdsExpansionPanelComponent';
 
-type ProductInstanceComponentProps =
-  ValSetValNamed<string, 'displayName'> &
-  ValSetValNamed<string, 'description'> &
-  ValSetValNamed<string, 'shortcode'> &
-  ValSetValNamed<number, 'ordinal'>;
-
-type ProductComponentProps =
+type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
+type ProductComponentFieldsNoBaseId =
   ValSetValNamed<IMoney, 'price'> &
-  ValSetValNamed<KeyValue[], 'externalIds'> & 
+  ValSetValNamed<KeyValue[], 'externalIds'> &
   ValSetValNamed<IWInterval | null, 'disabled'> &
   ValSetValNamed<string[], 'serviceDisable'> &
   ValSetValNamed<number, 'flavorMax'> &
@@ -38,18 +32,18 @@ type ProductComponentProps =
   ValSetValNamed<boolean, 'showNameOfBaseProduct'> &
   ValSetValNamed<string, 'singularNoun'> &
   ValSetValNamed<string[], 'parentCategories'> &
-  ValSetValNamed<IProductModifier[], 'modifiers'> & {
-    confirmText: string;
-    onCloseCallback: VoidFunction;
-    onConfirmClick: VoidFunction;
-    isProcessing: boolean;
-    disableConfirmOn: boolean;
-    children?: React.ReactNode;
-  };
+  ValSetValNamed<IProductModifier[], 'modifiers'>;
 
-type ProductComponentPropsTypes = (({ suppressNonProductInstanceFields: true; } & Partial<ProductInstanceComponentProps>) | ({ suppressNonProductInstanceFields: false; } & ProductInstanceComponentProps));
+interface ProductComponentProps {
+  confirmText: string;
+  onCloseCallback: VoidFunction;
+  onConfirmClick: VoidFunction;
+  isProcessing: boolean;
+  disableConfirmOn: boolean;
+  children?: React.ReactNode;
+};
 
-const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentProps) => {
+const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComponentFieldsNoBaseId & ProductComponentProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
 
@@ -63,44 +57,7 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
     }
     props.setModifiers(sorted);
   };
-
-  const modifierEnableFunctionSpecificationList = props.modifiers.map((modifier, idx) => (
-    <Grid item xs={12} md={props.modifiers.length - 1 === idx && props.modifiers.length % 2 === 1 ? 12 : 6} key={idx}>
-      <Card>
-        <CardHeader title={`Modifier Details: ${catalog.modifiers[modifier.mtid].modifierType.name}`} />
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Autocomplete
-                fullWidth
-                options={Object.keys(catalog.productInstanceFunctions)}
-                value={modifier.enable}
-                // this makes a copy of the modifiers array with the updated enable function value
-                onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } }))}
-                getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
-                isOptionEqualToValue={(option, value) => option === value}
-                renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Autocomplete
-                fullWidth
-                multiple
-                filterSelectedOptions
-                options={Object.keys(fulfillments)}
-                value={modifier.serviceDisable}
-                onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
-                getOptionLabel={(option) => fulfillments[option].displayName}
-                isOptionEqualToValue={(option, value) => option === value}
-                renderInput={(params) => <TextField {...params} label="Disabled Services" />}
-              />
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-    </Grid>
-  ));
-
+  
   return (
     <ElementActionComponent
       onCloseCallback={props.onCloseCallback}
@@ -122,27 +79,6 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               renderInput={(params) => <TextField {...params} label="Categories" />}
             />
           </Grid>
-          {/* universal break */}
-          {!props.suppressNonProductInstanceFields && (
-            <>
-              <Grid item xs={12} md={6}>
-                <StringPropertyComponent
-                  disabled={props.isProcessing}
-                  label="Display Name"
-                  value={props.displayName}
-                  setValue={props.setDisplayName}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <StringPropertyComponent
-                  disabled={props.isProcessing}
-                  label="Description"
-                  value={props.description}
-                  setValue={props.setDescription}
-                />
-              </Grid>
-            </>
-          )}
           {/* universal break */}
           <Grid item xs={6}>
             <IMoneyPropertyComponent
@@ -194,26 +130,6 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
             />
           </Grid>
           {/* universal break */}
-          {!props.suppressNonProductInstanceFields && (
-            <>
-              <Grid item xs={3}>
-                <IntNumericPropertyComponent
-                  disabled={props.isProcessing}
-                  label="Ordinal"
-                  value={props.ordinal}
-                  setValue={props.setOrdinal}
-                />
-              </Grid>
-              <Grid item xs={9}>
-                <StringPropertyComponent
-                  disabled={props.isProcessing}
-                  label="Short Code"
-                  value={props.shortcode}
-                  setValue={props.setShortcode}
-                />
-              </Grid>
-            </>
-          )}
           <Grid item xs={12} md={6}>
             <Autocomplete
               multiple
@@ -275,7 +191,41 @@ const ProductComponent = (props: ProductComponentPropsTypes & ProductComponentPr
               labelPlacement='end'
             />
           </Grid>
-          {modifierEnableFunctionSpecificationList}
+          {props.modifiers.map((modifier, idx) => (
+            <Grid item xs={12} md={props.modifiers.length - 1 === idx && props.modifiers.length % 2 === 1 ? 12 : 6} key={idx}>
+              <Card>
+                <CardHeader title={`Modifier Details: ${catalog.modifiers[modifier.mtid].modifierType.name}`} />
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Autocomplete
+                        fullWidth
+                        options={Object.keys(catalog.productInstanceFunctions)}
+                        value={modifier.enable}
+                        // this makes a copy of the modifiers array with the updated enable function value
+                        onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } }))}
+                        getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
+                        isOptionEqualToValue={(option, value) => option === value}
+                        renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Autocomplete
+                        fullWidth
+                        multiple
+                        filterSelectedOptions
+                        options={Object.keys(fulfillments)}
+                        value={modifier.serviceDisable}
+                        onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
+                        getOptionLabel={(option) => fulfillments[option].displayName}
+                        isOptionEqualToValue={(option, value) => option === value}
+                        renderInput={(params) => <TextField {...params} label="Disabled Services" />}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>))}
           <Grid item xs={12}>
             <DatetimeBasedDisableComponent
               disabled={props.isProcessing}

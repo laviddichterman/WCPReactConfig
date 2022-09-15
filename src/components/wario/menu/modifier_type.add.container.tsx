@@ -4,8 +4,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ModifierTypeComponent, { ModifierTypeUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../config";
 import { DISPLAY_AS, IOptionType, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [ordinal, setOrdinal] = useState(0);
   const [name, setName] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -59,27 +62,12 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
           body: JSON.stringify(body),
         });
         if (response.status === 201) {
-          setOrdinal(0);
-          setName("");
-          setDisplayName("");
-          setExternalIds([]);
-          setMinSelected(0);
-          setMaxSelected(null);
-          setOmitOptionIfNotAvailable(false);
-          setOmitSectionIfNoAvailableOptions(false);
-          setUseToggleIfOnlyTwoOptions(false);
-          setIsHiddenDuringCustomization(false);
-          setEmptyDisplayAs(DISPLAY_AS.OMIT);
-          setModifierClass(MODIFIER_CLASS.ADD);
-          setTemplateString("");
-          setMultipleItemSeparator(" + ");
-          setNonEmptyGroupPrefix("");
-          setNonEmptyGroupSuffix("");
+          enqueueSnackbar(`Added new modifier type: ${name}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
-
       } catch (error) {
+        enqueueSnackbar(`Unable to add modifier type: ${name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

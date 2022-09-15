@@ -4,12 +4,15 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ModifierOptionComponent from "./modifier_option.component";
 import { HOST_API } from "../../../config";
 import { IOption } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 interface ModifierOptionEditContainerProps {
   modifier_option: IOption;
   onCloseCallback: VoidFunction;
 }
 const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: ModifierOptionEditContainerProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [displayName, setDisplayName] = useState(modifier_option.displayName);
   const [description, setDescription] = useState(modifier_option.description);
   const [shortcode, setShortcode] = useState(modifier_option.shortcode);
@@ -58,10 +61,12 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Updated modifier option: ${modifier_option.displayName}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to update modifier option: ${modifier_option.displayName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ProductInstanceActionContainer } from "./product_instance.component";
 import { IProduct, IProductInstance, ProductModifierEntry, PriceDisplay, KeyValue } from "@wcp/wcpshared";
 import { HOST_API } from "../../../config";
+import { useSnackbar } from "notistack";
 
 interface ProductInstanceAddContainerProps {
   parent_product: IProduct;
@@ -11,12 +12,12 @@ interface ProductInstanceAddContainerProps {
 }
 
 const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: ProductInstanceAddContainerProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
   const [modifiers, setModifiers] = useState<ProductModifierEntry[]>([]);
-  const [isBase, setIsBase] = useState(false);
   const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
   // menu
   const [menuOrdinal, setMenuOrdinal] = useState(0);
@@ -47,7 +48,6 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
           shortcode,
           ordinal,
           modifiers,
-          isBase,
           externalIDs: externalIds,
           displayFlags: {
             menu: {
@@ -77,29 +77,12 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
           body: JSON.stringify(body)
         });
         if (response.status === 201) {
-          setDisplayName("");
-          setDescription("");
-          setShortcode("");
-          setOrdinal(0);
-          setModifiers([]);
-          setIsBase(false);
-          setExternalIds([]);
-          setMenuOrdinal(0);
-          setMenuHide(false);
-          setMenuPriceDisplay(PriceDisplay.ALWAYS);
-          setMenuAdornment("");
-          setMenuSuppressExhaustiveModifierList(false);
-          setMenuShowModifierOptions(false);
-          setOrderOrdinal(0);
-          setOrderMenuHide(false);
-          setSkipCustomization(false);
-          setOrderPriceDisplay(PriceDisplay.ALWAYS);
-          setOrderAdornment("");
-          setOrderSuppressExhaustiveModifierList(false);
+          enqueueSnackbar(`Added ${displayName}.`)
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to add product instance: ${displayName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }
@@ -123,8 +106,6 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
       setOrdinal={setOrdinal}
       modifiers={modifiers}
       setModifiers={setModifiers}
-      isBase={isBase}
-      setIsBase={setIsBase}
       externalIds={externalIds}
       setExternalIds={setExternalIds}
 

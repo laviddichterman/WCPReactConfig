@@ -5,6 +5,7 @@ import ModifierOptionComponent from "./modifier_option.component";
 
 import { HOST_API } from "../../../config";
 import { IOptionType, IMoney, CURRENCY, IOption, KeyValue } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 export interface ModifierOptionUiContainerProps {
   parent: IOptionType;
@@ -12,6 +13,8 @@ export interface ModifierOptionUiContainerProps {
 }
 
 const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionUiContainerProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
@@ -61,23 +64,12 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
           body: JSON.stringify(body),
         });
         if (response.status === 201) {
-          setDisplayName("");
-          setDescription("");
-          setShortcode("");
-          setOrdinal(0);
-          setPrice({ amount: 0, currency: CURRENCY.USD });
-          setExternalIds([]);
-          setEnableFunction(null);
-          setFlavorFactor(0);
-          setBakeFactor(0);
-          setCanSplit(true);
-          setOmitFromShortname(false);
-          setOmitFromName(false);
-          setDisabled(null);
+          enqueueSnackbar(`Added modifier option: ${displayName}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to add modifier option: ${displayName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

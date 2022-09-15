@@ -7,8 +7,11 @@ import { HOST_API } from "../../../config";
 
 import { ProductQuickActionProps } from './product.delete.container';
 import { IProduct } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 const ProductEnableContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async () => {
@@ -29,10 +32,12 @@ const ProductEnableContainer = ({ product, productName, onCloseCallback }: Produ
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Enabled ${productName}.`)
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to update ${productName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         setIsProcessing(false);
       }
     }

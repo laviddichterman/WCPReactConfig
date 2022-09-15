@@ -6,8 +6,11 @@ import { ElementActionComponent } from "./element.action.component";
 import { HOST_API } from "../../../config";
 import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
 import { IOption } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 const ModifierOptionDisableContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editModifierOption = async () => {
@@ -28,10 +31,12 @@ const ModifierOptionDisableContainer = ({ modifier_option, onCloseCallback }: Mo
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Disabled modifier option: ${modifier_option.displayName}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to update modifier option: ${modifier_option.displayName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

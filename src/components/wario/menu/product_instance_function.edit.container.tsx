@@ -8,8 +8,11 @@ import { ProductInstanceFunctionQuickActionProps } from './product_instance_func
 import { IProductInstanceFunction } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { getProductInstanceFunctionById } from "@wcp/wario-ux-shared";
+import { useSnackbar } from "notistack";
 
 const ProductInstanceFunctionEditContainer = ({ pifId, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   // todo: look into the assertion of truthy, maybe the caller of this container should process the selection and confirm non-falsy?
   const productInstanceFunction = useAppSelector(s=> getProductInstanceFunctionById(s.ws.productInstanceFunctions, pifId)!)
 
@@ -36,10 +39,12 @@ const ProductInstanceFunctionEditContainer = ({ pifId, onCloseCallback }: Produc
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Updated product instance function: ${functionName}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to edit product instance function: ${functionName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

@@ -7,8 +7,11 @@ import { HOST_API } from "../../../config";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { ProductQuickActionProps } from './product.delete.container';
 import { IProduct } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [isProcessing, setIsProcessing] = useState(false);
   const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
   const { getAccessTokenSilently } = useAuth0();
@@ -30,10 +33,12 @@ const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Disabled ${productName} until EOD.`)
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to update ${productName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

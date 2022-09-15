@@ -4,11 +4,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ProductInstanceFunctionComponent from "./product_instance_function.component";
 import { HOST_API } from "../../../config";
 import { IAbstractExpression, IProductInstanceFunction } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 interface ProductInstanceFunctionAddContainerProps {
   onCloseCallback: VoidFunction;
 }
 const ProductInstanceFunctionAddContainer = ({ onCloseCallback }: ProductInstanceFunctionAddContainerProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [functionName, setFunctionName] = useState("");
   const [expression, setExpression] = useState<IAbstractExpression | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -32,12 +35,12 @@ const ProductInstanceFunctionAddContainer = ({ onCloseCallback }: ProductInstanc
           body: JSON.stringify(body),
         });
         if (response.status === 201) {
-          setFunctionName("");
-          setExpression(null);
+          enqueueSnackbar(`Added product instance function: ${functionName}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to add product instance function: ${functionName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

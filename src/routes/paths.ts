@@ -23,6 +23,7 @@ export const PATH_PAGE = {
 export const PATH_DASHBOARD = {
   root: ROOTS_DASHBOARD,
   general: {
+    orders: path(ROOTS_DASHBOARD, '/orders'),
     timing: path(ROOTS_DASHBOARD, '/timing'),
     credit: path(ROOTS_DASHBOARD, '/credit'),
     catalog: path(ROOTS_DASHBOARD, '/catalog'),

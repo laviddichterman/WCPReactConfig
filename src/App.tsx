@@ -20,9 +20,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
  *  - implement authorization with redux https://community.auth0.com/t/how-which-library-to-use-for-react-redux/55854
  *  - limit display of sections / actions depending on user roles
  *  - move API calls to redux
- *  - add notistack toasters for API call fail/success
+ *  - add notistack toasters for API call fail/success (WIP)
  *  - add orders dashboard
- *  - create product API change to take a product instance that'll be the base product instance
  *  - UI product class edit should allow selection of the base
  */
 

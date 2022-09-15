@@ -85,7 +85,7 @@ const ProductTableContainer = ({
           headerName: "Actions",
           field: 'actions',
           type: 'actions',
-          getActions: (params) => [
+          getActions: (params : GridRowParams<IProductInstance>) => [
             <GridActionsCellItem
               key={`EDIT${row.product.id}`}
               icon={<Tooltip title="Edit Product Instance"><Edit /></Tooltip>}
@@ -98,6 +98,7 @@ const ProductTableContainer = ({
             />,
             <GridActionsCellItem
               key={`DEL${row.product.id}`}
+              disabled={row.product.baseProductId === params.row.id}
               icon={<Tooltip title="Delete Product Instance"><DeleteOutline /></Tooltip>}
               label="Delete Product Instance"
               onClick={(() => {

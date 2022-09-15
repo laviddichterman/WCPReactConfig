@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ProductInstanceActionContainer } from "./product_instance.component";
 import { HOST_API } from "../../../config";
 import { IProduct, IProductInstance, PriceDisplay } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 interface ProductInstanceEditContainerProps {
   parent_product: IProduct;
@@ -12,12 +13,12 @@ interface ProductInstanceEditContainerProps {
 }
 
 const ProductInstanceEditContainer = ({ parent_product, product_instance, onCloseCallback }: ProductInstanceEditContainerProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [displayName, setDisplayName] = useState(product_instance.displayName);
   const [description, setDescription] = useState(product_instance.description);
   const [shortcode, setShortcode] = useState(product_instance.shortcode);
   const [ordinal, setOrdinal] = useState(product_instance.ordinal || 0);
   const [modifiers, setModifiers] = useState(product_instance.modifiers);
-  const [isBase, setIsBase] = useState(product_instance.isBase ?? false);
   const [externalIds, setExternalIds] = useState(product_instance.externalIDs);
   const [menuOrdinal, setMenuOrdinal] = useState(product_instance.displayFlags.menu?.ordinal || 0);
   const [menuHide, setMenuHide] = useState(product_instance.displayFlags.menu?.hide ?? false);
@@ -45,7 +46,6 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
           shortcode,
           ordinal,
           modifiers,
-          isBase,
           externalIDs: externalIds,
           displayFlags: {
             menu: {
@@ -75,10 +75,12 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Updated ${displayName}.`)
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to update ${displayName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }
@@ -102,8 +104,6 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
       setOrdinal={setOrdinal}
       modifiers={modifiers}
       setModifiers={setModifiers}
-      isBase={isBase}
-      setIsBase={setIsBase}
       externalIds={externalIds}
       setExternalIds={setExternalIds}
 

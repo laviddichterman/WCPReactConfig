@@ -4,8 +4,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ModifierTypeComponent, { ModifierTypeModifyUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../config";
 import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierTypeModifyUiProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
   const [displayName, setDisplayName] = useState(modifier_type.displayName ?? "");
@@ -59,10 +62,12 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
           body: JSON.stringify(body),
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Updated modifier type: ${name}.`);
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to edit modifier type: ${name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

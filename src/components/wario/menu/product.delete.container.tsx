@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "./element.delete.component";
 import { HOST_API } from "../../../config";
 import { IProduct } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 
 export interface ProductQuickActionProps {
   product: IProduct;
@@ -11,6 +12,7 @@ export interface ProductQuickActionProps {
   onCloseCallback: VoidFunction;
 }
 const ProductDeleteContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -27,10 +29,12 @@ const ProductDeleteContainer = ({ product, productName, onCloseCallback }: Produ
           }
         });
         if (response.status === 200) {
+          enqueueSnackbar(`Deleted product: ${productName}.`)
           onCloseCallback();
         }
         setIsProcessing(false);
       } catch (error) {
+        enqueueSnackbar(`Unable to delete ${productName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

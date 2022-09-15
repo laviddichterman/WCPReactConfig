@@ -12,13 +12,14 @@ import { StringEnumPropertyComponent } from "../property-components/StringEnumPr
 import { StringPropertyComponent } from "../property-components/StringPropertyComponent";
 import { ExternalIdsExpansionPanelComponent } from "../ExternalIdsExpansionPanelComponent";
 
+export type UncommittedProduct = Omit<IProduct, 'id' | 'baseProductId'>;
+
 export type ProductInstanceComponentProps =
   ValSetValNamed<string, 'displayName'> &
   ValSetValNamed<string, 'description'> &
   ValSetValNamed<string, 'shortcode'> &
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<ProductModifierEntry[], 'modifiers'> &
-  ValSetValNamed<boolean, 'isBase'> &
   // menu
   ValSetValNamed<number, 'menuOrdinal'> &
   ValSetValNamed<boolean, 'menuHide'> &
@@ -37,7 +38,7 @@ export type ProductInstanceComponentProps =
   ValSetValNamed<KeyValue[], 'externalIds'> &
 
   {
-    parent_product: IProduct;
+    parent_product: UncommittedProduct;
     isProcessing: boolean;
   };
 
@@ -76,68 +77,6 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
       ...props.modifiers.slice(foundModifierEntryIndex + 1)]);
   };
 
-  const modifier_html = props.parent_product.modifiers.map((modifier_entry, i) => {
-    const { mtid } = modifier_entry;
-    const mt = modifier_types_map[mtid].modifierType;
-    const mt_options = modifier_types_map[mtid].options;
-    let mt_options_html;
-    if (mt.min_selected === 1 && mt.max_selected === 1) {
-      mt_options_html = (
-        <RadioGroup
-          aria-label={mt.id}
-          name={mt.name}
-          row
-          value={props.modifiers.find(x => x.modifierTypeId === mtid)!.options.findIndex(
-            (o) => o.placement === OptionPlacement.WHOLE
-          )}
-          onChange={(e) => handleRadioChange(mtid, parseInt(e.target.value))}
-        >
-          {mt_options.map((optionId, oidx) => (
-            <FormControlLabel
-              key={oidx}
-              control={<Radio disableRipple />}
-              value={oidx}
-              label={modifierOptionsMap[optionId].displayName}
-            />
-          ))}
-        </RadioGroup>
-      );
-    } else {
-      mt_options_html = (
-        <FormGroup row>
-          {mt_options.map((option, oidx) => (
-            <FormControlLabel
-              key={oidx}
-              control={
-                <Checkbox
-                  checked={
-                    props.modifiers.find(x => x.modifierTypeId === mtid)!.options[oidx].placement === OptionPlacement.WHOLE
-                  }
-                  onChange={() => handleToggle(mtid, oidx)}
-                  disableRipple
-                  inputProps={{ "aria-labelledby": String(oidx) }}
-                />
-              }
-              label={modifierOptionsMap[option].displayName}
-            />
-          ))}
-        </FormGroup>
-      );
-    }
-    return (
-      <Grid item xs={12} lg={(i === (props.parent_product.modifiers.length - 1) && props.parent_product.modifiers.length % 2 === 1) ? 12 : 6} key={mtid}>
-        <Card>
-          <CardContent>
-            <FormControl component="fieldset">
-              <FormLabel>{mt.name}</FormLabel>
-              {mt_options_html}
-            </FormControl>
-          </CardContent>
-        </Card>
-      </Grid>
-    );
-  });
-
   return (
     <>
       <Grid item xs={12} md={4}>
@@ -165,22 +104,12 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setOrdinal}
         />
       </Grid>
-      <Grid item xs={6} sm={7}>
+      <Grid item xs={9} sm={9.5}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Short Code"
           value={props.shortcode}
           setValue={props.setShortcode}
-        />
-      </Grid>
-      <Grid item xs={3} sm={2.5} >
-        { /* TODO: remove this from the product instance and move to the product class edit which lets the user pick which item is the base product */ }
-        <ToggleBooleanPropertyComponent
-          disabled={props.isProcessing}
-          label="Is Base"
-          value={props.isBase}
-          setValue={props.setIsBase}
-          labelPlacement={"top"}
         />
       </Grid>
       {/* universal break */}
@@ -301,13 +230,70 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           setValue={props.setExternalIds}
         />
       </Grid>
-      {modifier_html}
+      {props.parent_product.modifiers.map((modifier_entry, i) => {
+        const { mtid } = modifier_entry;
+        const mt = modifier_types_map[mtid].modifierType;
+        const mt_options = modifier_types_map[mtid].options;
+        return (
+          <Grid item xs={12} lg={(i === (props.parent_product.modifiers.length - 1) && props.parent_product.modifiers.length % 2 === 1) ? 12 : 6} key={mtid}>
+            <Card>
+              <CardContent>
+                <FormControl component="fieldset">
+                  <FormLabel>{mt.name}</FormLabel>
+                  <>
+                    {mt.min_selected === 1 && mt.max_selected === 1 ? (
+                      <RadioGroup
+                        aria-label={mt.id}
+                        name={mt.name}
+                        row
+                        value={props.modifiers.find(x => x.modifierTypeId === mtid)!.options.findIndex(
+                          (o) => o.placement === OptionPlacement.WHOLE
+                        )}
+                        onChange={(e) => handleRadioChange(mtid, parseInt(e.target.value))}
+                      >
+                        {mt_options.map((oId, oidx) => (
+                          <FormControlLabel
+                            key={oidx}
+                            control={<Radio disableRipple />}
+                            value={oidx}
+                            label={modifierOptionsMap[oId].displayName}
+                          />
+                        ))}
+                      </RadioGroup>
+                    ) : (
+                      <FormGroup row>
+                        {mt_options.map((oId, oidx) => (
+                          <FormControlLabel
+                            key={oidx}
+                            control={
+                              <Checkbox
+                                checked={
+                                  props.modifiers.find(x => x.modifierTypeId === mtid)!.options[oidx].placement === OptionPlacement.WHOLE
+                                }
+                                onChange={() => handleToggle(mtid, oidx)}
+                                disableRipple
+                                inputProps={{ "aria-labelledby": String(oidx) }}
+                              />
+                            }
+                            label={modifierOptionsMap[oId].displayName}
+                          />
+                        ))}
+                      </FormGroup>
+                    )}
+                  </>
+                </FormControl>
+              </CardContent>
+            </Card>
+          </Grid>
+        );
+      })
+      }
     </>
   );
 };
 
 const normalizeModifiersAndOptions = (
-  parent_product: IProduct,
+  parent_product: UncommittedProduct,
   modifier_types_map: ICatalogModifiers,
   minimizedModifiers: ProductModifierEntry[]
 ): ProductModifierEntry[] => {

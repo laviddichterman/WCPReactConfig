@@ -2,14 +2,16 @@ import React, { useState, Dispatch, SetStateAction } from "react";
 import { Grid, TextField, Button, Autocomplete } from '@mui/material';
 
 import { useCSVReader } from 'react-papaparse';
-
+import { ParseResult } from "papaparse";
+import { KeyValue, PriceDisplay } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 import { useAuth0 } from '@auth0/auth0-react';
+
 import { ElementActionComponent } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { HOST_API } from "../../../config";
 import { ProductAddRequestType } from "./product.add.container";
-import { ParseResult } from "papaparse";
-import { KeyValue } from "@wcp/wcpshared";
+
 
 interface CSVProduct {
   Name: string;
@@ -54,7 +56,7 @@ const InternalCSVReader = ({ onAccepted }: { onAccepted: (data: ParseResult<CSVP
     </CSVReader>
   );
 };
-interface ProductComponentProps {
+interface ProductImportComponentProps {
   confirmText: string;
   onCloseCallback: VoidFunction;
   onConfirmClick: VoidFunction;
@@ -64,7 +66,7 @@ interface ProductComponentProps {
   setParentCategories: Dispatch<SetStateAction<string[]>>;
   setFileData: Dispatch<SetStateAction<CSVProduct[]>>;
 }
-const ProductComponent = (props: ProductComponentProps) => {
+const ProductImportComponent = (props: ProductImportComponentProps) => {
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
   return (
     <ElementActionComponent
@@ -93,7 +95,8 @@ const ProductComponent = (props: ProductComponentProps) => {
   );
 };
 
-const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
+const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [parentCategories, setParentCategories] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [data, setData] = useState<CSVProduct[]>([])
@@ -109,12 +112,34 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
         try {
           const token = await getAccessTokenSilently({ scope: "write:catalog" });
           const body: ProductAddRequestType = {
-            displayName: Name, // displayName,
-            description: Description || "",
-            shortcode: Shortname,
+            instance: {
+              displayName: Name,
+              modifiers: [],
+              description: Description || "",
+              externalIDs: externalIds,
+              displayFlags: {
+                menu: {
+                  adornment: "",
+                  hide: false,
+                  ordinal: index * 10,
+                  show_modifier_options: false,
+                  price_display: PriceDisplay.ALWAYS,
+                  suppress_exhaustive_modifier_list: false
+                },
+                order: {
+                  ordinal: index * 10,
+                  adornment: '',
+                  hide: false,
+                  price_display: PriceDisplay.ALWAYS,
+                  skip_customization: true,
+                  suppress_exhaustive_modifier_list: false
+                }, 
+              },
+              ordinal: index * 10,
+              shortcode: Shortname,
+            },
             disabled: null,
-            ordinal: index * 10,
-            externalIDs: externalIds,
+            externalIDs: [],
             serviceDisable: [],
             price: { amount: Number.parseFloat(Price) * 100, currency: "USD" },
             displayFlags: {
@@ -129,8 +154,7 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
               }
             },
             category_ids: parentCategories,
-            modifiers: [],
-            create_product_instance: true
+            modifiers: []
           };
           const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
             method: "POST",
@@ -140,10 +164,11 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
             },
             body: JSON.stringify(body),
           });
-          // eslint-disable-next-line no-empty
           if (response.status === 201) {
+            enqueueSnackbar(`Imported ${Name}.`);
           }
         } catch (error) {
+          enqueueSnackbar(`Unable to import ${Name}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
           console.error(error);
         }
       });
@@ -153,7 +178,7 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
   };
 
   return (
-    <ProductComponent
+    <ProductImportComponent
       confirmText="Import"
       onCloseCallback={onCloseCallback}
       onConfirmClick={() => addProducts()}
@@ -166,4 +191,4 @@ const ProductAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunctio
   );
 };
 
-export default ProductAddContainer;
+export default ProductImportContainer;
