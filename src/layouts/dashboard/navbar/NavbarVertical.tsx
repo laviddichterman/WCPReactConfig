@@ -24,7 +24,7 @@ import CollapseButton from './CollapseButton';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up('md')]: {
     flexShrink: 0,
     transition: theme.transitions.create('width', {
       duration: theme.transitions.duration.shorter,
@@ -44,7 +44,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
 
   const { pathname } = useLocation();
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isDesktop = useResponsive('up', 'md');
 
   const { isCollapse, collapseClick, collapseHover, onToggleCollapse, onHoverEnter, onHoverLeave } =
     useCollapseDrawer();
@@ -97,7 +97,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
     <RootStyle
       sx={{
         width: {
-          lg: isCollapse ? NAVBAR.DASHBOARD_COLLAPSE_WIDTH : NAVBAR.DASHBOARD_WIDTH,
+          md: isCollapse ? NAVBAR.DASHBOARD_COLLAPSE_WIDTH : NAVBAR.DASHBOARD_WIDTH,
         },
         ...(collapseClick && {
           position: 'absolute',

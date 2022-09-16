@@ -35,7 +35,7 @@ const MainStyle = styled('main', {
   flexGrow: 1,
   paddingTop: HEADER.MOBILE_HEIGHT + 24,
   paddingBottom: HEADER.MOBILE_HEIGHT + 24,
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up('md')]: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: HEADER.DASHBOARD_DESKTOP_HEIGHT + 24,
@@ -60,7 +60,7 @@ function DashboardLayout() {
 
   const { themeLayout } = useSettings();
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isDesktop = useResponsive('up', 'md');
 
   const [open, setOpen] = useState(false);
 
@@ -83,14 +83,14 @@ function DashboardLayout() {
         <Box
           component="main"
           sx={{
-            px: { lg: 2 },
+            px: { md: 2 },
             pt: {
               xs: `${HEADER.MOBILE_HEIGHT + 24}px`,
-              lg: `${HEADER.DASHBOARD_DESKTOP_HEIGHT + 80}px`,
+              md: `${HEADER.DASHBOARD_DESKTOP_HEIGHT + 80}px`,
             },
             pb: {
               xs: `${HEADER.MOBILE_HEIGHT + 24}px`,
-              lg: `${HEADER.DASHBOARD_DESKTOP_HEIGHT + 24}px`,
+              md: `${HEADER.DASHBOARD_DESKTOP_HEIGHT + 24}px`,
             },
           }}
         >
@@ -107,8 +107,8 @@ function DashboardLayout() {
   return (
     <Box
       sx={{
-        display: { lg: 'flex' },
-        minHeight: { lg: 1 },
+        display: { md: 'flex' },
+        minHeight: { md: 1 },
       }}
     >
       <DashboardHeader isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} />

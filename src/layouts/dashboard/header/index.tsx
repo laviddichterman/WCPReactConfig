@@ -38,7 +38,7 @@ const RootStyle = styled(AppBar, {
   transition: theme.transitions.create(['width', 'height'], {
     duration: theme.transitions.duration.shorter,
   }),
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up('md')]: {
     height: HEADER.DASHBOARD_DESKTOP_HEIGHT,
     width: `calc(100% - ${NAVBAR.DASHBOARD_WIDTH + 1}px)`,
     ...(isCollapse && {
@@ -70,14 +70,14 @@ export default function DashboardHeader({
 }: Props) {
   const isOffset = useOffSetTop(HEADER.DASHBOARD_DESKTOP_HEIGHT) && !verticalLayout;
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isDesktop = useResponsive('up', 'md');
 
   return (
     <RootStyle isCollapse={isCollapse} isOffset={isOffset} verticalLayout={verticalLayout}>
       <Toolbar
         sx={{
           minHeight: '100% !important',
-          px: { lg: 5 },
+          px: { md: 5 },
         }}
       >
         {isDesktop && verticalLayout ? <><Logo sx={{ mr: 2.5 }}/>
