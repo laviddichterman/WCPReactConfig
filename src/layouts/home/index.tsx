@@ -29,7 +29,7 @@ export default function MainLayout() {
           <Logo sx={{ mb: 1, mx: 'auto' }} />
 
           <Typography variant="caption" component="p">
-            © {new Date().getFullYear()}&nbsp;made by&nbsp;Lavid Industries LLC<br/>under the GNU General Public License v3
+            © {new Date().getFullYear()}&nbsp;made by&nbsp;Lavid Industries LLC,<br/>released under the GNU General Public License v3
           </Typography>
         </Container>
       </Box>

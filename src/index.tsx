@@ -22,7 +22,6 @@ import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Auth0Provider } from '@auth0/auth0-react';
-import { createBrowserHistory } from "history";
 // redux
 import { store } from './redux/store';
 // contexts
@@ -36,9 +35,6 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import swConfig from './swConfig';
 import reportWebVitals from './reportWebVitals';
 import { AUTH0_API } from './config';
-
-export const history = createBrowserHistory();
-
 
 const Auth0ProviderWithRedirectCallback = ({ children }: { children?: React.ReactNode; }) => {
   const navigate = useNavigate();
@@ -60,8 +56,6 @@ const Auth0ProviderWithRedirectCallback = ({ children }: { children?: React.Reac
     </Auth0Provider>
   );
 };
-
-
 
 // ----------------------------------------------------------------------
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
