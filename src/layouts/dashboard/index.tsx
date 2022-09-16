@@ -21,6 +21,7 @@ import NavbarVertical from './navbar/NavbarVertical';
 import NavbarHorizontal from './navbar/NavbarHorizontal';
 import { useAppSelector } from '../../hooks/useRedux';
 import LoadingScreen from '../../components/LoadingScreen';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 // ----------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ const MainStyle = styled('main', {
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout() {
+function DashboardLayout() {
   const isLoaded = useAppSelector(s=>IsSocketDataLoaded(s.ws));
   const catalog = useAppSelector(s=>s.ws.catalog);
 
@@ -120,3 +121,5 @@ export default function DashboardLayout() {
     </Box>
   );
 }
+
+export default withAuthenticationRequired(DashboardLayout, { onRedirecting: () =><LoadingScreen />});

@@ -2,7 +2,6 @@ import { Card, Container } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
-import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
@@ -11,12 +10,13 @@ import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import {
   ProfileCover,
 } from '../../sections/@dashboard/user/profile';
+import { useAuth0 } from '@auth0/auth0-react';
 
 
 export default function UserProfile() {
   const { themeStretch } = useSettings();
 
-  const { user } = useAuth();
+  const { user } = useAuth0();
 
 
   return (
@@ -27,7 +27,7 @@ export default function UserProfile() {
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: user?.displayName || '' },
+            { name: user?.name || '' },
           ]}
         />
         <Card

@@ -18,7 +18,7 @@ import 'react-lazy-load-image-component/src/effects/opacity.css';
 import 'react-lazy-load-image-component/src/effects/black-and-white.css';
 
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Auth0Provider } from '@auth0/auth0-react';
@@ -29,8 +29,6 @@ import { store } from './redux/store';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
 
-import { AuthProvider } from './contexts/Auth0Context';
-
 //
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
@@ -39,44 +37,54 @@ import swConfig from './swConfig';
 import reportWebVitals from './reportWebVitals';
 import { AUTH0_API } from './config';
 
-
 export const history = createBrowserHistory();
 
-// A function that routes the user to the right place
-// after login
-const onRedirectCallback = (appState: any) => {
-  // Use the router's history module to replace the url
-  history.replace(appState?.returnTo || window.location.pathname);
+
+const Auth0ProviderWithRedirectCallback = ({ children }: { children?: React.ReactNode; }) => {
+  const navigate = useNavigate();
+  const onRedirectCallback = (appState: any) => {
+    const dest = (appState && appState.returnTo) || window.location.pathname;
+    console.log(dest);
+    navigate((appState && appState.returnTo) || window.location.pathname);
+  };
+  return (
+    <Auth0Provider
+      onRedirectCallback={onRedirectCallback}
+      domain={AUTH0_API.domain as string}
+      clientId={AUTH0_API.clientId as string}
+      redirectUri={window.location.origin}
+      scope={AUTH0_API.scope}
+      audience={AUTH0_API.audience}
+    >
+      {children}
+    </Auth0Provider>
+  );
 };
+
 
 
 // ----------------------------------------------------------------------
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
-  <Auth0Provider
-    domain={AUTH0_API.domain as string}
-    clientId={AUTH0_API.clientId as string}
-    redirectUri={window.location.origin}
-    scope={AUTH0_API.scope}
-    onRedirectCallback={onRedirectCallback}
-    audience={AUTH0_API.audience}
-  >
-    <AuthProvider>
-      <HelmetProvider>
+
+  <HelmetProvider>
+
+    <BrowserRouter>
+      <Auth0ProviderWithRedirectCallback>
         <ReduxProvider store={store}>
-            <SettingsProvider>
-              <CollapseDrawerProvider>
-                <BrowserRouter>
-                  <App />
-                </BrowserRouter>
-              </CollapseDrawerProvider>
-            </SettingsProvider>
+          <SettingsProvider>
+            <CollapseDrawerProvider>
+              <App />
+            </CollapseDrawerProvider>
+          </SettingsProvider>
         </ReduxProvider>
-      </HelmetProvider>
-    </AuthProvider>
-  </Auth0Provider>
-  );
+      </Auth0ProviderWithRedirectCallback>
+    </BrowserRouter>
+
+  </HelmetProvider>
+
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

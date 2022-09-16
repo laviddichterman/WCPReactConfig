@@ -1,10 +1,9 @@
 import { m } from 'framer-motion';
 // @mui
 import { Container, Typography } from '@mui/material';
-// hooks
-import useAuth from '../hooks/useAuth';
 // components
 import { MotionContainer, varBounce } from '../components/animate';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // ----------------------------------------------------------------------
 
@@ -16,7 +15,7 @@ type RoleBasedGuardProp = {
 
 export default function RoleBasedGuard({ hasContent, roles, children }: RoleBasedGuardProp) {
   // Logic here to get current user role
-  const { user } = useAuth();
+  const { user } = useAuth0();
 
   // const currentRole = 'user';
   const currentRole = user?.role; // admin;

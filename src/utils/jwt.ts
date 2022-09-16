@@ -33,7 +33,7 @@ const handleTokenExpired = (exp: number) => {
 
     localStorage.removeItem('accessToken');
 
-    window.location.href = PATH_AUTH.login;
+    window.location.href = PATH_AUTH.root;
   }, timeLeft);
 };
 

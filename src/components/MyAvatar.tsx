@@ -1,6 +1,5 @@
-// hooks
-import useAuth from '../hooks/useAuth';
 // utils
+import { useAuth0 } from '@auth0/auth0-react';
 import createAvatar from '../utils/createAvatar';
 //
 import Avatar, { Props as AvatarProps } from './Avatar';
@@ -8,16 +7,16 @@ import Avatar, { Props as AvatarProps } from './Avatar';
 // ----------------------------------------------------------------------
 
 export default function MyAvatar({ ...other }: AvatarProps) {
-  const { user } = useAuth();
+  const { user } = useAuth0();
 
   return (
     <Avatar
-      src={user?.photoURL}
-      alt={user?.displayName}
-      color={user?.photoURL ? 'default' : createAvatar(user?.displayName).color}
+      src={user?.picture}
+      alt={user?.name}
+      color={user?.picture ? 'default' : createAvatar(user?.name ?? "Default").color}
       {...other}
     >
-      {createAvatar(user?.displayName).name}
+      {createAvatar(user?.name ?? "Default").name}
     </Avatar>
   );
 }

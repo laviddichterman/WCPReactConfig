@@ -3,10 +3,9 @@ import { styled } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
 // utils
 import cssStyles from '../../../../utils/cssStyles';
-// hooks
-import useAuth from '../../../../hooks/useAuth';
 // components
 import MyAvatar from '../../../../components/MyAvatar';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +40,7 @@ const InfoStyle = styled('div')(({ theme }) => ({
 
 
 export default function ProfileCover() {
-  const { user } = useAuth();
+  const { user } = useAuth0();
 
   return (
     <RootStyle>
@@ -64,7 +63,7 @@ export default function ProfileCover() {
             textAlign: { xs: 'center', md: 'left' },
           }}
         >
-          <Typography variant="h4">{user?.displayName}</Typography>
+          <Typography variant="h4">{user?.name}</Typography>
         </Box>
       </InfoStyle>
     </RootStyle>
