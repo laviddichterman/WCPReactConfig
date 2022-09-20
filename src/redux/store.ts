@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { rootReducer } from './rootReducer';
+//import { SocketAuthMiddleware } from './slices/SocketAuthMiddleware';
 import { SocketIoMiddleware } from './slices/SocketIoMiddleware';
 // ----------------------------------------------------------------------
 
@@ -7,7 +8,7 @@ import { SocketIoMiddleware } from './slices/SocketIoMiddleware';
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat([SocketIoMiddleware])
+    return getDefaultMiddleware().concat([SocketIoMiddleware /*, SocketAuthMiddleware*/])
   },
 });
 

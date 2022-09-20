@@ -90,8 +90,8 @@ const BlockOffComp = () => {
         // go to find next available
         const next = GetNextAvailableServiceDate(selectedServices.map(x => fulfillments[x]), 1, formatISO(CURRENT_TIME))
         if (next !== null) {
-          const newSelectedDate = next[0];
-          const newStart = next[1];
+          const newSelectedDate = next.selectedDate;
+          const newStart = next.selectedTime;
           const newStarts = GetOptionsForDate(newSelectedDate);
           const newEnds = TrimOptionsBeforeDisabled(newStarts.filter(x => x.value >= newStart))
           dispatch(setStartOptions(newStarts));

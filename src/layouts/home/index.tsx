@@ -1,4 +1,4 @@
-import { useLocation, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 // @mui
 import { Box, Container, Typography, Stack } from '@mui/material';
 // components
@@ -8,8 +8,6 @@ import Logo from '../../components/Logo';
 // ----------------------------------------------------------------------
 
 export default function MainLayout() {
-  const { pathname } = useLocation();
-
   return (
     <Stack sx={{ minHeight: 1 }}>
 
