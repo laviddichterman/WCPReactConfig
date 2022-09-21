@@ -1,7 +1,6 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { CreateOrderResponse, FulfillmentTime, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import axiosInstance from "../../utils/axios";
-import { HOST_API } from "../../config";
 import uuidv4 from "../../utils/uuidv4";
 export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>({ selectId: entry => entry.id });
 export const { selectAll: getWOrderInstances, selectById: getWOrderInstanceById, selectIds: getWOrderInstanceIds } =
@@ -9,13 +8,17 @@ export const { selectAll: getWOrderInstances, selectById: getWOrderInstanceById,
 
 export interface SocketAuthState {
   orders: EntityState<WOrderInstance>;
-  pollOpenOrdersStatus: 'FAILED' | 'PENDING' | 'IDLE';
+  orderToEdit: WOrderInstance | null;
+  activeDialog: 'RESCHEDULE' | 'CANCEL' | null;
+  requestStatus: 'FAILED' | 'PENDING' | 'IDLE';
   status: 'NONE' | 'START' | 'CONNECTED' | 'FAILED';
 }
 
 const initialState: SocketAuthState = {
   orders: WOrderInstanceAdapter.getInitialState(),
-  pollOpenOrdersStatus: 'IDLE',
+  orderToEdit: null,
+  activeDialog: null,
+  requestStatus: 'IDLE',
   status: "NONE"
 }
 
@@ -42,17 +45,14 @@ export interface ConfirmOrderParams {
 export const confirmOrder = createAsyncThunk<CreateOrderResponse, ConfirmOrderParams>(
   'orders/confirm',
   async (params: ConfirmOrderParams) => {
-    console.log(params)
-    const heads = {
-      Authorization: `Bearer ${params.token}`,
-      "Content-Type": "application/json",
-      'Idempotency-Key': uuidv4()
-    };
-    console.log(heads);
     const response = await axiosInstance.put(`/api/v1/order/${params.orderId}/confirm`, {
       additionalMessage: params.additionalMessage
     }, {
-      headers: heads
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+        "Content-Type": "application/json",
+        'Idempotency-Key': uuidv4()
+      }
     });
     return response.data;
   }
@@ -123,49 +123,65 @@ const SocketAuthSlice = createSlice({
     },
     receiveOrders(state, action: PayloadAction<WOrderInstance[]>) {
       WOrderInstanceAdapter.upsertMany(state.orders, action.payload);
+    },
+    closeDialog(state) {
+      state.activeDialog = null;
+      state.orderToEdit = null;
+    },
+    setOrderForReschedule(state, action: PayloadAction<WOrderInstance>) {
+      state.orderToEdit = action.payload;
+      state.activeDialog = 'RESCHEDULE';
+    },
+    setOrderForCancel(state, action: PayloadAction<WOrderInstance>) {
+      state.orderToEdit = action.payload;
+      state.activeDialog = 'CANCEL';
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(pollOpenOrders.fulfilled, (state, action) => {
         WOrderInstanceAdapter.upsertMany(state.orders, action.payload);
-        state.pollOpenOrdersStatus = 'IDLE';
+        state.requestStatus = 'IDLE';
       })
       .addCase(pollOpenOrders.pending, (state) => {
-        state.pollOpenOrdersStatus = 'PENDING';
+        state.requestStatus = 'PENDING';
       })
       .addCase(pollOpenOrders.rejected, (state) => {
-        state.pollOpenOrdersStatus = 'FAILED';
+        state.requestStatus = 'FAILED';
       })
       .addCase(confirmOrder.fulfilled, (state, action) => {
         WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
-        state.pollOpenOrdersStatus = 'IDLE';
+        state.requestStatus = 'IDLE';
       })
       .addCase(confirmOrder.pending, (state) => {
-        state.pollOpenOrdersStatus = 'PENDING';
+        state.requestStatus = 'PENDING';
       })
       .addCase(confirmOrder.rejected, (state) => {
-        state.pollOpenOrdersStatus = 'FAILED';
+        state.requestStatus = 'FAILED';
       })
       .addCase(cancelOrder.fulfilled, (state, action) => {
         WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
-        state.pollOpenOrdersStatus = 'IDLE';
+        state.activeDialog = null;
+        state.orderToEdit = null;
+        state.requestStatus = 'IDLE';
       })
       .addCase(cancelOrder.pending, (state) => {
-        state.pollOpenOrdersStatus = 'PENDING';
+        state.requestStatus = 'PENDING';
       })
       .addCase(cancelOrder.rejected, (state) => {
-        state.pollOpenOrdersStatus = 'FAILED';
+        state.requestStatus = 'FAILED';
       })
       .addCase(rescheduleOrder.fulfilled, (state, action) => {
         WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
-        state.pollOpenOrdersStatus = 'IDLE';
+        state.activeDialog = null;
+        state.orderToEdit = null;
+        state.requestStatus = 'IDLE';
       })
       .addCase(rescheduleOrder.pending, (state) => {
-        state.pollOpenOrdersStatus = 'PENDING';
+        state.requestStatus = 'PENDING';
       })
       .addCase(rescheduleOrder.rejected, (state) => {
-        state.pollOpenOrdersStatus = 'FAILED';
+        state.requestStatus = 'FAILED';
       })
   },
 });

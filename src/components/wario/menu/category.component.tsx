@@ -1,5 +1,5 @@
 import { Grid, TextField, Autocomplete } from "@mui/material";
-import { ElementActionComponent } from "./element.action.component";
+import { ElementActionComponent, ElementActionComponentProps } from "./element.action.component";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { getCategoryEntryById } from "@wcp/wario-ux-shared";
 import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
@@ -13,14 +13,10 @@ export interface CategoryEditProps {
   category: ICategory;
   onCloseCallback: VoidFunction;
 }
-
 export type CategoryComponentProps = {
   categoryIds: EntityId[];
-  onCloseCallback: VoidFunction;
-  onConfirmClick: VoidFunction;
-  isProcessing: boolean;
   confirmText: string;
-} &
+} & Pick<ElementActionComponentProps, 'onCloseCallback' | 'onConfirmClick' | 'isProcessing'> &
   ValSetValNamed<string | null, 'description'> &
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<string | null, 'subheading'> &

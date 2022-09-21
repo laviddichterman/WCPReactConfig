@@ -1,8 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Card, CardHeader, CardActions, Button, CardProps, SxProps, CardContent } from "@mui/material";
+import { Card, CardHeader, CardActions, Button, CardProps, SxProps, CardContent, Avatar } from "@mui/material";
+import { red } from "@mui/material/colors";
 import { WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import { useMemo } from "react";
-import { cancelOrder, confirmOrder, rescheduleOrder } from "src/redux/slices/OrdersSlice";
+import { cancelOrder, confirmOrder, SocketAuthActions } from "../../../redux/slices/OrdersSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 
 const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
@@ -23,33 +24,40 @@ const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
   }
 }
 
-export const WOrderComponentCard = ({ order, ...other }: { order: WOrderInstance } & CardProps) => {
+export type WOrderComponentCardProps = { order: WOrderInstance } & CardProps;
+
+export const WOrderComponentCard = ({ order, ...other }: WOrderComponentCardProps) => {
   const dispatch = useAppDispatch();
   const { getAccessTokenSilently } = useAuth0();
-  const orderSliceState = useAppSelector(s=>s.wsAuth.pollOpenOrdersStatus)
+  const orderSliceState = useAppSelector(s => s.wsAuth.requestStatus)
   const fulfillment = useAppSelector(s => s.ws.fulfillments![order.fulfillment.selectedService]);
-  const orderTitle = useMemo(() => `${fulfillment.displayName} for ${order.customerInfo.givenName} ${order.customerInfo.familyName} on ${order.fulfillment.selectedDate} at ${WDateUtils.MinutesToPrintTime(order.fulfillment.selectedTime)}`, [order, fulfillment.displayName]);
   const cancelOrderClickHandler = async () => {
-    const token = await getAccessTokenSilently({ scope: "write:order" });
-    dispatch(cancelOrder({orderId: order.id, emailCustomer: true, reason: "whatever bro", token: token }));
+    dispatch(SocketAuthActions.setOrderForCancel(order))
   }
   const confirmOrderClickHandler = async () => {
     const token = await getAccessTokenSilently({ scope: "write:order" });
-    dispatch(confirmOrder({orderId: order.id, additionalMessage: "", token: token }));
+    dispatch(confirmOrder({ orderId: order.id, additionalMessage: "", token: token }));
   }
   const rescheduleOrderClickHandler = async () => {
-    const token = await getAccessTokenSilently({ scope: "write:order" });
-    //dispatch(rescheduleOrder({orderId: order.id, emailCustomer: true, token: token,  }));
+    dispatch(SocketAuthActions.setOrderForReschedule(order))
   }
   return order && (
-    <Card sx={GetStyleForOrderStatus(order.status)} variant={order.status === WOrderStatus.OPEN ? 'elevation' : 'outlined'} {...other}>
-      <CardHeader title={orderTitle}></CardHeader>
+    <Card sx={GetStyleForOrderStatus(order.status)} {...other}>
+      <CardHeader
+        avatar={
+          <Avatar sx={{ bgcolor: red[500] }} aria-label={fulfillment.displayName}>
+            {fulfillment.displayName[0]}
+          </Avatar>
+        }
+        title={`${order.customerInfo.givenName} ${order.customerInfo.familyName}`}
+        subtitle={`${order.fulfillment.selectedDate} at ${WDateUtils.MinutesToPrintTime(order.fulfillment.selectedTime)}`}
+      />
       <CardContent>
-        
+
       </CardContent>
       <CardActions>
-        {order.status !== WOrderStatus.COMPLETED && <Button disabled={orderSliceState === "PENDING"} onClick={cancelOrderClickHandler} size='small'>Cancel</Button>}
-        {order.status !== WOrderStatus.COMPLETED && <Button disabled={orderSliceState === "PENDING"} size='small'>Reschedule</Button>}
+        {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={cancelOrderClickHandler} size='small'>Cancel</Button>}
+        {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={rescheduleOrderClickHandler} size='small'>Reschedule</Button>}
         {order.status === WOrderStatus.OPEN && <Button disabled={orderSliceState === "PENDING"} onClick={confirmOrderClickHandler} size='small'>Confirm!</Button>}
       </CardActions>
     </Card>);
