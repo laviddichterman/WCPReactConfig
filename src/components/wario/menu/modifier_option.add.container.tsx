@@ -25,6 +25,9 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
   const [canSplit, setCanSplit] = useState(true);
+  const [allowHeavy, setAllowHeavy] = useState(false);
+  const [allowLite, setAllowLite] = useState(false);
+  const [allowOTS, setAllowOTS] = useState(false);
   const [omitFromShortname, setOmitFromShortname] = useState(false);
   const [omitFromName, setOmitFromName] = useState(false);
   const [disabled, setDisabled] = useState(null);
@@ -49,6 +52,9 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
             flavor_factor: flavorFactor,
             bake_factor: bakeFactor,
             can_split: canSplit,
+            allowHeavy,
+            allowLite,
+            allowOTS
           },
           displayFlags: {
             omit_from_shortname: omitFromShortname,
@@ -102,6 +108,12 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
       setBakeFactor={setBakeFactor}
       canSplit={canSplit}
       setCanSplit={setCanSplit}
+      allowHeavy={allowHeavy}
+      setAllowHeavy={setAllowHeavy}
+      allowLite={allowLite}
+      setAllowLite={setAllowLite}
+      allowOTS={allowOTS}
+      setAllowOTS={setAllowOTS}
       omitFromShortname={omitFromShortname}
       setOmitFromShortname={setOmitFromShortname}
       omitFromName={omitFromName}

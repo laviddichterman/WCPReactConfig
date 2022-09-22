@@ -23,6 +23,9 @@ type ModifierOptionComponentProps =
   ValSetValNamed<number, 'flavorFactor'> &
   ValSetValNamed<number, 'bakeFactor'> &
   ValSetValNamed<boolean, 'canSplit'> &
+  ValSetValNamed<boolean, 'allowHeavy'> &
+  ValSetValNamed<boolean, 'allowLite'> &
+  ValSetValNamed<boolean, 'allowOTS'> &
   ValSetValNamed<boolean, 'omitFromShortname'> &
   ValSetValNamed<boolean, 'omitFromName'> &
   ValSetValNamed<IWInterval | null, 'disabled'> &
@@ -107,6 +110,33 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
               label="Can Split"
               value={props.canSplit}
               setValue={props.setCanSplit}
+              labelPlacement='end'
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing}
+              label="Allow Heavy"
+              value={props.allowHeavy}
+              setValue={props.setAllowHeavy}
+              labelPlacement='end'
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing}
+              label="Allow Lite"
+              value={props.allowLite}
+              setValue={props.setAllowLite}
+              labelPlacement='end'
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing}
+              label="Allow OTS"
+              value={props.allowOTS}
+              setValue={props.setAllowOTS}
               labelPlacement='end'
             />
           </Grid>

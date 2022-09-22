@@ -23,6 +23,9 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
   const [flavorFactor, setFlavorFactor] = useState(modifier_option.metadata.flavor_factor);
   const [bakeFactor, setBakeFactor] = useState(modifier_option.metadata.bake_factor);
   const [canSplit, setCanSplit] = useState(modifier_option.metadata.can_split);
+  const [allowHeavy, setAllowHeavy] = useState(modifier_option.metadata.allowHeavy);
+  const [allowLite, setAllowLite] = useState(modifier_option.metadata.allowLite);
+  const [allowOTS, setAllowOTS] = useState(modifier_option.metadata.allowOTS);
   const [omitFromShortname, setOmitFromShortname] = useState(modifier_option.displayFlags.omit_from_shortname ?? false);
   const [omitFromName, setOmitFromName] = useState(modifier_option.displayFlags.omit_from_name ?? false);
   const [disabled, setDisabled] = useState(modifier_option.disabled ?? null);
@@ -45,6 +48,9 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
               flavor_factor: flavorFactor,
               bake_factor: bakeFactor,
               can_split: canSplit,
+              allowHeavy,
+              allowLite,
+              allowOTS
             },
             externalIDs: externalIds,
             displayFlags: {
@@ -99,6 +105,12 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
       setBakeFactor={setBakeFactor}
       canSplit={canSplit}
       setCanSplit={setCanSplit}
+      allowHeavy={allowHeavy}
+      setAllowHeavy={setAllowHeavy}
+      allowLite={allowLite}
+      setAllowLite={setAllowLite}
+      allowOTS={allowOTS}
+      setAllowOTS={setAllowOTS}
       omitFromShortname={omitFromShortname}
       setOmitFromShortname={setOmitFromShortname}
       omitFromName={omitFromName}
