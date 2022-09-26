@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
@@ -6,58 +6,104 @@ import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { Tooltip, IconButton } from '@mui/material';
 import ModifierOptionTableContainer from "../modifier_option/modifier_option_table.container";
 import TableWrapperComponent from "../../table_wrapper.component";
-import { IOption, IOptionType, CatalogModifierEntry } from "@wcp/wcpshared";
+import { IOptionType, CatalogModifierEntry } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../../hooks/useRedux";
+import { DialogContainer } from "@wcp/wario-ux-shared";
+import ModifierOptionAddContainer from "../modifier_option/modifier_option.add.container";
+import ModifierTypeAddContainer from "./modifier_type.add.container";
+import ModifierTypeDeleteContainer from "./modifier_type.delete.container";
+import ModifierTypeEditContainer from "./modifier_type.edit.container";
 
 type ValueGetterRow = GridValueGetterParams<any, CatalogModifierEntry>;
 
-export interface ModifierTypeTableContainerProps {
-  setIsModifierTypeEditOpen: Dispatch<SetStateAction<boolean>>;
-  setIsModifierTypeDeleteOpen: Dispatch<SetStateAction<boolean>>;
-  setModifierTypeToEdit: Dispatch<SetStateAction<IOptionType>>;
-  setIsModifierTypeAddOpen: Dispatch<SetStateAction<boolean>>;
-  setModifierOptionToEdit: Dispatch<SetStateAction<IOption>>;
-  setIsModifierOptionAddOpen: Dispatch<SetStateAction<boolean>>;
-  setIsModifierOptionDeleteOpen: Dispatch<SetStateAction<boolean>>;
-  setIsModifierOptionEditOpen: Dispatch<SetStateAction<boolean>>;
-  setIsModifierOptionEnableOpen: Dispatch<SetStateAction<boolean>>;
-  setIsModifierOptionDisableOpen: Dispatch<SetStateAction<boolean>>;
-  setIsModifierOptionDisableUntilEodOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-const ModifierTypeTableContainer = (props: ModifierTypeTableContainerProps) => {
+const ModifierTypeTableContainer = () => {
   const modifiers = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
   const apiRef = useGridApiRef();
 
+  const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
+  const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
+  const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
+
+  const [isModifierOptionAddOpen, setIsModifierOptionAddOpen] = useState(false);
+
+
+  const [modifierTypeToEdit, setModifierTypeToEdit] = useState<IOptionType | null>(null);
+
+
   const editModifierType = (id: string) => () => {
-    props.setIsModifierTypeEditOpen(true);
-    props.setModifierTypeToEdit(modifiers[id].modifierType);
+    setIsModifierTypeEditOpen(true);
+    setModifierTypeToEdit(modifiers[id].modifierType);
   };
 
   const addModifierOption = (id: string) => () => {
-    props.setIsModifierOptionAddOpen(true);
-    props.setModifierTypeToEdit(modifiers[id].modifierType);
+    setIsModifierOptionAddOpen(true);
+    setModifierTypeToEdit(modifiers[id].modifierType);
   };
 
   const deleteModifierType = (id: string) => () => {
-    props.setIsModifierTypeDeleteOpen(true);
-    props.setModifierTypeToEdit(modifiers[id].modifierType);
+    setIsModifierTypeDeleteOpen(true);
+    setModifierTypeToEdit(modifiers[id].modifierType);
   };
 
-  const getDetailPanelHeight = useCallback((p : GridRowParams<CatalogModifierEntry>) => p.row.options.length ? (41 + (p.row.options.length * 36)) : 0, []);
+  const getDetailPanelHeight = useCallback((p: GridRowParams<CatalogModifierEntry>) => p.row.options.length ? (41 + (p.row.options.length * 36)) : 0, []);
 
-  const getDetailPanelContent = useCallback((p : GridRowParams<CatalogModifierEntry>) => p.row.options.length ? (
+  const getDetailPanelContent = useCallback((p: GridRowParams<CatalogModifierEntry>) => p.row.options.length ? (
     <ModifierOptionTableContainer
-      {...props}
       modifierType={p.row.modifierType}
     />
-  ) : (
-    ""
-  ), [props]);
+  ) : '', []);
 
-  return (
+  return (<>
+    <DialogContainer
+      maxWidth={"xl"}
+      title={`Add Modifier Option for Type: ${modifierTypeToEdit?.name ?? ""}`}
+      onClose={() => setIsModifierOptionAddOpen(false)}
+      open={isModifierOptionAddOpen}
+      innerComponent={
+        modifierTypeToEdit !== null &&
+        <ModifierOptionAddContainer
+          onCloseCallback={() => setIsModifierOptionAddOpen(false)}
+          parent={modifierTypeToEdit}
+        />
+      }
+    />
+    <DialogContainer
+      title={"Add Modifier Type"}
+      onClose={() => setIsModifierTypeAddOpen(false)}
+      open={isModifierTypeAddOpen}
+      innerComponent={
+        <ModifierTypeAddContainer
+          onCloseCallback={() => setIsModifierTypeAddOpen(false)}
+        />
+      }
+    />
+    <DialogContainer
+      title={"Edit Modifier Type"}
+      onClose={() => setIsModifierTypeEditOpen(false)}
+      open={isModifierTypeEditOpen}
+      innerComponent={
+        modifierTypeToEdit !== null &&
+        <ModifierTypeEditContainer
+          onCloseCallback={() => setIsModifierTypeEditOpen(false)}
+          modifier_type={modifierTypeToEdit}
+        />
+      }
+    />
+    <DialogContainer
+      title={"Delete Modifier Type"}
+      onClose={() => setIsModifierTypeDeleteOpen(false)}
+      open={isModifierTypeDeleteOpen}
+      innerComponent={
+        modifierTypeToEdit !== null &&
+        <ModifierTypeDeleteContainer
+          onCloseCallback={() => setIsModifierTypeDeleteOpen(false)}
+          modifier_type={modifierTypeToEdit}
+        />
+      }
+    />
+
     <TableWrapperComponent
-      sx={{minWidth: '750px'}}
+      sx={{ minWidth: '750px' }}
       title="Modifier Types & Options"
       apiRef={apiRef}
       getRowId={(row: CatalogModifierEntry) => row.modifierType.id}
@@ -89,11 +135,11 @@ const ModifierTypeTableContainer = (props: ModifierTypeTableContainerProps) => {
         { headerName: "Name", sortable: false, field: "Modifier Name", valueGetter: (v: ValueGetterRow) => v.row.modifierType.name, flex: 10 },
         { headerName: "Display Name", field: "displayName", valueGetter: (v: ValueGetterRow) => v.row.modifierType.displayName, flex: 3 },
         { headerName: "Ordinal", field: "ordinal", valueGetter: (v: ValueGetterRow) => v.row.modifierType.ordinal, flex: 1 },
-        { headerName: "Min/Max Selected", sortable: false, hideable: false, field: "min_max", valueGetter: (v: ValueGetterRow) => `${v.row.modifierType.min_selected}/${v.row.modifierType.max_selected ?? "" }`, flex: 2 },
+        { headerName: "Min/Max Selected", sortable: false, hideable: false, field: "min_max", valueGetter: (v: ValueGetterRow) => `${v.row.modifierType.min_selected}/${v.row.modifierType.max_selected ?? ""}`, flex: 2 },
       ]}
       toolbarActions={[{
         size: 1,
-        elt: <Tooltip key="ADDNEW" title="Add Modifier Type"><IconButton onClick={() => props.setIsModifierTypeAddOpen(true)}><AddBox /></IconButton></Tooltip>
+        elt: <Tooltip key="ADDNEW" title="Add Modifier Type"><IconButton onClick={() => setIsModifierTypeAddOpen(true)}><AddBox /></IconButton></Tooltip>
       }]}
       rows={Object.values(modifiers)}
       onRowClick={(params) => apiRef.current.toggleDetailPanel(params.id)}
@@ -101,6 +147,7 @@ const ModifierTypeTableContainer = (props: ModifierTypeTableContainerProps) => {
       getDetailPanelHeight={getDetailPanelHeight}
       disableToolbar={false}
     />
+  </>
   );
 };
 

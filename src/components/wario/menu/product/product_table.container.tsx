@@ -1,4 +1,4 @@
-import { useCallback, Dispatch, SetStateAction } from "react";
+import { useCallback, Dispatch, SetStateAction, useState, useMemo } from "react";
 import { format } from 'date-fns';
 import { DisableDataCheck, DISABLE_REASON, IProduct, IProductInstance } from '@wcp/wcpshared';
 import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
@@ -7,44 +7,55 @@ import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cance
 import Tooltip from '@mui/material/Tooltip';
 import { useAppSelector } from "../../../../hooks/useRedux";
 import TableWrapperComponent from "../../table_wrapper.component";
+import ProductEditContainer from "./product.edit.container";
+import ProductCopyContainer from "./product.copy.container";
+import ProductDeleteContainer from "./product.delete.container";
+import ProductDisableUntilEodContainer from "./product.disable_until_eod.container";
+import ProductDisableContainer from "./product.disable.container";
+import ProductEnableContainer from "./product.enable.container";
+import ProductInstanceAddContainer from "./instance/product_instance.add.container";
+import ProductInstanceEditContainer from "./instance/product_instance.edit.container";
+import ProductInstanceDeleteContainer from "./instance/product_instance.delete.container";
+
+import { DialogContainer } from "@wcp/wario-ux-shared";
 
 type RowType = { product: IProduct; instances: string[]; }
 type ValueGetterRow = GridValueGetterParams<any, RowType>;
 
 interface ProductTableContainerProps {
   products: RowType[];
-  setProductToEdit: Dispatch<SetStateAction<IProduct | null>>;
-  setIsProductEditOpen: Dispatch<SetStateAction<boolean>>;
-  setIsProductCopyOpen: Dispatch<SetStateAction<boolean>>;
-  setIsProductDeleteOpen: Dispatch<SetStateAction<boolean>>;
-  setIsProductDisableOpen: Dispatch<SetStateAction<boolean>>;
-  setIsProductDisableUntilEodOpen: Dispatch<SetStateAction<boolean>>;
-  setIsProductEnableOpen: Dispatch<SetStateAction<boolean>>;
-  setIsProductInstanceAddOpen: Dispatch<SetStateAction<boolean>>;
-  setIsProductInstanceEditOpen: Dispatch<SetStateAction<boolean>>;
-  setIsProductInstanceDeleteOpen: Dispatch<SetStateAction<boolean>>;
-  setProductInstanceToEdit: Dispatch<SetStateAction<IProductInstance | null>>;
   setPanelsExpandedSize: Dispatch<SetStateAction<number>>;
 }
 const ProductTableContainer = ({
   products,
-  setProductToEdit,
-  setIsProductEditOpen,
-  setIsProductCopyOpen,
-  setIsProductDeleteOpen,
-  setIsProductDisableOpen,
-  setIsProductDisableUntilEodOpen,
-  setIsProductEnableOpen,
-  setIsProductInstanceAddOpen,
-  setIsProductInstanceEditOpen,
-  setIsProductInstanceDeleteOpen,
-  setProductInstanceToEdit,
   setPanelsExpandedSize
 }: ProductTableContainerProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
   const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
 
   const apiRef = useGridApiRef();
+
+  const [isProductEditOpen, setIsProductEditOpen] = useState(false);
+  const [isProductDisableUntilEodOpen, setIsProductDisableUntilEodOpen] = useState(false);
+  const [isProductDisableOpen, setIsProductDisableOpen] = useState(false);
+  const [isProductEnableOpen, setIsProductEnableOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<IProduct | null>(null);
+
+  const [isProductDeleteOpen, setIsProductDeleteOpen] = useState(false);
+  const [isProductCopyOpen, setIsProductCopyOpen] = useState(false);
+
+  const [isProductInstanceAddOpen, setIsProductInstanceAddOpen] = useState(false);
+  const [isProductInstanceDeleteOpen, setIsProductInstanceDeleteOpen] = useState(false);
+  const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
+  const [productInstanceToEdit, setProductInstanceToEdit] = useState<IProductInstance|null>(null);
+
+    // this assumes a single base product instance per product class.
+  // assumption is that this precondition is enforced by the service
+  const nameOfBaseProductInstance = useMemo(() => {
+    const piid = productToEdit?.baseProductId ?? null;
+    return piid !== null ? catalog.productInstances[piid].displayName : "Incomplete Product";
+  }, [catalog, productToEdit]);
+
 
   const addProductInstance = (row: RowType) => () => {
     setIsProductInstanceAddOpen(true);
@@ -124,6 +135,123 @@ const ProductTableContainer = ({
 
   return (
     <div style={{ height: "100%", overflow: "auto" }}>
+      <DialogContainer
+        maxWidth={"xl"}
+        title={"Edit Product"}
+        onClose={() => setIsProductEditOpen(false)}
+        open={isProductEditOpen}
+        innerComponent={
+          productToEdit !== null && 
+          <ProductEditContainer
+            onCloseCallback={() => setIsProductEditOpen(false)}
+            product={productToEdit}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Disable Product Until End-of-Day"}
+        onClose={() => setIsProductDisableUntilEodOpen(false)}
+        open={isProductDisableUntilEodOpen}
+        innerComponent={
+          productToEdit !== null && 
+          <ProductDisableUntilEodContainer
+            onCloseCallback={() => setIsProductDisableUntilEodOpen(false)}
+            product={productToEdit}
+            productName={nameOfBaseProductInstance}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Disable Product"}
+        onClose={() => setIsProductDisableOpen(false)}
+        open={isProductDisableOpen}
+        innerComponent={
+          productToEdit !== null &&
+          <ProductDisableContainer
+            onCloseCallback={() => setIsProductDisableOpen(false)}
+            productName={nameOfBaseProductInstance}
+            product={productToEdit}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Enable Product"}
+        onClose={() => setIsProductEnableOpen(false)}
+        open={isProductEnableOpen}
+        innerComponent={
+          productToEdit !== null && 
+          <ProductEnableContainer
+            onCloseCallback={() => setIsProductEnableOpen(false)}
+            product={productToEdit}
+            productName={nameOfBaseProductInstance}
+          />
+        }
+      />
+      <DialogContainer
+        maxWidth={"xl"}
+        title={"Copy Product"}
+        onClose={() => setIsProductCopyOpen(false)}
+        open={isProductCopyOpen}
+        innerComponent={
+          productToEdit !== null && 
+          <ProductCopyContainer
+            onCloseCallback={() => setIsProductCopyOpen(false)}
+            product={productToEdit}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Delete Product"}
+        onClose={() => setIsProductDeleteOpen(false)}
+        open={isProductDeleteOpen}
+        innerComponent={
+          productToEdit !== null &&
+          <ProductDeleteContainer
+            onCloseCallback={() => setIsProductDeleteOpen(false)}
+            productName={nameOfBaseProductInstance}
+            product={productToEdit}
+          />
+        }
+      />
+      <DialogContainer
+        maxWidth={"xl"}
+        title={`Add Product Instance for: ${nameOfBaseProductInstance}`}
+        onClose={() => setIsProductInstanceAddOpen(false)}
+        open={isProductInstanceAddOpen}
+        innerComponent={
+          productToEdit !== null &&
+          <ProductInstanceAddContainer
+            onCloseCallback={() => setIsProductInstanceAddOpen(false)}
+            parent_product={productToEdit}
+          />
+        }
+      />
+      <DialogContainer
+        maxWidth={"xl"}
+        title={"Edit Product Instance"}
+        onClose={() => setIsProductInstanceEditOpen(false)}
+        open={isProductInstanceEditOpen}
+        innerComponent={
+          productToEdit !== null && productInstanceToEdit !== null &&
+          <ProductInstanceEditContainer
+            onCloseCallback={() => setIsProductInstanceEditOpen(false)}
+            parent_product={productToEdit}
+            product_instance={productInstanceToEdit}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Delete Product Instance"}
+        onClose={() => setIsProductInstanceDeleteOpen(false)}
+        open={isProductInstanceDeleteOpen}
+        innerComponent={
+          productInstanceToEdit !== null &&
+          <ProductInstanceDeleteContainer
+            onCloseCallback={() => setIsProductInstanceDeleteOpen(false)}
+            product_instance={productInstanceToEdit}
+          />
+        }
+      />
       <TableWrapperComponent
         disableToolbar
         apiRef={apiRef}
