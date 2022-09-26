@@ -1,10 +1,12 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Card, CardHeader, CardActions, Button, CardProps, SxProps, CardContent, Avatar } from "@mui/material";
 import { red } from "@mui/material/colors";
-import { WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
+import { ComputeTipValue, CreditPayment, CURRENCY, DateTimeIntervalBuilder, PaymentMethod, WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import { useMemo } from "react";
-import { cancelOrder, confirmOrder, SocketAuthActions } from "../../../redux/slices/OrdersSlice";
+import { CatalogSelectors, getProductInstanceById, ProductDisplay, WCheckoutCartComponent } from '@wcp/wario-ux-shared';
+import { confirmOrder, SocketAuthActions } from "../../../redux/slices/OrdersSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
+import { selectCoreCartWProduct, selectFullGroupedCartInfo } from "../../../redux/store";
 
 const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
   switch (status) {
@@ -28,9 +30,14 @@ export type WOrderComponentCardProps = { order: WOrderInstance } & CardProps;
 
 export const WOrderComponentCard = ({ order, ...other }: WOrderComponentCardProps) => {
   const dispatch = useAppDispatch();
+  const catalogSelectors = useAppSelector(s=>CatalogSelectors(s.ws));
+  const fulfillment = useAppSelector(s => s.ws.fulfillments![order.fulfillment.selectedService]);
+  const serviceTimeInterval = useMemo(() => DateTimeIntervalBuilder(order.fulfillment, fulfillment), [order.fulfillment, fulfillment]);
+  //const processedCart = useAppSelector(s=>selectCoreCartWProduct(s, order.cart, serviceTimeInterval.start, order.fulfillment.selectedService));
+  const fullGroupedCart = useAppSelector(s=>selectFullGroupedCartInfo(s, order.cart, serviceTimeInterval.start, order.fulfillment.selectedService));
+
   const { getAccessTokenSilently } = useAuth0();
   const orderSliceState = useAppSelector(s => s.wsAuth.requestStatus)
-  const fulfillment = useAppSelector(s => s.ws.fulfillments![order.fulfillment.selectedService]);
   const cancelOrderClickHandler = async () => {
     dispatch(SocketAuthActions.setOrderForCancel(order))
   }
@@ -49,11 +56,11 @@ export const WOrderComponentCard = ({ order, ...other }: WOrderComponentCardProp
             {fulfillment.displayName[0]}
           </Avatar>
         }
-        title={`${order.customerInfo.givenName} ${order.customerInfo.familyName}`}
+        title={`${order.customerInfo.givenName} ${order.customerInfo.familyName} ${order.id}`}
         subtitle={`${order.fulfillment.selectedDate} at ${WDateUtils.MinutesToPrintTime(order.fulfillment.selectedTime)}`}
       />
       <CardContent>
-
+        <WCheckoutCartComponent payments={order.payments.filter(x=>x.t === PaymentMethod.CreditCard) as CreditPayment[]} balanceAfterCredits={{amount: 0, currency: CURRENCY.USD }} cart={fullGroupedCart} catalogSelectors={catalogSelectors} discountCreditsApplied={[]} giftCreditsApplied={[]} selectedService={order.fulfillment.selectedService} taxRate={0.10125} taxValue={{ currency: "USD", amount: 0 }} tipValue={{ currency: "USD", amount: 0 }} /> 
       </CardContent>
       <CardActions>
         {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={cancelOrderClickHandler} size='small'>Cancel</Button>}

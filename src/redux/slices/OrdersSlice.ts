@@ -1,5 +1,5 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { CreateOrderResponse, FulfillmentTime, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
+import { FulfillmentTime, ResponseSuccess, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import axiosInstance from "../../utils/axios";
 import uuidv4 from "../../utils/uuidv4";
 export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>({ selectId: entry => entry.id });
@@ -42,7 +42,7 @@ export interface ConfirmOrderParams {
   orderId: string;
   additionalMessage: string;
 }
-export const confirmOrder = createAsyncThunk<CreateOrderResponse, ConfirmOrderParams>(
+export const confirmOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, ConfirmOrderParams>(
   'orders/confirm',
   async (params: ConfirmOrderParams) => {
     const response = await axiosInstance.put(`/api/v1/order/${params.orderId}/confirm`, {
@@ -63,7 +63,7 @@ export interface RescheduleOrderParams extends FulfillmentTime {
   orderId: string;
   emailCustomer: boolean;
 }
-export const rescheduleOrder = createAsyncThunk<CreateOrderResponse, RescheduleOrderParams>(
+export const rescheduleOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, RescheduleOrderParams>(
   'orders/reschedule',
   async (params: RescheduleOrderParams) => {
     const response = await axiosInstance.put(`/api/v1/order/${params.orderId}/reschedule`, {
@@ -87,7 +87,7 @@ export interface CancelOrderParams {
   reason: string;
   emailCustomer: boolean;
 }
-export const cancelOrder = createAsyncThunk<CreateOrderResponse, CancelOrderParams>(
+export const cancelOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, CancelOrderParams>(
   'orders/cancel',
   async (params: CancelOrderParams) => {
     const response = await axiosInstance.put(`/api/v1/order/${params.orderId}/cancel`, {
