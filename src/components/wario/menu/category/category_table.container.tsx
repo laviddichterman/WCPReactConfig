@@ -1,10 +1,10 @@
-import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD, GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GridDetailPanelToggleCell } from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { FormControlLabel, Tooltip, Switch, IconButton } from '@mui/material';
-import { CatalogCategoryEntry, ICategory, IProduct, IProductInstance } from "@wcp/wcpshared";
+import { CatalogCategoryEntry, ICategory } from "@wcp/wcpshared";
 import ProductTableContainer from "../product/product_table.container";
 import TableWrapperComponent from "../../table_wrapper.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
@@ -19,10 +19,7 @@ import ProductImportContainer from "../product/product.import.container";
 
 type ValueGetterRow = GridValueGetterParams<any, CatalogCategoryEntry>;
 
-export interface CategoryTableContainerProps {
-}
-
-const CategoryTableContainer = (props: CategoryTableContainerProps) => {
+const CategoryTableContainer = () => {
   const products = useAppSelector(s => s.ws.catalog?.products ?? {});
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
 
@@ -33,24 +30,12 @@ const CategoryTableContainer = (props: CategoryTableContainerProps) => {
 
   const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
   const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
-
-
   const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false);
   const [isCategoryDeleteOpen, setIsCategoryDeleteOpen] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState<ICategory | null>(null);
 
   const [isProductAddOpen, setIsProductAddOpen] = useState(false);
   const [isProductImportOpen, setIsProductImportOpen] = useState(false);
-
-
-  const [isProductEditOpen, setIsProductEditOpen] = useState(false);
-  const [isProductDisableUntilEodOpen, setIsProductDisableUntilEodOpen] = useState(false);
-  const [isProductDisableOpen, setIsProductDisableOpen] = useState(false);
-  const [isProductEnableOpen, setIsProductEnableOpen] = useState(false);
-  const [productToEdit, setProductToEdit] = useState<IProduct | null>(null);
-
-  const [isProductInstanceEditOpen, setIsProductInstanceEditOpen] = useState(false);
-  const [productInstanceToEdit, setProductInstanceToEdit] = useState<IProductInstance | null>(null);
 
   const setPanelsExpandedSizeForRow = useCallback((row: string) => (size: number) => {
     setPanelsExpandedSize({ ...panelsExpandedSize, [row]: size });
@@ -74,7 +59,6 @@ const CategoryTableContainer = (props: CategoryTableContainerProps) => {
       setPanelsExpandedSize={setPanelsExpandedSizeForRow(row.category.id)}
     />) : "",
     [getProductsInCategory,
-      setProductToEdit,
       setPanelsExpandedSizeForRow]);
 
   const DeriveTreePath: (row: CatalogCategoryEntry) => string[] = useCallback((row) =>
