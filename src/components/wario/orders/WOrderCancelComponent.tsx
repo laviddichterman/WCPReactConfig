@@ -6,26 +6,25 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 import { Grid, TextField } from "@mui/material";
 
-import { cancelOrder, SocketAuthActions } from "../../../redux/slices/OrdersSlice";
+import { cancelOrder } from "../../../redux/slices/OrdersSlice";
+import { WOrderInstance } from "@wcp/wcpshared";
 
-type WOrderCancelComponentProps = { onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
+type WOrderCancelComponentProps = { order: WOrderInstance; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
-  const order = useAppSelector(s => s.wsAuth.orderToEdit);
-  const orderSliceState = useAppSelector(s => s.wsAuth.requestStatus)
+  const orderSliceState = useAppSelector(s => s.orders.requestStatus)
 
   const [cancelationReason, setCancelationReason] = useState("");
 
   const submitToWario = async () => {
     if (orderSliceState !== 'PENDING') {
       const token = await getAccessTokenSilently({ scope: "write:order" });
-      dispatch(cancelOrder({ orderId: order!.id, emailCustomer: true, reason: cancelationReason, token: token }));
+      dispatch(cancelOrder({ orderId: props.order.id, emailCustomer: true, reason: cancelationReason, token: token }));
     }
   }
 
-  return order && (
-    <ElementActionComponent
+  return (<ElementActionComponent
       onCloseCallback={props.onCloseCallback}
       onConfirmClick={submitToWario}
       isProcessing={orderSliceState === 'PENDING'}
@@ -36,14 +35,13 @@ const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
           multiline
           fullWidth
           minRows={cancelationReason.split('\n').length + 1}
-          label="Customer facing cancelation reason"
+          label="CUSTOMER FACING (they will read this) cancelation reason"
           type="text"
           value={cancelationReason}
           onChange={(e) => setCancelationReason(e.target.value)}
         />
       }
-    />
-  );
+    />)
 };
 
 export default WOrderCancelComponent;

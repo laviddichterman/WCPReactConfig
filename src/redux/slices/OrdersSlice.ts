@@ -6,20 +6,20 @@ export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>({ selec
 export const { selectAll: getWOrderInstances, selectById: getWOrderInstanceById, selectIds: getWOrderInstanceIds } =
   WOrderInstanceAdapter.getSelectors();
 
-export interface SocketAuthState {
-  orders: EntityState<WOrderInstance>;
-  orderToEdit: WOrderInstance | null;
-  activeDialog: 'RESCHEDULE' | 'CANCEL' | null;
+export interface OrderManagerState {
+  orders: EntityState<WOrderInstance>;  
   requestStatus: 'FAILED' | 'PENDING' | 'IDLE';
   status: 'NONE' | 'START' | 'CONNECTED' | 'FAILED';
+  isLoading: boolean;
+  error: Error | string | null;
 }
 
-const initialState: SocketAuthState = {
+const initialState: OrderManagerState = {
   orders: WOrderInstanceAdapter.getInitialState(),
-  orderToEdit: null,
-  activeDialog: null,
   requestStatus: 'IDLE',
-  status: "NONE"
+  status: "NONE",
+  isLoading: false,
+  error: null,
 }
 
 export const pollOpenOrders = createAsyncThunk<WOrderInstance[], string>(
@@ -33,6 +33,20 @@ export const pollOpenOrders = createAsyncThunk<WOrderInstance[], string>(
       },
       params: { status: WOrderStatus.OPEN },
     });
+    return response.data;
+  }
+);
+
+export const unlockOrders = createAsyncThunk<void, string>(
+  'orders/unlock',
+  async (token: string) => {
+    const response = await axiosInstance.put('/api/v1/order/unlock', {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
     return response.data;
   }
 );
@@ -105,8 +119,8 @@ export const cancelOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, Can
   }
 );
 
-const SocketAuthSlice = createSlice({
-  name: 'wsAuth',
+const OrdersSlice = createSlice({
+  name: 'orders',
   initialState,
   reducers: {
     startConnection(state, _: PayloadAction<string>) {
@@ -124,18 +138,18 @@ const SocketAuthSlice = createSlice({
     receiveOrders(state, action: PayloadAction<WOrderInstance[]>) {
       WOrderInstanceAdapter.upsertMany(state.orders, action.payload);
     },
-    closeDialog(state) {
-      state.activeDialog = null;
-      state.orderToEdit = null;
+
+    // START LOADING
+    startLoading(state) {
+      state.isLoading = true;
     },
-    setOrderForReschedule(state, action: PayloadAction<WOrderInstance>) {
-      state.orderToEdit = action.payload;
-      state.activeDialog = 'RESCHEDULE';
+
+    // HAS ERROR
+    hasError(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
     },
-    setOrderForCancel(state, action: PayloadAction<WOrderInstance>) {
-      state.orderToEdit = action.payload;
-      state.activeDialog = 'CANCEL';
-    }
+
   },
   extraReducers: (builder) => {
     builder
@@ -161,8 +175,6 @@ const SocketAuthSlice = createSlice({
       })
       .addCase(cancelOrder.fulfilled, (state, action) => {
         WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
-        state.activeDialog = null;
-        state.orderToEdit = null;
         state.requestStatus = 'IDLE';
       })
       .addCase(cancelOrder.pending, (state) => {
@@ -173,8 +185,7 @@ const SocketAuthSlice = createSlice({
       })
       .addCase(rescheduleOrder.fulfilled, (state, action) => {
         WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
-        state.activeDialog = null;
-        state.orderToEdit = null;
+
         state.requestStatus = 'IDLE';
       })
       .addCase(rescheduleOrder.pending, (state) => {
@@ -183,8 +194,17 @@ const SocketAuthSlice = createSlice({
       .addCase(rescheduleOrder.rejected, (state) => {
         state.requestStatus = 'FAILED';
       })
+      .addCase(unlockOrders.fulfilled, (state) => {
+        state.requestStatus = 'IDLE';
+      })
+      .addCase(unlockOrders.pending, (state) => {
+        state.requestStatus = 'PENDING';
+      })
+      .addCase(unlockOrders.rejected, (state) => {
+        state.requestStatus = 'FAILED';
+      })
   },
 });
 
-export const SocketAuthActions = SocketAuthSlice.actions;
-export const SocketAuthReducer = SocketAuthSlice.reducer;
+export const OrdersActions = OrdersSlice.actions;
+export const OrdersReducer = OrdersSlice.reducer;

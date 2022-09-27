@@ -4,32 +4,31 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useSnackbar } from "notistack";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 
-import { WDateUtils } from "@wcp/wcpshared";
+import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
 import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 import { Autocomplete, Grid, TextField } from "@mui/material";
 import { add, parseISO } from "date-fns";
 import { range } from 'lodash';
 import { StaticDatePicker } from "@mui/x-date-pickers";
-import { rescheduleOrder, SocketAuthActions } from "../../../redux/slices/OrdersSlice";
+import { rescheduleOrder, OrdersActions } from "../../../redux/slices/OrdersSlice";
 
-type WOrderModifyComponentProps = { onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
+type WOrderModifyComponentProps = { order: WOrderInstance; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderModifyComponent = (props: WOrderModifyComponentProps) => {
   //const { enqueueSnackbar } = useSnackbar();
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
-  const order = useAppSelector(s=>s.wsAuth.orderToEdit!);
-  const fulfillmentTimeStep = useMemo(() => fulfillments[order.fulfillment.selectedService].timeStep, [fulfillments, order]);
-  const orderSliceState = useAppSelector(s => s.wsAuth.requestStatus)
+  const fulfillmentTimeStep = useMemo(() => fulfillments[props.order.fulfillment.selectedService].timeStep, [fulfillments, props.order]);
+  const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
 
-  const [selectedDate, setSelectedDate] = useState(order?.fulfillment.selectedDate ?? "");
-  const [selectedTime, setSelectedTime] = useState(order?.fulfillment.selectedTime ?? 1440);
+  const [selectedDate, setSelectedDate] = useState(props.order.fulfillment.selectedDate ?? "");
+  const [selectedTime, setSelectedTime] = useState(props.order.fulfillment.selectedTime ?? 1440);
 
   const submitToWario = async () => {
     if (orderSliceState !== 'PENDING') {
       const token = await getAccessTokenSilently({ scope: "write:catalog" });
-      await dispatch(rescheduleOrder({ token, orderId: order!.id, selectedDate, selectedTime, emailCustomer: true }));
+      await dispatch(rescheduleOrder({ token, orderId: props.order.id, selectedDate, selectedTime, emailCustomer: true }));
     }
   }
   return (

@@ -3,30 +3,35 @@ import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
-import { useSnackbar } from "notistack";
-import { getWOrderInstances, pollOpenOrders, SocketAuthActions } from "../../../redux/slices/OrdersSlice";
-import { WOrderComponentCard } from "./WOrderComponent";
-import { DialogContainer } from "@wcp/wario-ux-shared";
+import { getWOrderInstances, pollOpenOrders, OrdersActions, unlockOrders } from "../../../redux/slices/OrdersSlice";
+import { WOrderComponentCard } from "./WOrderComponentCard";
 import WOrderModifyComponent from "./WOrderModifyComponent";
-import WOrderCancelComponent from "./WOrderCancelComponent";
-import { Grid } from "@mui/material";
+import { Button, Card, DialogTitle, Grid, IconButton, Tooltip } from "@mui/material";
+import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
+import TableWrapperComponent from "../table_wrapper.component";
+import { CheckCircleOutline } from "@mui/icons-material";
+import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid-pro";
+import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
+import { selectEventTitleStringForOrder } from "src/redux/store";
 
-const OrderManagerComponent = () => {
-  const { enqueueSnackbar } = useSnackbar();
+const OrderManagerComponent = ({ }) => {
+  const apiRef = useGridApiRef();
+  const fulfillments = useAppSelector(s=>s.ws.fulfillments!);
+  const selectEventTitleString = useAppSelector(s=> (order: WOrderInstance) => selectEventTitleStringForOrder(s, order));
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
-  const socketAuthState = useAppSelector((s) => s.wsAuth.status);
-  const pollOpenOrdersStatus = useAppSelector((s) => s.wsAuth.requestStatus);
-  const orders = useAppSelector(s => getWOrderInstances(s.wsAuth.orders));
-  const activeDialog = useAppSelector(s=>s.wsAuth.activeDialog);
-  const orderToEdit = useAppSelector(s=>s.wsAuth.orderToEdit);
+
+  const socketAuthState = useAppSelector((s) => s.orders.status);
+  const pollOpenOrdersStatus = useAppSelector((s) => s.orders.requestStatus);
+  const orders = useAppSelector(s => getWOrderInstances(s.orders.orders));
   //const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       const token = await getAccessTokenSilently({ scope: "read:order" });
       if (token && socketAuthState === 'NONE') {
-        dispatch(SocketAuthActions.startConnection(token));
+        dispatch(OrdersActions.startConnection(token));
       }
     }
     init();
@@ -42,36 +47,51 @@ const OrderManagerComponent = () => {
     const timer = setInterval(pollForOrders, 10000);
     return () => clearInterval(timer);
   }, [])
-  return (<>
-    <DialogContainer
-      title={"Edit Order"}
-      onClose={() => dispatch(SocketAuthActions.closeDialog())}
-      open={activeDialog === 'RESCHEDULE' && orderToEdit !== null}
-      innerComponent={ orderToEdit !== null && 
-        <WOrderModifyComponent
-          onCloseCallback={() => dispatch(SocketAuthActions.closeDialog())}
-        />
-      }
-    />
-        <DialogContainer
-      title={"Cancel Order"}
-      onClose={() => dispatch(SocketAuthActions.closeDialog())}
-      open={activeDialog === 'CANCEL' && orderToEdit !== null }
-      innerComponent={ orderToEdit !== null && 
-        <WOrderCancelComponent
-          onCloseCallback={() => dispatch(SocketAuthActions.closeDialog())}
-        />
-      }
-    />
 
-    <Grid container>
-      {orders.map(x => (
-        <Grid key={x.id}>
-          <WOrderComponentCard order={x} />
-        </Grid>
-      ))}
-    </Grid>
-  </>
+  const callUnlockOrders = async () => {
+    const token = await getAccessTokenSilently({ scope: "write:order" });
+    dispatch(unlockOrders(token));
+  }
+  const getDetailPanelContent = useCallback((p: GridRowParams<WOrderInstance>) => p.row.cart.length ? (
+    <WOrderCheckoutCartContainer order={p.row} hideProductDescriptions={false} />
+  ) : '', []);
+
+  return (
+    <Card>
+      <Button onClick={() => callUnlockOrders()} >UNLOCK</Button>
+      <TableWrapperComponent
+        title="Orders Needing Attention"
+        apiRef={apiRef}
+        enableSearch={true}
+        columns={[
+          // { headerName: "Service", field: "service", valueGetter: (v: { row: WOrderInstance }) => fulfillments ? fulfillments[v.row.fulfillment.selectedService].displayName : "", flex: 1 },
+
+          // { headerName: "Guest Name", field: "name", valueGetter: (v: { row: WOrderInstance }) => `${v.row.customerInfo.givenName} ${v.row.customerInfo.familyName}`, flex: 2 },
+          { headerName: "Date", field: "date", valueGetter: (v: { row: WOrderInstance }) => v.row.fulfillment.selectedDate, flex: 1 },
+          { headerName: "Time", field: "time", valueGetter: (v: { row: WOrderInstance }) => WDateUtils.MinutesToPrintTime(v.row.fulfillment.selectedTime), flex: 1},
+          { headerName: "ShortName", field: "ordinal", valueGetter: (v: { row: WOrderInstance }) => selectEventTitleString(v.row), flex: 5 },
+          // { headerName: "FulfillmentType", field: "fulfillment", valueGetter: (v: { row: WOrderInstance }) => v.row.id, flex: 2 },
+          {
+            headerName: "Confirm",
+            field: 'actions',
+            type: 'actions',
+            getActions: (params) => [
+              <GridActionsCellItem
+                icon={<Tooltip title="Confirm Order"><CheckCircleOutline /></Tooltip>}
+                label="Confirm Order"
+                onClick={(params.row)}
+                key={`CONFIRM${params.row.id}`} />
+            ]
+          },
+        ]}
+        onRowClick={(params) => apiRef.current.toggleDetailPanel(params.id)}
+        getDetailPanelContent={getDetailPanelContent}
+        rows={orders}
+        rowThreshold={0}
+      />
+    </Card>
+
+
   );
 }
 

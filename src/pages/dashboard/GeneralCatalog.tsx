@@ -6,6 +6,7 @@ import useSettings from '../../hooks/useSettings';
 import Page from '../../components/Page';
 // sections
 import MenuBuilderComponent from "../../components/wario/menu/menu_builder.component";
+import { MotionLazyContainer } from '../../components/animate';
 
 // ----------------------------------------------------------------------
 
@@ -14,11 +15,14 @@ export default function GeneralCatalog() {
 
   return (
     <Page title="Catalog Management">
-      <Container maxWidth={themeStretch ? false : 'xl'}>
+      <MotionLazyContainer>
+
+        <Container maxWidth={themeStretch ? false : 'xl'}>
           <Grid item xs={12} md={12}>
             <MenuBuilderComponent />
           </Grid>
-      </Container>
+        </Container>
+      </MotionLazyContainer>
     </Page>
   );
 }
