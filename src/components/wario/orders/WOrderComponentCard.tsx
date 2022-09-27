@@ -8,6 +8,8 @@ import { confirmOrder, OrdersActions } from "../../../redux/slices/OrdersSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { selectFullGroupedCartInfo } from "../../../redux/store";
 import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
+import WOrderCancelComponent from "./WOrderCancelComponent";
+import { WOrderDisplayComponent } from "./WOrderDisplayComponent";
 
 const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
   switch (status) {
@@ -30,11 +32,12 @@ const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
 export type WOrderComponentCardProps = {
   order: WOrderInstance;
   onCloseCallback: React.MouseEventHandler<HTMLButtonElement>;
+  handleConfirmOrder: (id: string) => void;
 } & CardProps;
 
 type ComponentCardMode = 'cancel' | 'reschedule' | null;
 
-export const WOrderComponentCard = ({ order, onCloseCallback, ...other }: WOrderComponentCardProps) => {
+export const WOrderComponentCard = ({ order, onCloseCallback, handleConfirmOrder, ...other }: WOrderComponentCardProps) => {
   const dispatch = useAppDispatch();
   const [mode, setMode] = useState<ComponentCardMode>(null);
   const TAX_RATE = useAppSelector(SelectTaxRate);
@@ -46,12 +49,6 @@ export const WOrderComponentCard = ({ order, onCloseCallback, ...other }: WOrder
 
   const { getAccessTokenSilently } = useAuth0();
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
-
-  const confirmOrderClickHandler = async () => {
-    const token = await getAccessTokenSilently({ scope: "write:order" });
-    dispatch(confirmOrder({ orderId: order.id, additionalMessage: "", token: token }));
-  }
-
   return <Card sx={GetStyleForOrderStatus(order.status)} {...other}>
     <CardHeader
       avatar={
@@ -62,14 +59,17 @@ export const WOrderComponentCard = ({ order, onCloseCallback, ...other }: WOrder
       title={`${order.customerInfo.givenName} ${order.customerInfo.familyName} ${order.id}`}
       subtitle={`${order.fulfillment.selectedDate} at ${WDateUtils.MinutesToPrintTime(order.fulfillment.selectedTime)}`}
     />
+    {mode === null && <WOrderDisplayComponent order={order} callConfirm={handleConfirmOrder} setCancel={() => setMode('cancel')} setReschedule={() => setMode('reschedule')} /> }
     <CardContent>
-      { mode === null && <WOrderCheckoutCartContainer order={order} hideProductDescriptions /> }
-      
+      {mode === 'cancel' && <WOrderCancelComponent order={order} onCloseCallback={() => setMode(null)} />}
     </CardContent>
     <CardActions>
-      {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={() => setMode('cancel')} size='small'>Cancel</Button>}
-      {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={() => setMode('reschedule')} size='small'>Reschedule</Button>}
-      {order.status === WOrderStatus.OPEN && <Button disabled={orderSliceState === "PENDING"} onClick={confirmOrderClickHandler} size='small'>Confirm!</Button>}
+      {mode === null && <>
+        {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={() => setMode('cancel')} size='small'>Cancel</Button>}
+        {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={() => setMode('reschedule')} size='small'>Reschedule</Button>}
+        {order.status === WOrderStatus.OPEN && <Button disabled={orderSliceState === "PENDING"} onClick={() => handleConfirmOrder(order.id)} size='small'>Confirm!</Button>}
+      </>}
+      {mode === 'cancel'}
     </CardActions>
   </Card>
 }

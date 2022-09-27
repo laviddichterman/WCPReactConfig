@@ -40,7 +40,7 @@ export default function GeneralTiming() {
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <OrderManagerComponent />
+            <OrderManagerComponent handleConfirmOrder={handleConfirmOrder} />
           </Grid>
           <Grid item xs={12}>
             <OrderCalendar selectOrderById={selectOrderById} />
@@ -49,7 +49,7 @@ export default function GeneralTiming() {
       </Container>
       <DialogAnimate fullWidth maxWidth={'xl'} open={selectedOrder !== null} onClose={() => setSelectedOrder(null)}>
         {selectedOrder !== null &&
-          <WOrderComponentCard order={selectedOrder} onCloseCallback={() => setSelectedOrder(null)} />
+          <WOrderComponentCard order={selectedOrder} handleConfirmOrder={handleConfirmOrder} onCloseCallback={() => setSelectedOrder(null)} />
         }
       </DialogAnimate>
     </Page>

@@ -7,7 +7,7 @@ import { getWOrderInstances, pollOpenOrders, OrdersActions, unlockOrders } from 
 import { WOrderComponentCard } from "./WOrderComponentCard";
 import WOrderModifyComponent from "./WOrderModifyComponent";
 import { Button, Card, DialogTitle, Grid, IconButton, Tooltip } from "@mui/material";
-import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
+import { WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
@@ -15,16 +15,20 @@ import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
 import { selectEventTitleStringForOrder } from "src/redux/store";
 
-const OrderManagerComponent = ({ }) => {
+export interface OrderManagerComponentProps { 
+  handleConfirmOrder: (id: string) => void;
+}
+const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentProps) => {
   const apiRef = useGridApiRef();
   const fulfillments = useAppSelector(s=>s.ws.fulfillments!);
+  const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const selectEventTitleString = useAppSelector(s=> (order: WOrderInstance) => selectEventTitleStringForOrder(s, order));
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
 
   const socketAuthState = useAppSelector((s) => s.orders.status);
   const pollOpenOrdersStatus = useAppSelector((s) => s.orders.requestStatus);
-  const orders = useAppSelector(s => getWOrderInstances(s.orders.orders));
+  const orders = useAppSelector(s => getWOrderInstances(s.orders.orders).filter(x=>x.status === WOrderStatus.OPEN));
   //const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
@@ -75,11 +79,12 @@ const OrderManagerComponent = ({ }) => {
             headerName: "Confirm",
             field: 'actions',
             type: 'actions',
-            getActions: (params) => [
+            getActions: (params: GridRowParams<WOrderInstance>) => [
               <GridActionsCellItem
                 icon={<Tooltip title="Confirm Order"><CheckCircleOutline /></Tooltip>}
                 label="Confirm Order"
-                onClick={(params.row)}
+                disabled={orderSliceState === 'PENDING'}
+                onClick={() => handleConfirmOrder(params.row.id)}
                 key={`CONFIRM${params.row.id}`} />
             ]
           },
