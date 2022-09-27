@@ -5,8 +5,9 @@ import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
 // sections
-import StoreCreditIssueComponent from "../../components/wario/store_credit_issue.component";
-import StoreCreditValidateAndSpendComponent from "../../components/wario/store_credit_validate_and_spend.component";
+import React from 'react';
+const StoreCreditIssueComponent = React.lazy(() => import('../../components/wario/store_credit_issue.component'));
+const StoreCreditValidateAndSpendComponent = React.lazy(() => import('../../components/wario/store_credit_validate_and_spend.component'));
 
 // ----------------------------------------------------------------------
 
@@ -29,3 +30,5 @@ export default function GeneralCredit() {
     </Page>
   );
 }
+
+
