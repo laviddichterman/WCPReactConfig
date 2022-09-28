@@ -4,8 +4,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { getWOrderInstances, pollOpenOrders, OrdersActions, unlockOrders } from "../../../redux/slices/OrdersSlice";
-import { WOrderComponentCard } from "./WOrderComponentCard";
-import WOrderModifyComponent from "./WOrderModifyComponent";
 import { Button, Card, DialogTitle, Grid, IconButton, Tooltip } from "@mui/material";
 import { WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";

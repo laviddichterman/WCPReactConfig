@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.22",
+  "version": "0.4.23",
   "dependencies": {
     "@auth0/auth0-react": "^1.11.0",
     "@emotion/cache": "^11.10.3",
@@ -59,8 +59,8 @@
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0",
     "rehype-raw": "^6.1.1",
-    "simplebar": "^5.3.8",
-    "simplebar-react": "^2.4.1",
+    "simplebar": "^5.3.9",
+    "simplebar-react": "^2.4.2",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.5.2",
     "stream-browserify": "^3.0.0",
