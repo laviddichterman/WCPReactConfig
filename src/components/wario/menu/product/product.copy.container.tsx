@@ -230,9 +230,10 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
           body: JSON.stringify(productCopyBody),
         });
         if (response.status === 201) {
+          // The response is the base ProductInstance 
           const json_response = await response.json();
           enqueueSnackbar(`Created base product ${piDisplayNames[indexOfBase]}`);
-          const parent_id = json_response._id;
+          const parent_id = json_response.productId;
           await new Promise((res) => setTimeout(res, 200));
           const create_child_requests: Promise<void>[] = [];
           const addChildIndex = (i: number) => {

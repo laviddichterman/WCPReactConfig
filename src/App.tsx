@@ -15,12 +15,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 
 /*
  * TODOS:
- *  - IDEA: API types should encapsulate the business logic, eg: createProduct should take a list of product instances or maybe at least one product instance that'll serve as the base product (most common case) 
- *  - implement authorization with redux https://community.auth0.com/t/how-which-library-to-use-for-react-redux/55854
  *  - limit display of sections / actions depending on user roles
  *  - move API calls to redux (WIP)
  *  - add orders dashboard (WIP)
  *  - UI product class edit should allow selection of the base
+ *  - errors should be stringified with JSON.stringify(err, Object.getOwnPropertyNames(err), 2)}
  */
 
 // ----------------------------------------------------------------------

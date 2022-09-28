@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.23",
+  "version": "0.4.24",
   "dependencies": {
     "@auth0/auth0-react": "^1.11.0",
     "@emotion/cache": "^11.10.3",
