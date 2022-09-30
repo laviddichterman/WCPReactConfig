@@ -57,7 +57,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     dispatch(unlockOrders(token));
   }
   const getDetailPanelContent = useCallback((p: GridRowParams<WOrderInstance>) =>   
-    <WOrderComponentCard orderId={p.row.id} handleConfirmOrder={handleConfirmOrder} onCloseCallback={(e) => { return;} } />
+    <WOrderComponentCard orderId={p.row.id} handleConfirmOrder={handleConfirmOrder} onCloseCallback={null} />
   , []);
 
   return (

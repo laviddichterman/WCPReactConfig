@@ -15,6 +15,7 @@ import { WOrderDisplayComponent } from "./WOrderDisplayComponent";
 import WOrderModifyComponent from "./WOrderModifyComponent";
 import WOrderForceSendComponent from "./WOrderForceSendComponent";
 import { format } from "date-fns";
+import { ElementActionComponentProps } from "../menu/element.action.component";
 
 const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
   switch (status) {
@@ -36,7 +37,7 @@ const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
 
 export type WOrderComponentCardProps = {
   orderId: string;
-  onCloseCallback: React.MouseEventHandler<HTMLButtonElement>;
+  onCloseCallback: ElementActionComponentProps['onCloseCallback'];
   handleConfirmOrder: (id: string) => void;
 } & CardProps;
 
@@ -78,7 +79,7 @@ export const WOrderComponentCard = ({ orderId, onCloseCallback, handleConfirmOrd
         </TabList>
       </Box>
       <TabPanel sx={{ p: 0 }} key={'info'} value={'info'}>
-        <WOrderDisplayComponent order={order} callConfirm={handleConfirmOrder} />
+        <WOrderDisplayComponent order={order} onCloseCallback={onCloseCallback} callConfirm={handleConfirmOrder} />
       </TabPanel>
       <TabPanel sx={{ p: 0 }} key={'cancel'} value={'cancel'}>
         <WOrderCancelComponent order={order} onCloseCallback={onCloseCallback} />
@@ -95,7 +96,7 @@ export const WOrderComponentCard = ({ orderId, onCloseCallback, handleConfirmOrd
         <WOrderModifyComponent order={order} onCloseCallback={onCloseCallback} />
       </TabPanel>
       <TabPanel sx={{ p: 0 }} key={'confirm'} value={'confirm'}>
-        <WOrderDisplayComponent order={order} callConfirm={handleConfirmOrder} />
+        <WOrderDisplayComponent order={order} callConfirm={handleConfirmOrder} onCloseCallback={onCloseCallback} />
       </TabPanel>
     </TabContext>
   </Card>

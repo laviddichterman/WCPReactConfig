@@ -21,7 +21,7 @@ const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
     if (orderSliceState !== 'PENDING') {
       const token = await getAccessTokenSilently({ scope: "cancel:order" });
       await dispatch(cancelOrder({ orderId: props.order.id, emailCustomer: true, reason: cancelationReason, token: token }));
-      props.onCloseCallback(e);
+      props.onCloseCallback && props.onCloseCallback(e);
     }
   }
 

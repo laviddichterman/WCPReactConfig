@@ -19,7 +19,7 @@ const WOrderForceSendComponent = (props: WOrderForceSendComponentProps) => {
     if (orderSliceState !== 'PENDING') {
       const token = await getAccessTokenSilently({ scope: "cancel:order" });
       await dispatch(forceSendOrder({ orderId: props.order.id, token: token }));
-      props.onCloseCallback(e);
+      props.onCloseCallback && props.onCloseCallback(e);
     }
   }
 

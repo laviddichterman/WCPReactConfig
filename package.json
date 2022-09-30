@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.26",
+  "version": "0.4.27",
   "dependencies": {
     "@auth0/auth0-react": "^1.11.0",
     "@emotion/cache": "^11.10.3",
@@ -30,7 +30,7 @@
     "change-case": "^4.1.2",
     "date-fns": "^2.29.3",
     "emoji-mart": "^5.2.2",
-    "framer-motion": "^7.5.0",
+    "framer-motion": "^7.5.1",
     "geojson": "^0.5.0",
     "highlight.js": "^11.6.0",
     "history": "^5.3.0",
@@ -86,7 +86,7 @@
     "@typescript-eslint/parser": "^5.38.1",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "react-scripts": "^5.0.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.4"
   },
   "author": "Dave Lichterman",
   "description": "Javascript Version",

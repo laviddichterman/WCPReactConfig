@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Button, LinearProgress, DialogContent, DialogActions } from '@mui/material';
+import { Grid, Button, LinearProgress, DialogContent, DialogActions, Box } from '@mui/material';
 
 const GenerateActionsHtmlFromList = (actions: React.ReactNode[]) => actions.length === 0 ? "" :
   (<Grid container justifyContent="flex-end" item xs={12}>
@@ -11,7 +11,7 @@ const GenerateActionsHtmlFromList = (actions: React.ReactNode[]) => actions.leng
   </Grid>)
 
 export interface ElementActionComponentProps {
-  onCloseCallback: React.MouseEventHandler<HTMLButtonElement>;
+  onCloseCallback: React.MouseEventHandler<HTMLButtonElement> | null;
   onConfirmClick: React.MouseEventHandler<HTMLButtonElement>;
   isProcessing: boolean;
   disableConfirmOn: boolean;
@@ -28,22 +28,22 @@ const ElementActionComponent = ({
 }: ElementActionComponentProps) => {
 
   const actions_html = GenerateActionsHtmlFromList([
-    <Button
+    onCloseCallback !== null && <Button
       onClick={onCloseCallback}
       disabled={isProcessing}>
       Cancel
     </Button>,
     <Button
       onClick={onConfirmClick}
-      disabled={disableConfirmOn}>
+      disabled={isProcessing || disableConfirmOn}>
       {confirmText}
     </Button>
   ]);
 
   return (
-    <div>
+    <Box>
       <DialogContent>
-        <Grid container rowSpacing={2} spacing={2} justifyContent="center">
+        <Grid container rowSpacing={2} spacing={2}  justifyContent="center">
           {body}
         </Grid>
       </DialogContent>
@@ -51,7 +51,7 @@ const ElementActionComponent = ({
         {actions_html}
         {isProcessing ? <LinearProgress /> : ""}
       </DialogActions>
-    </div>
+    </Box>
   );
 };
 
