@@ -44,11 +44,19 @@ const LeadTimesComp = () => {
         });
         if (response.status === 201) {
           enqueueSnackbar(
-            <span>
+            `
+              Updated lead time(s): ${Object.entries(leadtimesToUpdate).map(([key, value]) => 
+                `${FULFILLMENTS[key].displayName}: ${value} minutes`
+              )}
+            `)
+
+            /**
+             *             <span>
               Updated lead time(s): {Object.entries(leadtimesToUpdate).map(([key, value]) => (
                 <ul key={key}>{`${FULFILLMENTS[key].displayName}: ${value} minutes`}</ul>)
               )}
             </span>)
+             */
           setDirty(GenerateCleanDirtyArray(FULFILLMENTS));
         }
         setIsProcessing(false);

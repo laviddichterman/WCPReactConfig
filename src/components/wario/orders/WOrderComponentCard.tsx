@@ -1,15 +1,20 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Card, CardHeader, CardActions, Button, CardProps, SxProps, CardContent, Avatar } from "@mui/material";
+import { Card, CardHeader, CardActions, Button, CardProps, SxProps, Tab, CardContent, Avatar, Typography, Box } from "@mui/material";
 import { red } from "@mui/material/colors";
-import { DateTimeIntervalBuilder, WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
-import { useMemo, useState } from "react";
+import { ComputeServiceTimeDisplayString, DateTimeIntervalBuilder, WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
+import { MouseEvent, useMemo, useState } from "react";
+import { TabList, TabPanel, TabContext } from '@mui/lab'
+
 import { CatalogSelectors, SelectTaxRate, WCheckoutCartComponent } from '@wcp/wario-ux-shared';
-import { confirmOrder, OrdersActions } from "../../../redux/slices/OrdersSlice";
+import { confirmOrder, getWOrderInstanceById, OrdersActions } from "../../../redux/slices/OrdersSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { selectFullGroupedCartInfo } from "../../../redux/store";
 import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
 import WOrderCancelComponent from "./WOrderCancelComponent";
 import { WOrderDisplayComponent } from "./WOrderDisplayComponent";
+import WOrderModifyComponent from "./WOrderModifyComponent";
+import WOrderForceSendComponent from "./WOrderForceSendComponent";
+import { format } from "date-fns";
 
 const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
   switch (status) {
@@ -30,46 +35,68 @@ const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
 }
 
 export type WOrderComponentCardProps = {
-  order: WOrderInstance;
+  orderId: string;
   onCloseCallback: React.MouseEventHandler<HTMLButtonElement>;
   handleConfirmOrder: (id: string) => void;
 } & CardProps;
 
-type ComponentCardMode = 'cancel' | 'reschedule' | null;
+type ComponentCardMode = 'info' | 'reschedule' | 'cancel' | 'rawData' | 'forceSend';
 
-export const WOrderComponentCard = ({ order, onCloseCallback, handleConfirmOrder, ...other }: WOrderComponentCardProps) => {
+export const WOrderComponentCard = ({ orderId, onCloseCallback, handleConfirmOrder, ...other }: WOrderComponentCardProps) => {
   const dispatch = useAppDispatch();
-  const [mode, setMode] = useState<ComponentCardMode>(null);
-  const TAX_RATE = useAppSelector(SelectTaxRate);
-  const catalogSelectors = useAppSelector(s => CatalogSelectors(s.ws));
-  const fulfillment = useAppSelector(s => s.ws.fulfillments![order.fulfillment.selectedService]);
-  const serviceTimeInterval = useMemo(() => DateTimeIntervalBuilder(order.fulfillment, fulfillment), [order.fulfillment, fulfillment]);
-  //const processedCart = useAppSelector(s=>selectCoreCartWProduct(s, order.cart, serviceTimeInterval.start, order.fulfillment.selectedService));
-  const fullGroupedCart = useAppSelector(s => selectFullGroupedCartInfo(s, order.cart, serviceTimeInterval.start, order.fulfillment.selectedService));
-
+  const order = useAppSelector(s => getWOrderInstanceById(s.orders.orders, orderId))!;
+  const [mode, setMode] = useState<ComponentCardMode>('info');
+  const fulfillmentConfig = useAppSelector(s => s.ws.fulfillments![order.fulfillment.selectedService]);
+  const serviceTimeInterval = useMemo(() => DateTimeIntervalBuilder(order.fulfillment, fulfillmentConfig), [order.fulfillment, fulfillmentConfig]);
   const { getAccessTokenSilently } = useAuth0();
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   return <Card sx={GetStyleForOrderStatus(order.status)} {...other}>
     <CardHeader
       avatar={
-        <Avatar sx={{ bgcolor: red[500] }} aria-label={fulfillment.displayName}>
-          {fulfillment.displayName[0]}
+        <Avatar sx={{ bgcolor: red[500] }} aria-label={fulfillmentConfig.displayName}>
+          {fulfillmentConfig.displayName[0]}
         </Avatar>
       }
-      title={`${order.customerInfo.givenName} ${order.customerInfo.familyName} ${order.id}`}
-      subtitle={`${order.fulfillment.selectedDate} at ${WDateUtils.MinutesToPrintTime(order.fulfillment.selectedTime)}`}
+      title={`${order.customerInfo.givenName} ${order.customerInfo.familyName}`}
+      subheader={`${fulfillmentConfig.displayName} on ${format(serviceTimeInterval.start, WDateUtils.ServiceDateDisplayFormat)} at ${ComputeServiceTimeDisplayString(fulfillmentConfig.minDuration, order.fulfillment.selectedTime)}`}
     />
-    {mode === null && <WOrderDisplayComponent order={order} callConfirm={handleConfirmOrder} setCancel={() => setMode('cancel')} setReschedule={() => setMode('reschedule')} /> }
-    <CardContent>
-      {mode === 'cancel' && <WOrderCancelComponent order={order} onCloseCallback={() => setMode(null)} />}
-    </CardContent>
-    <CardActions>
-      {mode === null && <>
-        {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={() => setMode('cancel')} size='small'>Cancel</Button>}
-        {order.status !== WOrderStatus.COMPLETED && order.status !== WOrderStatus.CANCELED && <Button disabled={orderSliceState === "PENDING"} onClick={() => setMode('reschedule')} size='small'>Reschedule</Button>}
-        {order.status === WOrderStatus.OPEN && <Button disabled={orderSliceState === "PENDING"} onClick={() => handleConfirmOrder(order.id)} size='small'>Confirm!</Button>}
-      </>}
-      {mode === 'cancel'}
-    </CardActions>
+    <TabContext value={mode}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <TabList
+          TabIndicatorProps={{ hidden: true }}
+          scrollButtons={false}
+          centered
+          onChange={(_, v) => setMode(v)}
+          aria-label={`order tab navigation`}
+        >
+          <Tab wrapped key={'info'} label={<Typography variant='h6'>Information</Typography>} value={'info'} />
+          <Tab wrapped key={'reschedule'} label={<Typography variant='h6'>Reschedule</Typography>} value={'reschedule'} />
+          <Tab wrapped key={'cancel'} label={<Typography variant='h6'>Cancel</Typography>} value={'cancel'} />
+          <Tab wrapped key={'rawData'} label={<Typography variant='h6'>Raw Data</Typography>} value={'rawData'} />
+          <Tab wrapped key={'forceSend'} label={<Typography variant='h6'>Force Send</Typography>} value={'forceSend'} />
+          { order.status === WOrderStatus.OPEN && <Tab wrapped key={'confirm'} label={<Typography variant='h6'>Confirm</Typography>} value={'confirm'} /> }
+        </TabList>
+      </Box>
+      <TabPanel sx={{ p: 0 }} key={'info'} value={'info'}>
+        <WOrderDisplayComponent order={order} callConfirm={handleConfirmOrder} />
+      </TabPanel>
+      <TabPanel sx={{ p: 0 }} key={'cancel'} value={'cancel'}>
+        <WOrderCancelComponent order={order} onCloseCallback={onCloseCallback} />
+      </TabPanel>
+      <TabPanel sx={{ p: 0 }} key={'rawData'} value={'rawData'}>
+        <CardContent>
+          {JSON.stringify(order, null, 2)}
+        </CardContent>
+      </TabPanel>
+      <TabPanel sx={{ p: 0 }} key={'forceSend'} value={'forceSend'}>
+      <WOrderForceSendComponent order={order} onCloseCallback={onCloseCallback} />
+      </TabPanel>
+      <TabPanel sx={{ p: 0 }} key={'reschedule'} value={'reschedule'}>
+        <WOrderModifyComponent order={order} onCloseCallback={onCloseCallback} />
+      </TabPanel>
+      <TabPanel sx={{ p: 0 }} key={'confirm'} value={'confirm'}>
+        <WOrderDisplayComponent order={order} callConfirm={handleConfirmOrder} />
+      </TabPanel>
+    </TabContext>
   </Card>
 }

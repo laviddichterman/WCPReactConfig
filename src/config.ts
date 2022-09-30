@@ -26,7 +26,7 @@ export const MUI_LICENSE = process.env.REACT_APP_MUI_KEY;
 LicenseInfo.setLicenseKey(MUI_LICENSE!);
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
-export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.timing;
+export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.orders;
 
 // LAYOUT
 // ----------------------------------------------------------------------

@@ -12,41 +12,43 @@ import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
 import { selectEventTitleStringForOrder } from "src/redux/store";
+import { WOrderComponentCard } from "./WOrderComponentCard";
 
 export interface OrderManagerComponentProps { 
   handleConfirmOrder: (id: string) => void;
 }
 const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentProps) => {
   const apiRef = useGridApiRef();
+  const currentTime = useAppSelector(s=>s.ws.currentTime);
   const fulfillments = useAppSelector(s=>s.ws.fulfillments!);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const selectEventTitleString = useAppSelector(s=> (order: WOrderInstance) => selectEventTitleStringForOrder(s, order));
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
 
-  const socketAuthState = useAppSelector((s) => s.orders.status);
-  const pollOpenOrdersStatus = useAppSelector((s) => s.orders.requestStatus);
+  //const socketAuthState = useAppSelector((s) => s.orders.status);
+  const pollOpenOrdersStatus = useAppSelector((s) => s.orders.pollingStatus);
   const orders = useAppSelector(s => getWOrderInstances(s.orders.orders).filter(x=>x.status === WOrderStatus.OPEN));
   //const [isProcessing, setIsProcessing] = useState(false);
 
-  useEffect(() => {
-    const init = async () => {
-      const token = await getAccessTokenSilently({ scope: "read:order" });
-      if (token && socketAuthState === 'NONE') {
-        dispatch(OrdersActions.startConnection(token));
-      }
-    }
-    init();
-  }, [socketAuthState, getAccessTokenSilently, dispatch]);
+  // useEffect(() => {
+  //   const init = async () => {
+  //     const token = await getAccessTokenSilently({ scope: "read:order" });
+  //     if (token && socketAuthState === 'NONE') {
+  //       dispatch(OrdersActions.startConnection(token));
+  //     }
+  //   }
+  //   init();
+  // }, [socketAuthState, getAccessTokenSilently, dispatch]);
   useEffect(() => {
     const pollForOrders = async () => {
       if (pollOpenOrdersStatus !== 'PENDING') {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
-        await dispatch(pollOpenOrders(token));
+        const token = await getAccessTokenSilently({ scope: "read:order" });
+        await dispatch(pollOpenOrders({ token, date: WDateUtils.formatISODate(currentTime) }));
       }
     }
     pollForOrders();
-    const timer = setInterval(pollForOrders, 10000);
+    const timer = setInterval(pollForOrders, 30000);
     return () => clearInterval(timer);
   }, [])
 
@@ -54,9 +56,9 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     const token = await getAccessTokenSilently({ scope: "write:order" });
     dispatch(unlockOrders(token));
   }
-  const getDetailPanelContent = useCallback((p: GridRowParams<WOrderInstance>) => p.row.cart.length ? (
-    <WOrderCheckoutCartContainer order={p.row} hideProductDescriptions={false} />
-  ) : '', []);
+  const getDetailPanelContent = useCallback((p: GridRowParams<WOrderInstance>) =>   
+    <WOrderComponentCard orderId={p.row.id} handleConfirmOrder={handleConfirmOrder} onCloseCallback={(e) => { return;} } />
+  , []);
 
   return (
     <Card>
@@ -66,13 +68,9 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
         apiRef={apiRef}
         enableSearch={true}
         columns={[
-          // { headerName: "Service", field: "service", valueGetter: (v: { row: WOrderInstance }) => fulfillments ? fulfillments[v.row.fulfillment.selectedService].displayName : "", flex: 1 },
-
-          // { headerName: "Guest Name", field: "name", valueGetter: (v: { row: WOrderInstance }) => `${v.row.customerInfo.givenName} ${v.row.customerInfo.familyName}`, flex: 2 },
           { headerName: "Date", field: "date", valueGetter: (v: { row: WOrderInstance }) => v.row.fulfillment.selectedDate, flex: 1 },
           { headerName: "Time", field: "time", valueGetter: (v: { row: WOrderInstance }) => WDateUtils.MinutesToPrintTime(v.row.fulfillment.selectedTime), flex: 1},
           { headerName: "ShortName", field: "ordinal", valueGetter: (v: { row: WOrderInstance }) => selectEventTitleString(v.row), flex: 5 },
-          // { headerName: "FulfillmentType", field: "fulfillment", valueGetter: (v: { row: WOrderInstance }) => v.row.id, flex: 2 },
           {
             headerName: "Confirm",
             field: 'actions',

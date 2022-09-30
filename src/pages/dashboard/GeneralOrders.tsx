@@ -20,15 +20,7 @@ export default function GeneralTiming() {
   const { getAccessTokenSilently } = useAuth0();
   const { themeStretch } = useSettings();
   const dispatch = useAppDispatch();
-  const getOrderById = useAppSelector(s => (id: string) => getWOrderInstanceById(s.orders.orders, id));
-  const [selectedOrder, setSelectedOrder] = useState<WOrderInstance | null>(null);
-
-  const selectOrderById = useCallback((orderId: string) => {
-    const order = getOrderById(orderId);
-    if (order) {
-      setSelectedOrder(order)
-    }
-  }, [getOrderById, setSelectedOrder]);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   const handleConfirmOrder = async (id: string) => {
     const token = await getAccessTokenSilently({ scope: "write:order" });
@@ -43,14 +35,12 @@ export default function GeneralTiming() {
             <OrderManagerComponent handleConfirmOrder={handleConfirmOrder} />
           </Grid>
           <Grid item xs={12}>
-            <OrderCalendar selectOrderById={selectOrderById} />
+            <OrderCalendar selectOrderById={setSelectedOrderId} />
           </Grid>
         </Grid>
       </Container>
-      <DialogAnimate fullWidth maxWidth={'xl'} open={selectedOrder !== null} onClose={() => setSelectedOrder(null)}>
-        {selectedOrder !== null &&
-          <WOrderComponentCard order={selectedOrder} handleConfirmOrder={handleConfirmOrder} onCloseCallback={() => setSelectedOrder(null)} />
-        }
+      <DialogAnimate scroll={'body'} fullWidth maxWidth={'xl'} open={selectedOrderId !== null} onClose={() => setSelectedOrderId(null)}>
+          <WOrderComponentCard orderId={selectedOrderId!} handleConfirmOrder={handleConfirmOrder} onCloseCallback={() => setSelectedOrderId(null)} />
       </DialogAnimate>
     </Page>
   );

@@ -1,6 +1,6 @@
 import { ReactNode, useRef } from 'react';
 import { IconifyIcon } from '@iconify/react';
-import { SnackbarProvider, SnackbarKey } from 'notistack';
+import { SnackbarProvider, SnackbarKey, CustomContentProps } from 'notistack';
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
 import { Box, GlobalStyles, Collapse } from '@mui/material';
@@ -60,6 +60,22 @@ function SnackbarStyles() {
 type Props = {
   children: ReactNode;
 };
+// interface HTMLComponentProps extends CustomContentProps {
+//   allowDownload: boolean;
+// }
+
+// const ReportComplete = React.forwardRef((props: HTMLComponentProps, ref) => {
+//   const {
+//       // You have access to notistack props, options 👇🏼
+//       variant,
+//       message
+//       // as well as your own custom props 👇🏼
+//       allowDownload,
+//   } = props;
+//   //
+//   return 
+// })
+
 
 export default function NotistackProvider({ children }: Props) {
   const { themeDirection } = useSettings();
@@ -82,7 +98,10 @@ export default function NotistackProvider({ children }: Props) {
         maxSnack={5}
         preventDuplicate
         autoHideDuration={3000}
-        TransitionComponent={isRTL ? Collapse : undefined}
+      //   Components={{
+      //     HTMLComponent: MyCustomSuccessNotification,
+      //     reportComplete: ReportComplete,
+      // }}
         variant="success" // Set default variant
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         iconVariant={{

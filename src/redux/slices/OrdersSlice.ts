@@ -2,36 +2,34 @@ import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, Payloa
 import { FulfillmentTime, ResponseSuccess, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import axiosInstance from "../../utils/axios";
 import uuidv4 from "../../utils/uuidv4";
+import { enqueueSnackbar } from 'notistack'
 export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>({ selectId: entry => entry.id });
 export const { selectAll: getWOrderInstances, selectById: getWOrderInstanceById, selectIds: getWOrderInstanceIds } =
   WOrderInstanceAdapter.getSelectors();
 
+type RequestStatus =  'FAILED' | 'PENDING' | 'IDLE';
 export interface OrderManagerState {
   orders: EntityState<WOrderInstance>;  
-  requestStatus: 'FAILED' | 'PENDING' | 'IDLE';
-  status: 'NONE' | 'START' | 'CONNECTED' | 'FAILED';
-  isLoading: boolean;
-  error: Error | string | null;
+  requestStatus: RequestStatus;
+  pollingStatus: RequestStatus;
 }
 
 const initialState: OrderManagerState = {
   orders: WOrderInstanceAdapter.getInitialState(),
   requestStatus: 'IDLE',
-  status: "NONE",
-  isLoading: false,
-  error: null,
+  pollingStatus: "IDLE",
 }
 
-export const pollOpenOrders = createAsyncThunk<WOrderInstance[], string>(
+export const pollOpenOrders = createAsyncThunk<WOrderInstance[], { token: string; date: string | null; }>(
   'orders/pollOpen',
-  async (token: string) => {
+  async ({token, date }) => {
     const response = await axiosInstance.get('/api/v1/order', {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
 
       },
-      params: { status: WOrderStatus.OPEN },
+      params: { ...(date ? { date } : { })  },
     });
     return response.data;
   }
@@ -51,6 +49,8 @@ export const unlockOrders = createAsyncThunk<void, string>(
   }
 );
 
+
+
 export interface ConfirmOrderParams {
   token: string;
   orderId: string;
@@ -61,6 +61,25 @@ export const confirmOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, Co
   async (params: ConfirmOrderParams) => {
     const response = await axiosInstance.put(`/api/v1/order/${params.orderId}/confirm`, {
       additionalMessage: params.additionalMessage
+    }, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+        "Content-Type": "application/json",
+        'Idempotency-Key': uuidv4()
+      }
+    });
+    return response.data;
+  }
+);
+
+export interface ForceSendOrderParams {
+  token: string;
+  orderId: string;
+}
+export const forceSendOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, ForceSendOrderParams>(
+  'orders/send',
+  async (params: ForceSendOrderParams) => {
+    const response = await axiosInstance.put(`/api/v1/order/${params.orderId}/send`, {
     }, {
       headers: {
         Authorization: `Bearer ${params.token}`,
@@ -123,84 +142,88 @@ const OrdersSlice = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-    startConnection(state, _: PayloadAction<string>) {
-      state.status = 'START';
-    },
-    setFailed(state) {
-      state.status = 'FAILED';
-    },
-    setConnected(state) {
-      state.status = 'CONNECTED';
-    },
     receiveOrder(state, action: PayloadAction<WOrderInstance>) {
       WOrderInstanceAdapter.upsertOne(state.orders, action.payload);
     },
     receiveOrders(state, action: PayloadAction<WOrderInstance[]>) {
       WOrderInstanceAdapter.upsertMany(state.orders, action.payload);
     },
-
-    // START LOADING
-    startLoading(state) {
-      state.isLoading = true;
-    },
-
-    // HAS ERROR
-    hasError(state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
-
   },
   extraReducers: (builder) => {
     builder
       .addCase(pollOpenOrders.fulfilled, (state, action) => {
+        // action.payload.forEach(order => {
+        //   const currentValue = getWOrderInstanceById(state.orders, order.id);
+        //   // @ts-ignore
+        //   if (!currentValue || currentValue.__v > order.__v) {
+        //     WOrderInstanceAdapter.upsertOne(state.orders, order);
+        //   }
+        // });
         WOrderInstanceAdapter.upsertMany(state.orders, action.payload);
-        state.requestStatus = 'IDLE';
+        state.pollingStatus = 'IDLE';
       })
       .addCase(pollOpenOrders.pending, (state) => {
-        state.requestStatus = 'PENDING';
+        state.pollingStatus = 'PENDING';
       })
       .addCase(pollOpenOrders.rejected, (state) => {
-        state.requestStatus = 'FAILED';
+        state.pollingStatus = 'FAILED';
       })
       .addCase(confirmOrder.fulfilled, (state, action) => {
+        enqueueSnackbar(`Confirmed order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName}.`);
         WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
         state.requestStatus = 'IDLE';
       })
       .addCase(confirmOrder.pending, (state) => {
         state.requestStatus = 'PENDING';
       })
-      .addCase(confirmOrder.rejected, (state) => {
+      .addCase(confirmOrder.rejected, (state, err) => {
+        enqueueSnackbar(`Unable to confirm order. Got error: ${JSON.stringify(err, null, 2)}`, { variant: "error" });
         state.requestStatus = 'FAILED';
       })
       .addCase(cancelOrder.fulfilled, (state, action) => {
+        enqueueSnackbar(`Canceled order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName}.`);
         WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
         state.requestStatus = 'IDLE';
       })
       .addCase(cancelOrder.pending, (state) => {
         state.requestStatus = 'PENDING';
       })
-      .addCase(cancelOrder.rejected, (state) => {
+      .addCase(cancelOrder.rejected, (state, err) => {
+        enqueueSnackbar(`Unable to cancel order. Got error: ${JSON.stringify(err, null, 2)}`, { variant: "error" });
         state.requestStatus = 'FAILED';
       })
       .addCase(rescheduleOrder.fulfilled, (state, action) => {
+        enqueueSnackbar(`Rescheduled order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName}.`);
         WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
-
         state.requestStatus = 'IDLE';
       })
       .addCase(rescheduleOrder.pending, (state) => {
         state.requestStatus = 'PENDING';
       })
-      .addCase(rescheduleOrder.rejected, (state) => {
+      .addCase(rescheduleOrder.rejected, (state, err) => {
+        enqueueSnackbar(`Unable to reschedule order. Got error: ${JSON.stringify(err, null, 2)}`, { variant: "error" });
         state.requestStatus = 'FAILED';
       })
       .addCase(unlockOrders.fulfilled, (state) => {
+        enqueueSnackbar(`Unlocked orders`);
         state.requestStatus = 'IDLE';
       })
       .addCase(unlockOrders.pending, (state) => {
         state.requestStatus = 'PENDING';
       })
       .addCase(unlockOrders.rejected, (state) => {
+        state.requestStatus = 'FAILED';
+      })
+      .addCase(forceSendOrder.fulfilled, (state, action) => {
+        enqueueSnackbar(`Sent order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName}.`);
+        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
+        state.requestStatus = 'IDLE';
+      })
+      .addCase(forceSendOrder.pending, (state) => {
+        state.requestStatus = 'PENDING';
+      })
+      .addCase(forceSendOrder.rejected, (state, err) => {
+        enqueueSnackbar(`Unable to send order. Got error: ${JSON.stringify(err, null, 2)}`, { variant: "error" });
         state.requestStatus = 'FAILED';
       })
   },

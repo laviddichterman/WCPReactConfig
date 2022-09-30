@@ -172,13 +172,18 @@ const BlockOffComp = () => {
           }
         );
         if (response.status === 201) {
-          enqueueSnackbar(
-            <span>
+          enqueueSnackbar(`Blocked off ${IntervalToString(interval)} on
+              ${format(parseISO(selectedDate), WDateUtils.ServiceDateDisplayFormat)} 
+              for services: ${selectedServices.map(fId => fulfillments[fId].displayName).join(', ')}`)
+          
+          /**
+           *             <span>
               Blocked off {IntervalToString(interval)} on <br />
               {format(parseISO(selectedDate), WDateUtils.ServiceDateDisplayFormat)}<br />
               for services: {selectedServices.map(fId => fulfillments[fId].displayName).join(', ')}
             </span>)
-          dispatch(setStartTime(null));
+           */
+              dispatch(setStartTime(null));
           dispatch(setEndTime(null));
         }
       } catch (error) {
@@ -208,13 +213,19 @@ const BlockOffComp = () => {
         }
       );
       if (response.status === 201) {
-        enqueueSnackbar(
-          <span>
+        enqueueSnackbar(`
+            Removed ${IntervalToString(interval)} block on <br />
+            ${format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}<br />
+            for ${fulfillments[fulfillmentId].displayName}
+          </span>`)
+      }
+      /**
+       * <span>
             Removed {IntervalToString(interval)} block on <br />
             {format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}<br />
             for {fulfillments[fulfillmentId].displayName}
-          </span>)
-      }
+          </span>
+       */
     } catch (error) {
       enqueueSnackbar(`Unable to update blocked off intervals. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
       console.error(error);
