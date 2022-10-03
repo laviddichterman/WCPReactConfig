@@ -214,10 +214,9 @@ const BlockOffComp = () => {
       );
       if (response.status === 201) {
         enqueueSnackbar(`
-            Removed ${IntervalToString(interval)} block on <br />
-            ${format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}<br />
-            for ${fulfillments[fulfillmentId].displayName}
-          </span>`)
+            Removed ${IntervalToString(interval)} block on
+            ${format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}
+            for ${fulfillments[fulfillmentId].displayName}`)
       }
       /**
        * <span>
