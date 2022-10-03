@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { getWOrderInstances, pollOpenOrders, OrdersActions, unlockOrders } from "../../../redux/slices/OrdersSlice";
-import { Button, Card, DialogTitle, Grid, IconButton, Tooltip } from "@mui/material";
+import { Button, Card, DialogTitle, Grid, IconButton, Tooltip, Typography, Box } from "@mui/material";
 import { WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
 import { CheckCircleOutline } from "@mui/icons-material";
@@ -13,6 +13,7 @@ import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
 import { selectEventTitleStringForOrder } from "src/redux/store";
 import { WOrderComponentCard } from "./WOrderComponentCard";
+import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";
 
 export interface OrderManagerComponentProps { 
   handleConfirmOrder: (id: string) => void;
@@ -29,6 +30,12 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
   //const socketAuthState = useAppSelector((s) => s.orders.status);
   const pollOpenOrdersStatus = useAppSelector((s) => s.orders.pollingStatus);
   const orders = useAppSelector(s => getWOrderInstances(s.orders.orders).filter(x=>x.status === WOrderStatus.OPEN));
+  const [hasNewOrder, setHasNewOrder] = useState(false);
+  useEffect(() => {
+    if (!hasNewOrder && orders.length > 0) {
+      setHasNewOrder(true);
+    }
+  }, [orders]);
   //const [isProcessing, setIsProcessing] = useState(false);
 
   // useEffect(() => {
@@ -60,7 +67,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     <WOrderComponentCard orderId={p.row.id} handleConfirmOrder={handleConfirmOrder} onCloseCallback={null} />
   , []);
 
-  return (
+  return hasNewOrder ? <Box onClick={() => setHasNewOrder(false)}><FullScreenPulsingContainer children={<Typography variant='h3'>{orders.length} new order{orders.length > 1 ? 's' : ""}</Typography>} /></Box> : (
     <Card>
       <Button onClick={() => callUnlockOrders()} >UNLOCK</Button>
       <TableWrapperComponent

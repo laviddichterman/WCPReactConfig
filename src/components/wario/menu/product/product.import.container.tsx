@@ -3,15 +3,16 @@ import { Grid, TextField, Button, Autocomplete } from '@mui/material';
 
 import { useCSVReader } from 'react-papaparse';
 import { ParseResult } from "papaparse";
-import { KeyValue, PriceDisplay } from "@wcp/wcpshared";
+import { KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAuth0 } from '@auth0/auth0-react';
 
 import { ElementActionComponent } from "./../element.action.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
+import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 import { HOST_API } from "../../../../config";
 import { ProductAddRequestType } from "./product.add.container";
-
+import { ValSetValNamed } from '../../../../utils/common';
 
 interface CSVProduct {
   Name: string;
@@ -56,18 +57,19 @@ const InternalCSVReader = ({ onAccepted }: { onAccepted: (data: ParseResult<CSVP
     </CSVReader>
   );
 };
-interface ProductImportComponentProps {
+type ProductImportComponentProps = {
   confirmText: string;
   onCloseCallback: VoidFunction;
   onConfirmClick: VoidFunction;
   isProcessing: boolean;
   disableConfirmOn: boolean;
-  parentCategories: string[];
-  setParentCategories: Dispatch<SetStateAction<string[]>>;
   setFileData: Dispatch<SetStateAction<CSVProduct[]>>;
-}
+} & ValSetValNamed<string[], 'parentCategories'> &
+  ValSetValNamed<string | null, 'printerGroup'>;
+
 const ProductImportComponent = (props: ProductImportComponentProps) => {
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
+  const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   return (
     <ElementActionComponent
       {...props}
@@ -88,7 +90,15 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
             />
           </Grid>
           <Grid item xs={6}>
-            TODO! Needs printer group setting option
+            <Autocomplete
+              filterSelectedOptions
+              options={Object.keys(printerGroups)}
+              value={props.printerGroup}
+              onChange={(e, v) => props.setPrinterGroup(v)}
+              getOptionLabel={(pgId) => printerGroups[pgId].name ?? "Undefined"}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderInput={(params) => <TextField {...params} label="Printer Group" />}
+            />
           </Grid>
           <Grid item xs={12}>
             <InternalCSVReader onAccepted={(data) => props.setFileData(data.data)} />
@@ -101,7 +111,7 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
 const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [parentCategories, setParentCategories] = useState<string[]>([]);
-  const [printerGroup, setPrinterGroup] = useState<string|null>(null);
+  const [printerGroup, setPrinterGroup] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [data, setData] = useState<CSVProduct[]>([])
   const { getAccessTokenSilently } = useAuth0();
@@ -137,7 +147,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
                   price_display: PriceDisplay.ALWAYS,
                   skip_customization: true,
                   suppress_exhaustive_modifier_list: false
-                }, 
+                },
               },
               ordinal: index * 10,
               shortcode: Shortname,
@@ -191,6 +201,8 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
       disableConfirmOn={isProcessing || data.length === 0}
       parentCategories={parentCategories}
       setParentCategories={setParentCategories}
+      printerGroup={printerGroup}
+      setPrinterGroup={setPrinterGroup}
       setFileData={setData}
     />
   );

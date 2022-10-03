@@ -1,7 +1,7 @@
 import { EventInput } from '@fullcalendar/react';
 import { configureStore, createSelector } from '@reduxjs/toolkit';
 import { CatalogSelectors, selectGroupedAndOrderedCart } from '@wcp/wario-ux-shared';
-import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WProduct } from '@wcp/wcpshared';
+import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WOrderStatus, WProduct } from '@wcp/wcpshared';
 import { rootReducer } from './rootReducer';
 import { getWOrderInstanceById, getWOrderInstances } from './slices/OrdersSlice';
 //import { SocketAuthMiddleware } from './slices/SocketAuthMiddleware';
@@ -68,7 +68,7 @@ export const selectOrderAsEvent = createSelector(
 export const selectOrdersAsEvents = createSelector(
   (s: RootState) => s,
   (s: RootState) => getWOrderInstances(s.orders.orders),
-  (s, orders): EventInput[] => orders.map(x=>selectOrderAsEvent(s, x))
+  (s, orders): EventInput[] => orders.filter(x=>x.status !== WOrderStatus.CANCELED).map(x=>selectOrderAsEvent(s, x))
 )
 
 

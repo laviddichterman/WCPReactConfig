@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../../datetime_based_disable.component';
 import { ElementActionComponent } from '../element.action.component';
-import { IMoney, IProductModifier, IWInterval, KeyValue } from '@wcp/wcpshared';
+import { IMoney, IProductModifier, IWInterval, KeyValue, ReduceArrayToMapByKey } from '@wcp/wcpshared';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { ValSetValNamed } from '../../../../utils/common';
 import { StringPropertyComponent } from '../../property-components/StringPropertyComponent';
@@ -17,6 +17,7 @@ import { FloatNumericPropertyComponent } from '../../property-components/FloatNu
 import { ToggleBooleanPropertyComponent } from '../../property-components/ToggleBooleanPropertyComponent';
 import { IMoneyPropertyComponent } from '../../property-components/IMoneyPropertyComponent';
 import { ExternalIdsExpansionPanelComponent } from '../../ExternalIdsExpansionPanelComponent';
+import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 
 type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
 type ProductComponentFieldsNoBaseId =
@@ -46,6 +47,7 @@ interface ProductComponentProps {
 
 const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComponentFieldsNoBaseId & ProductComponentProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
+  const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
 
 
@@ -78,6 +80,17 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
               getOptionLabel={(option) => catalog.categories[option].category.name}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Categories" />}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Autocomplete
+              filterSelectedOptions
+              options={Object.keys(printerGroups)}
+              value={props.printerGroup}
+              onChange={(e, v) => props.setPrinterGroup(v)}
+              getOptionLabel={(pgId) => printerGroups[pgId].name ?? "Undefined"}
+              isOptionEqualToValue={(option, value) => option === value}
+              renderInput={(params) => <TextField {...params} label="Printer Group" />}
             />
           </Grid>
           {/* universal break */}
