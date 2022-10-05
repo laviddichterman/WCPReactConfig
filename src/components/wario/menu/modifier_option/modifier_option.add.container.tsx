@@ -8,11 +8,11 @@ import { IOptionType, IMoney, CURRENCY, IOption, KeyValue } from "@wcp/wcpshared
 import { useSnackbar } from "notistack";
 
 export interface ModifierOptionUiContainerProps {
-  parent: IOptionType;
+  modifierType: IOptionType;
   onCloseCallback: VoidFunction;
 }
 
-const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionUiContainerProps) => {
+const ModifierOptionAddContainer = ({ modifierType, onCloseCallback }: ModifierOptionUiContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
   
   const [displayName, setDisplayName] = useState("");
@@ -24,7 +24,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
   const [enableFunction, setEnableFunction] = useState<string | null>(null);
   const [flavorFactor, setFlavorFactor] = useState(0);
   const [bakeFactor, setBakeFactor] = useState(0);
-  const [canSplit, setCanSplit] = useState(true);
+  const [canSplit, setCanSplit] = useState(false);
   const [allowHeavy, setAllowHeavy] = useState(false);
   const [allowLite, setAllowLite] = useState(false);
   const [allowOTS, setAllowOTS] = useState(false);
@@ -61,7 +61,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
             omit_from_name: omitFromName
           }
         };
-        const response = await fetch(`${HOST_API}/api/v1/menu/option/${parent.id}/`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifierType.id}/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -88,6 +88,7 @@ const ModifierOptionAddContainer = ({ parent, onCloseCallback }: ModifierOptionU
       onCloseCallback={onCloseCallback}
       onConfirmClick={addModifierOption}
       isProcessing={isProcessing}
+      modifierType={modifierType}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}

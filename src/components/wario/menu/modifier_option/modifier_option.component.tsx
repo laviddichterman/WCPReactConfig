@@ -1,5 +1,5 @@
 import { Grid, TextField, Autocomplete } from "@mui/material";
-import { IMoney, IWInterval, KeyValue, RecordProductInstanceFunctions } from "@wcp/wcpshared";
+import { IMoney, IOptionType, IWInterval, KeyValue, RecordProductInstanceFunctions } from "@wcp/wcpshared";
 
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from "../../datetime_based_disable.component";
 import { ElementActionComponent } from "../element.action.component";
@@ -30,6 +30,7 @@ type ModifierOptionComponentProps =
   ValSetValNamed<boolean, 'omitFromName'> &
   ValSetValNamed<IWInterval | null, 'disabled'> &
   {
+    modifierType: IOptionType;
     confirmText: string
     onCloseCallback: VoidFunction;
     onConfirmClick: VoidFunction;
@@ -38,6 +39,16 @@ type ModifierOptionComponentProps =
 
 const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
   const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.productInstanceFunctions) as RecordProductInstanceFunctions;
+  const handleSetAllowOTS = (value: boolean) => {
+    if (props.modifierType.max_selected !== 1) {
+      props.setAllowOTS(value);
+    }
+  }
+  const handleSetCanSplit = (value: boolean) => {
+    if (props.modifierType.max_selected !== 1) {
+      props.setCanSplit(value);
+    }
+  }
   return (
     <ElementActionComponent
       onCloseCallback={props.onCloseCallback}
@@ -106,10 +117,10 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
           </Grid>
           <Grid item xs={4}>
             <ToggleBooleanPropertyComponent
-              disabled={props.isProcessing}
+              disabled={props.isProcessing || props.modifierType.max_selected === 1}
               label="Can Split"
-              value={props.canSplit}
-              setValue={props.setCanSplit}
+              value={props.modifierType.max_selected !== 1 && props.canSplit}
+              setValue={handleSetCanSplit}
               labelPlacement='end'
             />
           </Grid>
@@ -133,10 +144,10 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
           </Grid>
           <Grid item xs={4}>
             <ToggleBooleanPropertyComponent
-              disabled={props.isProcessing}
+              disabled={props.isProcessing || props.modifierType.max_selected === 1}
               label="Allow OTS"
-              value={props.allowOTS}
-              setValue={props.setAllowOTS}
+              value={props.modifierType.max_selected !== 1 && props.allowOTS}
+              setValue={handleSetAllowOTS}
               labelPlacement='end'
             />
           </Grid>

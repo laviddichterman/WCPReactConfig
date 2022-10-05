@@ -1,9 +1,9 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
-import { Grid, TextField, Button, Autocomplete } from '@mui/material';
+import { Grid, TextField, Button, Autocomplete, Card, CardContent, CardHeader } from '@mui/material';
 
 import { useCSVReader } from 'react-papaparse';
 import { ParseResult } from "papaparse";
-import { KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
+import { IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -13,6 +13,7 @@ import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 import { HOST_API } from "../../../../config";
 import { ProductAddRequestType } from "./product.add.container";
 import { ValSetValNamed } from '../../../../utils/common';
+import ProductModifierComponent from "./ProductModifierComponent";
 
 interface CSVProduct {
   Name: string;
@@ -65,10 +66,12 @@ type ProductImportComponentProps = {
   disableConfirmOn: boolean;
   setFileData: Dispatch<SetStateAction<CSVProduct[]>>;
 } & ValSetValNamed<string[], 'parentCategories'> &
-  ValSetValNamed<string | null, 'printerGroup'>;
+  ValSetValNamed<string | null, 'printerGroup'> &
+  ValSetValNamed<IProductModifier[], 'modifiers'>;
 
 const ProductImportComponent = (props: ProductImportComponentProps) => {
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
+  const catalog = useAppSelector(s => s.ws.catalog!);
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   return (
     <ElementActionComponent
@@ -101,6 +104,9 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
             />
           </Grid>
           <Grid item xs={12}>
+            <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={props.setModifiers} />
+          </Grid>
+          <Grid item xs={12}>
             <InternalCSVReader onAccepted={(data) => props.setFileData(data.data)} />
           </Grid>
         </>}
@@ -112,6 +118,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
   const { enqueueSnackbar } = useSnackbar();
   const [parentCategories, setParentCategories] = useState<string[]>([]);
   const [printerGroup, setPrinterGroup] = useState<string | null>(null);
+  const [modifiers, setModifiers] = useState<IProductModifier[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [data, setData] = useState<CSVProduct[]>([])
   const { getAccessTokenSilently } = useAuth0();
@@ -203,6 +210,8 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
       setParentCategories={setParentCategories}
       printerGroup={printerGroup}
       setPrinterGroup={setPrinterGroup}
+      modifiers={modifiers}
+      setModifiers={setModifiers}
       setFileData={setData}
     />
   );

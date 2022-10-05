@@ -5,6 +5,8 @@ import ModifierOptionComponent from "./modifier_option.component";
 import { HOST_API } from "../../../../config";
 import { IOption } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 
 interface ModifierOptionEditContainerProps {
   modifier_option: IOption;
@@ -12,7 +14,7 @@ interface ModifierOptionEditContainerProps {
 }
 const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: ModifierOptionEditContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+  const modifierTypeEntry = useAppSelector(s=>getModifierTypeEntryById(s.ws.modifierEntries, modifier_option.modifierTypeId)!);
   const [displayName, setDisplayName] = useState(modifier_option.displayName);
   const [description, setDescription] = useState(modifier_option.description);
   const [shortcode, setShortcode] = useState(modifier_option.shortcode);
@@ -31,6 +33,7 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
   const [disabled, setDisabled] = useState(modifier_option.disabled ?? null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
+
   const editModifierOption = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
@@ -85,6 +88,7 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
       onCloseCallback={onCloseCallback}
       onConfirmClick={editModifierOption}
       isProcessing={isProcessing}
+      modifierType={modifierTypeEntry.modifierType}
       displayName={displayName}
       setDisplayName={setDisplayName}
       description={description}

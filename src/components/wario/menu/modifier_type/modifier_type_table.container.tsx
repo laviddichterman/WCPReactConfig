@@ -63,7 +63,7 @@ const ModifierTypeTableContainer = () => {
         modifierTypeToEdit !== null &&
         <ModifierOptionAddContainer
           onCloseCallback={() => setIsModifierOptionAddOpen(false)}
-          parent={modifierTypeToEdit}
+          modifierType={modifierTypeToEdit}
         />
       }
     />

@@ -2,10 +2,7 @@ import React from 'react';
 import {
   Grid,
   TextField,
-  Card,
-  CardContent,
   Autocomplete,
-  CardHeader
 } from '@mui/material';
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../../datetime_based_disable.component';
 import { ElementActionComponent } from '../element.action.component';
@@ -18,6 +15,8 @@ import { ToggleBooleanPropertyComponent } from '../../property-components/Toggle
 import { IMoneyPropertyComponent } from '../../property-components/IMoneyPropertyComponent';
 import { ExternalIdsExpansionPanelComponent } from '../../ExternalIdsExpansionPanelComponent';
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
+import ProductModifierComponent from "./ProductModifierComponent";
+
 
 type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
 type ProductComponentFieldsNoBaseId =
@@ -49,16 +48,12 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
   const catalog = useAppSelector(s => s.ws.catalog!);
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
-
-
-  const handleSetModifiers = (mods: string[]) => {
-    const oldModsAsRecord = props.modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)
-    const sorted: IProductModifier[] = mods.sort((a, b) => catalog.modifiers[a].modifierType.ordinal - catalog.modifiers[b].modifierType.ordinal)
-      .map(x => ({ mtid: x, serviceDisable: oldModsAsRecord[x]?.serviceDisable ?? [], enable: oldModsAsRecord[x]?.enable ?? null }));
-    if (sorted.length === 0 && !props.showNameOfBaseProduct) {
+  
+  const handleSetModifiers = (mods: IProductModifier[]) => {
+    if (mods.length === 0 && !props.showNameOfBaseProduct) {
       props.setShowNameOfBaseProduct(true);
     }
-    props.setModifiers(sorted);
+    props.setModifiers(mods);
   };
   
   return (
@@ -174,18 +169,6 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
             <Autocomplete
               multiple
               filterSelectedOptions
-              options={Object.keys(catalog.modifiers)}
-              value={props.modifiers.map(x => x.mtid)}
-              onChange={(e, v) => handleSetModifiers(v)}
-              getOptionLabel={(option) => catalog.modifiers[option].modifierType.name ?? 'CORRUPT DATA'}
-              isOptionEqualToValue={(o, v) => o === v}
-              renderInput={(params) => <TextField {...params} label="Modifiers" />}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Autocomplete
-              multiple
-              filterSelectedOptions
               options={Object.keys(fulfillments)}
               value={props.serviceDisable}
               onChange={(_, v) => {
@@ -205,41 +188,9 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
               labelPlacement='end'
             />
           </Grid>
-          {props.modifiers.map((modifier, idx) => (
-            <Grid item xs={12} md={props.modifiers.length - 1 === idx && props.modifiers.length % 2 === 1 ? 12 : 6} key={idx}>
-              <Card>
-                <CardHeader title={`Modifier Details: ${catalog.modifiers[modifier.mtid].modifierType.name}`} />
-                <CardContent>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <Autocomplete
-                        fullWidth
-                        options={Object.keys(catalog.productInstanceFunctions)}
-                        value={modifier.enable}
-                        // this makes a copy of the modifiers array with the updated enable function value
-                        onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } }))}
-                        getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
-                        isOptionEqualToValue={(option, value) => option === value}
-                        renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Autocomplete
-                        fullWidth
-                        multiple
-                        filterSelectedOptions
-                        options={Object.keys(fulfillments)}
-                        value={modifier.serviceDisable}
-                        onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
-                        getOptionLabel={(option) => fulfillments[option].displayName}
-                        isOptionEqualToValue={(option, value) => option === value}
-                        renderInput={(params) => <TextField {...params} label="Disabled Services" />}
-                      />
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>))}
+          <Grid item xs={12}>
+            <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={handleSetModifiers} />
+          </Grid>
           <Grid item xs={12}>
             <DatetimeBasedDisableComponent
               disabled={props.isProcessing}
