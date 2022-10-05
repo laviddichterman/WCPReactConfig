@@ -176,7 +176,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
             },
             category_ids: parentCategories,
             printerGroup,
-            modifiers: []
+            modifiers
           };
           const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
             method: "POST",
