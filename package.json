@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.29",
+  "version": "0.4.30",
   "dependencies": {
     "@auth0/auth0-react": "^1.11.0",
     "@emotion/cache": "^11.10.3",
@@ -30,7 +30,7 @@
     "change-case": "^4.1.2",
     "date-fns": "^2.29.3",
     "emoji-mart": "^5.2.2",
-    "framer-motion": "^7.5.1",
+    "framer-motion": "^7.5.2",
     "geojson": "^0.5.0",
     "highlight.js": "^11.6.0",
     "history": "^5.3.0",
@@ -67,7 +67,7 @@
     "stylis": "^4.1.2",
     "stylis-plugin-rtl": "^2.1.1",
     "util": "^0.12.4",
-    "web-vitals": "^3.0.2",
+    "web-vitals": "^3.0.3",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -75,7 +75,7 @@
     "@babel/eslint-parser": "^7.19.1",
     "@types/geojson": "^7946.0.10",
     "@types/jest": "^29.1.1",
-    "@types/node": "^18.8.0",
+    "@types/node": "^18.8.2",
     "@types/nprogress": "^0.2.0",
     "@types/numeral": "^2.0.2",
     "@types/papaparse": "^5.3.5",

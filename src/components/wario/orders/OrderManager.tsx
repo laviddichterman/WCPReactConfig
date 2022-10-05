@@ -35,6 +35,9 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     if (orders.filter(x=>!Object.hasOwn(suppressedNewOrderNoticeForOrder, x.id)).length > 0) {
       setHasNewOrder(true);
     }
+    else {
+      setHasNewOrder(false);
+    }
   }, [orders]);
   const suppressNotice = () => {
     setSuppressedNewOrderNotice(orders.reduce((acc, order) => ({...acc, [order.id]: true }), suppressedNewOrderNoticeForOrder));

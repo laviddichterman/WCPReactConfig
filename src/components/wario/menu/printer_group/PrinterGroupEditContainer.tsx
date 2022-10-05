@@ -5,10 +5,12 @@ import { PrinterGroup } from "@wcp/wcpshared";
 import PrinterGroupComponent, { PrinterGroupEditProps } from "./PrinterGroupComponent";
 import { HOST_API } from "../../../../config";
 import { useSnackbar } from "notistack";
+import { useAppDispatch } from "../../../../hooks/useRedux";
+import { queryPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 
 const PrinterGroupEditContainer = ({ printerGroup, onCloseCallback }: PrinterGroupEditProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+  const dispatch = useAppDispatch();
   const [name, setName] = useState(printerGroup.name);
   const [singleItemPerTicket, setSingleItemPerTicket] = useState(printerGroup.singleItemPerTicket);
   const [externalIds, setExternalIds] = useState(printerGroup.externalIDs);
@@ -35,6 +37,7 @@ const PrinterGroupEditContainer = ({ printerGroup, onCloseCallback }: PrinterGro
         });
         if (response.status === 200) {
           enqueueSnackbar(`Updated printer group: ${name}.`);
+          dispatch(queryPrinterGroups(token));
           onCloseCallback();
         }
         setIsProcessing(false);

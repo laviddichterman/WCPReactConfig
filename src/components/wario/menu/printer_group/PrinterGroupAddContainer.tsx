@@ -5,6 +5,8 @@ import PrinterGroupComponent from "./PrinterGroupComponent";
 import { HOST_API } from "../../../../config";
 import { KeyValue, PrinterGroup } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useAppDispatch } from "../../../../hooks/useRedux";
+import { queryPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 
 export interface PrinterGroupAddContainerProps {
   onCloseCallback: VoidFunction;
@@ -12,6 +14,7 @@ export interface PrinterGroupAddContainerProps {
 
 const PrinterGroupAddContainer = ({ onCloseCallback }: PrinterGroupAddContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useAppDispatch();
   const [name, setName] = useState("");
   const [singleItemPerTicket, setSingleItemPerTicket] = useState(false);
   const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
@@ -38,6 +41,7 @@ const PrinterGroupAddContainer = ({ onCloseCallback }: PrinterGroupAddContainerP
         });
         if (response.status === 201) {
           enqueueSnackbar(`Added new printer group: ${name}.`);
+          dispatch(queryPrinterGroups(token));
           onCloseCallback();
         }
         setIsProcessing(false);
