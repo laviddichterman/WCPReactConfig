@@ -1,5 +1,5 @@
 // @mui
-import { Container, DialogTitle, Grid } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
@@ -8,11 +8,10 @@ import Page from '../../components/Page';
 import OrderManagerComponent from '../../components/wario/orders/OrderManager';
 import { DialogAnimate } from '../../components/animate';
 import { WOrderComponentCard } from '../../components/wario/orders/WOrderComponentCard';
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
-import { confirmOrder, getWOrderInstanceById, OrdersActions } from '../../redux/slices/OrdersSlice';
+import { useAppDispatch } from "../../hooks/useRedux";
+import { confirmOrder } from '../../redux/slices/OrdersSlice';
 import OrderCalendar from '../../components/wario/orders/OrderCalendar';
-import { useCallback, useState } from 'react';
-import { WOrderInstance } from '@wcp/wcpshared';
+import { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
 // ----------------------------------------------------------------------

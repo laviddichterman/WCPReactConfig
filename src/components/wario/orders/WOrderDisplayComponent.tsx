@@ -23,7 +23,7 @@ export const WOrderDisplayComponent = ({ order, callConfirm, onCloseCallback }: 
     isProcessing={orderSliceState === 'PENDING'}
     disableConfirmOn={order.status !== WOrderStatus.OPEN}
     confirmText={"Confirm!"}
-    body={<Grid xs={12}>
+    body={<Grid item xs={12}>
       <WOrderServiceInfoTableContainer order={order} />
       <WOrderCheckoutCartContainer order={order} hideProductDescriptions />
     </Grid>

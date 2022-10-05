@@ -11,7 +11,7 @@ import { CheckCircleOutline } from "@mui/icons-material";
 import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
-import { selectEventTitleStringForOrder } from "src/redux/store";
+import { selectEventTitleStringForOrder, selectOrdersNeedingAttention } from "../../../redux/store";
 import { WOrderComponentCard } from "./WOrderComponentCard";
 import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";
 
@@ -21,7 +21,6 @@ export interface OrderManagerComponentProps {
 const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentProps) => {
   const apiRef = useGridApiRef();
   const currentTime = useAppSelector(s=>s.ws.currentTime);
-  const fulfillments = useAppSelector(s=>s.ws.fulfillments!);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const selectEventTitleString = useAppSelector(s=> (order: WOrderInstance) => selectEventTitleStringForOrder(s, order));
   const { getAccessTokenSilently } = useAuth0();
@@ -29,13 +28,18 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
 
   //const socketAuthState = useAppSelector((s) => s.orders.status);
   const pollOpenOrdersStatus = useAppSelector((s) => s.orders.pollingStatus);
-  const orders = useAppSelector(s => getWOrderInstances(s.orders.orders).filter(x=>x.status === WOrderStatus.OPEN));
-  const [hasNewOrder, setHasNewOrder] = useState(false);
+  const orders = useAppSelector(selectOrdersNeedingAttention);
+  const [hasNewOrder, setHasNewOrder] = useState(orders.length > 0);
+  const [suppressedNewOrderNoticeForOrder, setSuppressedNewOrderNotice] = useState<Record<string, boolean>>({});
   useEffect(() => {
-    if (!hasNewOrder && orders.length > 0) {
+    if (orders.filter(x=>!Object.hasOwn(suppressedNewOrderNoticeForOrder, x.id)).length > 0) {
       setHasNewOrder(true);
     }
   }, [orders]);
+  const suppressNotice = () => {
+    setSuppressedNewOrderNotice(orders.reduce((acc, order) => ({...acc, [order.id]: true }), suppressedNewOrderNoticeForOrder));
+    setHasNewOrder(false);
+  }
   //const [isProcessing, setIsProcessing] = useState(false);
 
   // useEffect(() => {
@@ -67,7 +71,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     <WOrderComponentCard orderId={p.row.id} handleConfirmOrder={handleConfirmOrder} onCloseCallback={null} />
   , []);
 
-  return hasNewOrder ? <Box onClick={() => setHasNewOrder(false)}><FullScreenPulsingContainer children={<Typography variant='h3'>{orders.length} new order{orders.length > 1 ? 's' : ""}</Typography>} /></Box> : (
+  return hasNewOrder ? <Box onClick={() => suppressNotice()}><FullScreenPulsingContainer children={<Typography variant='h3'>{orders.length} new order{orders.length > 1 ? 's' : ""}</Typography>} /></Box> : (
     <Card>
       <Button onClick={() => callUnlockOrders()} >UNLOCK</Button>
       <TableWrapperComponent

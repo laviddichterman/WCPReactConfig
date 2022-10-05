@@ -71,4 +71,8 @@ export const selectOrdersAsEvents = createSelector(
   (s, orders): EventInput[] => orders.filter(x=>x.status !== WOrderStatus.CANCELED).map(x=>selectOrderAsEvent(s, x))
 )
 
+export const selectOrdersNeedingAttention = createSelector(
+  (s: RootState) => getWOrderInstances(s.orders.orders),
+  (orders) => orders.filter(x=>x.status === WOrderStatus.OPEN)
+)
 
