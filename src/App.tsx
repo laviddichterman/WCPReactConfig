@@ -20,6 +20,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
  *  - add orders dashboard (WIP)
  *  - UI product class edit should allow selection of the base
  *  - errors should be stringified with JSON.stringify(err, Object.getOwnPropertyNames(err), 2)}
+ *  - Add DIRTY check on catalog update fields so we can only send the changed data and make batch/bulk changes easier
  */
 
 // ----------------------------------------------------------------------

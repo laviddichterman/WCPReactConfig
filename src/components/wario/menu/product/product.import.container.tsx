@@ -15,6 +15,8 @@ import { ProductAddRequestType } from "./product.add.container";
 import { ValSetValNamed } from '../../../../utils/common';
 import ProductModifierComponent from "./ProductModifierComponent";
 
+const delay = (ms : number) => new Promise(res => setTimeout(res, ms));
+
 interface CSVProduct {
   Name: string;
   Description: string;
@@ -114,6 +116,12 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
   );
 };
 
+/**
+ *  TODO: add modifier import container
+ *  this allows selection of gin then picking the type of gin which would go in the same way a conversation would progress
+ *  we could have product instances of Gin with As martini to start someone off in the gin martini mode for conversational ordering
+ * 
+ */
 const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [parentCategories, setParentCategories] = useState<string[]>([]);
@@ -126,8 +134,8 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
   const addProducts = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
-      data.forEach(async (prod, index) => {
-        const { Name, Description, Shortname, Price, ...others } = prod;
+      for (let i = 0; i < data.length; ++i) {
+        const { Name, Description, Shortname, Price, ...others } = data[i];
         const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
 
         try {
@@ -142,13 +150,13 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
                 menu: {
                   adornment: "",
                   hide: false,
-                  ordinal: index * 10,
+                  ordinal: i * 10,
                   show_modifier_options: false,
                   price_display: PriceDisplay.ALWAYS,
                   suppress_exhaustive_modifier_list: false
                 },
                 order: {
-                  ordinal: index * 10,
+                  ordinal: i * 10,
                   adornment: '',
                   hide: false,
                   price_display: PriceDisplay.ALWAYS,
@@ -156,7 +164,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
                   suppress_exhaustive_modifier_list: false
                 },
               },
-              ordinal: index * 10,
+              ordinal: i * 10,
               shortcode: Shortname,
             },
             disabled: null,
@@ -188,12 +196,16 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
           });
           if (response.status === 201) {
             enqueueSnackbar(`Imported ${Name}.`);
+            await delay(1000);
           }
         } catch (error) {
           enqueueSnackbar(`Unable to import ${Name}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
           console.error(error);
+          setIsProcessing(false);
+          onCloseCallback();
+          return;
         }
-      });
+      }
     }
     setIsProcessing(false);
     onCloseCallback();
