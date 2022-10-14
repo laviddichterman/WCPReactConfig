@@ -173,7 +173,7 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
             is3p
           }
         };
-        const response = await fetch(`${HOST_API}/api/v1/menu/option/`, {
+        const modifierTypeCreateResponse = await fetch(`${HOST_API}/api/v1/menu/option/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -181,9 +181,9 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
           },
           body: JSON.stringify(body),
         });
-        if (response.status === 201) {
+        if (modifierTypeCreateResponse.status === 201) {
           enqueueSnackbar(`Added new modifier type: ${name}.`);
-          const json_response = await response.json();
+          const json_response = await modifierTypeCreateResponse.json();
           const copiedModifierTypeId = json_response.id as string;
           for (let i = 0; i < modifierTypeEntry.options.length; ++i) {
             if (copyOpFlags[i]) {
@@ -220,10 +220,10 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
                   body: JSON.stringify(addOptionBody),
                 });
                 if (response.status === 201) {
-                  enqueueSnackbar(`Added modifier option: ${displayName}.`);
+                  enqueueSnackbar(`Added modifier option: ${opDisplayName[i]}.`);
                 }
               } catch (error) {
-                enqueueSnackbar(`Unable to add modifier option: ${displayName}. Got error ${JSON.stringify(error, )}`, { variant: 'error' });
+                enqueueSnackbar(`Unable to add modifier option: ${opDisplayName[i]}. Got error ${JSON.stringify(error, )}`, { variant: 'error' });
                 console.error(error);
                 throw error;
               }

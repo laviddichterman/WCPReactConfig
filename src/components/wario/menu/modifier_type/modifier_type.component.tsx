@@ -41,7 +41,7 @@ export type ModifierTypeContainerProps =
     isProcessing: boolean;
   };
 
-export const IsValidModifierType = (props: Pick<ModifierTypeContainerProps, 'name' | 'maxSelected' | 'minSelected' | 'useToggleIfOnlyTwoOptions'>) => !(props.name.length > 0 ||
+export const IsValidModifierType = (props: Pick<ModifierTypeContainerProps, 'name' | 'maxSelected' | 'minSelected' | 'useToggleIfOnlyTwoOptions'>) => !(props.name.length === 0 ||
   (Number.isFinite(props.maxSelected) && (props.maxSelected!) < props.minSelected) ||
   (props.useToggleIfOnlyTwoOptions && (props.maxSelected !== 1 || props.minSelected !== 1)));
 
@@ -149,7 +149,7 @@ export const ModifierTypeContainer = (props: ModifierTypeContainerProps) => {
         options={Object.keys(MODIFIER_CLASS)}
       />
     </Grid>
-    <Grid container item xs={12}>
+    <Grid container item xs={9}>
       <FormControl component="fieldset">
         <FormLabel component="legend">Empty modifier display in product name as...</FormLabel>
         <RadioGroup
@@ -170,6 +170,13 @@ export const ModifierTypeContainer = (props: ModifierTypeContainerProps) => {
           )}
         </RadioGroup>
       </FormControl>
+    </Grid>
+    <Grid item xs={3}>
+      <ToggleBooleanPropertyComponent
+        disabled={props.isProcessing}
+        label="Is 3rd Party"
+        setValue={props.setIs3p}
+        value={props.is3p} />
     </Grid>
     <Grid item xs={6}>
       <StringPropertyComponent

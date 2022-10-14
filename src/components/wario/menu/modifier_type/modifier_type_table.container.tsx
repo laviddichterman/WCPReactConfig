@@ -94,6 +94,7 @@ const ModifierTypeTableContainer = () => {
     />
     <DialogContainer
       title={"Copy Modifier Type"}
+      maxWidth={"xl"}
       onClose={() => setIsModifierTypeCopyOpen(false)}
       open={isModifierTypeCopyOpen}
       innerComponent={
