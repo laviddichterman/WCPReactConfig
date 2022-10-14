@@ -33,7 +33,7 @@ type ProductComponentFieldsNoBaseId =
   ValSetValNamed<boolean, 'showNameOfBaseProduct'> &
   ValSetValNamed<string, 'singularNoun'> &
   ValSetValNamed<string[], 'parentCategories'> &
-  ValSetValNamed<string|null, 'printerGroup'> &
+  ValSetValNamed<string | null, 'printerGroup'> &
   ValSetValNamed<IProductModifier[], 'modifiers'>;
 
 interface ProductComponentProps {
@@ -49,14 +49,14 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
   const catalog = useAppSelector(s => s.ws.catalog!);
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
-  
+
   const handleSetModifiers = (mods: IProductModifier[]) => {
     if (mods.length === 0 && !props.showNameOfBaseProduct) {
       props.setShowNameOfBaseProduct(true);
     }
     props.setModifiers(mods);
   };
-  
+
   return (
     <ElementActionComponent
       onCloseCallback={props.onCloseCallback}
@@ -180,7 +180,16 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={3}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing}
+              label="Is 3rd Party"
+              setValue={props.setIs3p}
+              value={props.is3p}
+              labelPlacement={'end'}
+            />
+          </Grid>
+          <Grid item xs={9}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing || props.modifiers.length === 0}
               label="Show Name of Base Product Instead of Component Modifiers"
@@ -189,6 +198,7 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
               labelPlacement='end'
             />
           </Grid>
+
           <Grid item xs={12}>
             <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={handleSetModifiers} />
           </Grid>
