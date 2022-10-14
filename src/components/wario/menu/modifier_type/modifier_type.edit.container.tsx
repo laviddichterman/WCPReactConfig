@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierTypeComponent, { IsValidModifierType, ModifierTypeModifyUiProps } from "./modifier_type.component";
+import ModifierTypeComponent, { ModifierTypeModifyUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../../config";
 import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";

@@ -58,10 +58,6 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const setModifiersIntermediate = (mods: IProductModifier[]) => {
-    
-  }
-
   const addProduct = async () => {
     if (!isProcessing) {
       setIsProcessing(true);

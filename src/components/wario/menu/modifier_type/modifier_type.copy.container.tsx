@@ -1,19 +1,17 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography, Switch, FormControlLabel } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import ProductComponent, { ModifierTypeComponent } from "./modifier_type.component";
+import { ModifierTypeComponent } from "./modifier_type.component";
 import { ModifierOptionContainer } from "../modifier_option/modifier_option.component";
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { DISPLAY_AS, IOption, IOptionType, IProduct, IProductInstance, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { DISPLAY_AS, IOption, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 // import { ProductAddRequestType } from "./modifier_type.add.container";
 import { useSnackbar } from "notistack";
 import { useIndexedState } from "../../../../utils/common";
-import { ProductAddRequestType } from "../product/product.add.container";
-import ProductCopyContainer from "../product/product.copy.container";
 
 export interface ModifierTypeCopyContainerProps {
   modifierType: IOptionType;
@@ -147,7 +145,7 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
           />
         </Grid>
       </AccordionDetails>
-    </Accordion>), [isProcessing, expandedPanels])
+    </Accordion>), [isProcessing, expandedPanels, copyOpFlags, displayName, emptyDisplayAs, externalIds, is3p, isHiddenDuringCustomization, maxSelected, minSelected, modifierClass, multipleItemSeparator, name, nonEmptyGroupPrefix, nonEmptyGroupSuffix, omitOptionIfNotAvailable, omitSectionIfNoAvailableOptions, opAllowHeavy, opAllowLite, opAllowOTS, opBakeFactor, opCanSplit, opDescription, opDisabled, opDisplayName, opEnableFunction, opExternalIds, opFlavorFactor, opOmitFromName, opOmitFromShortname, opOrdinal, opPrice, opShortcode, ordinal, setCopyOpFlag, setExpandedPanel, setOpAllowHeavy, setOpAllowLite, setOpAllowOTS, setOpBakeFactor, setOpCanSplit, setOpDescription, setOpDisabled, setOpDisplayName, setOpEnableFunction, setOpExternalIds, setOpFlavorFactor, setOpOmitFromName, setOpOmitFromShortname, setOpOrdinal, setOpPrice, setOpShortcode, templateString, useToggleIfOnlyTwoOptions])
 
   const copyModifierTypeAndOptions = async () => {
     if (!isProcessing) {

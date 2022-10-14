@@ -134,7 +134,7 @@ const ProductTableContainer = ({
       getRowId={(row_inner) => row_inner.id}
     />) :
     (""),
-    [setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit]);
+    [setIsProductInstanceDeleteOpen, setIsProductInstanceEditOpen, setProductInstanceToEdit, setProductToEdit, catalog.productInstances]);
 
   return (
     <div style={{ height: "100%", overflow: "auto" }}>

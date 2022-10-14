@@ -324,7 +324,7 @@ const minimizeModifiers = (normalized_modifiers: ProductModifierEntry[]): Produc
 
 export const ProductInstanceContainer = ({ parent_product, modifiers, setModifiers, ...otherProps }: ProductInstanceComponentProps) => {
   const modifier_types_map = useAppSelector(s => s.ws.catalog!.modifiers);
-  const normalizedModifers = useMemo(() => normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers), [[parent_product, modifier_types_map, modifiers]]);
+  const normalizedModifers = useMemo(() => normalizeModifiersAndOptions(parent_product, modifier_types_map, modifiers), [parent_product, modifier_types_map, modifiers]);
 
   const setNormalizedModifiersIntermediate = (mods: ProductModifierEntry[]) => {
     setModifiers(minimizeModifiers(mods));
