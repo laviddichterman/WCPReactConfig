@@ -13,6 +13,7 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
   const [ordinal, setOrdinal] = useState(fulfillment.ordinal);
   const [displayName, setDisplayName] = useState(fulfillment.displayName);
   const [shortcode, setShortcode] = useState(fulfillment.shortcode);
+  const [exposeFulfillment, setExposeFulfillment] = useState(fulfillment.exposeFulfillment);
   const [service, setService] = useState(fulfillment.service);
   const [terms, setTerms] = useState<string[]>(fulfillment.terms);
   const [fulfillmentDescription, setFulfillmentDescription] = useState(fulfillment.messages.DESCRIPTION ?? "");
@@ -46,6 +47,7 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const body: Omit<FulfillmentConfig, "id"> = {
           displayName,
+          exposeFulfillment,
           shortcode,
           ordinal,
           service,
@@ -107,6 +109,8 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
     <FulfillmentComponent
       shortcode={shortcode}
       setShortcode={setShortcode}
+      exposeFulfillment={exposeFulfillment}
+      setExposeFulfillment={setExposeFulfillment}
       displayName={displayName}
       setDisplayName={setDisplayName}
       ordinal={ordinal}

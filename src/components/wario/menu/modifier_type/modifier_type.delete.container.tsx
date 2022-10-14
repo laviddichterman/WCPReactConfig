@@ -29,7 +29,7 @@ const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback }: Modifie
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to delete modifier type: ${modifier_type.name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to delete modifier type: ${modifier_type.name}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

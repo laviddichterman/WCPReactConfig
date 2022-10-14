@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierTypeComponent, { ModifierTypeUiProps } from "./modifier_type.component";
+import ModifierTypeComponent, { IsValidModifierType, ModifierTypeUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../../config";
 import { DISPLAY_AS, IOptionType, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
@@ -25,6 +25,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
   const [multipleItemSeparator, setMultipleItemSeparator] = useState(" + ");
   const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState("");
   const [nonEmptyGroupSuffix, setNonEmptyGroupSuffix] = useState("");
+  const [is3p, setIs3p] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -50,7 +51,8 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
             template_string: templateString || "",
             multiple_item_separator: multipleItemSeparator || "",
             non_empty_group_prefix: nonEmptyGroupPrefix || "",
-            non_empty_group_suffix: nonEmptyGroupSuffix || ""
+            non_empty_group_suffix: nonEmptyGroupSuffix || "",
+            is3p
           }
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/option/`, {
@@ -67,7 +69,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to add modifier type: ${name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to add modifier type: ${name}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }
@@ -79,6 +81,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
       confirmText="Add"
       onCloseCallback={onCloseCallback}
       onConfirmClick={addModifierType}
+      disableConfirm={false}
       isProcessing={isProcessing}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
@@ -100,6 +103,8 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
       setNonEmptyGroupPrefix={setNonEmptyGroupPrefix}
       nonEmptyGroupSuffix={nonEmptyGroupSuffix}
       setNonEmptyGroupSuffix={setNonEmptyGroupSuffix}
+      is3p={is3p}
+      setIs3p={setIs3p}
       omitOptionIfNotAvailable={omitOptionIfNotAvailable}
       setOmitOptionIfNotAvailable={setOmitOptionIfNotAvailable}
       omitSectionIfNoAvailableOptions={omitSectionIfNoAvailableOptions}

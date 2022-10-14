@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography, Switch, FormControlLabel } from "@mui/material";
@@ -11,14 +11,8 @@ import { IProduct, IProductInstance } from "@wcp/wcpshared";
 import { getProductEntryById } from "@wcp/wario-ux-shared";
 import { ProductAddRequestType } from "./product.add.container";
 import { useSnackbar } from "notistack";
+import { useIndexedState } from "../../../../utils/common";
 
-function useIndexedState<S>(x: [S[], Dispatch<SetStateAction<S[]>>]) {
-  return [x[0], (i: number) => (v: S) => {
-    const cpy = x[0].slice();
-    cpy[i] = v;
-    x[1](cpy)
-  }] as const;
-};
 export interface ProductCopyContainerProps {
   product: IProduct;
   onCloseCallback: VoidFunction;
@@ -34,6 +28,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
   const [flavorMax, setFlavorMax] = useState(product.displayFlags?.flavor_max ?? 10);
   const [bakeMax, setBakeMax] = useState(product.displayFlags?.bake_max ?? 10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.displayFlags?.bake_differential ?? 100);
+  const [is3p, setIs3p] = useState(product.displayFlags.is3p ?? false);
   const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.displayFlags.order_guide.suggestions);
   const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.displayFlags.order_guide.warnings);
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.displayFlags?.show_name_of_base_product ?? true);
@@ -111,6 +106,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
               printerGroup,
               disabled,
               displayFlags: {
+                is3p,
                 bake_differential: bakeDifferentialMax,
                 bake_max: bakeMax,
                 flavor_max: flavorMax,
@@ -206,6 +202,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
           serviceDisable,
           externalIDs: externalIds,
           displayFlags: {
+            is3p,
             bake_differential: bakeDifferentialMax,
             show_name_of_base_product: showNameOfBaseProduct,
             flavor_max: flavorMax,
@@ -322,6 +319,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
       setBakeMax={setBakeMax}
       bakeDifferentialMax={bakeDifferentialMax}
       setBakeDifferentialMax={setBakeDifferentialMax}
+      is3p={is3p}
+      setIs3p={setIs3p}
       orderGuideSuggestionFunctions={orderGuideSuggestionFunctions}
       setOrderGuideSuggestionFunctions={setOrderGuideSuggestionFunctions}
       orderGuideWarningFunctions={orderGuideWarningFunctions}

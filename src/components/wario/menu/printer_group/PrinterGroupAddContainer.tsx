@@ -46,7 +46,7 @@ const PrinterGroupAddContainer = ({ onCloseCallback }: PrinterGroupAddContainerP
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to add printer group: ${name}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
+        enqueueSnackbar(`Unable to add printer group: ${name}. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

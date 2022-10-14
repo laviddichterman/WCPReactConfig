@@ -55,7 +55,7 @@ const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterG
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to delete category: ${printerGroup.name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to delete category: ${printerGroup.name}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

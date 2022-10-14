@@ -26,6 +26,7 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
   const [flavorMax, setFlavorMax] = useState(product.displayFlags.flavor_max ?? 10);
   const [bakeMax, setBakeMax] = useState(product.displayFlags.bake_max ?? 10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.displayFlags.bake_differential ?? 100);
+  const [is3p, setIs3p] = useState(product.displayFlags.is3p ?? false);
   const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.displayFlags.order_guide.suggestions);
   const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.displayFlags.order_guide.warnings);
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.displayFlags.show_name_of_base_product ?? true);
@@ -47,6 +48,7 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
           price,
           externalIDs: externalIds,
           displayFlags: {
+            is3p,
             bake_differential: bakeDifferentialMax,
             show_name_of_base_product: showNameOfBaseProduct,
             flavor_max: flavorMax,
@@ -76,7 +78,7 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to update ${productName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
+        enqueueSnackbar(`Unable to update ${productName}. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }
@@ -107,6 +109,8 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
       setBakeMax={setBakeMax}
       bakeDifferentialMax={bakeDifferentialMax}
       setBakeDifferentialMax={setBakeDifferentialMax}
+      is3p={is3p}
+      setIs3p={setIs3p}
       orderGuideSuggestionFunctions={orderGuideSuggestionFunctions}
       setOrderGuideSuggestionFunctions={setOrderGuideSuggestionFunctions}
       orderGuideWarningFunctions={orderGuideWarningFunctions}

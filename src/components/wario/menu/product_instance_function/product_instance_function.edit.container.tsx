@@ -44,7 +44,7 @@ const ProductInstanceFunctionEditContainer = ({ pifId, onCloseCallback }: Produc
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to edit product instance function: ${functionName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to edit product instance function: ${functionName}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

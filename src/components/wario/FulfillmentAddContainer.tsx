@@ -23,6 +23,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
   const [ordinal, setOrdinal] = useState(0);
   const [displayName, setDisplayName] = useState("");
   const [shortcode, setShortcode] = useState('');
+  const [exposeFulfillment, setExposeFulfillment] = useState(true);
   const [service, setService] = useState(FulfillmentType.PickUp);
   const [terms, setTerms] = useState<string[]>([]);
   const [fulfillmentDescription, setFulfillmentDescription] = useState('');
@@ -53,6 +54,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
     setOrdinal(0);
     setDisplayName('');
     setShortcode('');
+    setExposeFulfillment(true);
     setService(FulfillmentType.PickUp);
     setTerms([]);
     setFulfillmentDescription('');
@@ -74,7 +76,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
     setServiceArea(null);
   }
 
-  const canSubmit = !isProcessing && menuCategoryId !== null && orderCategoryId !== null && confirmationMessage.length > 0 && instructions.length > 0;
+  const canSubmit = !isProcessing && menuCategoryId !== null && orderCategoryId !== null && ((confirmationMessage.length > 0 && instructions.length > 0) || !exposeFulfillment);
 
   const addFulfillment = async () => {
     if (canSubmit) {
@@ -83,10 +85,11 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const body: Omit<FulfillmentConfig, "id"> = {
           displayName,
+          exposeFulfillment,
           shortcode,
           ordinal,
           service,
-          terms: terms.filter(x=>x.length > 0),
+          terms: terms.filter(x => x.length > 0),
           messages: {
             DESCRIPTION: fulfillmentDescription ?? null,
             CONFIRMATION: confirmationMessage,
@@ -137,6 +140,8 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
     <FulfillmentComponent
       shortcode={shortcode}
       setShortcode={setShortcode}
+      exposeFulfillment={exposeFulfillment}
+      setExposeFulfillment={setExposeFulfillment}
       displayName={displayName}
       setDisplayName={setDisplayName}
       ordinal={ordinal}

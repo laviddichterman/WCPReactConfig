@@ -172,6 +172,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
             serviceDisable: [],
             price: { amount: Number.parseFloat(Price) * 100, currency: "USD" },
             displayFlags: {
+              is3p: false,
               bake_differential: 100,
               show_name_of_base_product: true,
               flavor_max: 10,
@@ -199,7 +200,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
             await delay(1000);
           }
         } catch (error) {
-          enqueueSnackbar(`Unable to import ${Name}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
+          enqueueSnackbar(`Unable to import ${Name}. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
           console.error(error);
           setIsProcessing(false);
           onCloseCallback();

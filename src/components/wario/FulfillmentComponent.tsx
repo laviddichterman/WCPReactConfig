@@ -154,6 +154,7 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
 export type FulfillmentComponentProps =
   ValSetValNamed<string, 'shortcode'> &
   ValSetValNamed<string, 'displayName'> &
+  ValSetValNamed<boolean, 'exposeFulfillment'> &
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<FulfillmentType, 'service'> &
   ValSetValNamed<string[], 'terms'> &
@@ -332,7 +333,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
             />
           </Grid>
           { /* universal break */}
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Allow Pre-Payment"
@@ -341,12 +342,21 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing || !props.allowPrepayment}
               label="Require Pre-Payment"
               value={props.allowPrepayment && props.requirePrepayment}
               setValue={props.setRequirePrepayment}
+              labelPlacement='end'
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing}
+              label="Expose Fulfillment"
+              value={props.exposeFulfillment}
+              setValue={props.setExposeFulfillment}
               labelPlacement='end'
             />
           </Grid>

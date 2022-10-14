@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
+import { AddBox, Edit, DeleteOutline, LibraryAdd } from "@mui/icons-material";
 import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
 import { Tooltip, IconButton } from '@mui/material';
@@ -13,6 +13,7 @@ import ModifierOptionAddContainer from "../modifier_option/modifier_option.add.c
 import ModifierTypeAddContainer from "./modifier_type.add.container";
 import ModifierTypeDeleteContainer from "./modifier_type.delete.container";
 import ModifierTypeEditContainer from "./modifier_type.edit.container";
+import ModifierTypeCopyContainer from "./modifier_type.copy.container";
 
 type ValueGetterRow = GridValueGetterParams<any, CatalogModifierEntry>;
 
@@ -22,16 +23,18 @@ const ModifierTypeTableContainer = () => {
 
   const [isModifierTypeAddOpen, setIsModifierTypeAddOpen] = useState(false);
   const [isModifierTypeEditOpen, setIsModifierTypeEditOpen] = useState(false);
+  const [isModifierTypeCopyOpen, setIsModifierTypeCopyOpen] = useState(false);
   const [isModifierTypeDeleteOpen, setIsModifierTypeDeleteOpen] = useState(false);
-
   const [isModifierOptionAddOpen, setIsModifierOptionAddOpen] = useState(false);
-
-
   const [modifierTypeToEdit, setModifierTypeToEdit] = useState<IOptionType | null>(null);
-
 
   const editModifierType = (id: string) => () => {
     setIsModifierTypeEditOpen(true);
+    setModifierTypeToEdit(modifiers[id].modifierType);
+  };
+
+  const copyModifierType = (id: string) => () => {
+    setIsModifierTypeCopyOpen(true);
     setModifierTypeToEdit(modifiers[id].modifierType);
   };
 
@@ -90,6 +93,18 @@ const ModifierTypeTableContainer = () => {
       }
     />
     <DialogContainer
+      title={"Copy Modifier Type"}
+      onClose={() => setIsModifierTypeCopyOpen(false)}
+      open={isModifierTypeCopyOpen}
+      innerComponent={
+        modifierTypeToEdit !== null &&
+        <ModifierTypeCopyContainer
+          onCloseCallback={() => setIsModifierTypeCopyOpen(false)}
+          modifierType={modifierTypeToEdit}
+        />
+      }
+    />
+    <DialogContainer
       title={"Delete Modifier Type"}
       onClose={() => setIsModifierTypeDeleteOpen(false)}
       open={isModifierTypeDeleteOpen}
@@ -124,6 +139,12 @@ const ModifierTypeTableContainer = () => {
               onClick={addModifierOption(params.id.toString())}
               showInMenu
               key="ADDMO" />,
+            <GridActionsCellItem
+              icon={<Tooltip title="Copy Modifier Type"><LibraryAdd /></Tooltip>}
+              label="Copy Modifier Type"
+              onClick={copyModifierType(params.id.toString())}
+              showInMenu
+              key="COPYMT" />,
             <GridActionsCellItem
               icon={<Tooltip title="Delete Modifier Type"><DeleteOutline /></Tooltip>}
               label="Delete Modifier Type"

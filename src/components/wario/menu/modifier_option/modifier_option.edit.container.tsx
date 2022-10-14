@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierOptionComponent from "./modifier_option.component";
+import { ModifierOptionComponent } from "./modifier_option.component";
 import { HOST_API } from "../../../../config";
 import { IOption } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
@@ -75,7 +75,7 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to update modifier option: ${modifier_option.displayName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to update modifier option: ${modifier_option.displayName}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

@@ -38,7 +38,7 @@ const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to update ${productName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
+        enqueueSnackbar(`Unable to update ${productName}. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }

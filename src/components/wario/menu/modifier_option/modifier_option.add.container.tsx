@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierOptionComponent from "./modifier_option.component";
+import { ModifierOptionComponent } from "./modifier_option.component";
 
 import { HOST_API } from "../../../../config";
 import { IOptionType, IMoney, CURRENCY, IOption, KeyValue } from "@wcp/wcpshared";
@@ -75,7 +75,7 @@ const ModifierOptionAddContainer = ({ modifierType, onCloseCallback }: ModifierO
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to add modifier option: ${displayName}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to add modifier option: ${displayName}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }

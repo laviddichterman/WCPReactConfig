@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierTypeComponent, { ModifierTypeModifyUiProps } from "./modifier_type.component";
+import ModifierTypeComponent, { IsValidModifierType, ModifierTypeModifyUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../../config";
 import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
@@ -25,6 +25,7 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
   const [multipleItemSeparator, setMultipleItemSeparator] = useState(modifier_type.displayFlags.multiple_item_separator ?? "");
   const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState(modifier_type.displayFlags.non_empty_group_prefix ?? "");
   const [nonEmptyGroupSuffix, setNonEmptyGroupSuffix] = useState(modifier_type.displayFlags.non_empty_group_suffix ?? "");
+  const [is3p, setIs3p] = useState(modifier_type.displayFlags.is3p);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -50,7 +51,8 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
             template_string: templateString || "",
             multiple_item_separator: multipleItemSeparator || "",
             non_empty_group_prefix: nonEmptyGroupPrefix || "",
-            non_empty_group_suffix: nonEmptyGroupSuffix || ""
+            non_empty_group_suffix: nonEmptyGroupSuffix || "",
+            is3p
           }
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_type.id}`, {
@@ -67,7 +69,7 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to edit modifier type: ${name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to edit modifier type: ${name}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
         setIsProcessing(false);
       }
@@ -79,6 +81,7 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
       confirmText="Save"
       onCloseCallback={onCloseCallback}
       onConfirmClick={editModifierType}
+      disableConfirm={false}
       isProcessing={isProcessing}
       ordinal={ordinal}
       setOrdinal={setOrdinal}
@@ -112,6 +115,8 @@ const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierT
       setNonEmptyGroupPrefix={setNonEmptyGroupPrefix}
       nonEmptyGroupSuffix={nonEmptyGroupSuffix}
       setNonEmptyGroupSuffix={setNonEmptyGroupSuffix}
+      is3p={is3p}
+      setIs3p={setIs3p}
     />
   );
 };

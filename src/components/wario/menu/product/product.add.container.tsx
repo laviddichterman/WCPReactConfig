@@ -47,6 +47,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [flavorMax, setFlavorMax] = useState(10);
   const [bakeMax, setBakeMax] = useState(10);
   const [bakeDifferentialMax, setBakeDifferentialMax] = useState(100);
+  const [is3p, setIs3p] = useState(false);
   const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState<string[]>([]);
   const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState<string[]>([]);
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(true);
@@ -98,6 +99,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
           price,
           externalIDs: externalIds,
           displayFlags: {
+            is3p,
             bake_differential: bakeDifferentialMax,
             show_name_of_base_product: showNameOfBaseProduct,
             flavor_max: flavorMax,
@@ -126,7 +128,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
         }
         setIsProcessing(false);
       } catch (error) {
-        enqueueSnackbar(`Unable to create ${displayName}. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
+        enqueueSnackbar(`Unable to create ${displayName}. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
         console.error(error);
         setIsProcessing(false);
       }
@@ -155,6 +157,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
       setBakeMax={setBakeMax}
       bakeDifferentialMax={bakeDifferentialMax}
       setBakeDifferentialMax={setBakeDifferentialMax}
+      is3p={is3p}
+      setIs3p={setIs3p}
       orderGuideSuggestionFunctions={orderGuideSuggestionFunctions}
       setOrderGuideSuggestionFunctions={setOrderGuideSuggestionFunctions}
       orderGuideWarningFunctions={orderGuideWarningFunctions}
@@ -177,6 +181,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
             printerGroup,
             disabled,
             displayFlags: {
+              is3p,
               bake_differential: bakeDifferentialMax,
               bake_max: bakeMax,
               flavor_max: flavorMax,

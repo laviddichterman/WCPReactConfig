@@ -27,6 +27,7 @@ type ProductComponentFieldsNoBaseId =
   ValSetValNamed<number, 'flavorMax'> &
   ValSetValNamed<number, 'bakeMax'> &
   ValSetValNamed<number, 'bakeDifferentialMax'> &
+  ValSetValNamed<boolean, 'is3p'> &
   ValSetValNamed<string[], 'orderGuideWarningFunctions'> &
   ValSetValNamed<string[], 'orderGuideSuggestionFunctions'> &
   ValSetValNamed<boolean, 'showNameOfBaseProduct'> &

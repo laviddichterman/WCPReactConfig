@@ -12,7 +12,7 @@ import { ToggleBooleanPropertyComponent } from "../../property-components/Toggle
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
 import { ExternalIdsExpansionPanelComponent } from "../../ExternalIdsExpansionPanelComponent";
 
-type ModifierOptionComponentProps =
+type ModifierOptionContainerProps =
   ValSetValNamed<string, 'displayName'> &
   ValSetValNamed<string, 'description'> &
   ValSetValNamed<string, 'shortcode'> &
@@ -30,14 +30,18 @@ type ModifierOptionComponentProps =
   ValSetValNamed<boolean, 'omitFromName'> &
   ValSetValNamed<IWInterval | null, 'disabled'> &
   {
-    modifierType: IOptionType;
-    confirmText: string
-    onCloseCallback: VoidFunction;
-    onConfirmClick: VoidFunction;
+    modifierType: Omit<IOptionType, 'id'>;
     isProcessing: boolean;
   }
 
-const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
+type ModifierOptionComponentProps = ModifierOptionContainerProps & 
+  {
+    confirmText: string
+    onCloseCallback: VoidFunction;
+    onConfirmClick: VoidFunction;
+  }
+
+export const ModifierOptionContainer = (props: ModifierOptionContainerProps) => {
   const productInstanceFunctions = useAppSelector(s => s.ws.catalog?.productInstanceFunctions) as RecordProductInstanceFunctions;
   const handleSetAllowOTS = (value: boolean) => {
     if (props.modifierType.max_selected !== 1) {
@@ -50,15 +54,7 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
     }
   }
   return (
-    <ElementActionComponent
-      onCloseCallback={props.onCloseCallback}
-      onConfirmClick={props.onConfirmClick}
-      isProcessing={props.isProcessing}
-      disableConfirmOn={!IsDisableValueValid(props.disabled) || props.displayName.length === 0 || props.shortcode.length === 0 ||
-        props.price.amount < 0 || props.flavorFactor < 0 || props.bakeFactor < 0 || props.isProcessing}
-      confirmText={props.confirmText}
-      body={
-        <>
+    <>
           <Grid item xs={12} md={6}>
             <StringPropertyComponent
               disabled={props.isProcessing}
@@ -196,9 +192,21 @@ const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
             />
           </Grid>
         </>
+  )
+}
+
+export const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {
+  return (
+    <ElementActionComponent
+      onCloseCallback={props.onCloseCallback}
+      onConfirmClick={props.onConfirmClick}
+      isProcessing={props.isProcessing}
+      disableConfirmOn={!IsDisableValueValid(props.disabled) || props.displayName.length === 0 || props.shortcode.length === 0 ||
+        props.price.amount < 0 || props.flavorFactor < 0 || props.bakeFactor < 0 || props.isProcessing}
+      confirmText={props.confirmText}
+      body={
+        <ModifierOptionContainer {...props} />
       }
     />
   );
 }
-
-export default ModifierOptionComponent;
