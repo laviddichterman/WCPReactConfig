@@ -311,7 +311,7 @@ const ProductTableContainer = ({
         { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => catalog.productInstances[v.row.product.baseProductId].displayName, flex: 6 },
         { headerName: "Price", field: "product.price.amount", valueGetter: (v : ValueGetterRow) => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
         { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: ValueGetterRow) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifierType.name).join(", ") : "", flex: 3 },
-        { headerName: "Printer", field: "product.printerGroup", valueGetter: (v: ValueGetterRow) => printerGroups && v.row.product.printerGroup ? printerGroups[v.row.product.printerGroup]!.name : "", flex: 3 },
+        { headerName: "Printer", field: "product.printerGroup", valueGetter: (v: ValueGetterRow) => printerGroups && v.row.product.printerGroup && printerGroups[v.row.product.printerGroup] ? printerGroups[v.row.product.printerGroup].name : "", flex: 3 },
         // eslint-disable-next-line no-nested-ternary
         { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
         ]}

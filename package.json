@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.34",
+  "version": "0.4.35",
   "dependencies": {
     "@auth0/auth0-react": "^1.12.0",
     "@emotion/cache": "^11.10.3",
@@ -22,7 +22,7 @@
     "@mui/x-date-pickers": "^5.0.4",
     "@reduxjs/toolkit": "^1.8.6",
     "@wcp/wario-ux-shared": "^0.1.12",
-    "@wcp/wcpshared": "^4.1.53",
+    "@wcp/wcpshared": "^4.1.55",
     "assert": "^2.0.0",
     "axios": "^0.27.2",
     "browserify-zlib": "^0.2.0",
