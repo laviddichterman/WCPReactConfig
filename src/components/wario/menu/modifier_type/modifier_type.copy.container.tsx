@@ -9,7 +9,6 @@ import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { DISPLAY_AS, IOption, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
-// import { ProductAddRequestType } from "./modifier_type.add.container";
 import { useSnackbar } from "notistack";
 import { useIndexedState } from "../../../../utils/common";
 
@@ -152,7 +151,7 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
-        const body: Omit<IOptionType, "id"> = {
+        const body: Omit<IOptionType, "id"> & { options: Omit<IOption, 'modifierTypeId' | 'id'>[]; } = {
           name,
           displayName,
           ordinal,
@@ -171,7 +170,29 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
             non_empty_group_prefix: nonEmptyGroupPrefix || "",
             non_empty_group_suffix: nonEmptyGroupSuffix || "",
             is3p
-          }
+          },
+          options: modifierTypeEntry.options.flatMap((_, i) => copyOpFlags[i] ? [{
+            displayName: opDisplayName[i],
+            description: opDescription[i],
+            shortcode: opShortcode[i],
+            disabled: opDisabled[i],
+            price: opPrice[i],
+            ordinal: opOrdinal[i],
+            enable: opEnableFunction[i],
+            externalIDs: opExternalIds[i],
+            metadata: {
+              flavor_factor: opFlavorFactor[i],
+              bake_factor: opBakeFactor[i],
+              can_split: opCanSplit[i],
+              allowHeavy: opAllowHeavy[i],
+              allowLite: opAllowLite[i],
+              allowOTS: opAllowOTS[i]
+            },
+            displayFlags: {
+              omit_from_shortname: opOmitFromShortname[i],
+              omit_from_name: opOmitFromName[i]
+            }
+          }] : [])
         };
         const modifierTypeCreateResponse = await fetch(`${HOST_API}/api/v1/menu/option/`, {
           method: "POST",
@@ -183,56 +204,11 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
         });
         if (modifierTypeCreateResponse.status === 201) {
           enqueueSnackbar(`Added new modifier type: ${name}.`);
-          const json_response = await modifierTypeCreateResponse.json();
-          const copiedModifierTypeId = json_response.id as string;
-          for (let i = 0; i < modifierTypeEntry.options.length; ++i) {
-            if (copyOpFlags[i]) {
-              try {
-                await new Promise((res) => setTimeout(res, 200));
-                const addOptionBody: Omit<IOption, "id" | 'modifierTypeId'> = {
-                  displayName: opDisplayName[i],
-                  description: opDescription[i],
-                  shortcode: opShortcode[i],
-                  disabled: opDisabled[i],
-                  price: opPrice[i],
-                  ordinal: opOrdinal[i],
-                  enable: opEnableFunction[i],
-                  externalIDs: opExternalIds[i],
-                  metadata: {
-                    flavor_factor: opFlavorFactor[i],
-                    bake_factor: opBakeFactor[i],
-                    can_split: opCanSplit[i],
-                    allowHeavy: opAllowHeavy[i],
-                    allowLite: opAllowLite[i],
-                    allowOTS: opAllowOTS[i]
-                  },
-                  displayFlags: {
-                    omit_from_shortname: opOmitFromShortname[i],
-                    omit_from_name: opOmitFromName[i]
-                  }
-                };
-                const response = await fetch(`${HOST_API}/api/v1/menu/option/${copiedModifierTypeId}/`, {
-                  method: "POST",
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(addOptionBody),
-                });
-                if (response.status === 201) {
-                  enqueueSnackbar(`Added modifier option: ${opDisplayName[i]}.`);
-                }
-              } catch (error) {
-                enqueueSnackbar(`Unable to add modifier option: ${opDisplayName[i]}. Got error ${JSON.stringify(error, )}`, { variant: 'error' });
-                console.error(error);
-                throw error;
-              }
-            }
-          }
+          enqueueSnackbar(`Added options to ${name}: ${modifierTypeEntry.options.flatMap((_, i) => copyOpFlags[i] ? [opDisplayName[i]] : []).join(', ')}.`);
           onCloseCallback();
         }
       } catch (error) {
-        enqueueSnackbar(`Unable to add modifier type: ${name}. Got error ${JSON.stringify(error)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to add modifier type: ${name}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
       }
       setIsProcessing(false);

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ModifierTypeComponent, { IsValidModifierType, ModifierTypeUiProps } from "./modifier_type.component";
 import { HOST_API } from "../../../../config";
-import { DISPLAY_AS, IOptionType, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { DISPLAY_AS, IOption, IOptionType, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 
 const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
@@ -34,7 +34,7 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
-        const body: Omit<IOptionType, "id"> = {
+        const body: Omit<IOptionType, "id"> & { options: Omit<IOption, 'modifierTypeId' | 'id'>[]; } = {
           name,
           displayName,
           ordinal,
@@ -53,7 +53,8 @@ const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
             non_empty_group_prefix: nonEmptyGroupPrefix || "",
             non_empty_group_suffix: nonEmptyGroupSuffix || "",
             is3p
-          }
+          },
+          options: []
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/option/`, {
           method: "POST",

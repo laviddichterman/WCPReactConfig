@@ -141,7 +141,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
         try {
           const token = await getAccessTokenSilently({ scope: "write:catalog" });
           const body: ProductAddRequestType = {
-            instance: {
+            instances: [{
               displayName: Name,
               modifiers: [],
               description: Description || "",
@@ -166,7 +166,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
               },
               ordinal: i * 10,
               shortcode: Shortname,
-            },
+            }],
             disabled: null,
             externalIDs: [],
             serviceDisable: [],

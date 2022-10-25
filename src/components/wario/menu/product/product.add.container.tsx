@@ -8,7 +8,7 @@ import { ProductInstanceContainer, UncommittedProduct } from "./instance/product
 import { useSnackbar } from "notistack";
 
 export interface ProductAddRequestType extends UncommittedProduct {
-  instance: Omit<IProductInstance, 'id' | 'productId'>;
+  instances: Omit<IProductInstance, 'id' | 'productId'>[];
 }
 
 interface ProductAddContainerProps {
@@ -64,7 +64,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
       try {
         const token = await getAccessTokenSilently({ scope: "write:catalog" });
         const body: ProductAddRequestType = {
-          instance: {
+          instances: [{
             displayName,
             description,
             shortcode,
@@ -89,7 +89,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
                 suppress_exhaustive_modifier_list: orderSuppressExhaustiveModifierList
               }
             }
-          },
+          }],
           disabled,
           serviceDisable,
           price,
