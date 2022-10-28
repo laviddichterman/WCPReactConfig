@@ -14,6 +14,7 @@ const PrinterGroupEditContainer = ({ printerGroup, onCloseCallback }: PrinterGro
   const [name, setName] = useState(printerGroup.name);
   const [singleItemPerTicket, setSingleItemPerTicket] = useState(printerGroup.singleItemPerTicket);
   const [externalIds, setExternalIds] = useState(printerGroup.externalIDs);
+  const [isExpo, setIsExpo] = useState(printerGroup.isExpo);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -25,6 +26,7 @@ const PrinterGroupEditContainer = ({ printerGroup, onCloseCallback }: PrinterGro
         const body : Omit<PrinterGroup, "id"> = {
           name,
           externalIDs: externalIds,
+          isExpo,
           singleItemPerTicket
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/printergroup/${printerGroup.id}`, {
@@ -57,6 +59,8 @@ const PrinterGroupEditContainer = ({ printerGroup, onCloseCallback }: PrinterGro
       isProcessing={isProcessing}
       name={name}
       setName={setName}
+      isExpo={isExpo}
+      setIsExpo={setIsExpo}
       singleItemPerTicket={singleItemPerTicket}
       setSingleItemPerTicket={setSingleItemPerTicket}
       externalIds={externalIds}

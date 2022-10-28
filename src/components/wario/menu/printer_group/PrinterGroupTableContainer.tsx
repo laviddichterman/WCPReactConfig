@@ -54,8 +54,9 @@ const PrinterGroupTableContainer = () => {
                 key={`DELETE${params.id}`} />
             ]
           },
-          { headerName: "Name", field: "name", valueGetter: (v: ValueGetterRow) => v.row.name, flex: 3 },
-          { headerName: "Single Item Per Ticket", field: "category.display_flags.call_line_name", valueGetter: (v: ValueGetterRow) => v.row.singleItemPerTicket, flex: 3 },
+          { headerName: "Name", field: "name", valueGetter: (v: ValueGetterRow) => v.row.name, flex: 4 },
+          { headerName: "Single Item Per Ticket", field: "row.singleItemPerTicket", valueGetter: (v: ValueGetterRow) => v.row.singleItemPerTicket, flex: 3 },
+          { headerName: "Is Expo", field: "row.isExpo", valueGetter: (v: ValueGetterRow) => v.row.isExpo, flex: 2 },
         ]}
         toolbarActions={[{
           size: 1,

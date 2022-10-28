@@ -17,7 +17,7 @@ const WOrderForceSendComponent = (props: WOrderForceSendComponentProps) => {
 
   const submitToWario: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     if (orderSliceState !== 'PENDING') {
-      const token = await getAccessTokenSilently({ scope: "cancel:order" });
+      const token = await getAccessTokenSilently({ scope: "write:order" });
       await dispatch(forceSendOrder({ orderId: props.order.id, token: token }));
       props.onCloseCallback && props.onCloseCallback(e);
     }

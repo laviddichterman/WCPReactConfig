@@ -6,21 +6,11 @@ import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { queryPrinterGroups } from 'src/redux/slices/PrinterGroupSlice';
-import { useAuth0 } from '@auth0/auth0-react';
 
 export default function GeneralCatalog() {
-  const { getAccessTokenSilently } = useAuth0();
   const { themeStretch } = useSettings();
   const dispatch = useAppDispatch();
   const catalog = useAppSelector(s => s.ws.catalog!);
-  useEffect(() => {
-    async function init() {
-      const token = await getAccessTokenSilently({ scope: "write:catalog" });
-      dispatch(queryPrinterGroups(token));
-    } 
-    init();
-  }, [])
   const orphanedProducts = useMemo(
     () =>
       catalog !== null ? Object.values(catalog.products).filter(

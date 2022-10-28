@@ -1,8 +1,9 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { FulfillmentTime, ResponseSuccess, WOrderInstance } from "@wcp/wcpshared";
+import { WDateUtils , FulfillmentTime, ResponseSuccess, WOrderInstance } from "@wcp/wcpshared";
 import axiosInstance from "../../utils/axios";
 import uuidv4 from "../../utils/uuidv4";
 import { enqueueSnackbar } from 'notistack'
+import { addDays, parseISO } from 'date-fns'
 export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>({ selectId: entry => entry.id });
 export const { selectAll: getWOrderInstances, selectById: getWOrderInstanceById, selectIds: getWOrderInstanceIds } =
   WOrderInstanceAdapter.getSelectors();
@@ -30,7 +31,7 @@ export const pollOpenOrders = createAsyncThunk<WOrderInstance[], { token: string
 
       },
       params: { ...(date ? { date } : { })  },
-      //      params: { ...(date ? { date: WDateUtils.formatISODate(subDays(parseISO(date), 5)) } : { })  },
+          //  params: { ...(date ? { date: WDateUtils.formatISODate(addDays(parseISO(date), 31)) } : { })  },
     });
     return response.data;
   }
@@ -139,6 +140,30 @@ export const cancelOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, Can
   }
 );
 
+export interface MoveOrderParams {
+  token: string;
+  orderId: string;
+  destination: string;
+  additionalMessage: string;
+}
+export const moveOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, MoveOrderParams>(
+  'orders/move',
+  async (params: MoveOrderParams) => {
+    const response = await axiosInstance.put(`/api/v1/order/${params.orderId}/move`, {
+      destination: params.destination,
+      additionalMessage: params.additionalMessage
+    },
+      {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+          "Content-Type": "application/json",
+          'Idempotency-Key': uuidv4()
+        }
+      });
+    return response.data;
+  }
+);
+
 const OrdersSlice = createSlice({
   name: 'orders',
   initialState,
@@ -205,6 +230,19 @@ const OrdersSlice = createSlice({
         enqueueSnackbar(`Unable to reschedule order. Got error: ${JSON.stringify(err, null, 2)}`, { variant: "error" });
         state.requestStatus = 'FAILED';
       })
+      .addCase(moveOrder.fulfilled, (state, action) => {
+        enqueueSnackbar(`Moved order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName} to ${action.meta.arg.destination}.`);
+        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
+        state.requestStatus = 'IDLE';
+      })
+      .addCase(moveOrder.pending, (state) => {
+        state.requestStatus = 'PENDING';
+      })
+      .addCase(moveOrder.rejected, (state, err) => {
+        enqueueSnackbar(`Unable to move order. Got error: ${JSON.stringify(err, null, 2)}`, { variant: "error" });
+        state.requestStatus = 'FAILED';
+      })
+
       .addCase(unlockOrders.fulfilled, (state) => {
         enqueueSnackbar(`Unlocked orders`);
         state.requestStatus = 'IDLE';

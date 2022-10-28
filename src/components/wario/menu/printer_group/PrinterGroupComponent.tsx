@@ -15,6 +15,7 @@ export type PrinterGroupComponentProps = {
   confirmText: string;
 } & Pick<ElementActionComponentProps, 'onCloseCallback' | 'onConfirmClick' | 'isProcessing'> &
   ValSetValNamed<string, 'name'> &
+  ValSetValNamed<boolean, 'isExpo'> &
   ValSetValNamed<boolean, 'singleItemPerTicket'> &
   ValSetValNamed<KeyValue[], 'externalIds'>;
 
@@ -29,7 +30,7 @@ const PrinterGroupComponent = (props: PrinterGroupComponentProps) => {
       confirmText={props.confirmText}
       body={
         <>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Name"
@@ -37,12 +38,21 @@ const PrinterGroupComponent = (props: PrinterGroupComponentProps) => {
               setValue={props.setName}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6} sm={4}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Single Item Per Ticket"
               value={props.singleItemPerTicket}
               setValue={props.setSingleItemPerTicket}
+              labelPlacement='end'
+            />
+          </Grid>
+          <Grid item xs={6} sm={4}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing}
+              label="Is Expo Printer"
+              value={props.isExpo}
+              setValue={props.setIsExpo}
               labelPlacement='end'
             />
           </Grid>

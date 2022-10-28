@@ -12,6 +12,9 @@ import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import { IsSocketDataLoaded, SocketIoActions, AdapterCurrentTimeOverrideUtils } from '@wcp/wario-ux-shared';
 import { useMemo, useEffect } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import { queryPrinterGroups } from './redux/slices/PrinterGroupSlice';
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 /*
  * TODOS:
@@ -25,6 +28,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 
 export default function App() {
   const dispatch = useAppDispatch();
+  const { getAccessTokenSilently } = useAuth0();
   const socketIoState = useAppSelector((s) => s.ws.status);
   const isSocketDataLoaded = useAppSelector(s => IsSocketDataLoaded(s.ws));
   const currentTime = useAppSelector(s => s.ws.currentTime);
@@ -34,7 +38,13 @@ export default function App() {
       dispatch(SocketIoActions.startConnection());
     }
   }, [socketIoState, dispatch]);
-
+  useEffect(() => {
+    async function init() {
+      const token = await getAccessTokenSilently({ scope: "write:catalog" });
+      dispatch(queryPrinterGroups(token));
+    } 
+    init();
+  }, [])
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
       <MotionLazyContainer>
@@ -51,3 +61,4 @@ export default function App() {
     </LocalizationProvider>
   );
 }
+

@@ -46,7 +46,7 @@ export const selectEventTitleStringForOrder = createSelector(
   (s: RootState, order: WOrderInstance) => s.ws.fulfillments![order.fulfillment.selectedService],
   (_: RootState, order: WOrderInstance) => order,
   (s: RootState, order: WOrderInstance) => selectRebuiltSortedCart(s, order),
-  (catalogSelectors, fulfillmentConfig, order, rebuiltCart) => EventTitleStringBuilder(catalogSelectors, fulfillmentConfig, `${order.customerInfo.givenName} ${order.customerInfo.familyName}`, order.fulfillment.dineInInfo ?? null, rebuiltCart, order.specialInstructions ?? "" )
+  (catalogSelectors, fulfillmentConfig, order, rebuiltCart) => EventTitleStringBuilder(catalogSelectors, fulfillmentConfig, `${order.customerInfo.givenName} ${order.customerInfo.familyName}`, order.fulfillment, rebuiltCart, order.specialInstructions ?? "" )
 )
 
 export const selectOrderAsEvent = createSelector(
