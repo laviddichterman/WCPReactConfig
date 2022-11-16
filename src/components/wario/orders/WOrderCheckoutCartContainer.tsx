@@ -1,7 +1,7 @@
 import { ComputeCartSubTotal, ComputeTaxAmount, ComputeTipBasis, ComputeTipValue, CreditPayment, DateTimeIntervalBuilder, PaymentMethod, StoreCreditPayment, WOrderInstance } from "@wcp/wcpshared";
 import { useMemo } from "react";
 import { CatalogSelectors, SelectTaxRate, WCheckoutCartComponent } from '@wcp/wario-ux-shared';
-import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
+import { useAppSelector } from "../../../hooks/useRedux";
 import { selectFullGroupedCartInfo } from "../../../redux/store";
 
 
@@ -23,15 +23,15 @@ export const WOrderCheckoutCartContainer = (props: WOrderCheckoutCartContainerPr
   const tipAmount = useMemo(() => ComputeTipValue(props.order.tip ?? null, tipBasis), [props.order.tip, tipBasis]);
 
   return <WCheckoutCartComponent
-    payments={props.order.payments.filter(x => x.t === PaymentMethod.CreditCard) as CreditPayment[]}
-    hideProductDescriptions={props.hideProductDescriptions}
     cart={fullGroupedCart}
-    catalogSelectors={catalogSelectors}
-    discountCreditsApplied={[]}
-    giftCreditsApplied={props.order.payments.filter(x => x.t === PaymentMethod.StoreCredit).map((x: StoreCreditPayment) => ({ amount: x.amount, code: x.payment.code }))}
+    catalogSelectors={catalogSelectors} 
+    hideProductDescriptions={props.hideProductDescriptions}
+    discounts={props.order.discounts}
+    payments={props.order.payments}
     selectedService={props.order.fulfillment.selectedService}
     taxRate={TAX_RATE}
     taxValue={taxAmount}
-    tipValue={tipAmount} />
+    tipValue={tipAmount}
+    />
 
 }
