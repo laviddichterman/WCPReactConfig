@@ -1,9 +1,9 @@
 import { EventInput } from '@fullcalendar/react';
 import { configureStore, createSelector } from '@reduxjs/toolkit';
 import { CatalogSelectors, selectGroupedAndOrderedCart } from '@wcp/wario-ux-shared';
-import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WOrderStatus, WProduct } from '@wcp/wcpshared';
+import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WOrderStatus } from '@wcp/wcpshared';
 import { rootReducer } from './rootReducer';
-import { getWOrderInstanceById, getWOrderInstances } from './slices/OrdersSlice';
+import { getWOrderInstances } from './slices/OrdersSlice';
 //import { SocketAuthMiddleware } from './slices/SocketAuthMiddleware';
 import { SocketIoMiddleware } from './slices/SocketIoMiddleware';
 // ----------------------------------------------------------------------

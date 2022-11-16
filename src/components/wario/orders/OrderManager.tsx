@@ -1,16 +1,15 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
-import { getWOrderInstances, pollOpenOrders, OrdersActions, unlockOrders } from "../../../redux/slices/OrdersSlice";
-import { Button, Card, DialogTitle, Grid, IconButton, Tooltip, Typography, Box } from "@mui/material";
-import { WDateUtils, WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
+import { pollOpenOrders, unlockOrders } from "../../../redux/slices/OrdersSlice";
+import { Button, Card, Tooltip, Typography, Box } from "@mui/material";
+import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid-pro";
-import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
 import { selectEventTitleStringForOrder, selectOrdersNeedingAttention } from "../../../redux/store";
 import { WOrderComponentCard } from "./WOrderComponentCard";
 import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";

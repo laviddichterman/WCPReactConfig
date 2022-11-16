@@ -1,19 +1,13 @@
-import FullCalendar, { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/react'; // => request placed at the top
+import FullCalendar, { EventClickArg } from '@fullcalendar/react'; // => request placed at the top
 import listPlugin from '@fullcalendar/list';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import timelinePlugin from '@fullcalendar/timeline';
-import interactionPlugin, { EventResizeDoneArg } from '@fullcalendar/interaction';
 //
 import { useState, useRef, useEffect } from 'react';
 // @mui
-import { Card, Button, Container, DialogTitle } from '@mui/material';
-// redux
+import { Card } from '@mui/material';
 
-import {
-  getWOrderInstances,
-  OrdersActions
-} from '../../../redux/slices/OrdersSlice';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useResponsive from '../../../hooks/useResponsive';
@@ -21,7 +15,7 @@ import useResponsive from '../../../hooks/useResponsive';
 import CalendarStyle, { CalendarView } from './CalendarStyle';
 // sections
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
-import { RootState, selectOrdersAsEvents } from '../../../redux/store';
+import { selectOrdersAsEvents } from '../../../redux/store';
 import CalendarToolbar from './CalendarToolbar';
 
 // ----------------------------------------------------------------------

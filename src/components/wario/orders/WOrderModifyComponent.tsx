@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { useSnackbar } from "notistack";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 
 import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
@@ -10,11 +9,10 @@ import { Autocomplete, Grid, TextField } from "@mui/material";
 import { add, parseISO } from "date-fns";
 import { range } from 'lodash';
 import { StaticDatePicker } from "@mui/x-date-pickers";
-import { rescheduleOrder, OrdersActions } from "../../../redux/slices/OrdersSlice";
+import { rescheduleOrder } from "../../../redux/slices/OrdersSlice";
 
 type WOrderModifyComponentProps = { order: WOrderInstance; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderModifyComponent = (props: WOrderModifyComponentProps) => {
-  //const { enqueueSnackbar } = useSnackbar();
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);

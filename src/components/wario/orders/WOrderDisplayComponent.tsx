@@ -1,4 +1,4 @@
-import { Grid, CardActions, Button, CardContent } from "@mui/material";
+import { Grid } from "@mui/material";
 import { WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
@@ -13,8 +13,6 @@ export type WOrderDisplayComponentProps = {
 
 
 export const WOrderDisplayComponent = ({ order, callConfirm, onCloseCallback }: WOrderDisplayComponentProps) => {
-  const dispatch = useAppDispatch();
-  const fulfillment = useAppSelector(s => s.ws.fulfillments![order.fulfillment.selectedService]);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
 
   return <ElementActionComponent

@@ -1,4 +1,4 @@
-import { ComputeCartSubTotal, ComputeTaxAmount, ComputeTipBasis, ComputeTipValue, CreditPayment, DateTimeIntervalBuilder, PaymentMethod, StoreCreditPayment, WOrderInstance } from "@wcp/wcpshared";
+import { ComputeCartSubTotal, ComputeTaxAmount, ComputeTipBasis, ComputeTipValue, DateTimeIntervalBuilder, WOrderInstance } from "@wcp/wcpshared";
 import { useMemo } from "react";
 import { CatalogSelectors, SelectTaxRate, WCheckoutCartComponent } from '@wcp/wario-ux-shared';
 import { useAppSelector } from "../../../hooks/useRedux";
