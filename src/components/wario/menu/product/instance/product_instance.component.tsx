@@ -20,6 +20,7 @@ export type ProductInstanceComponentProps =
   ValSetValNamed<string, 'shortcode'> &
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<ProductModifierEntry[], 'modifiers'> &
+  ValSetValNamed<boolean, 'hideFromPos'> &
   // menu
   ValSetValNamed<number, 'menuOrdinal'> &
   ValSetValNamed<boolean, 'menuHide'> &
@@ -213,7 +214,16 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
         />
       </Grid>
       {/* universal break */}
-      <Grid item container xs={12}>
+      <Grid item xs={12} sm={4}>
+        <ToggleBooleanPropertyComponent
+          disabled={props.isProcessing}
+          label="Hide From POS"
+          value={props.hideFromPos}
+          setValue={props.setHideFromPos}
+          labelPlacement={useToggleEndLabel ? "end" : "top"}
+        />
+      </Grid>
+      <Grid item container xs={12} sm={8}>
         <StringEnumPropertyComponent
           disabled={props.isProcessing}
           label="Order Menu Price Display"
@@ -222,6 +232,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           options={Object.keys(PriceDisplay)}
         />
       </Grid>
+      {/* universal break */}
       <Grid item xs={12}>
         <ExternalIdsExpansionPanelComponent
           title='External IDs'

@@ -1,12 +1,12 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
-import { Grid, TextField, Autocomplete } from '@mui/material';
+import { Grid, TextField, Button, Autocomplete, Card, CardContent, CardHeader } from '@mui/material';
 
 import { ParseResult } from "papaparse";
 import { IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAuth0 } from '@auth0/auth0-react';
 
-import { ElementActionComponent } from "./../element.action.component";
+import { ElementActionComponent } from "../element.action.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 import { HOST_API } from "../../../../config";
@@ -14,8 +14,6 @@ import { ProductAddRequestType } from "./product.add.container";
 import { ValSetValNamed } from '../../../../utils/common';
 import ProductModifierComponent from "./ProductModifierComponent";
 import GenericCsvImportComponent from "../../generic_csv_import.component";
-
-const delay = (ms : number) => new Promise(res => setTimeout(res, ms));
 
 interface CSVProduct {
   Name: string;
@@ -38,6 +36,7 @@ type ProductImportComponentProps = {
 
 const ProductImportComponent = (props: ProductImportComponentProps) => {
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
+  const catalog = useAppSelector(s => s.ws.catalog!);
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   return (
     <ElementActionComponent
@@ -73,7 +72,7 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
             <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={props.setModifiers} />
           </Grid>
           <Grid item xs={12}>
-            <GenericCsvImportComponent onAccepted={(data: ParseResult<CSVProduct>) => props.setFileData(data.data)} />
+            <GenericCsvImportComponent onAccepted={(data : ParseResult<CSVProduct>) => props.setFileData(data.data)} />
           </Grid>
         </>}
     />
@@ -85,8 +84,71 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
  *  this allows selection of gin then picking the type of gin which would go in the same way a conversation would progress
  *  we could have product instances of Gin with As martini to start someone off in the gin martini mode for conversational ordering
  * 
+Pasote	Pasote Reposado	40	Agave	Tequila
+Puntagave	Racilla Rhodacantha	44	Agave	Raicilla
+Puntagave	Bacanora	45	Agave	Bacanora
+Don Julio	Tequila Blanco	40	Agave	Tequila
+Espolòn	Tequila Blanco	40	Agave	Tequila
+Pasote	Pasote Blanco	40	Agave	Tequila
+Casamigos 	Tequila Añejo	40	Agave	Tequila
+Tequila Ocho	Tequila Añejo	40	Agave	Tequila
+Tequila Ocho	Tequila Plata	40	Agave	Tequila
+Chawar Andean Agave	Miske Blanco Chawar	40	Agave	Miske
+Chawar Andean Agave	Miske Reposado Chawar	40	Agave	Miske
+
+for each spirit, we have a category and maybe a subcategory
+Categories made with products in parens: 
+Agave 
+      -> Tequila
+          (Tequila) <- product class
+            - (Tequila) <- base instance
+            - (Don Julio	Tequila Blanco) 
+            - (Pasote	Pasote Reposado)
+            - (Pasote	Pasote Blanco)
+            - (Espolòn	Tequila Blanco)
+            - (Casamigos 	Tequila Añejo)
+            - (Tequila Ocho	Tequila Añejo)
+            - (Tequila Ocho	Tequila Plata)
+      -> Bacanora
+          (Puntagave Bacanora) base instance
+      -> Raicilla
+          (Puntagave Raicilla) base instance
+      -> Miske
+          (Miske)
+            - (Miske) base instance
+            - (Miske Blanco Chawar)
+            - (Miske Reposado Chawar)
+
+Modifiers created (min = 1, max = 1)
+Tequila Preference
+  - (Don Julio Tequila Blanco) 
+  - (Pasote	Pasote Reposado)
+  - (Pasote	Pasote Blanco)
+  - (Espolòn Tequila Blanco)
+  - (Casamigos Tequila Añejo)
+  - (Tequila Ocho	Tequila Añejo)
+  - (Tequila Ocho	Tequila Plata)
+Miske Preference
+  - (Miske Blanco Chawar)
+  - (Miske Reposado Chawar)
+
+Products Made in square:
+TO TRY: see how options manifest in the Square POS, see how product variations work in Square POS
+  from the most specific category, if there's multiple items in that category, make a product for the most specific category and for each of the items in the category
+  if there's only one item, make a product for just the product
+  Tequila
+  Mezcal
+  Bacanora
+  Miske
+  Raicilla
+
+input needed:
+
+
+    
+
  */
-const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
+const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [parentCategories, setParentCategories] = useState<string[]>([]);
   const [printerGroup, setPrinterGroup] = useState<string | null>(null);
@@ -162,14 +224,10 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
           });
           if (response.status === 201) {
             enqueueSnackbar(`Imported ${Name}.`);
-            await delay(1000);
           }
         } catch (error) {
           enqueueSnackbar(`Unable to import ${Name}. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
           console.error(error);
-          setIsProcessing(false);
-          onCloseCallback();
-          return;
         }
       }
     }
@@ -195,4 +253,4 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
   );
 };
 
-export default ProductImportContainer;
+export default HierarchicalProductImportContainer;

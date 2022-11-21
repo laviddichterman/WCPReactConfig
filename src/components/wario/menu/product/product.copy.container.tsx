@@ -7,7 +7,7 @@ import ProductComponent from "./product.component";
 import { ProductInstanceContainer } from "./instance/product_instance.component";
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { IProduct, IProductInstance } from "@wcp/wcpshared";
+import { IProduct } from "@wcp/wcpshared";
 import { getProductEntryById } from "@wcp/wario-ux-shared";
 import { ProductAddRequestType } from "./product.add.container";
 import { useSnackbar } from "notistack";
@@ -47,6 +47,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
   const [piOrdinals, setPiOrdinal] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].ordinal || 0))));
   const [piModifierss, setPiModifiers] = useIndexedState(useState(productEntry.instances.map(pi => allProductInstances[pi].modifiers)));
   const [piExteralIdss, setPiExternalIds] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].externalIDs ?? {}))));
+  const [piHideFromPoses, setPiHideFromPos] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.hideFromPos ?? false))));
   const [piMenuOrdinals, setPiMenuOrdinal] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.menu?.ordinal || 0))));
   const [piMenuHides, setPiMenuHide] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.menu?.hide ?? false))));
   const [piMenuPriceDisplays, setPiMenuPriceDisplay] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.menu?.price_display ?? "IF_COMPLETE"))));
@@ -135,6 +136,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
             modifiers={piModifierss[i]}
             setModifiers={setPiModifiers(i)}
 
+            hideFromPos={piHideFromPoses[i]}
+            setHideFromPos={setPiHideFromPos(i)}
             // menu
             menuOrdinal={piMenuOrdinals[i]}
             setMenuOrdinal={setPiMenuOrdinal(i)}
@@ -164,7 +167,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
           />
         </Grid>
       </AccordionDetails>
-    </Accordion>), [isProcessing, copyPIFlags, indexOfBase, setIndexOfBase, expandedPanels, piDescriptions, piDisplayNames, piExteralIdss, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piSkipCustomizations, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiExternalIds, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiSkipCustomization, bakeDifferentialMax, bakeMax, disabled, externalIds, flavorMax, is3p, modifiers, orderGuideSuggestionFunctions, orderGuideWarningFunctions, parentCategories, price, printerGroup, serviceDisable, showNameOfBaseProduct, singularNoun])
+    </Accordion>), [isProcessing, copyPIFlags, indexOfBase, setIndexOfBase, expandedPanels, piDescriptions, piDisplayNames, piExteralIdss, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piSkipCustomizations, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiExternalIds, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiSkipCustomization, bakeDifferentialMax, bakeMax, disabled, externalIds, flavorMax, is3p, modifiers, orderGuideSuggestionFunctions, orderGuideWarningFunctions, parentCategories, price, printerGroup, serviceDisable, showNameOfBaseProduct, singularNoun, piHideFromPoses, setPiHideFromPos])
 
   const getUncommittedProductInstanceForIndex = (i: number) => ({
     displayName: piDisplayNames[i],
@@ -174,6 +177,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
     modifiers: piModifierss[i],
     externalIDs: piExteralIdss[i],
     displayFlags: {
+      hideFromPos: piHideFromPoses[i],
       menu: {
         ordinal: piMenuOrdinals[i],
         hide: piMenuHides[i],

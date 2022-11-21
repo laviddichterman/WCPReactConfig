@@ -1,6 +1,5 @@
 import { Grid } from "@mui/material";
 import { ElementActionComponent, ElementActionComponentProps } from "../element.action.component";
-import { useAppSelector } from "../../../../hooks/useRedux";
 import { PrinterGroup, KeyValue } from "@wcp/wcpshared";
 import { ValSetValNamed } from "../../../../utils/common";
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
@@ -20,7 +19,6 @@ export type PrinterGroupComponentProps = {
   ValSetValNamed<KeyValue[], 'externalIds'>;
 
 const PrinterGroupComponent = (props: PrinterGroupComponentProps) => {
-  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
   return (
     <ElementActionComponent
       onCloseCallback={props.onCloseCallback}
