@@ -16,6 +16,8 @@ import ProductModifierComponent from "./ProductModifierComponent";
 import GenericCsvImportComponent from "../../generic_csv_import.component";
 
 interface CSVProduct {
+  Category: string;
+  Subcategory: string;
   Name: string;
   Description: string;
   Shortname: string;
@@ -23,7 +25,7 @@ interface CSVProduct {
   [index: string]: string;
 };
 
-type ProductImportComponentProps = {
+type HierarchicalProductImportComponentProps = {
   confirmText: string;
   onCloseCallback: VoidFunction;
   onConfirmClick: VoidFunction;
@@ -34,7 +36,7 @@ type ProductImportComponentProps = {
   ValSetValNamed<string | null, 'printerGroup'> &
   ValSetValNamed<IProductModifier[], 'modifiers'>;
 
-const ProductImportComponent = (props: ProductImportComponentProps) => {
+const HierarchicalProductImportComponent = (props: HierarchicalProductImportComponentProps) => {
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
   const catalog = useAppSelector(s => s.ws.catalog!);
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
@@ -102,13 +104,13 @@ Agave
       -> Tequila
           (Tequila) <- product class
             - (Tequila) <- base instance
-            - (Don Julio	Tequila Blanco) 
-            - (Pasote	Pasote Reposado)
-            - (Pasote	Pasote Blanco)
-            - (Espolòn	Tequila Blanco)
-            - (Casamigos 	Tequila Añejo)
-            - (Tequila Ocho	Tequila Añejo)
-            - (Tequila Ocho	Tequila Plata)
+            - (Don Julio Tequila Blanco) 
+            - (Pasote	Reposado)
+            - (Pasote	Blanco)
+            - (Espolòn Tequila Blanco)
+            - (Casamigos Tequila Añejo)
+            - (Tequila Ocho Tequila Añejo)
+            - (Tequila Ocho Tequila Plata)
       -> Bacanora
           (Puntagave Bacanora) base instance
       -> Raicilla
@@ -236,7 +238,7 @@ const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallba
   };
 
   return (
-    <ProductImportComponent
+    <HierarchicalProductImportComponent
       confirmText="Import"
       onCloseCallback={onCloseCallback}
       onConfirmClick={() => addProducts()}
