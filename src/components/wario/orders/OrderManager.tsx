@@ -63,7 +63,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     pollForOrders();
     const timer = setInterval(pollForOrders, 30000);
     return () => clearInterval(timer);
-  }, [])
+  }, [currentTime])
 
   const callUnlockOrders = async () => {
     const token = await getAccessTokenSilently({ scope: "write:order" });
@@ -73,7 +73,10 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     <WOrderComponentCard orderId={p.row.id} handleConfirmOrder={handleConfirmOrder} onCloseCallback={null} />
   , []);
 
-  return hasNewOrder ? <Box onClick={() => suppressNotice()}><FullScreenPulsingContainer children={<Typography variant='h3'>{orders.length} new order{orders.length > 1 ? 's' : ""}</Typography>} /></Box> : (
+  if (hasNewOrder) {
+    return <Box onClick={() => suppressNotice()}><FullScreenPulsingContainer children={<Typography variant='h3'>{orders.length} new order{orders.length > 1 ? 's' : ""}</Typography>} /></Box>;
+  }
+  return (
     <Card>
       <Button onClick={() => callUnlockOrders()} >UNLOCK</Button>
       <TableWrapperComponent

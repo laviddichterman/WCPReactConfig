@@ -1,4 +1,5 @@
-import FullCalendar, { EventClickArg } from '@fullcalendar/react'; // => request placed at the top
+import FullCalendar from '@fullcalendar/react'; // => request placed at the top
+import { EventClickArg } from '@fullcalendar/core'
 import listPlugin from '@fullcalendar/list';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';

@@ -1,4 +1,4 @@
-import { EventInput } from '@fullcalendar/react';
+import { EventInput } from '@fullcalendar/core';
 import { configureStore, createSelector } from '@reduxjs/toolkit';
 import { CatalogSelectors, selectGroupedAndOrderedCart } from '@wcp/wario-ux-shared';
 import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WOrderStatus } from '@wcp/wcpshared';
