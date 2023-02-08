@@ -20,7 +20,7 @@ const ModifierOptionDeleteContainer = ({ modifier_option, onCloseCallback }: Mod
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "delete:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "delete:catalog" } });
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.modifierTypeId}/${modifier_option.id}`, {
           method: "DELETE",
           headers: {

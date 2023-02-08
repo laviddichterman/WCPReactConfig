@@ -20,7 +20,7 @@ const FulfillmentDeleteContainer = ({ fulfillment, onCloseCallback }: Fulfillmen
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "delete:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "delete:catalog" } });
         const response = await fetch(`${HOST_API}/api/v1/config/fulfillment/${fulfillment.id}`, {
           method: "DELETE",
           headers: {

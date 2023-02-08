@@ -19,7 +19,7 @@ const WOrderMoveComponent = (props: WOrderMoveComponentProps) => {
 
   const submitToWario: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     if (orderSliceState !== 'PENDING') {
-      const token = await getAccessTokenSilently({ scope: "write:order" });
+      const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order" } });
       await dispatch(moveOrder({ orderId: props.order.id, destination, additionalMessage, token: token }));
       props.onCloseCallback && props.onCloseCallback(e);
     }

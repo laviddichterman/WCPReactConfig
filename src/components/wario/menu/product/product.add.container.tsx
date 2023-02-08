@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 import { HOST_API } from "../../../../config";
-import { CURRENCY, IMoney, IProductInstance, IProductModifier, IWInterval, KeyValue, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
+import { CURRENCY, IMoney, IProductInstance, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
 import { ProductInstanceContainer, UncommittedProduct } from "./instance/product_instance.component";
 import { useSnackbar } from "notistack";
 
@@ -43,6 +43,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
 
   const [price, setPrice] = useState<IMoney>({ amount: 0, currency: CURRENCY.USD });
   const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
+  const [availability, setAvailability] = useState<IRecurringInterval | null>(null);
+  const [timing, setTiming] = useState<PrepTiming|undefined>(undefined);
   const [disabled, setDisabled] = useState<IWInterval | null>(null);
   const [serviceDisable, setServiceDisable] = useState([]);
   const [flavorMax, setFlavorMax] = useState(10);
@@ -63,7 +65,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: ProductAddRequestType = {
           instances: [{
             displayName,
@@ -93,7 +95,9 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
             }
           }],
           disabled,
+          availability,
           serviceDisable,
+          timing,
           price,
           externalIDs: externalIds,
           displayFlags: {
@@ -147,6 +151,10 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
       setPrice={setPrice}
       disabled={disabled}
       setDisabled={setDisabled}
+      availability={availability}
+      setAvailability={setAvailability}
+      timing={timing}
+      setTiming={setTiming}
       serviceDisable={serviceDisable}
       setServiceDisable={setServiceDisable}
       flavorMax={flavorMax}
@@ -178,6 +186,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
             category_ids: parentCategories,
             printerGroup,
             disabled,
+            availability,
+            timing,
             displayFlags: {
               is3p,
               bake_differential: bakeDifferentialMax,

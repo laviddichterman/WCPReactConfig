@@ -39,7 +39,7 @@ const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterG
         printerGroup: reassign ? destinationPrinterGroup : null
       };
       try {
-        const token = await getAccessTokenSilently({ scope: "delete:catalog write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "delete:catalog write:catalog" } });
         const response = await fetch(`${HOST_API}/api/v1/menu/printergroup/${printerGroup.id}`, {
           method: "DELETE",
           headers: {

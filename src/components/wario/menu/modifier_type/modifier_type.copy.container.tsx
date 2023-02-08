@@ -59,6 +59,8 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
   const [opOmitFromShortname, setOpOmitFromShortname] = useIndexedState(useState(modifierTypeEntry.options.map(oId => allOptions[oId].displayFlags.omit_from_shortname ?? false)));
   const [opOmitFromName, setOpOmitFromName] = useIndexedState(useState(modifierTypeEntry.options.map(oId => allOptions[oId].displayFlags.omit_from_name ?? false)));
   const [opDisabled, setOpDisabled] = useIndexedState(useState(modifierTypeEntry.options.map(oId => allOptions[oId].disabled ?? null)));
+  const [opAvailability, setOpAvailability] = useIndexedState(useState(modifierTypeEntry.options.map(oId => allOptions[oId].availability ?? null)));
+  const [availabilityIsValid, setAvailabilityIsValid] = useState(true);
 
   // API state
   const [isProcessing, setIsProcessing] = useState(false);
@@ -88,6 +90,8 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
         <Grid container spacing={3} justifyContent="center">
           <ModifierOptionContainer
             isProcessing={isProcessing}
+            availabilityIsValid={availabilityIsValid}
+            setAvailabilityIsValid={setAvailabilityIsValid}
             modifierType={{
               displayName,
               min_selected: minSelected,
@@ -139,18 +143,20 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
             setOmitFromShortname={setOpOmitFromShortname(i)}
             omitFromName={opOmitFromName[i]}
             setOmitFromName={setOpOmitFromName(i)}
+            availability={opAvailability[i]}
+            setAvailability={setOpAvailability(i)}
             disabled={opDisabled[i]}
             setDisabled={setOpDisabled(i)}
           />
         </Grid>
       </AccordionDetails>
-    </Accordion>), [isProcessing, expandedPanels, copyOpFlags, displayName, emptyDisplayAs, externalIds, is3p, isHiddenDuringCustomization, maxSelected, minSelected, modifierClass, multipleItemSeparator, name, nonEmptyGroupPrefix, nonEmptyGroupSuffix, omitOptionIfNotAvailable, omitSectionIfNoAvailableOptions, opAllowHeavy, opAllowLite, opAllowOTS, opBakeFactor, opCanSplit, opDescription, opDisabled, opDisplayName, opEnableFunction, opExternalIds, opFlavorFactor, opOmitFromName, opOmitFromShortname, opOrdinal, opPrice, opShortcode, ordinal, setCopyOpFlag, setExpandedPanel, setOpAllowHeavy, setOpAllowLite, setOpAllowOTS, setOpBakeFactor, setOpCanSplit, setOpDescription, setOpDisabled, setOpDisplayName, setOpEnableFunction, setOpExternalIds, setOpFlavorFactor, setOpOmitFromName, setOpOmitFromShortname, setOpOrdinal, setOpPrice, setOpShortcode, templateString, useToggleIfOnlyTwoOptions])
+    </Accordion>), [isProcessing, expandedPanels, copyOpFlags, displayName, emptyDisplayAs, externalIds, is3p, isHiddenDuringCustomization, maxSelected, minSelected, modifierClass, multipleItemSeparator, name, nonEmptyGroupPrefix, nonEmptyGroupSuffix, omitOptionIfNotAvailable, omitSectionIfNoAvailableOptions, opAllowHeavy, opAllowLite, opAllowOTS, opBakeFactor, opCanSplit, opDescription, opDisabled, opDisplayName, opEnableFunction, opExternalIds, opFlavorFactor, opOmitFromName, opOmitFromShortname, opOrdinal, opPrice, opShortcode, ordinal, setCopyOpFlag, setExpandedPanel, setOpAllowHeavy, setOpAllowLite, setOpAllowOTS, setOpBakeFactor, setOpCanSplit, setOpDescription, setOpDisabled, setOpDisplayName, setOpEnableFunction, setOpExternalIds, setOpFlavorFactor, setOpOmitFromName, setOpOmitFromShortname, setOpOrdinal, setOpPrice, setOpShortcode, opAvailability, setOpAvailability, templateString, useToggleIfOnlyTwoOptions])
 
   const copyModifierTypeAndOptions = async () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: Omit<IOptionType, "id"> & { options: Omit<IOption, 'modifierTypeId' | 'id'>[]; } = {
           name,
           displayName,
@@ -175,6 +181,7 @@ const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTy
             displayName: opDisplayName[i],
             description: opDescription[i],
             shortcode: opShortcode[i],
+            availability: opAvailability[i],
             disabled: opDisabled[i],
             price: opPrice[i],
             ordinal: opOrdinal[i],

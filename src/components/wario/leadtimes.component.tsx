@@ -33,7 +33,7 @@ const LeadTimesComp = () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:order_config" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order_config" } });
         const response = await fetch(`${HOST_API}/api/v1/config/timing/leadtime`, {
           method: "POST",
           headers: {

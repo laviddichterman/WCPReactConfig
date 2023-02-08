@@ -77,7 +77,7 @@ const BlockOffComp = () => {
 
   const GetOptionsForDate = useCallback((isoDate: string) => {
     if (selectedServices.length > 0) {
-      const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(selectedServices.map(x => fulfillments[x]), isoDate, { cart_based_lead_time: 0, size: 1 });
+      const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(selectedServices.map(x => fulfillments[x]), isoDate, 0);
       return WDateUtils.GetOptionsForDate(INFO, isoDate, formatISO(CURRENT_TIME));
     }
     return [];
@@ -88,7 +88,7 @@ const BlockOffComp = () => {
     let starts = selectedDate !== null ? GetOptionsForDate(selectedDate) : [];
     if (starts.length === 0) {
         // go to find next available
-        const next = GetNextAvailableServiceDate(selectedServices.map(x => fulfillments[x]), 1, formatISO(CURRENT_TIME))
+        const next = GetNextAvailableServiceDate(selectedServices.map(x => fulfillments[x]), formatISO(CURRENT_TIME), 0)
         if (next !== null) {
           const newSelectedDate = next.selectedDate;
           const newStart = next.selectedTime;
@@ -150,7 +150,7 @@ const BlockOffComp = () => {
   const postBlockedOff = async () => {
     if (!isProcessing && selectedDate !== null && startTime !== null && endTime !== null) {
       try {
-        const token = await getAccessTokenSilently({ scope: "write:order_config" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order_config" } });
         const interval = {
           start: startTime,
           end: endTime
@@ -195,7 +195,7 @@ const BlockOffComp = () => {
 
   const deleteBlockedOff = async (fulfillmentId: string, isoDate: string, interval: IWInterval) => {
     try {
-      const token = await getAccessTokenSilently({ scope: "write:order_config" });
+      const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order_config" } });
       const body: PostBlockedOffToFulfillmentsRequest = {
         date: isoDate,
         fulfillmentIds: [fulfillmentId],

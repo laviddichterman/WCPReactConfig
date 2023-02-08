@@ -17,7 +17,7 @@ const ModifierOptionDisableContainer = ({ modifier_option, onCloseCallback }: Mo
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: IOption = {
           ...modifier_option,
           disabled: { start: 1, end: 0 }

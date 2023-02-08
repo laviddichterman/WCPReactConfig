@@ -30,7 +30,7 @@ const QrCodeScanner = ({ show, onSuccess, onFailure }: QrCodeScannerProps) => {
     return () => {
       if (qrScanner) {
         qrScanner.clear().catch(error => {
-          console.error("Failed to clear html5QrcodeScanner. ", error);
+          console.error("Failed to clear html5QrcodeScanner.", error);
         });
       }
     };
@@ -61,7 +61,7 @@ const StoreCreditValidateAndSpendComponent = () => {
 
   useEffect(() => {
     const CheckForCamera = async () => {
-      const cam = await Html5Qrcode.getCameras()
+      const cam = await Html5Qrcode.getCameras();
       setHasCamera(cam.length > 0);
     };
     CheckForCamera();

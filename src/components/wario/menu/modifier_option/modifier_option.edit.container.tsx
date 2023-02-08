@@ -31,6 +31,7 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
   const [omitFromShortname, setOmitFromShortname] = useState(modifier_option.displayFlags.omit_from_shortname ?? false);
   const [omitFromName, setOmitFromName] = useState(modifier_option.displayFlags.omit_from_name ?? false);
   const [disabled, setDisabled] = useState(modifier_option.disabled ?? null);
+  const [availability, setAvailability] = useState(modifier_option.availability ?? null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -38,12 +39,13 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body : Omit<IOption, "id" | "modifierTypeId"> = {
             displayName,
             description,
             shortcode,
             disabled,
+            availability,
             price,
             ordinal,
             enable: enableFunction ? enableFunction : null,
@@ -119,6 +121,8 @@ const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: Modif
       setOmitFromShortname={setOmitFromShortname}
       omitFromName={omitFromName}
       setOmitFromName={setOmitFromName}
+      availability={availability}
+      setAvailability={setAvailability}
       disabled={disabled}
       setDisabled={setDisabled}
     />

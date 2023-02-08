@@ -37,7 +37,7 @@ const StoreCreditIssueComponent = () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "edit:store_credit" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "edit:store_credit" } });
         const body: IssueStoreCreditRequest = {
           amount,
           addedBy,

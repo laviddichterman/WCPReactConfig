@@ -29,7 +29,7 @@ const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps)
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body : Omit<ICategory, "id"> = {
           description,
           subheading,

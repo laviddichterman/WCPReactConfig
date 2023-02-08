@@ -21,7 +21,7 @@ const ProductInstanceFunctionAddContainer = ({ onCloseCallback }: ProductInstanc
     if (!isProcessing && expression != null) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: Omit<IProductInstanceFunction, "id"> = {
           name: functionName,
           expression

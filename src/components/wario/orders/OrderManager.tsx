@@ -56,7 +56,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
   useEffect(() => {
     const pollForOrders = async () => {
       if (pollOpenOrdersStatus !== 'PENDING') {
-        const token = await getAccessTokenSilently({ scope: "read:order" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "read:order" } });
         await dispatch(pollOpenOrders({ token, date: WDateUtils.formatISODate(currentTime) }));
       }
     }
@@ -66,7 +66,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
   }, [currentTime])
 
   const callUnlockOrders = async () => {
-    const token = await getAccessTokenSilently({ scope: "write:order" });
+    const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order" } });
     dispatch(unlockOrders(token));
   }
   const getDetailPanelContent = useCallback((p: GridRowParams<WOrderInstance>) =>   

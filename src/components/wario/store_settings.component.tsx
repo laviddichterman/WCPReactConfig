@@ -18,7 +18,7 @@ const StoreSettingsComponent = () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:order_config" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order_config" } });
         const body: IWSettings = {
           ...settings,
           config: values.reduce((acc: Record<string, string | number | boolean>, x) => ({ ...acc, [x.key]: x.value }), {})

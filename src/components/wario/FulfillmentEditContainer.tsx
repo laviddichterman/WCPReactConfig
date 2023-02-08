@@ -44,7 +44,7 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
     if (!isProcessing && menuCategoryId !== null && orderCategoryId !== null && displayName.length > 0 && shortcode.length > 0) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: Omit<FulfillmentConfig, "id"> = {
           displayName,
           exposeFulfillment,

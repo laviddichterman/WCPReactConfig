@@ -14,7 +14,7 @@ const KeyValuesComponent = () => {
 
   useEffect(() => {
     const getToken = async () => {
-      const token = await getAccessTokenSilently({ scope: "read:settings" });
+      const token = await getAccessTokenSilently({ authorizationParams: { scope: "read:settings" } });
       const response = await fetch(`${HOST_API}/api/v1/config/kvstore`, {
         method: "GET",
         headers: {
@@ -36,7 +36,7 @@ const KeyValuesComponent = () => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:settings" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:settings" } });
         const response = await fetch(`${HOST_API}/api/v1/config/kvstore`, {
           method: "POST",
           headers: {

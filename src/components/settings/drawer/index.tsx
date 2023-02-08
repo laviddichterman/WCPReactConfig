@@ -11,7 +11,7 @@ import cssStyles from '../../../utils/cssStyles';
 import { NAVBAR, defaultSettings } from '../../../config';
 //
 import Iconify from '../../Iconify';
-import Scrollbar from '../../Scrollbar';
+import Scrollbar from '../../scrollbar/Scrollbar';
 import { varFade } from '../../animate';
 //
 import ToggleButton from './ToggleButton';

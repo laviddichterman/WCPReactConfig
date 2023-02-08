@@ -42,7 +42,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: Omit<IProductInstance, 'id' | 'productId'> = {
           displayName,
           description,

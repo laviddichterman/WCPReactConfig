@@ -21,6 +21,8 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
   const [price, setPrice] = useState(product.price);
   const [baseProductId, setBaseProductId] = useState(product.baseProductId);
   const [externalIds, setExternalIds] = useState(product.externalIDs);
+  const [availability, setAvailability] = useState(product.availability ?? null);
+  const [timing, setTiming] = useState(product.timing);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
   const [serviceDisable, setServiceDisable] = useState(product.serviceDisable)
   const [flavorMax, setFlavorMax] = useState(product.displayFlags.flavor_max ?? 10);
@@ -41,9 +43,11 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: Omit<IProduct, 'id'> = {
           disabled,
+          availability,
+          timing,
           serviceDisable,
           price,
           externalIDs: externalIds,
@@ -99,6 +103,10 @@ const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainer
       setPrice={setPrice}
       externalIds={externalIds}
       setExternalIds={setExternalIds}
+      availability={availability}
+      setAvailability={setAvailability}
+      timing={timing}
+      setTiming={setTiming}
       disabled={disabled}
       setDisabled={setDisabled}
       serviceDisable={serviceDisable}

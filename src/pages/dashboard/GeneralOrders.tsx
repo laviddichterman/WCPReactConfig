@@ -22,7 +22,7 @@ export default function GeneralTiming() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   const handleConfirmOrder = async (id: string) => {
-    const token = await getAccessTokenSilently({ scope: "write:order" });
+    const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order" } });
     dispatch(confirmOrder({ orderId: id, additionalMessage: "", token: token }));
   }
 

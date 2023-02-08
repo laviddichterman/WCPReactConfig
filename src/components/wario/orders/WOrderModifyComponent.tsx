@@ -25,7 +25,7 @@ const WOrderModifyComponent = (props: WOrderModifyComponentProps) => {
 
   const submitToWario = async () => {
     if (orderSliceState !== 'PENDING') {
-      const token = await getAccessTokenSilently({ scope: "write:order" });
+      const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order" } });
       await dispatch(rescheduleOrder({ token, orderId: props.order.id, selectedDate, selectedTime, emailCustomer: true }));
     }
   }

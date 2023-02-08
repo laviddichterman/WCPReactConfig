@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   TextField,
@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../../datetime_based_disable.component';
 import { ElementActionComponent } from '../element.action.component';
-import { IMoney, IProductModifier, IWInterval, KeyValue, ReduceArrayToMapByKey } from '@wcp/wcpshared';
+import { IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, ReduceArrayToMapByKey } from '@wcp/wcpshared';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { ValSetValNamed } from '../../../../utils/common';
 import { StringPropertyComponent } from '../../property-components/StringPropertyComponent';
@@ -16,6 +16,8 @@ import { IMoneyPropertyComponent } from '../../property-components/IMoneyPropert
 import { ExternalIdsExpansionPanelComponent } from '../../ExternalIdsExpansionPanelComponent';
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 import ProductModifierComponent from "./ProductModifierComponent";
+import RecurrenceRuleBuilderComponent from '../../RecurrenceRuleBuilderComponent';
+import PrepTimingPropertyComponent from '../../PrepTimingPropertyComponent';
 
 
 type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
@@ -23,6 +25,8 @@ type ProductComponentFieldsNoBaseId =
   ValSetValNamed<IMoney, 'price'> &
   ValSetValNamed<KeyValue[], 'externalIds'> &
   ValSetValNamed<IWInterval | null, 'disabled'> &
+  ValSetValNamed<IRecurringInterval | null, 'availability'> &
+  ValSetValNamed<PrepTiming | undefined, 'timing'> &
   ValSetValNamed<string[], 'serviceDisable'> &
   ValSetValNamed<number, 'flavorMax'> &
   ValSetValNamed<number, 'bakeMax'> &
@@ -49,6 +53,7 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
   const catalog = useAppSelector(s => s.ws.catalog!);
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
+  const [availabilityIsValid, setAvailabilityIsValid] = useState(true);
 
   const handleSetModifiers = (mods: IProductModifier[]) => {
     if (mods.length === 0 && !props.showNameOfBaseProduct) {
@@ -62,7 +67,7 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
       onCloseCallback={props.onCloseCallback}
       onConfirmClick={props.onConfirmClick}
       isProcessing={props.isProcessing}
-      disableConfirmOn={props.disableConfirmOn || !IsDisableValueValid(props.disabled)}
+      disableConfirmOn={props.disableConfirmOn || !IsDisableValueValid(props.disabled) || !availabilityIsValid}
       confirmText={props.confirmText}
       body={
         <>
@@ -201,6 +206,22 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
 
           <Grid item xs={12}>
             <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={handleSetModifiers} />
+          </Grid>
+          <Grid item xs={12}>
+            <RecurrenceRuleBuilderComponent
+              availabilityIsValid={availabilityIsValid}
+              setAvailabilityIsValid={setAvailabilityIsValid}
+              disabled={props.isProcessing}
+              value={props.availability}
+              setValue={props.setAvailability}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <PrepTimingPropertyComponent
+              disabled={props.isProcessing}
+              value={props.timing}
+              setValue={props.setTiming}
+            />
           </Grid>
           <Grid item xs={12}>
             <DatetimeBasedDisableComponent

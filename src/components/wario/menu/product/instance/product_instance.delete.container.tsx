@@ -20,7 +20,7 @@ const ProductInstanceDeleteContainer = ({ product_instance, onCloseCallback }: P
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "delete:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "delete:catalog" } });
         const response = await fetch(`${HOST_API}/api/v1/menu/product/${product_instance.productId}/${product_instance.id}`, {
           method: "DELETE",
           headers: {

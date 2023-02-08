@@ -19,7 +19,7 @@ const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: IProduct = {
           ...product,
           disabled: { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) }

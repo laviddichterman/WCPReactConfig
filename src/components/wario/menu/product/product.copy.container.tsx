@@ -22,6 +22,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
   const productEntry = useAppSelector(s => getProductEntryById(s.ws.products, product.id)!);
   const allProductInstances = useAppSelector(s => s.ws.catalog!.productInstances);
   const [price, setPrice] = useState(product.price);
+  const [availability, setAvailability] = useState(product.availability ?? null);
+  const [timing, setTiming] = useState(product.timing);
   const [disabled, setDisabled] = useState(product.disabled ?? null);
   const [externalIds, setExternalIds] = useState(product.externalIDs);
   const [serviceDisable, setServiceDisable] = useState(product.serviceDisable)
@@ -106,6 +108,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
               category_ids: parentCategories,
               printerGroup,
               disabled,
+              availability,
+              timing,
               displayFlags: {
                 is3p,
                 bake_differential: bakeDifferentialMax,
@@ -200,7 +204,7 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const productCopyBody: ProductAddRequestType = {
           instances: [
             getUncommittedProductInstanceForIndex(indexOfBase),
@@ -225,6 +229,8 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
           printerGroup,
           modifiers: modifiers,
           disabled,
+          availability,
+          timing
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
           method: "POST",
@@ -259,6 +265,10 @@ const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainer
       setPrice={setPrice}
       externalIds={externalIds}
       setExternalIds={setExternalIds}
+      availability={availability}
+      setAvailability={setAvailability}
+      timing={timing}
+      setTiming={setTiming}
       disabled={disabled}
       setDisabled={setDisabled}
       serviceDisable={serviceDisable}

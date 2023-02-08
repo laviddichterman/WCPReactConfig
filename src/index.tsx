@@ -4,10 +4,6 @@ import './locales/i18n';
 // highlight
 import './utils/highlight';
 
-// scroll bar
-import 'simplebar/src/simplebar.css';
-
-
 // slick-carousel
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -48,9 +44,11 @@ const Auth0ProviderWithRedirectCallback = ({ children }: { children?: React.Reac
       onRedirectCallback={onRedirectCallback}
       domain={AUTH0_API.domain as string}
       clientId={AUTH0_API.clientId as string}
-      redirectUri={window.location.origin}
-      scope={AUTH0_API.scope}
-      audience={AUTH0_API.audience}
+      authorizationParams={ { 
+        redirect_uri: window.location.origin, 
+        scope: AUTH0_API.scope,
+        audience: AUTH0_API.audience
+      }}
     >
       {children}
     </Auth0Provider>

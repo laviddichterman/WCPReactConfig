@@ -13,7 +13,7 @@ import { NAVBAR } from '../../../config';
 // components
 import Logo from '../../../components/Logo';
 import Label from '../../../components/Label';
-import Scrollbar from '../../../components/Scrollbar';
+import Scrollbar from '../../../components/scrollbar/Scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
 import PACKAGE from '../../../../package.json';
 

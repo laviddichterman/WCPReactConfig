@@ -256,7 +256,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               label="Service Terms (Each line a new bullet point)"
               type="text"
               value={props.terms.join('\n')}
-              onChange={(e) => props.setTerms(e.target.value.split('\n'))}
+              onChange={(e) => props.setTerms(e.target.value.trim().split('\n').filter(x=>x.length > 0))}
             />
           </Grid>
           { /* universal break */}

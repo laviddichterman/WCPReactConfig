@@ -40,7 +40,7 @@ export default function App() {
   }, [socketIoState, dispatch]);
   useEffect(() => {
     async function init() {
-      const token = await getAccessTokenSilently({ scope: "write:catalog" });
+      const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
       dispatch(queryPrinterGroups(token));
     } 
     init();

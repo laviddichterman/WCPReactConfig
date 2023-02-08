@@ -82,7 +82,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
     if (canSubmit) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: Omit<FulfillmentConfig, "id"> = {
           displayName,
           exposeFulfillment,

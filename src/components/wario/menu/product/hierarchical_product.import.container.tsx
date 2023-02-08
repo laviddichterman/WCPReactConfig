@@ -167,7 +167,7 @@ const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallba
         const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
 
         try {
-          const token = await getAccessTokenSilently({ scope: "write:catalog" });
+          const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
           const body: ProductAddRequestType = {
             instances: [{
               displayName: Name,
@@ -197,6 +197,7 @@ const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallba
               shortcode: Shortname,
             }],
             disabled: null,
+            availability: null,
             externalIDs: [],
             serviceDisable: [],
             price: { amount: Number.parseFloat(Price) * 100, currency: "USD" },

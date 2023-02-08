@@ -103,7 +103,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
         const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
 
         try {
-          const token = await getAccessTokenSilently({ scope: "write:catalog" });
+          const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
           const body: ProductAddRequestType = {
             instances: [{
               displayName: Name,
@@ -132,6 +132,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
               ordinal: i * 10,
               shortcode: Shortname,
             }],
+            availability: null,
             disabled: null,
             externalIDs: [],
             serviceDisable: [],

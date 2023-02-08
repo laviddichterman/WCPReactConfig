@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ModifierOptionComponent } from "./modifier_option.component";
 
 import { HOST_API } from "../../../../config";
-import { IOptionType, IMoney, CURRENCY, IOption, KeyValue } from "@wcp/wcpshared";
+import { IOptionType, IMoney, CURRENCY, IOption, KeyValue, IRecurringInterval } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 
 export interface ModifierOptionUiContainerProps {
@@ -30,6 +30,7 @@ const ModifierOptionAddContainer = ({ modifierType, onCloseCallback }: ModifierO
   const [allowOTS, setAllowOTS] = useState(false);
   const [omitFromShortname, setOmitFromShortname] = useState(false);
   const [omitFromName, setOmitFromName] = useState(false);
+  const [availability, setAvailability] = useState<IRecurringInterval | null>(null);
   const [disabled, setDisabled] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
@@ -38,12 +39,13 @@ const ModifierOptionAddContainer = ({ modifierType, onCloseCallback }: ModifierO
     if (!isProcessing) {
       setIsProcessing(true);
       try {
-        const token = await getAccessTokenSilently({ scope: "write:catalog" });
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const body: Omit<IOption, "id" | 'modifierTypeId'> = {
           displayName,
           description,
           shortcode,
           disabled,
+          availability,
           price,
           ordinal,
           enable: enableFunction,
@@ -119,6 +121,8 @@ const ModifierOptionAddContainer = ({ modifierType, onCloseCallback }: ModifierO
       setOmitFromShortname={setOmitFromShortname}
       omitFromName={omitFromName}
       setOmitFromName={setOmitFromName}
+      availability={availability}
+      setAvailability={setAvailability}
       disabled={disabled}
       setDisabled={setDisabled}
     />
