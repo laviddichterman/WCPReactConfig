@@ -34,6 +34,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
   const [orderSupplementaryCategoryId, setOrderSupplementaryCategoryId] = useState<string | null>(null);
   const [requirePrepayment, setRequirePrepayment] = useState(true);
   const [allowPrepayment, setAllowPrepayment] = useState(true);
+  const [allowTipping, setAllowTipping] = useState(true);
   const [autograt, setAutograt] = useState<{ function: string, percentage: number } | null>(null);
   const [serviceChargeFunctionId, setServiceChargeFunctionId] = useState<string | null>(null);
   const [leadTime, setLeadTime] = useState(35);
@@ -100,6 +101,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
           orderSupplementaryCategoryId: orderSupplementaryCategoryId,
           requirePrepayment,
           allowPrepayment,
+          allowTipping,
           autograt,
           serviceCharge: serviceChargeFunctionId,
           leadTime,
@@ -166,6 +168,8 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
       setRequirePrepayment={setRequirePrepayment}
       allowPrepayment={allowPrepayment}
       setAllowPrepayment={setAllowPrepayment}
+      allowTipping={allowTipping}
+      setAllowTipping={setAllowTipping}
       autograt={autograt}
       setAutograt={setAutograt}
       serviceChargeFunctionId={serviceChargeFunctionId}

@@ -26,7 +26,7 @@ type ProductComponentFieldsNoBaseId =
   ValSetValNamed<KeyValue[], 'externalIds'> &
   ValSetValNamed<IWInterval | null, 'disabled'> &
   ValSetValNamed<IRecurringInterval | null, 'availability'> &
-  ValSetValNamed<PrepTiming | undefined, 'timing'> &
+  ValSetValNamed<PrepTiming | null, 'timing'> &
   ValSetValNamed<string[], 'serviceDisable'> &
   ValSetValNamed<number, 'flavorMax'> &
   ValSetValNamed<number, 'bakeMax'> &

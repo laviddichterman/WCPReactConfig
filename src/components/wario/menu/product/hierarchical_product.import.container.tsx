@@ -198,6 +198,7 @@ const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallba
             }],
             disabled: null,
             availability: null,
+            timing: null,
             externalIDs: [],
             serviceDisable: [],
             price: { amount: Number.parseFloat(Price) * 100, currency: "USD" },

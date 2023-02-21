@@ -44,7 +44,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [price, setPrice] = useState<IMoney>({ amount: 0, currency: CURRENCY.USD });
   const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
   const [availability, setAvailability] = useState<IRecurringInterval | null>(null);
-  const [timing, setTiming] = useState<PrepTiming|undefined>(undefined);
+  const [timing, setTiming] = useState<PrepTiming|null>(null);
   const [disabled, setDisabled] = useState<IWInterval | null>(null);
   const [serviceDisable, setServiceDisable] = useState([]);
   const [flavorMax, setFlavorMax] = useState(10);

@@ -166,6 +166,7 @@ export type FulfillmentComponentProps =
   ValSetValNamed<string | null, 'orderSupplementaryCategoryId'> &
   ValSetValNamed<boolean, 'requirePrepayment'> &
   ValSetValNamed<boolean, 'allowPrepayment'> &
+  ValSetValNamed<boolean, 'allowTipping'> &
   ValSetValNamed<{ function: string, percentage: number } | null, 'autograt'> &
   ValSetValNamed<string | null, 'serviceChargeFunctionId'> &
   ValSetValNamed<number, 'leadTime'> &
@@ -333,7 +334,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
             />
           </Grid>
           { /* universal break */}
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Allow Pre-Payment"
@@ -342,7 +343,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing || !props.allowPrepayment}
               label="Require Pre-Payment"
@@ -351,7 +352,16 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.isProcessing}
+              label="Allow Tipping"
+              value={props.allowTipping}
+              setValue={props.setAllowTipping}
+              labelPlacement='end'
+            />
+          </Grid>
+          <Grid item xs={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Expose Fulfillment"

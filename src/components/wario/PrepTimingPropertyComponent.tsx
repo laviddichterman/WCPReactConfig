@@ -7,20 +7,20 @@ import { FloatNumericPropertyComponent } from './property-components/FloatNumeri
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
 
 export type PrepTimingPropertyComponentProps =
-  ValSetVal<PrepTiming | undefined> & {
+  ValSetVal<PrepTiming | null> & {
     disabled: boolean;
   };
 
 
 const PrepTimingPropertyComponent = (props: PrepTimingPropertyComponentProps) => {
-  const [specifyTiming, setSpecifyTiming] = useState(props.value !== undefined);
+  const [specifyTiming, setSpecifyTiming] = useState(props.value !== null);
   const handleSpecifyTiming = (specify: boolean) => {
     if (specify) {
       setSpecifyTiming(true);
       props.setValue({ additionalUnitPrepTime: 5, prepStationId: 0, prepTime: 10 });
     } else {
       setSpecifyTiming(false);
-      props.setValue(undefined);
+      props.setValue(null);
     }
   }
   return (
@@ -41,7 +41,7 @@ const PrepTimingPropertyComponent = (props: PrepTimingPropertyComponentProps) =>
               disabled={props.disabled}
               label="Station ID"
               value={props.value.prepStationId}
-              setValue={(x: number) => { props.setValue(props.value ? { ...props.value, prepStationId: x } : undefined) }}
+              setValue={(x: number) => { props.setValue(props.value ? { ...props.value, prepStationId: x } : null) }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -50,7 +50,7 @@ const PrepTimingPropertyComponent = (props: PrepTimingPropertyComponentProps) =>
               disabled={props.disabled}
               label="Prep Time"
               value={props.value.prepTime}
-              setValue={(x: number) => { props.setValue(props.value ? { ...props.value, prepTime: x } : undefined) }}
+              setValue={(x: number) => { props.setValue(props.value ? { ...props.value, prepTime: x } : null) }}
             />
           </Grid>
 
@@ -60,7 +60,7 @@ const PrepTimingPropertyComponent = (props: PrepTimingPropertyComponentProps) =>
               disabled={props.disabled}
               label="Additional Time Per Unit"
               value={props.value.additionalUnitPrepTime}
-              setValue={(x: number) => { props.setValue(props.value ? { ...props.value, additionalUnitPrepTime: x } : undefined) }}
+              setValue={(x: number) => { props.setValue(props.value ? { ...props.value, additionalUnitPrepTime: x } : null) }}
             />
           </Grid>
 

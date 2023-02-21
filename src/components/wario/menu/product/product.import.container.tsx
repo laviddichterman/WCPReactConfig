@@ -133,6 +133,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
               shortcode: Shortname,
             }],
             availability: null,
+            timing: null,
             disabled: null,
             externalIDs: [],
             serviceDisable: [],

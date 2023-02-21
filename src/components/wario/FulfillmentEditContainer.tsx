@@ -24,6 +24,7 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
   const [orderSupplementaryCategoryId, setOrderSupplementaryCategoryId] = useState<string | null>(fulfillment.orderSupplementaryCategoryId);
   const [requirePrepayment, setRequirePrepayment] = useState(fulfillment.requirePrepayment);
   const [allowPrepayment, setAllowPrepayment] = useState(fulfillment.allowPrepayment);
+  const [allowTipping, setAllowTipping] = useState(fulfillment.allowTipping);
   const [autograt, setAutograt] = useState<{ function: string, percentage: number } | null>(fulfillment.autograt);
   const [serviceChargeFunctionId, setServiceChargeFunctionId] = useState<string | null>(fulfillment.serviceCharge);
   const [leadTime, setLeadTime] = useState(fulfillment.leadTime);
@@ -62,6 +63,7 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
           orderSupplementaryCategoryId: orderSupplementaryCategoryId,
           requirePrepayment,
           allowPrepayment,
+          allowTipping,
           autograt,
           serviceCharge: serviceChargeFunctionId,
           leadTime,
@@ -135,6 +137,8 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
       setRequirePrepayment={setRequirePrepayment}
       allowPrepayment={allowPrepayment}
       setAllowPrepayment={setAllowPrepayment}
+      allowTipping={allowTipping}
+      setAllowTipping={setAllowTipping}
       autograt={autograt}
       setAutograt={setAutograt}
       serviceChargeFunctionId={serviceChargeFunctionId}
