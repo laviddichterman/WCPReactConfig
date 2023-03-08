@@ -4,15 +4,17 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 
 import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
-import { TextField } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 
 import { cancelOrder } from "../../../redux/slices/OrdersSlice";
 import { WOrderInstance } from "@wcp/wcpshared";
+import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
 
 type WOrderCancelComponentProps = { order: WOrderInstance; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
+  const [confirmCheckbox, setConfirmCheckbox] = useState(false);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
 
   const [cancelationReason, setCancelationReason] = useState("");
@@ -26,23 +28,36 @@ const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
   }
 
   return (<ElementActionComponent
-      onCloseCallback={props.onCloseCallback}
-      onConfirmClick={submitToWario}
-      isProcessing={orderSliceState === 'PENDING'}
-      disableConfirmOn={orderSliceState === 'PENDING' || cancelationReason.length < 5}
-      confirmText={'Process Order Cancelation'}
-      body={
-        <TextField
+    onCloseCallback={props.onCloseCallback}
+    onConfirmClick={submitToWario}
+    isProcessing={orderSliceState === 'PENDING'}
+    disableConfirmOn={orderSliceState === 'PENDING' || !confirmCheckbox}
+    confirmText={'Process Order Cancelation'}
+    body={<>
+        <Grid item xs={12}>
+<TextField
           multiline
           fullWidth
           minRows={cancelationReason.split('\n').length + 1}
-          label="CUSTOMER FACING (they will read this) cancelation reason"
+          label="CUSTOMER FACING (they will read this) cancelation reason (optional)"
           type="text"
           value={cancelationReason}
           onChange={(e) => setCancelationReason(e.target.value)}
         />
-      }
-    />)
+        </Grid>
+        <Grid item xs={12}>
+        <ToggleBooleanPropertyComponent 
+        disabled={orderSliceState === 'PENDING'}
+        label="Cancellation is permanent, confirm this is understood before proceeding"
+        setValue={setConfirmCheckbox}
+        value={confirmCheckbox}
+        labelPlacement={"end"}
+        />
+
+        </Grid>
+        </>
+    }
+  />)
 };
 
 export default WOrderCancelComponent;
