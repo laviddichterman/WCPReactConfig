@@ -42,17 +42,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     setSuppressedNewOrderNotice(orders.reduce((acc, order) => ({...acc, [order.id]: true }), suppressedNewOrderNoticeForOrder));
     setHasNewOrder(false);
   }
-  //const [isProcessing, setIsProcessing] = useState(false);
-
-  // useEffect(() => {
-  //   const init = async () => {
-  //     const token = await getAccessTokenSilently({ scope: "read:order" });
-  //     if (token && socketAuthState === 'NONE') {
-  //       dispatch(OrdersActions.startConnection(token));
-  //     }
-  //   }
-  //   init();
-  // }, [socketAuthState, getAccessTokenSilently, dispatch]);
+  
   useEffect(() => {
     const pollForOrders = async () => {
       if (pollOpenOrdersStatus !== 'PENDING') {

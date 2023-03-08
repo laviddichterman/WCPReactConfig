@@ -71,8 +71,12 @@ export const selectOrdersAsEvents = createSelector(
   (s, orders): EventInput[] => orders.filter(x=>x.status !== WOrderStatus.CANCELED).map(x=>selectOrderAsEvent(s, x))
 )
 
+/**
+ * Returns the orders for the current date that are in the OPEN state
+ */
 export const selectOrdersNeedingAttention = createSelector(
   (s: RootState) => getWOrderInstances(s.orders.orders),
-  (orders) => orders.filter(x=>x.status === WOrderStatus.OPEN)
+  (s: RootState) => WDateUtils.formatISODate(s.ws.currentTime),
+  (orders, currentDate) => orders.filter(x=>x.status === WOrderStatus.OPEN && x.fulfillment.selectedDate === currentDate)
 )
 
