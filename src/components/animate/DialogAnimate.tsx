@@ -41,8 +41,8 @@ export default function DialogAnimate({
                 width: '100%',
                 height: '100%',
                 display: 'flex',
-                // alignItems: 'center',
-                // justifyContent: 'center',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               <Box onClick={onClose} sx={{ width: '100%', height: '100%', position: 'fixed' }} />

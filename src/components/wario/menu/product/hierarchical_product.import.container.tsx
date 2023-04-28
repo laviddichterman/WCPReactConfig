@@ -176,6 +176,7 @@ const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallba
               externalIDs: externalIds,
               displayFlags: {
                 hideFromPos: false,
+                posName: "",
                 menu: {
                   adornment: "",
                   hide: false,

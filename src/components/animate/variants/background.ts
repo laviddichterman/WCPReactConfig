@@ -1,5 +1,5 @@
 // @types
-import { BackgroundType } from '../type';
+import { BackgroundType } from '../types';
 
 // ----------------------------------------------------------------------
 

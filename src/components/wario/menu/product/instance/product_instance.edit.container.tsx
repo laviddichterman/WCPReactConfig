@@ -21,6 +21,7 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
   const [modifiers, setModifiers] = useState(product_instance.modifiers);
   const [externalIds, setExternalIds] = useState(product_instance.externalIDs);
   const [hideFromPos, setHideFromPos] = useState(product_instance.displayFlags.hideFromPos ?? false);
+  const [posName, setPosName] = useState(product_instance.displayFlags.posName ?? "");
   const [menuOrdinal, setMenuOrdinal] = useState(product_instance.displayFlags.menu?.ordinal || 0);
   const [menuHide, setMenuHide] = useState(product_instance.displayFlags.menu?.hide ?? false);
   const [menuPriceDisplay, setMenuPriceDisplay] = useState(product_instance.displayFlags.menu.price_display ?? PriceDisplay.ALWAYS);
@@ -50,6 +51,7 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
           externalIDs: externalIds,
           displayFlags: {
             hideFromPos,
+            posName,
             menu: {
               ordinal: menuOrdinal,
               hide: menuHide,
@@ -110,7 +112,8 @@ const ProductInstanceEditContainer = ({ parent_product, product_instance, onClos
       setExternalIds={setExternalIds}
       hideFromPos={hideFromPos}
       setHideFromPos={setHideFromPos}
-
+      posName={posName}
+      setPosName={setPosName}
       // menu
       menuOrdinal={menuOrdinal}
       setMenuOrdinal={setMenuOrdinal}

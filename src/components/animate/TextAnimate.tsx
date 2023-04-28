@@ -15,8 +15,9 @@ interface TextAnimateProps extends Props {
 export default function TextAnimate({ text, variants, sx, ...other }: TextAnimateProps) {
   return (
     <Box
-      component={m.h1}
+      component={m.div}
       sx={{
+        m: 0,
         typography: 'h1',
         overflow: 'hidden',
         display: 'inline-flex',

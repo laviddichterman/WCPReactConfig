@@ -24,6 +24,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [piModifiers, setPiModifiers] = useState<ProductModifierEntry[]>([]);
   const [piExternalIds, setPiExternalIds] = useState<KeyValue[]>([]);
   const [hideFromPos, setHideFromPos] = useState(false);
+  const [posName, setPosName] = useState("");
+
   // menu
   const [menuOrdinal, setMenuOrdinal] = useState(0);
   const [menuHide, setMenuHide] = useState(false);
@@ -76,6 +78,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
             externalIDs: piExternalIds,
             displayFlags: {
               hideFromPos,
+              posName,
               menu: {
                 ordinal: menuOrdinal,
                 hide: menuHide,
@@ -221,6 +224,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
 
           hideFromPos={hideFromPos}
           setHideFromPos={setHideFromPos}
+          posName={posName}
+          setPosName={setPosName}
           // menu
           menuOrdinal={menuOrdinal}
           setMenuOrdinal={setMenuOrdinal}

@@ -1,5 +1,5 @@
 import { m } from 'framer-motion';
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef } from 'react';
 // @mui
 import { Box, IconButton, IconButtonProps } from '@mui/material';
 
@@ -20,7 +20,7 @@ export default IconButtonAnimate;
 // ----------------------------------------------------------------------
 
 type AnimateWrapProp = {
-  children: ReactNode;
+  children: React.ReactNode;
   size: 'small' | 'medium' | 'large';
 };
 

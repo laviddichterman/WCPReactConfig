@@ -15,12 +15,13 @@ import { ExternalIdsExpansionPanelComponent } from "../../../ExternalIdsExpansio
 export type UncommittedProduct = Omit<IProduct, 'id' | 'baseProductId'>;
 
 export type ProductInstanceComponentProps =
-  ValSetValNamed<string, 'displayName'> &
+ValSetValNamed<string, 'displayName'> & 
   ValSetValNamed<string, 'description'> &
   ValSetValNamed<string, 'shortcode'> &
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<ProductModifierEntry[], 'modifiers'> &
   ValSetValNamed<boolean, 'hideFromPos'> &
+  ValSetValNamed<string, 'posName'> &
   // menu
   ValSetValNamed<number, 'menuOrdinal'> &
   ValSetValNamed<boolean, 'menuHide'> &
@@ -48,6 +49,10 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
   const useToggleEndLabel = !useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const modifierOptionsMap = useAppSelector(s => s.ws.catalog?.options ?? {});
   const modifier_types_map = useAppSelector(s => s.ws.catalog?.modifiers ?? {});
+
+  const handlePosNameChange = (posName: string) => {
+    props.setPosName(posName === props.displayName ? "" : posName)
+  }
   const handleToggle = (mtid: string, oidx: number) => {
     const foundModifierEntryIndex = props.modifiers.findIndex(x => x.modifierTypeId === mtid);
 
@@ -94,6 +99,14 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           label="Description"
           value={props.description}
           setValue={props.setDescription}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <StringPropertyComponent
+          disabled={props.isProcessing}
+          label="POS Name Override"
+          value={props.posName === "" ? props.displayName : props.posName}
+          setValue={handlePosNameChange}
         />
       </Grid>
       {/* universal break */}

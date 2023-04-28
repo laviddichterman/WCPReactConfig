@@ -1,64 +1,22 @@
 import { m } from 'framer-motion';
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef } from 'react';
 // @mui
-import { useTheme } from '@mui/material/styles';
 import { Box, Fab, FabProps, SxProps } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-interface Props extends Omit<FabProps, 'color'> {
+export interface FabButtonAnimateProps extends FabProps {
   sxWrap?: SxProps;
-  color?:
-    | 'inherit'
-    | 'default'
-    | 'primary'
-    | 'secondary'
-    | 'info'
-    | 'success'
-    | 'warning'
-    | 'error';
 }
 
-const FabButtonAnimate = forwardRef<HTMLButtonElement, Props>(
-  ({ color = 'primary', size = 'large', children, sx, sxWrap, ...other }, ref) => {
-    const theme = useTheme();
-
-    if (
-      color === 'default' ||
-      color === 'inherit' ||
-      color === 'primary' ||
-      color === 'secondary'
-    ) {
-      return (
-        <AnimateWrap size={size} sxWrap={sxWrap}>
-          <Fab ref={ref} size={size} color={color} sx={sx} {...other}>
-            {children}
-          </Fab>
-        </AnimateWrap>
-      );
-    }
-
-    return (
-      <AnimateWrap size={size} sxWrap={sxWrap}>
-        <Fab
-          ref={ref}
-          size={size}
-          sx={{
-            boxShadow: theme.customShadows[color],
-            color: theme.palette[color].contrastText,
-            bgcolor: theme.palette[color].main,
-            '&:hover': {
-              bgcolor: theme.palette[color].dark,
-            },
-            ...sx,
-          }}
-          {...other}
-        >
-          {children}
-        </Fab>
-      </AnimateWrap>
-    );
-  }
+const FabButtonAnimate = forwardRef<HTMLButtonElement, FabButtonAnimateProps>(
+  ({ size = 'large', children, sx, sxWrap, ...other }, ref) => (
+    <AnimateWrap size={size} sxWrap={sxWrap}>
+      <Fab ref={ref} size={size} sx={sx} {...other}>
+        {children}
+      </Fab>
+    </AnimateWrap>
+  )
 );
 
 export default FabButtonAnimate;
@@ -66,7 +24,7 @@ export default FabButtonAnimate;
 // ----------------------------------------------------------------------
 
 type AnimateWrapProp = {
-  children: ReactNode;
+  children: React.ReactNode;
   size: 'small' | 'medium' | 'large';
   sxWrap?: SxProps;
 };

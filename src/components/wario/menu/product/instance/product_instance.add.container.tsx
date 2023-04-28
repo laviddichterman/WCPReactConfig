@@ -20,6 +20,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
   const [modifiers, setModifiers] = useState<ProductModifierEntry[]>([]);
   const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
   const [hideFromPos, setHideFromPos] = useState(false);
+  const [posName, setPosName] = useState("");
   // menu
   const [menuOrdinal, setMenuOrdinal] = useState(0);
   const [menuHide, setMenuHide] = useState(false);
@@ -52,6 +53,7 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
           externalIDs: externalIds,
           displayFlags: {
             hideFromPos,
+            posName,
             menu: {
               ordinal: menuOrdinal,
               hide: menuHide,
@@ -112,6 +114,8 @@ const ProductInstanceAddContainer = ({ parent_product, onCloseCallback }: Produc
       setExternalIds={setExternalIds}
       hideFromPos={hideFromPos}
       setHideFromPos={setHideFromPos}
+      posName={posName}
+      setPosName={setPosName}
       // menu
       menuOrdinal={menuOrdinal}
       setMenuOrdinal={setMenuOrdinal}

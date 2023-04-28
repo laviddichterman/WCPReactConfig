@@ -19,7 +19,7 @@ const LeadTimesComp = () => {
 
   useEffect(() => {
     setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({ ...acc, [key]: dirty[key] ? value : FULFILLMENTS[key].leadTime }), {}))
-  }, [FULFILLMENTS, dirty]);
+  }, [FULFILLMENTS, dirty, localLeadTime]);
   const leadtimesToUpdate = useMemo(() => Object.entries(localLeadTime).reduce((acc, [key, value]) => dirty[key] ? ({ ...acc, [key]: value }) : acc, {}), [dirty, localLeadTime]);
 
   const onChangeLeadTimes = (fId: string, leadTime: number) => {
