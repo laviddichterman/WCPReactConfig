@@ -28,6 +28,7 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
   const [autograt, setAutograt] = useState<{ function: string, percentage: number } | null>(fulfillment.autograt);
   const [serviceChargeFunctionId, setServiceChargeFunctionId] = useState<string | null>(fulfillment.serviceCharge);
   const [leadTime, setLeadTime] = useState(fulfillment.leadTime);
+  const [leadTimeOffset, setLeadTimeOffset] = useState(fulfillment.leadTimeOffset);
   const [operatingHours, setOperatingHours] = useState(fulfillment.operatingHours);
   const [blockedOff, setBlockedOff] = useState(fulfillment.blockedOff);
   const [specialHours, setSpecialHours] = useState(fulfillment.specialHours);
@@ -67,6 +68,7 @@ const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillmen
           autograt,
           serviceCharge: serviceChargeFunctionId,
           leadTime,
+          leadTimeOffset,
           operatingHours: {
             0: operatingHours[0],
             1: operatingHours[1],

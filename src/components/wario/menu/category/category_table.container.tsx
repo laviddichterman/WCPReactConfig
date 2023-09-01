@@ -15,6 +15,7 @@ import InterstitialDialog from "../../interstitial.dialog.component";
 import CategoryAddContainer from "./category.add.container";
 import ProductAddContainer from "../product/product.add.container";
 import ProductImportContainer from "../product/product.import.container";
+import HierarchicalProductImportContainer from "../product/hierarchical_product.import.container";
 
 
 type ValueGetterRow = GridValueGetterParams<any, CatalogCategoryEntry>;
@@ -36,6 +37,7 @@ const CategoryTableContainer = () => {
 
   const [isProductAddOpen, setIsProductAddOpen] = useState(false);
   const [isProductImportOpen, setIsProductImportOpen] = useState(false);
+  const [isHierarchicalProductImportOpen, setIsHierarchicalProductImportOpen] = useState(false);
 
   const setPanelsExpandedSizeForRow = useCallback((row: string) => (size: number) => {
     setPanelsExpandedSize({ ...panelsExpandedSize, [row]: size });
@@ -119,6 +121,19 @@ const CategoryTableContainer = () => {
                   <ProductImportContainer
                     onCloseCallback={() => {
                       setIsProductImportOpen(false);
+                    }}
+                  />
+                ),
+              },
+              {
+                title: "Import Hierarchical Products",
+                cb: () => setIsHierarchicalProductImportOpen(true),
+                open: isHierarchicalProductImportOpen,
+                onClose: () => setIsHierarchicalProductImportOpen(false),
+                component: (
+                  <HierarchicalProductImportContainer
+                    onCloseCallback={() => {
+                      setIsHierarchicalProductImportOpen(false);
                     }}
                   />
                 ),

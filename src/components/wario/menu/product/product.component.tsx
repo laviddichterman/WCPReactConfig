@@ -180,7 +180,7 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
               onChange={(_, v) => {
                 props.setServiceDisable(v);
               }}
-              getOptionLabel={(option) => fulfillments[option].displayName}
+              getOptionLabel={(option) => fulfillments[option]?.displayName ?? "INVALID"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />

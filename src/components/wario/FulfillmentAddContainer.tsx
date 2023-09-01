@@ -38,6 +38,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
   const [autograt, setAutograt] = useState<{ function: string, percentage: number } | null>(null);
   const [serviceChargeFunctionId, setServiceChargeFunctionId] = useState<string | null>(null);
   const [leadTime, setLeadTime] = useState(35);
+  const [leadTimeOffset, setLeadTimeOffset] = useState(0);
   const [operatingHours, setOperatingHours] = useState({ ...EmptyOperatingHours });
   const [blockedOff, setBlockedOff] = useState<DateIntervalsEntries>([]);
   const [specialHours, setSpecialHours] = useState<DateIntervalsEntries>([]);
@@ -69,6 +70,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
     setAutograt(null);
     setServiceChargeFunctionId(null);
     setLeadTime(35);
+    setLeadTimeOffset(0);
     setOperatingHours(EmptyOperatingHours);
     setMinDuration(0);
     setMaxDuration(0);
@@ -105,6 +107,7 @@ const FulfillmentAddContainer = ({ onCloseCallback }: { onCloseCallback: VoidFun
           autograt,
           serviceCharge: serviceChargeFunctionId,
           leadTime,
+          leadTimeOffset,
           operatingHours,
           specialHours: [],
           blockedOff: [],
