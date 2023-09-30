@@ -1,8 +1,9 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { FulfillmentTime, ResponseSuccess, WOrderInstance } from "@wcp/wcpshared";
+import { FulfillmentTime, ResponseSuccess, WDateUtils, WOrderInstance } from "@wcp/wcpshared";
 import axiosInstance from "../../utils/axios";
 import uuidv4 from "../../utils/uuidv4";
 import { enqueueSnackbar } from 'notistack'
+import { parseISO, subDays } from "date-fns";
 export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>({ selectId: entry => entry.id });
 export const { selectAll: getWOrderInstances, selectById: getWOrderInstanceById, selectIds: getWOrderInstanceIds } =
   WOrderInstanceAdapter.getSelectors();
@@ -30,6 +31,7 @@ export const pollOpenOrders = createAsyncThunk<WOrderInstance[], { token: string
 
       },
       params: { ...(date ? { date } : { })  },
+      // params: { ...(date ? { date: WDateUtils.formatISODate(subDays(parseISO(date), 1)) } : { })  },
     });
     return response.data;
   }
