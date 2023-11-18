@@ -61,32 +61,32 @@ const ProductTableContainer = ({
 
 
   const addProductInstance = (row: RowType) => () => {
-    setIsProductInstanceAddOpen(true);
     setProductToEdit(row.product);
+    setIsProductInstanceAddOpen(true);
   };
   const editProduct = (row: RowType) => () => {
-    setIsProductEditOpen(true);
     setProductToEdit(row.product);
+    setIsProductEditOpen(true);
   };
   const deleteProduct = (row: RowType) => () => {
-    setIsProductDeleteOpen(true);
     setProductToEdit(row.product);
+    setIsProductDeleteOpen(true);
   };
   const copyProduct = (row: RowType) => () => {
-    setIsProductCopyOpen(true);
     setProductToEdit(row.product);
+    setIsProductCopyOpen(true);
   };
   const enableProduct = (row: RowType) => () => {
-    setIsProductEnableOpen(true);
     setProductToEdit(row.product);
+    setIsProductEnableOpen(true);
   };
   const disableProductUntilEOD = (row: RowType) => () => {
-    setIsProductDisableUntilEodOpen(true);
     setProductToEdit(row.product);
+    setIsProductDisableUntilEodOpen(true);
   };
   const disableProduct = (row: RowType) => () => {
-    setIsProductDisableOpen(true);
     setProductToEdit(row.product);
+    setIsProductDisableOpen(true);
   };
 
   const getDetailPanelHeight = useCallback(({ row }: { row: RowType }) => row.instances.length ? (41 + (row.instances.length * 36)) : 0, []);
@@ -105,9 +105,9 @@ const ProductTableContainer = ({
               icon={<Tooltip title="Edit Product Instance"><Edit /></Tooltip>}
               label="Edit Product Instance"
               onClick={(() => {
-                setIsProductInstanceEditOpen(true);
                 setProductToEdit(row.product);
                 setProductInstanceToEdit(params.row);
+                setIsProductInstanceEditOpen(true);
               })}
             />,
             <GridActionsCellItem
@@ -116,8 +116,8 @@ const ProductTableContainer = ({
               icon={<Tooltip title="Delete Product Instance"><DeleteOutline /></Tooltip>}
               label="Delete Product Instance"
               onClick={(() => {
-                setIsProductInstanceDeleteOpen(true);
                 setProductInstanceToEdit(params.row)
+                setIsProductInstanceDeleteOpen(true);
               })}
             />
           ]
