@@ -89,7 +89,7 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
               options={Object.keys(printerGroups)}
               value={props.printerGroup}
               onChange={(e, v) => props.setPrinterGroup(v)}
-              getOptionLabel={(pgId) => printerGroups[pgId].name ?? "Undefined"}
+              getOptionLabel={(pgId) => printerGroups[pgId]?.name ?? "Undefined"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Printer Group" />}
             />
