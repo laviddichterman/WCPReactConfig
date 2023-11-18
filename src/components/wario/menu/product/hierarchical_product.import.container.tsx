@@ -185,6 +185,7 @@ TO TRY: see how options manifest in the Square POS, see how product variations w
 
   we need to be able to keep hierarchial products up to date when we have a new product 
   and that should be done without obliterating the existing items or needing to do mass overwrites
+  so this import is actually a batch upsert
 
 
   brainstorm: it could be that in wario we have a recursive idea of products instead of product class and instance
@@ -194,6 +195,7 @@ input needed:
   DG_ attributes: CSV metadata
   Category: string;
   Category1: string;
+  Category2: string
   DisplayName: string;
   Description: string;
   PosName: string;

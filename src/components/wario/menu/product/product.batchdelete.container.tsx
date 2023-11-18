@@ -7,11 +7,11 @@ import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 
 export interface ProductQuickActionProps {
-  product: IProduct;
+  products: IProduct[];
   productName: string;
   onCloseCallback: VoidFunction;
 }
-const ProductDeleteContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
+const BatchProductDeleteContainer = ({ products, onCloseCallback }: ProductQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
@@ -21,19 +21,20 @@ const ProductDeleteContainer = ({ product, productName, onCloseCallback }: Produ
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "delete:catalog" } });
-        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
-          method: "DELETE",
+        const response = await fetch(`${HOST_API}/api/v1/menu/product/batchDelete`, {
+          method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-          }
+          },
+          body: JSON.stringify(products.map(x=>x.id)),
         });
         if (response.status === 200) {
-          enqueueSnackbar(`Deleted product: ${productName}.`)
+          enqueueSnackbar(`Deleted products.`)
           onCloseCallback();
         }
       } catch (error) {
-        enqueueSnackbar(`Unable to delete ${productName}. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
+        enqueueSnackbar(`Unable to delete products. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
         console.error(error);
       }
       setIsProcessing(false);
@@ -44,10 +45,10 @@ const ProductDeleteContainer = ({ product, productName, onCloseCallback }: Produ
     <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteProduct}
-      name={productName}
+      name={"Batch Products"}
       isProcessing={isProcessing}
     />
   );
 };
 
-export default ProductDeleteContainer;
+export default BatchProductDeleteContainer;
