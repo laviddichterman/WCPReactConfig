@@ -1,8 +1,8 @@
-import React, { useState, Dispatch, SetStateAction, NewLifecycle } from "react";
-import { Grid, TextField, Button, Autocomplete, Card, CardContent, CardHeader } from '@mui/material';
+import React, { useState, Dispatch, SetStateAction } from "react";
+import { Grid, TextField, Autocomplete } from '@mui/material';
 
 import { ParseResult } from "papaparse";
-import { DISPLAY_AS, IOption, IOptionType, IProductModifier, KeyValue, MODIFIER_CLASS, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
+import { IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAuth0 } from '@auth0/auth0-react';
 

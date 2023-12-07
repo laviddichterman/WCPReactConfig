@@ -34,6 +34,7 @@ export default function GeneralCatalog() {
             {orphanedProducts.length > 0 && (
               <Grid item xs={12}>
                 <ProductTableContainer
+                  disableToolbar={false}
                   products={orphanedProducts}
                   setPanelsExpandedSize={() => (0)} // no need for the panels expanded size here... i don't think
                 />

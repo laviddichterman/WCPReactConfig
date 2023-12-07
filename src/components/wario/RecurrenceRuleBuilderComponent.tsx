@@ -30,10 +30,10 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
   const [specifyAvailability, setSpecifyAvailability] = useState(props.value !== null);
   const [useRRule, setUseRRule] = useState(props.value !== null && props.value.rrule !== "");
   const [localInterval, setLocalInterval] = useState<IWInterval>(props.value?.interval ?? { start: -1, end: -1 });
-  const [frequency, setFreqency] = useState<Frequency>(Frequency.WEEKLY);
-  const [rInterval, setRInterval] = useState<number>(1);
-  const [byWeekDay, setByWeekDay] = useState<Weekday[]>([]);
-  const [byMonth, setByMonth] = useState<number[]>([]);
+  const [frequency, setFreqency] = useState<Frequency>(props.value?.rrule ? RRule.fromString(props.value.rrule).options.freq : Frequency.WEEKLY);
+  const [rInterval, setRInterval] = useState<number>(props.value?.rrule ? RRule.fromString(props.value.rrule).options.interval : 1);
+  const [byWeekDay, setByWeekDay] = useState<Weekday[]>(props.value?.rrule ? RRule.fromString(props.value.rrule).options.byweekday?.map(x=>new Weekday(x)) ?? [] : []);
+  const [byMonth, setByMonth] = useState<number[]>(props.value?.rrule ? RRule.fromString(props.value.rrule).options.bymonth ?? [] : []);
   const [count, setCount] = useState<number | null>(null);
   // const [until, setUntil] = useState<Date | null>(null);
   // const [from, setFrom] = useState<Date | null>(null);

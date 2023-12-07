@@ -26,10 +26,12 @@ type ValueGetterRow = GridValueGetterParams<any, RowType>;
 interface ProductTableContainerProps {
   products: RowType[];
   setPanelsExpandedSize: Dispatch<SetStateAction<number>>;
+  disableToolbar: boolean;
 }
 const ProductTableContainer = ({
   products,
-  setPanelsExpandedSize
+  setPanelsExpandedSize,
+  disableToolbar
 }: ProductTableContainerProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
   const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
@@ -56,7 +58,7 @@ const ProductTableContainer = ({
   // assumption is that this precondition is enforced by the service
   const nameOfBaseProductInstance = useMemo(() => {
     const piid = productToEdit?.baseProductId ?? null;
-    return piid !== null ? catalog.productInstances[piid].displayName : "Incomplete Product";
+    return piid !== null && catalog.productInstances[piid] ? catalog.productInstances[piid].displayName : "Incomplete Product";
   }, [catalog, productToEdit]);
 
 
@@ -256,7 +258,7 @@ const ProductTableContainer = ({
         }
       />
       <TableWrapperComponent
-        disableToolbar
+        disableToolbar={disableToolbar}
         apiRef={apiRef}
         columns={[{
           headerName: "Actions",
@@ -305,7 +307,7 @@ const ProductTableContainer = ({
               onClick={deleteProduct(params.row)}
               showInMenu
             />);
-            return DisableDataCheck(params.row.product.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
+            return DisableDataCheck(params.row.product.disabled, params.row.product.availability, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           }
         },
         { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => catalog.productInstances[v.row.product.baseProductId].displayName, flex: 6 },
@@ -313,7 +315,7 @@ const ProductTableContainer = ({
         { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: ValueGetterRow) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifierType.name).join(", ") : "", flex: 3 },
         { headerName: "Printer", field: "product.printerGroup", valueGetter: (v: ValueGetterRow) => printerGroups && v.row.product.printerGroup && printerGroups[v.row.product.printerGroup] ? printerGroups[v.row.product.printerGroup].name : "", flex: 3 },
         // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
+        { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, v.row.product.availability, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
         ]}
         rows={products}
         getRowId={(row: RowType) => row.product.id}

@@ -57,6 +57,7 @@ const CategoryTableContainer = () => {
 
   const getDetailPanelContent = useCallback(({ row }: { row: CatalogCategoryEntry }) => getProductsInCategory(row.category.id).length ? (
     <ProductTableContainer
+      disableToolbar={true}
       products={getProductsInCategory(row.category.id)}
       setPanelsExpandedSize={setPanelsExpandedSizeForRow(row.category.id)}
     />) : "",
