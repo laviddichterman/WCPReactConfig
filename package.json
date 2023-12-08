@@ -21,7 +21,7 @@
     "@mui/x-date-pickers": "^5.0.20",
     "@reduxjs/toolkit": "^1.9.7",
     "@wcp/wario-ux-shared": "^1.0.15",
-    "@wcp/wcpshared": "^4.1.81",
+    "@wcp/wcpshared": "^4.1.82",
     "assert": "^2.1.0",
     "axios": "^1.6.2",
     "browserify-zlib": "^0.2.0",
