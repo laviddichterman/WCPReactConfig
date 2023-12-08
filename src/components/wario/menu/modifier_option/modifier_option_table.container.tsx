@@ -174,7 +174,7 @@ const ModifierOptionTableContainer = ({
           { headerName: "Disabled", field: "item.disabled", valueGetter: (v: { row: IOption }) => (v.row.disabled !== null && DisableDataCheck(v.row.disabled, v.row.availability, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.disabled.start > v.row.disabled.end ? "True" : `${format(v.row.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
         ]}
         getRowId={(row) => row._id}
-        rows={modifier_types_map[modifierType.id].options.map(x => modifierOptionsMap[x])}
+        rows={modifier_types_map[modifierType.id].options.map(x => modifierOptionsMap[x]).sort((a,b)=>a.ordinal - b.ordinal)}
       />
     </>
   );
