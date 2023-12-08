@@ -101,7 +101,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
       <Grid item xs={4}>
         <FloatNumericPropertyComponent
           disabled={props.isProcessing}
-          label="Flavor Max"
+          label="Flavor Factor"
           value={props.flavorFactor}
           setValue={props.setFlavorFactor}
         />
