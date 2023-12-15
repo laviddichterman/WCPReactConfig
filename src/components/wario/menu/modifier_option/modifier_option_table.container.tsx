@@ -171,7 +171,8 @@ const ModifierOptionTableContainer = ({
           { headerName: "BFactor", field: "metadata.bake_factor", valueGetter: (v: { row: IOption }) => v.row.metadata.bake_factor },
           { headerName: "Can Split?", field: "metadata.can_split", valueGetter: (v: { row: IOption }) => v.row.metadata.can_split },
           { headerName: "EnableFxn", field: "enable_function.name", valueGetter: (v: { row: IOption }) => v.row.enable ? productInstanceFunctions[v.row.enable].name : "" },
-          // eslint-disable-next-line no-nested-ternary // we pass null instead of actually passing the availability because we want to make a decision based on just the .disabled value
+          // we pass null instead of actually passing the availability because we want to make a decision based on just the .disabled value
+          // eslint-disable-next-line no-nested-ternary 
           { headerName: "Disabled", field: "item.disabled", valueGetter: (v: { row: IOption }) => (v.row.disabled !== null && DisableDataCheck(v.row.disabled, null, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.disabled.start > v.row.disabled.end ? "True" : `${format(v.row.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
         ]}
         getRowId={(row) => row._id}
