@@ -158,7 +158,8 @@ const ModifierOptionTableContainer = ({
                 onClick={disableOption(params.row)}
                 showInMenu
               />)
-              return DisableDataCheck(params.row.disabled, params.row.availability, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
+              // we pass null instead of actually passing the availability because we want to make a decision based on just the .disabled value
+              return DisableDataCheck(params.row.disabled, null, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [EDIT_MODIFIER_OPTION, ENABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION] : [EDIT_MODIFIER_OPTION, DISABLE_MODIFIER_OPTION_UNTIL_EOD, DISABLE_MODIFIER_OPTION, DELETE_MODIFIER_OPTION];
             }
           },
           { headerName: "Name", field: "item.display_name", valueGetter: (v: { row: IOption }) => v.row.displayName, flex: 1 },
@@ -170,8 +171,8 @@ const ModifierOptionTableContainer = ({
           { headerName: "BFactor", field: "metadata.bake_factor", valueGetter: (v: { row: IOption }) => v.row.metadata.bake_factor },
           { headerName: "Can Split?", field: "metadata.can_split", valueGetter: (v: { row: IOption }) => v.row.metadata.can_split },
           { headerName: "EnableFxn", field: "enable_function.name", valueGetter: (v: { row: IOption }) => v.row.enable ? productInstanceFunctions[v.row.enable].name : "" },
-          // eslint-disable-next-line no-nested-ternary
-          { headerName: "Disabled", field: "item.disabled", valueGetter: (v: { row: IOption }) => (v.row.disabled !== null && DisableDataCheck(v.row.disabled, v.row.availability, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.disabled.start > v.row.disabled.end ? "True" : `${format(v.row.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
+          // eslint-disable-next-line no-nested-ternary // we pass null instead of actually passing the availability because we want to make a decision based on just the .disabled value
+          { headerName: "Disabled", field: "item.disabled", valueGetter: (v: { row: IOption }) => (v.row.disabled !== null && DisableDataCheck(v.row.disabled, null, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.disabled.start > v.row.disabled.end ? "True" : `${format(v.row.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.disabled.end, "MMMM dd, y hh:mm a")}`) : "False") },
         ]}
         getRowId={(row) => row._id}
         rows={modifier_types_map[modifierType.id].options.map(x => modifierOptionsMap[x]).sort((a,b)=>a.ordinal - b.ordinal)}

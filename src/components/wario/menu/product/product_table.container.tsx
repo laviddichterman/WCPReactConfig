@@ -307,15 +307,16 @@ const ProductTableContainer = ({
               onClick={deleteProduct(params.row)}
               showInMenu
             />);
-            return DisableDataCheck(params.row.product.disabled, params.row.product.availability, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
+            // we pass null instead of actually passing the availability because we want to make a decision based on just the .disabled value
+            return DisableDataCheck(params.row.product.disabled, null, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           }
         },
         { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => catalog.productInstances[v.row.product.baseProductId].displayName, flex: 6 },
         { headerName: "Price", field: "product.price.amount", valueGetter: (v : ValueGetterRow) => `$${Number(v.row.product.price.amount / 100).toFixed(2)}` },
         { headerName: "Modifiers", field: "product.modifiers", valueGetter: (v: ValueGetterRow) => v.row.product.modifiers ? v.row.product.modifiers.map(x => catalog.modifiers[x.mtid].modifierType.name).join(", ") : "", flex: 3 },
         { headerName: "Printer", field: "product.printerGroup", valueGetter: (v: ValueGetterRow) => printerGroups && v.row.product.printerGroup && printerGroups[v.row.product.printerGroup] ? printerGroups[v.row.product.printerGroup].name : "", flex: 3 },
-        // eslint-disable-next-line no-nested-ternary
-        { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, v.row.product.availability, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
+        // eslint-disable-next-line no-nested-ternary // we pass null instead of actually passing the availability because we want to make a decision based on just the .disabled value
+        { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, null, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
         ]}
         rows={products}
         getRowId={(row: RowType) => row.product.id}
