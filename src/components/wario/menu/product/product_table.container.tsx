@@ -103,6 +103,7 @@ const ProductTableContainer = ({
           type: 'actions',
           getActions: (params : GridRowParams<IProductInstance>) => [
             <GridActionsCellItem
+              placeholder
               key={`EDIT${row.product.id}`}
               icon={<Tooltip title="Edit Product Instance"><Edit /></Tooltip>}
               label="Edit Product Instance"
@@ -113,6 +114,7 @@ const ProductTableContainer = ({
               })}
             />,
             <GridActionsCellItem
+              placeholder
               key={`DEL${row.product.id}`}
               disabled={row.product.baseProductId === params.row.id}
               icon={<Tooltip title="Delete Product Instance"><DeleteOutline /></Tooltip>}
@@ -268,40 +270,47 @@ const ProductTableContainer = ({
             const base_piid = params.row.product.baseProductId;
             const title = base_piid !== null ? catalog.productInstances[base_piid].displayName : "Incomplete Product";
             const ADD_PRODUCT_INSTANCE = (<GridActionsCellItem
+              placeholder
               icon={<Tooltip title={`Add Product Instance to ${title}`}><AddBox /></Tooltip>}
               label={`Add Product Instance to ${title}`}
               onClick={addProductInstance(params.row)}
             />);
             const EDIT_PRODUCT = (<GridActionsCellItem
+              placeholder
               icon={<Tooltip title={`Edit ${title}`}><Edit /></Tooltip>}
               label={`Edit ${title}`}
               onClick={editProduct(params.row)}
             />);
             const ENABLE_PRODUCT = (<GridActionsCellItem
+              placeholder
               icon={<Tooltip title={`Enable ${title}`}><CheckCircle /></Tooltip>}
               label={`Enable ${title}`}
               onClick={enableProduct(params.row)}
               showInMenu
             />);
             const DISABLE_PRODUCT_UNTIL_EOD = (<GridActionsCellItem
+              placeholder
               icon={<Tooltip title={`Disable ${title} Until End-of-Day`}><BedtimeOff /></Tooltip>}
               label={`Disable ${title} Until EOD`}
               onClick={disableProductUntilEOD(params.row)}
               showInMenu
             />);
             const DISABLE_PRODUCT = (<GridActionsCellItem
+              placeholder
               icon={<Tooltip title={`Disable ${title}`}><Cancel /></Tooltip>}
               label={`Disable ${title}`}
               onClick={disableProduct(params.row)}
               showInMenu
             />);
             const COPY_PRODUCT = (<GridActionsCellItem
+              placeholder
               icon={<Tooltip title={`Copy ${title}`}><LibraryAdd /></Tooltip>}
               label={`Copy ${title}`}
               onClick={copyProduct(params.row)}
               showInMenu
             />);
             const DELETE_PRODUCT = (<GridActionsCellItem
+              placeholder
               icon={<Tooltip title={`Delete ${title}`}><DeleteOutline /></Tooltip>}
               label={`Delete ${title}`}
               onClick={deleteProduct(params.row)}

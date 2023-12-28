@@ -9,7 +9,7 @@ import { Autocomplete, Grid, TextField } from "@mui/material";
 import { add, parseISO } from "date-fns";
 import { range } from 'lodash';
 import { StaticDatePicker } from "@mui/x-date-pickers";
-import { rescheduleOrder } from "../../../redux/slices/OrdersSlice";
+import { modifyOrder } from "../../../redux/slices/OrdersSlice";
 
 type WOrderModifyComponentProps = { order: WOrderInstance; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderModifyComponent = (props: WOrderModifyComponentProps) => {
@@ -26,7 +26,7 @@ const WOrderModifyComponent = (props: WOrderModifyComponentProps) => {
   const submitToWario = async () => {
     if (orderSliceState !== 'PENDING') {
       const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order" } });
-      await dispatch(rescheduleOrder({ token, orderId: props.order.id, selectedDate, selectedTime, emailCustomer: true }));
+      await dispatch(modifyOrder({ token, orderId: props.order.id, selectedDate, selectedTime, emailCustomer: true }));
     }
   }
   return (

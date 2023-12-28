@@ -130,23 +130,27 @@ const ModifierTypeTableContainer = () => {
           type: 'actions',
           getActions: (params: GridRowParams<CatalogModifierEntry>) => [
             <GridActionsCellItem
+              placeholder
               icon={<Tooltip title="Edit Modifier Type"><Edit /></Tooltip>}
               label="Edit Modifier Type"
               onClick={editModifierType(params.id.toString())}
               key="EDITMT" />,
             <GridActionsCellItem
+              placeholder
               icon={<Tooltip title="Add Modifier Option"><AddBox /></Tooltip>}
               label="Add Modifier Option"
               onClick={addModifierOption(params.id.toString())}
               showInMenu
               key="ADDMO" />,
             <GridActionsCellItem
+              placeholder
               icon={<Tooltip title="Copy Modifier Type"><LibraryAdd /></Tooltip>}
               label="Copy Modifier Type"
               onClick={copyModifierType(params.id.toString())}
               showInMenu
               key="COPYMT" />,
             <GridActionsCellItem
+              placeholder
               icon={<Tooltip title="Delete Modifier Type"><DeleteOutline /></Tooltip>}
               label="Delete Modifier Type"
               onClick={deleteModifierType(params.id.toString())}

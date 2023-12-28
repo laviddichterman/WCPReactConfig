@@ -83,6 +83,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
             type: 'actions',
             getActions: (params: GridRowParams<WOrderInstance>) => [
               <GridActionsCellItem
+                placeholder
                 icon={<Tooltip title="Confirm Order"><CheckCircleOutline /></Tooltip>}
                 label="Confirm Order"
                 disabled={orderSliceState === 'PENDING'}

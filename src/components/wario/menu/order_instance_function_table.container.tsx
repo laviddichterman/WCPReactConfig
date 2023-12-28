@@ -47,12 +47,14 @@ const OrderInstanceFunctionTableContainer = (props: OIFTableContainerProps) => {
           type: 'actions',
           getActions: (params) => [
             <GridActionsCellItem
+              placeholder
               icon={<Tooltip title="Edit Order Function"><Edit /></Tooltip>}
               label="Edit Order Function"
               onClick={editOrderFunction(params.row)}
               key="EditPF"
             />,
             <GridActionsCellItem
+              placeholder
               icon={<Tooltip title="Delete Order Function"><DeleteOutline /></Tooltip>}
               label="Delete Order Function"
               onClick={deleteOrderFunction(params.row)}

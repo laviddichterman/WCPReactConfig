@@ -48,12 +48,14 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
             type: 'actions',
             getActions: (params: GridRowParams<IProductInstanceFunction>) => [
               <GridActionsCellItem
+                placeholder
                 icon={<Tooltip title="Edit Product Function"><Edit /></Tooltip>}
                 label="Edit Product Function"
                 onClick={editProductFunction(params.row)}
                 key="EditPF"
               />,
               <GridActionsCellItem
+                placeholder
                 icon={<Tooltip title="Delete Product Function"><DeleteOutline /></Tooltip>}
                 label="Delete Product Function"
                 onClick={deleteProductFunction(params.row)}

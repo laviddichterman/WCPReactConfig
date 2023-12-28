@@ -45,11 +45,13 @@ const FulfillmentTableContainer = ({
         type: 'actions',
         getActions: (params) => [
           <GridActionsCellItem
+            placeholder
             icon={<Tooltip title="Edit Fulfillment"><Edit /></Tooltip>}
             label="Edit Fulfillment"
             onClick={editFulfillment(params.row)}
             key={`EDIT${params.row.id}`} />,
           <GridActionsCellItem
+            placeholder
             icon={<Tooltip title="Delete Fulfillment"><DeleteOutline /></Tooltip>}
             label="Delete Fulfillment"
             onClick={deleteFulfillment(params.row)}

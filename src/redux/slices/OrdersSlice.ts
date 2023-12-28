@@ -116,6 +116,25 @@ export const rescheduleOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>,
   }
 );
 
+export const modifyOrder = createAsyncThunk<ResponseSuccess<WOrderInstance>, RescheduleOrderParams>(
+  'orders/reschedule',
+  async (params: RescheduleOrderParams) => {
+    // TODO: this doesn't do shit!
+    const response = await axiosInstance.patch(`/api/v1/order/${params.orderId}`, {
+      selectedDate: params.selectedDate,
+      selectedTime: params.selectedTime,
+      emailCustomer: params.emailCustomer
+    }, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+        "Content-Type": "application/json",
+        'Idempotency-Key': uuidv4()
+      },
+    });
+    return response.data;
+  }
+);
+
 export interface CancelOrderParams {
   token: string;
   orderId: string;

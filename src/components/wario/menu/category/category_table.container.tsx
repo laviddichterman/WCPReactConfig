@@ -184,11 +184,13 @@ const CategoryTableContainer = () => {
           type: 'actions',
           getActions: (params: GridRowParams<CatalogCategoryEntry>) => [
             <GridActionsCellItem
+              placeholder
               icon={<Tooltip title="Edit Category"><Edit /></Tooltip>}
               label="Edit Category"
               onClick={editCategory(params.row)}
               key={`EDIT${params.id}`} />,
             <GridActionsCellItem
+              placeholder
               icon={<Tooltip title="Delete Category"><DeleteOutline /></Tooltip>}
               label="Delete Category"
               onClick={deleteCategory(params.row)}

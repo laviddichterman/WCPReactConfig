@@ -155,6 +155,7 @@ const KeyValuesContainer = function<T>(props: KeyValuesContainerProps<T>) {
     type: 'actions',
     getActions: (params: GridRowParams) => [
       <GridActionsCellItem
+        placeholder
         key={"delete"}
         icon={<HighlightOffIcon />}
         label={"Delete"}
