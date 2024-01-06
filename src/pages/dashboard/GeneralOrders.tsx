@@ -1,31 +1,29 @@
 // @mui
-import { Container, Grid } from '@mui/material';
+import { Container, Dialog, Grid } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
 // sections
 import OrderManagerComponent from '../../components/wario/orders/OrderManager';
-import { DialogAnimate } from '../../components/animate';
 import { WOrderComponentCard } from '../../components/wario/orders/WOrderComponentCard';
 import { useAppDispatch } from "../../hooks/useRedux";
 import { confirmOrder } from '../../redux/slices/OrdersSlice';
 import OrderCalendar from '../../components/wario/orders/OrderCalendar';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
 // ----------------------------------------------------------------------
-export default function GeneralTiming() {
+export default function GeneralOrders() {
   const { getAccessTokenSilently } = useAuth0();
   const { themeStretch } = useSettings();
   const dispatch = useAppDispatch();
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
-  const handleConfirmOrder = async (id: string) => {
+  const handleConfirmOrder = useCallback(async (id: string) => {
     const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order" } });
     dispatch(confirmOrder({ orderId: id, additionalMessage: "", token: token }));
-  }
-
+  }, [dispatch, getAccessTokenSilently])
   return (
     <Page title="Order Management">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -38,9 +36,7 @@ export default function GeneralTiming() {
           </Grid>
         </Grid>
       </Container>
-      <DialogAnimate scroll={'body'} fullWidth maxWidth={'xl'} open={selectedOrderId !== null} onClose={() => setSelectedOrderId(null)}>
-          <WOrderComponentCard orderId={selectedOrderId!} handleConfirmOrder={handleConfirmOrder} onCloseCallback={() => setSelectedOrderId(null)} />
-      </DialogAnimate>
+        {selectedOrderId !== null ? <Dialog scroll={'body'} fullWidth maxWidth={'xl'} open={selectedOrderId !== null} onClose={() => setSelectedOrderId(null)}><WOrderComponentCard orderId={selectedOrderId!} handleConfirmOrder={handleConfirmOrder} onCloseCallback={() => setSelectedOrderId(null)} /></Dialog> : "" }
     </Page>
   );
 }

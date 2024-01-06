@@ -1,19 +1,21 @@
 import { Grid } from "@mui/material";
-import { WOrderInstance, WOrderStatus } from "@wcp/wcpshared";
-import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
+import { WOrderStatus } from "@wcp/wcpshared";
+import { useAppSelector } from "../../../hooks/useRedux";
+import { getWOrderInstanceById } from "../../../redux/slices/OrdersSlice";
 import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 import { WOrderCheckoutCartContainer } from "./WOrderCheckoutCartContainer";
 import { WOrderServiceInfoTableContainer } from "./WOrderServiceInfoTableContainer";
 
 export type WOrderDisplayComponentProps = {
-  order: WOrderInstance;
+  orderId: string;
   callConfirm: (id: string) => void;
   onCloseCallback: ElementActionComponentProps['onCloseCallback'];
 };
 
 
-export const WOrderDisplayComponent = ({ order, callConfirm, onCloseCallback }: WOrderDisplayComponentProps) => {
+export const WOrderDisplayComponent = ({ orderId, callConfirm, onCloseCallback }: WOrderDisplayComponentProps) => {
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
+  const order = useAppSelector(s => getWOrderInstanceById(s.orders.orders, orderId))!;
 
   return <ElementActionComponent
     onCloseCallback={onCloseCallback}

@@ -7,20 +7,19 @@ import { ElementActionComponent, ElementActionComponentProps } from "../menu/ele
 import { Grid, TextField } from "@mui/material";
 
 import { moveOrder } from "../../../redux/slices/OrdersSlice";
-import { WOrderInstance } from "@wcp/wcpshared";
 
-type WOrderMoveComponentProps = { order: WOrderInstance; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
+type WOrderMoveComponentProps = { orderId: string; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderMoveComponent = (props: WOrderMoveComponentProps) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
-  const orderSliceState = useAppSelector(s => s.orders.requestStatus)
+  const orderSliceState = useAppSelector(s => s.orders.requestStatus);
   const [destination, setDestination] = useState("");
   const [additionalMessage, setAdditionalMessage] = useState("");
 
   const submitToWario: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     if (orderSliceState !== 'PENDING') {
       const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order" } });
-      await dispatch(moveOrder({ orderId: props.order.id, destination, additionalMessage, token: token }));
+      await dispatch(moveOrder({ orderId: props.orderId, destination, additionalMessage, token: token }));
       props.onCloseCallback && props.onCloseCallback(e);
     }
   }

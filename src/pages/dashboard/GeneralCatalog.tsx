@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 // @mui
 import { Container, Grid } from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
-import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { useAppSelector } from '../../hooks/useRedux';
 
 export default function GeneralCatalog() {
   const { themeStretch } = useSettings();
-  const dispatch = useAppDispatch();
   const catalog = useAppSelector(s => s.ws.catalog!);
   const orphanedProducts = useMemo(
     () =>

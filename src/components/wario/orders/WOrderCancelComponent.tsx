@@ -7,10 +7,9 @@ import { ElementActionComponent, ElementActionComponentProps } from "../menu/ele
 import { Grid, TextField } from "@mui/material";
 
 import { cancelOrder } from "../../../redux/slices/OrdersSlice";
-import { WOrderInstance } from "@wcp/wcpshared";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
 
-type WOrderCancelComponentProps = { order: WOrderInstance; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
+type WOrderCancelComponentProps = { orderId: string; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
@@ -22,7 +21,7 @@ const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
   const submitToWario: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     if (orderSliceState !== 'PENDING') {
       const token = await getAccessTokenSilently({ authorizationParams: { scope: "cancel:order" } });
-      await dispatch(cancelOrder({ orderId: props.order.id, emailCustomer: true, reason: cancelationReason, token: token }));
+      await dispatch(cancelOrder({ orderId: props.orderId, emailCustomer: true, reason: cancelationReason, token: token }));
       props.onCloseCallback && props.onCloseCallback(e);
     }
   }
