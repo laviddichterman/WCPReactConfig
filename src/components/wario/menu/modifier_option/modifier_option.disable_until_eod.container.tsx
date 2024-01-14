@@ -9,10 +9,11 @@ import { useAppSelector } from "../../../../hooks/useRedux";
 import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
 import { IOption } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { getModifierOptionById } from "@wcp/wario-ux-shared";
 
-const ModifierOptionDisableUntilEodContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
+const ModifierOptionDisableUntilEodContainer = ({ modifier_option_id, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+  const modifier_option = useAppSelector(s=> getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
   const [isProcessing, setIsProcessing] = useState(false);
   const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
   const { getAccessTokenSilently } = useAuth0();

@@ -7,12 +7,12 @@ PrinterGroupAdapter.getSelectors();
 
 export interface OrderManagerState {
   printerGroups: EntityState<PrinterGroup>;  
-  requestStatus: 'FAILED' | 'PENDING' | 'IDLE';
+  requestStatus: 'NONE' | 'START' | 'SUCCESS' | 'FAILED';
 }
 
 const initialState: OrderManagerState = {
   printerGroups: PrinterGroupAdapter.getInitialState(),
-  requestStatus: "IDLE"
+  requestStatus: "NONE"
 }
 
 export const queryPrinterGroups = createAsyncThunk<PrinterGroup[], string>(
@@ -40,10 +40,10 @@ const PrinterGroupSlice = createSlice({
     builder
       .addCase(queryPrinterGroups.fulfilled, (state, action) => {
         PrinterGroupAdapter.upsertMany(state.printerGroups, action.payload);
-        state.requestStatus = 'IDLE';
+        state.requestStatus = 'SUCCESS';
       })
       .addCase(queryPrinterGroups.pending, (state) => {
-        state.requestStatus = 'PENDING';
+        state.requestStatus = 'START';
       })
       .addCase(queryPrinterGroups.rejected, (state) => {
         state.requestStatus = 'FAILED';

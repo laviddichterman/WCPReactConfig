@@ -3,16 +3,20 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProductInstanceActionContainer } from "./product_instance.component";
 import { HOST_API } from "../../../../../config";
-import { IProduct, IProductInstance, PriceDisplay } from "@wcp/wcpshared";
+import { IProductInstance, PriceDisplay } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { getProductInstanceById } from "@wcp/wario-ux-shared";
+import { useAppSelector } from "../../../../../hooks/useRedux";
+import { selectParentProductEntryFromProductInstanceId } from "../../../../../redux/store";
 
 interface ProductInstanceEditContainerProps {
-  parent_product: IProduct;
-  product_instance: IProductInstance;
+  product_instance_id: string;
   onCloseCallback: VoidFunction;
 }
 
-const ProductInstanceEditContainer = ({ parent_product, product_instance, onCloseCallback }: ProductInstanceEditContainerProps) => {
+const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: ProductInstanceEditContainerProps) => {
+  const product_instance = useAppSelector(s=>getProductInstanceById(s.ws.productInstances, product_instance_id)!);
+  const parent_product = useAppSelector(s=>selectParentProductEntryFromProductInstanceId(s, product_instance_id)!.product);
   const { enqueueSnackbar } = useSnackbar();
   const [displayName, setDisplayName] = useState(product_instance.displayName);
   const [description, setDescription] = useState(product_instance.description);

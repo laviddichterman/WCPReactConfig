@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { Grid, TextField, Autocomplete } from '@mui/material';
 
 import { ParseResult } from "papaparse";
@@ -14,7 +14,6 @@ import { ProductAddRequestType } from "./product.add.container";
 import { ValSetValNamed } from '../../../../utils/common';
 import ProductModifierComponent from "./ProductModifierComponent";
 import GenericCsvImportComponent from "../../generic_csv_import.component";
-import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
 
 const delay = (ms : number) => new Promise(res => setTimeout(res, ms));
 

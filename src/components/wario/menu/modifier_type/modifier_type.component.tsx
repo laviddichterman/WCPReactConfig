@@ -1,7 +1,7 @@
 import { Grid, FormControlLabel, Radio, RadioGroup, FormControl, FormLabel } from "@mui/material";
 import { ElementActionComponent } from "../element.action.component";
 import { CheckedNumericInput } from "../../CheckedNumericTextInput";
-import { DISPLAY_AS, IOptionType, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { DISPLAY_AS, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { startCase, snakeCase } from 'lodash';
 import { ValSetValNamed } from "../../../../utils/common";
 import { ExternalIdsExpansionPanelComponent } from "../../ExternalIdsExpansionPanelComponent";
@@ -15,7 +15,7 @@ export interface ModifierTypeUiProps {
 }
 
 export type ModifierTypeModifyUiProps = {
-  modifier_type: IOptionType;
+  modifier_type_id: string;
 } & ModifierTypeUiProps;
 
 export type ModifierTypeContainerProps =

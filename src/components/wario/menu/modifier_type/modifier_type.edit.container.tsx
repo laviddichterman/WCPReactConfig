@@ -5,10 +5,12 @@ import ModifierTypeComponent, { ModifierTypeModifyUiProps } from "./modifier_typ
 import { HOST_API } from "../../../../config";
 import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 
-const ModifierTypeEditContainer = ({ modifier_type, onCloseCallback }: ModifierTypeModifyUiProps) => {
+const ModifierTypeEditContainer = ({ modifier_type_id, onCloseCallback }: ModifierTypeModifyUiProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+  const modifier_type = useAppSelector(s=> getModifierTypeEntryById(s.ws.modifierEntries, modifier_type_id)!.modifierType);
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
   const [displayName, setDisplayName] = useState(modifier_type.displayName ?? "");

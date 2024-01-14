@@ -5,9 +5,12 @@ import ElementDeleteComponent from "../element.delete.component";
 import { HOST_API } from "../../../../config";
 import { ModifierTypeModifyUiProps } from "./modifier_type.component";
 import { useSnackbar } from "notistack";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 
-const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback }: ModifierTypeModifyUiProps) => {
+const ModifierTypeDeleteContainer = ({ modifier_type_id, onCloseCallback }: ModifierTypeModifyUiProps) => {
   const { enqueueSnackbar } = useSnackbar();
+  const modifier_type = useAppSelector(s=> getModifierTypeEntryById(s.ws.modifierEntries, modifier_type_id)!.modifierType);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -16,7 +19,7 @@ const ModifierTypeDeleteContainer = ({ modifier_type, onCloseCallback }: Modifie
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "delete:catalog" } });
-        const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_type.id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_type_id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

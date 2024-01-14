@@ -8,10 +8,13 @@ import { useAppSelector } from "../../../../hooks/useRedux";
 import { ProductQuickActionProps } from './product.delete.container';
 import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { selectBaseProductName } from "../../../../redux/store";
+import { getProductEntryById } from "@wcp/wario-ux-shared";
 
-const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
+const ProductDisableUntilEodContainer = ({ product_id, onCloseCallback }: ProductQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+  const productName = useAppSelector(s=>selectBaseProductName(s, product_id));
+  const product = useAppSelector(s=>getProductEntryById(s.ws.products, product_id)!.product);
   const [isProcessing, setIsProcessing] = useState(false);
   const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
   const { getAccessTokenSilently } = useAuth0();
@@ -24,7 +27,7 @@ const ProductDisableUntilEodContainer = ({ product, productName, onCloseCallback
           ...product,
           disabled: { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) }
         };
-        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product_id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,

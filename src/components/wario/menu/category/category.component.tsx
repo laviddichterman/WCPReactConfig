@@ -2,7 +2,7 @@ import { Grid, TextField, Autocomplete } from "@mui/material";
 import { ElementActionComponent, ElementActionComponentProps } from "../element.action.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getCategoryEntryById } from "@wcp/wario-ux-shared";
-import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
+import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wcpshared";
 import { EntityId } from "@reduxjs/toolkit";
 import { StringEnumPropertyComponent } from "../../property-components/StringEnumPropertyComponent";
 import { IntNumericPropertyComponent } from "../../property-components/IntNumericPropertyComponent";
@@ -10,7 +10,7 @@ import { ValSetValNamed } from "../../../../utils/common";
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
 
 export interface CategoryEditProps {
-  category: ICategory;
+  categoryId: string;
   onCloseCallback: VoidFunction;
 }
 export type CategoryComponentProps = {

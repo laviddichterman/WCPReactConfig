@@ -7,10 +7,12 @@ import { CategoryEditProps } from "./category.component";
 import { useSnackbar } from "notistack";
 import { Grid } from "@mui/material";
 import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { getCategoryEntryById } from "@wcp/wario-ux-shared";
 
-const CategoryDeleteContainer = ({ category, onCloseCallback }: CategoryEditProps) => {
+const CategoryDeleteContainer = ({ categoryId, onCloseCallback }: CategoryEditProps) => {
   const { enqueueSnackbar } = useSnackbar();
-
+  const categoryName = useAppSelector(s=> getCategoryEntryById(s.ws.categories, categoryId)!.category.name);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const [ deleteContainedProducts, setDeleteContainedProducts ] = useState(false);
@@ -20,7 +22,7 @@ const CategoryDeleteContainer = ({ category, onCloseCallback }: CategoryEditProp
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "delete:catalog" } });
-        const responseDeleteCategory = await fetch(`${HOST_API}/api/v1/menu/category/${category.id}`, {
+        const responseDeleteCategory = await fetch(`${HOST_API}/api/v1/menu/category/${categoryId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -29,11 +31,11 @@ const CategoryDeleteContainer = ({ category, onCloseCallback }: CategoryEditProp
           body: JSON.stringify({ delete_contained_products: deleteContainedProducts }),
         });
         if (responseDeleteCategory.status === 200) {
-          enqueueSnackbar(`Deleted category: ${category.name}${deleteContainedProducts ? " and contained products" : ""}.`);
+          enqueueSnackbar(`Deleted category: ${categoryName}${deleteContainedProducts ? " and contained products" : ""}.`);
           onCloseCallback();
         }
       } catch (error) {
-        enqueueSnackbar(`Unable to delete category: ${category.name}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
+        enqueueSnackbar(`Unable to delete category: ${categoryName}. Got error ${JSON.stringify(error, null, 2)}`, { variant: 'error' });
         console.error(error);
       }
       setIsProcessing(false);
@@ -45,7 +47,7 @@ const CategoryDeleteContainer = ({ category, onCloseCallback }: CategoryEditProp
     <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteCategory}
-      name={category.name}
+      name={categoryName}
       isProcessing={isProcessing}
       additionalBody={
         <Grid item xs={12}>

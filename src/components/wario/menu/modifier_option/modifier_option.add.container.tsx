@@ -4,17 +4,19 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ModifierOptionComponent } from "./modifier_option.component";
 
 import { HOST_API } from "../../../../config";
-import { IOptionType, IMoney, CURRENCY, IOption, KeyValue, IRecurringInterval } from "@wcp/wcpshared";
+import { IMoney, CURRENCY, IOption, KeyValue, IRecurringInterval } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+import { useAppSelector } from "../../../../hooks/useRedux";
 
 export interface ModifierOptionUiContainerProps {
-  modifierType: IOptionType;
+  modifierTypeId: string;
   onCloseCallback: VoidFunction;
 }
 
-const ModifierOptionAddContainer = ({ modifierType, onCloseCallback }: ModifierOptionUiContainerProps) => {
+const ModifierOptionAddContainer = ({ modifierTypeId, onCloseCallback }: ModifierOptionUiContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+  const modifierType = useAppSelector(s=>getModifierTypeEntryById(s.ws.modifierEntries, modifierTypeId)!.modifierType);
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
@@ -63,7 +65,7 @@ const ModifierOptionAddContainer = ({ modifierType, onCloseCallback }: ModifierO
             omit_from_name: omitFromName
           }
         };
-        const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifierType.id}/`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifierTypeId}/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

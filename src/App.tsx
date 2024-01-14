@@ -30,6 +30,7 @@ export default function App() {
   const dispatch = useAppDispatch();
   const { getAccessTokenSilently } = useAuth0();
   const socketIoState = useAppSelector((s) => s.ws.status);
+  const pgQueryState = useAppSelector((s) => s.printerGroup.requestStatus);
   const isSocketDataLoaded = useAppSelector(s => IsSocketDataLoaded(s.ws));
   const currentTime = useAppSelector(s => s.ws.currentTime);
   const DateAdapter = useMemo(() => AdapterCurrentTimeOverrideUtils(isSocketDataLoaded ? currentTime : Date.now()), [isSocketDataLoaded, currentTime]);
@@ -43,8 +44,10 @@ export default function App() {
       const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
       dispatch(queryPrinterGroups(token));
     } 
-    init();
-  }, [])
+    if (pgQueryState === 'FAILED' || pgQueryState === 'NONE') {
+      init();
+    }
+  }, [getAccessTokenSilently, dispatch, pgQueryState])
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
       <MotionLazyContainer>

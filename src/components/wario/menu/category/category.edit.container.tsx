@@ -4,14 +4,15 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ICategory } from "@wcp/wcpshared";
 import CategoryComponent, { CategoryEditProps } from "./category.component";
 import { HOST_API } from "../../../../config";
-import { getCategoryEntryIds } from "@wcp/wario-ux-shared";
+import { getCategoryEntryIds, getCategoryEntryById } from "@wcp/wario-ux-shared";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { useSnackbar } from "notistack";
 
-const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps) => {
+const CategoryEditContainer = ({ categoryId, onCloseCallback }: CategoryEditProps) => {
   const { enqueueSnackbar } = useSnackbar();
   
   const categoryIds = useAppSelector(s => getCategoryEntryIds(s.ws.categories));
+  const category = useAppSelector(s=> getCategoryEntryById(s.ws.categories, categoryId)!.category);
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
   const [subheading, setSubheading] = useState(category.subheading);
@@ -65,7 +66,7 @@ const CategoryEditContainer = ({ category, onCloseCallback }: CategoryEditProps)
     }
   };
 
-  return (
+  return ( 
     <CategoryComponent
       confirmText="Save"
       onCloseCallback={onCloseCallback}

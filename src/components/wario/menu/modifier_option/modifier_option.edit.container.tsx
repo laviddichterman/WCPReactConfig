@@ -6,15 +6,16 @@ import { HOST_API } from "../../../../config";
 import { IOption } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+import { getModifierOptionById, getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 
 interface ModifierOptionEditContainerProps {
-  modifier_option: IOption;
+  modifier_option_id: string;
   onCloseCallback: VoidFunction;
 }
-const ModifierOptionEditContainer = ({ modifier_option, onCloseCallback }: ModifierOptionEditContainerProps) => {
+const ModifierOptionEditContainer = ({ modifier_option_id, onCloseCallback }: ModifierOptionEditContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifierTypeEntry = useAppSelector(s=>getModifierTypeEntryById(s.ws.modifierEntries, modifier_option.modifierTypeId)!);
+  const modifier_option = useAppSelector(s=> getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
+  const modifierTypeEntry = useAppSelector(s=>getModifierTypeEntryById(s.ws.modifierEntries, getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!.modifierTypeId)!);
   const [displayName, setDisplayName] = useState(modifier_option.displayName);
   const [description, setDescription] = useState(modifier_option.description);
   const [shortcode, setShortcode] = useState(modifier_option.shortcode);

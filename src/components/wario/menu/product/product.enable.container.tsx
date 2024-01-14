@@ -8,10 +8,15 @@ import { HOST_API } from "../../../../config";
 import { ProductQuickActionProps } from './product.delete.container';
 import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { selectBaseProductName } from "../../../../redux/store";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { getProductEntryById } from "@wcp/wario-ux-shared";
 
-const ProductEnableContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
+const ProductEnableContainer = ({ product_id, onCloseCallback }: ProductQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+  const productName = useAppSelector(s=>selectBaseProductName(s, product_id));
+  const product = useAppSelector(s=>getProductEntryById(s.ws.products, product_id)!.product);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async () => {
@@ -23,7 +28,7 @@ const ProductEnableContainer = ({ product, productName, onCloseCallback }: Produ
           ...product,
           disabled: null
         };
-        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product_id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,

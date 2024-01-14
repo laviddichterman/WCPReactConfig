@@ -1,18 +1,20 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { IProductInstance } from "@wcp/wcpshared";
 import ElementDeleteComponent from "../../element.delete.component";
 import { HOST_API } from "../../../../../config";
 import { useSnackbar } from "notistack";
+import { useAppSelector } from "../../../../../hooks/useRedux";
+import { getProductInstanceById } from "@wcp/wario-ux-shared";
 
 export interface ProductInstanceQuickActionProps {
-  product_instance: IProductInstance;
+  product_instance_id: string;
   onCloseCallback: VoidFunction;
 }
 
-const ProductInstanceDeleteContainer = ({ product_instance, onCloseCallback }: ProductInstanceQuickActionProps) => {
+const ProductInstanceDeleteContainer = ({ product_instance_id, onCloseCallback }: ProductInstanceQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
+  const product_instance = useAppSelector(s=>getProductInstanceById(s.ws.productInstances, product_instance_id)!);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 

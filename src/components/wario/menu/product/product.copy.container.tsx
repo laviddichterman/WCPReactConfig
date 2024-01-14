@@ -7,37 +7,36 @@ import ProductComponent from "./product.component";
 import { ProductInstanceContainer } from "./instance/product_instance.component";
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { IProduct } from "@wcp/wcpshared";
 import { getProductEntryById } from "@wcp/wario-ux-shared";
 import { ProductAddRequestType } from "./product.add.container";
 import { useSnackbar } from "notistack";
 import { useIndexedState } from "../../../../utils/common";
 
 export interface ProductCopyContainerProps {
-  product: IProduct;
+  product_id: string;
   onCloseCallback: VoidFunction;
 };
-const ProductCopyContainer = ({ product, onCloseCallback }: ProductCopyContainerProps) => {
+const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const productEntry = useAppSelector(s => getProductEntryById(s.ws.products, product.id)!);
+  const productEntry = useAppSelector(s => getProductEntryById(s.ws.products, product_id)!);
   const allProductInstances = useAppSelector(s => s.ws.catalog!.productInstances);
-  const [price, setPrice] = useState(product.price);
-  const [availability, setAvailability] = useState(product.availability ?? null);
-  const [timing, setTiming] = useState(product.timing);
-  const [disabled, setDisabled] = useState(product.disabled ?? null);
-  const [externalIds, setExternalIds] = useState(product.externalIDs);
-  const [serviceDisable, setServiceDisable] = useState(product.serviceDisable)
-  const [flavorMax, setFlavorMax] = useState(product.displayFlags?.flavor_max ?? 10);
-  const [bakeMax, setBakeMax] = useState(product.displayFlags?.bake_max ?? 10);
-  const [bakeDifferentialMax, setBakeDifferentialMax] = useState(product.displayFlags?.bake_differential ?? 100);
-  const [is3p, setIs3p] = useState(product.displayFlags.is3p ?? false);
-  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(product.displayFlags.order_guide.suggestions);
-  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(product.displayFlags.order_guide.warnings);
-  const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(product.displayFlags?.show_name_of_base_product ?? true);
-  const [singularNoun, setSingularNoun] = useState(product.displayFlags?.singular_noun ?? "");
-  const [parentCategories, setParentCategories] = useState(product.category_ids);
-  const [printerGroup, setPrinterGroup] = useState(product.printerGroup);
-  const [modifiers, setModifiers] = useState(product.modifiers);
+  const [price, setPrice] = useState(productEntry.product.price);
+  const [availability, setAvailability] = useState(productEntry.product.availability ?? null);
+  const [timing, setTiming] = useState(productEntry.product.timing);
+  const [disabled, setDisabled] = useState(productEntry.product.disabled ?? null);
+  const [externalIds, setExternalIds] = useState(productEntry.product.externalIDs);
+  const [serviceDisable, setServiceDisable] = useState(productEntry.product.serviceDisable)
+  const [flavorMax, setFlavorMax] = useState(productEntry.product.displayFlags?.flavor_max ?? 10);
+  const [bakeMax, setBakeMax] = useState(productEntry.product.displayFlags?.bake_max ?? 10);
+  const [bakeDifferentialMax, setBakeDifferentialMax] = useState(productEntry.product.displayFlags?.bake_differential ?? 100);
+  const [is3p, setIs3p] = useState(productEntry.product.displayFlags.is3p ?? false);
+  const [orderGuideSuggestionFunctions, setOrderGuideSuggestionFunctions] = useState(productEntry.product.displayFlags.order_guide.suggestions);
+  const [orderGuideWarningFunctions, setOrderGuideWarningFunctions] = useState(productEntry.product.displayFlags.order_guide.warnings);
+  const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(productEntry.product.displayFlags?.show_name_of_base_product ?? true);
+  const [singularNoun, setSingularNoun] = useState(productEntry.product.displayFlags?.singular_noun ?? "");
+  const [parentCategories, setParentCategories] = useState(productEntry.product.category_ids);
+  const [printerGroup, setPrinterGroup] = useState(productEntry.product.printerGroup);
+  const [modifiers, setModifiers] = useState(productEntry.product.modifiers);
 
   // product instance indexed state
   const [expandedPanels, setExpandedPanel] = useIndexedState(useState(Array(productEntry.instances.length).fill(false)));

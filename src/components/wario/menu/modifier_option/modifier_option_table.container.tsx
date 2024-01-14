@@ -1,17 +1,11 @@
-import React, { useState } from "react";
 import { format } from 'date-fns'
 import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
 import { Edit, DeleteOutline, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
 import { DisableDataCheck, DISABLE_REASON, IOption, IOptionType } from '@wcp/wcpshared';
 import TableWrapperComponent from "../../table_wrapper.component";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import { DialogContainer } from "@wcp/wario-ux-shared";
-import ModifierOptionDeleteContainer from "./modifier_option.delete.container";
-import ModifierOptionDisableContainer from "./modifier_option.disable.container";
-import ModifierOptionDisableUntilEodContainer from "./modifier_option.disable_until_eod.container";
-import ModifierOptionEditContainer from "./modifier_option.edit.container";
-import ModifierOptionEnableContainer from "./modifier_option.enable.container";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
+import { openModifierOptionDelete, openModifierOptionDisable, openModifierOptionDisableUntilEod, openModifierOptionEdit, openModifierOptionEnable } from "../../../../redux/slices/CatalogSlice";
 
 export interface ModifierOptionTableContainerProps {
   modifierType: IOptionType;
@@ -20,104 +14,13 @@ export interface ModifierOptionTableContainerProps {
 const ModifierOptionTableContainer = ({
   modifierType
 }: ModifierOptionTableContainerProps) => {
+  const dispatch = useAppDispatch();
   const modifier_types_map = useAppSelector(s => s.ws.catalog!.modifiers);
   const modifierOptionsMap = useAppSelector(s => s.ws.catalog!.options);
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const productInstanceFunctions = useAppSelector(s => s.ws.catalog!.productInstanceFunctions!);
-  const [modifierOptionToEdit, setModifierOptionToEdit] = useState<IOption | null>(null);
-  const [isModifierOptionEditOpen, setIsModifierOptionEditOpen] = useState(false);
-  const [isModifierOptionDeleteOpen, setIsModifierOptionDeleteOpen] = useState(false);
-  const [isModifierOptionEnableOpen, setIsModifierOptionEnableOpen] = useState(false);
-  const [isModifierOptionDisableOpen, setIsModifierOptionDisableOpen] = useState(false);
-  const [isModifierOptionDisableUntilEodOpen, setIsModifierOptionDisableUntilEodOpen] = useState(false);
-
-  const editModifierOption = (row: IOption) => () => {
-    setIsModifierOptionEditOpen(true);
-    setModifierOptionToEdit(row);
-  };
-
-  const deleteModifierOption = (row: IOption) => () => {
-    setIsModifierOptionDeleteOpen(true);
-    setModifierOptionToEdit(row);
-  };
-
-  const disableOptionUntilEOD = (row: IOption) => () => {
-    setIsModifierOptionDisableUntilEodOpen(true);
-    setModifierOptionToEdit(row);
-  };
-  const disableOption = (row: IOption) => () => {
-    setIsModifierOptionDisableOpen(true);
-    setModifierOptionToEdit(row);
-  };
-  const enableOption = (row: IOption) => () => {
-    setIsModifierOptionEnableOpen(true);
-    setModifierOptionToEdit(row);
-  };
 
   return (
-    <>
-
-      <DialogContainer
-        maxWidth={"xl"}
-        title={"Edit Modifier Option"}
-        onClose={() => setIsModifierOptionEditOpen(false)}
-        open={isModifierOptionEditOpen}
-        innerComponent={
-          modifierOptionToEdit !== null &&
-          <ModifierOptionEditContainer
-            onCloseCallback={() => setIsModifierOptionEditOpen(false)}
-            modifier_option={modifierOptionToEdit}
-          />
-        }
-      />
-      <DialogContainer
-        title={"Disable Modifier Option Until End-of-Day"}
-        onClose={() => setIsModifierOptionDisableUntilEodOpen(false)}
-        open={isModifierOptionDisableUntilEodOpen}
-        innerComponent={
-          modifierOptionToEdit !== null &&
-          <ModifierOptionDisableUntilEodContainer
-            onCloseCallback={() => setIsModifierOptionDisableUntilEodOpen(false)}
-            modifier_option={modifierOptionToEdit}
-          />
-        }
-      />
-      <DialogContainer
-        title={"Disable Modifier Option"}
-        onClose={() => setIsModifierOptionDisableOpen(false)}
-        open={isModifierOptionDisableOpen}
-        innerComponent={
-          modifierOptionToEdit !== null &&
-          <ModifierOptionDisableContainer
-            onCloseCallback={() => setIsModifierOptionDisableOpen(false)}
-            modifier_option={modifierOptionToEdit}
-          />
-        }
-      />
-      <DialogContainer
-        title={"Enable Modifier Option"}
-        onClose={() => setIsModifierOptionEnableOpen(false)}
-        open={isModifierOptionEnableOpen}
-        innerComponent={
-          modifierOptionToEdit !== null &&
-          <ModifierOptionEnableContainer
-            onCloseCallback={() => setIsModifierOptionEnableOpen(false)}
-            modifier_option={modifierOptionToEdit}
-          />
-        }
-      />
-      <DialogContainer
-        title={"Delete Modifier Option"}
-        onClose={() => setIsModifierOptionDeleteOpen(false)}
-        open={isModifierOptionDeleteOpen}
-        innerComponent={
-          modifierOptionToEdit !== null &&
-          <ModifierOptionDeleteContainer
-            onCloseCallback={() => setIsModifierOptionDeleteOpen(false)}
-            modifier_option={modifierOptionToEdit}
-          />
-        }
-      />
       <TableWrapperComponent
         disableToolbar
         autoHeight={false}
@@ -133,34 +36,34 @@ const ModifierOptionTableContainer = ({
                 placeholder
                 icon={<Tooltip title={`Edit ${title}`}><Edit /></Tooltip>}
                 label={`Edit ${title}`}
-                onClick={editModifierOption(params.row)}
+                onClick={() => dispatch(openModifierOptionEdit(params.row.id))}
               />);
               const DELETE_MODIFIER_OPTION = (<GridActionsCellItem
                 placeholder
                 icon={<Tooltip title={`Delete ${title}`}><DeleteOutline /></Tooltip>}
                 label={`Delete ${title}`}
-                onClick={deleteModifierOption(params.row)}
+                onClick={() => dispatch(openModifierOptionDelete(params.row.id))}
                 showInMenu
               />);
               const ENABLE_MODIFIER_OPTION = (<GridActionsCellItem
                 placeholder
                 icon={<Tooltip title={`Enable ${title}`}><CheckCircle /></Tooltip>}
                 label={`Enable ${title}`}
-                onClick={enableOption(params.row)}
+                onClick={() => dispatch(openModifierOptionEnable(params.row.id))}
                 showInMenu
               />);
               const DISABLE_MODIFIER_OPTION_UNTIL_EOD = (<GridActionsCellItem
                 placeholder
                 icon={<Tooltip title={`Disable ${title} Until End-of-Day`}><BedtimeOff /></Tooltip>}
                 label={`Disable ${title} Until EOD`}
-                onClick={disableOptionUntilEOD(params.row)}
+                onClick={() => dispatch(openModifierOptionDisableUntilEod(params.row.id))}
                 showInMenu
               />)
               const DISABLE_MODIFIER_OPTION = (<GridActionsCellItem
                 placeholder
                 icon={<Tooltip title={`Disable ${title}`}><Cancel /></Tooltip>}
                 label={`Disable ${title}`}
-                onClick={disableOption(params.row)}
+                onClick={() => dispatch(openModifierOptionDisable(params.row.id))}
                 showInMenu
               />)
               // we pass null instead of actually passing the availability because we want to make a decision based on just the .disabled value
@@ -183,7 +86,6 @@ const ModifierOptionTableContainer = ({
         getRowId={(row) => row._id}
         rows={modifier_types_map[modifierType.id].options.map(x => modifierOptionsMap[x]).sort((a,b)=>a.ordinal - b.ordinal)}
       />
-    </>
   );
 };
 

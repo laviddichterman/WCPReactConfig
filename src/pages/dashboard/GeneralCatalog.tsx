@@ -24,6 +24,8 @@ export default function GeneralCatalog() {
   }
   return (
     <Page title="Catalog Management">
+      <CategoryDialoguesContainer />
+      <ModifierDialoguesContainer />
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid item xs={12} md={12}>
           <Grid container justifyContent="center" spacing={3}>
@@ -56,7 +58,8 @@ export default function GeneralCatalog() {
   );
 }
 
-
+const CategoryDialoguesContainer = React.lazy(() => import("../../components/wario/menu/category_dialogues.container"));
+const ModifierDialoguesContainer = React.lazy(() => import("../../components/wario/menu/modifier_dialogues.container"));
 const CategoryTableContainer = React.lazy(() => import("../../components/wario/menu/category/category_table.container"));
 const ModifierTypeTableContainer = React.lazy(() => import("../../components/wario/menu/modifier_type/modifier_type_table.container"));
 const ProductTableContainer = React.lazy(() => import("../../components/wario/menu/product/product_table.container"));

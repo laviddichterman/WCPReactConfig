@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
@@ -6,18 +6,20 @@ import { HOST_API } from "../../../../config";
 import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAppSelector } from "src/hooks/useRedux";
-import { getProductInstanceById } from "@wcp/wario-ux-shared";
+import { getProductEntryById } from "@wcp/wario-ux-shared";
+import { selectBaseProductName } from "../../../../redux/store";
 
 export interface ProductEditContainerProps {
-  product: IProduct;
+  product_id: string;
   onCloseCallback: VoidFunction;
 };
 
-const ProductEditContainer = ({ product, onCloseCallback }: ProductEditContainerProps) => {
+const ProductEditContainer = ({ product_id, onCloseCallback }: ProductEditContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const productName = useAppSelector(s=> getProductInstanceById(s.ws.productInstances, product.baseProductId)?.displayName)
-  
+  const productName = useAppSelector(s=>selectBaseProductName(s, product_id));
+  const product = useAppSelector(s=>getProductEntryById(s.ws.products, product_id)!.product);
+
   const [price, setPrice] = useState(product.price);
   const [baseProductId, setBaseProductId] = useState(product.baseProductId);
   const [externalIds, setExternalIds] = useState(product.externalIDs);

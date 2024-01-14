@@ -19,11 +19,10 @@ export default function GeneralOrders() {
   const { themeStretch } = useSettings();
   const dispatch = useAppDispatch();
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-
   const handleConfirmOrder = useCallback(async (id: string) => {
     const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order" } });
     dispatch(confirmOrder({ orderId: id, additionalMessage: "", token: token }));
-  }, [dispatch, getAccessTokenSilently])
+  }, [dispatch, getAccessTokenSilently]);
   return (
     <Page title="Order Management">
       <Container maxWidth={themeStretch ? false : 'xl'}>

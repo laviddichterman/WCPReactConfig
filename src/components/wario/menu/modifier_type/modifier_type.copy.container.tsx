@@ -13,31 +13,31 @@ import { useSnackbar } from "notistack";
 import { useIndexedState } from "../../../../utils/common";
 
 export interface ModifierTypeCopyContainerProps {
-  modifierType: IOptionType;
+  modifierTypeId: string;
   onCloseCallback: VoidFunction;
 };
-const ModifierTypeCopyContainer = ({ modifierType, onCloseCallback }: ModifierTypeCopyContainerProps) => {
+const ModifierTypeCopyContainer = ({ modifierTypeId, onCloseCallback }: ModifierTypeCopyContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifierTypeEntry = useAppSelector(s=>getModifierTypeEntryById(s.ws.modifierEntries, modifierType.id)!);
+  const modifierTypeEntry = useAppSelector(s=>getModifierTypeEntryById(s.ws.modifierEntries, modifierTypeId)!);
   const allOptions = useAppSelector(s=>s.ws.catalog!.options);
 
-  const [ordinal, setOrdinal] = useState(modifierType.ordinal);
-  const [name, setName] = useState(modifierType.name);
-  const [displayName, setDisplayName] = useState(modifierType.displayName ?? "");
-  const [externalIds, setExternalIds] = useState(modifierType.externalIDs);
-  const [minSelected, setMinSelected] = useState(modifierType.min_selected || 0);
-  const [maxSelected, setMaxSelected] = useState(modifierType.max_selected || null);
-  const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(modifierType.displayFlags.omit_options_if_not_available ?? false);
-  const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(modifierType.displayFlags.omit_section_if_no_available_options ?? false);
-  const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(modifierType.displayFlags.use_toggle_if_only_two_options ?? false);
-  const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(modifierType.displayFlags.hidden ?? false);
-  const [modifierClass, setModifierClass] = useState(modifierType.displayFlags.modifier_class ?? MODIFIER_CLASS.ADD);
-  const [emptyDisplayAs, setEmptyDisplayAs] = useState(modifierType.displayFlags.empty_display_as ?? DISPLAY_AS.OMIT);
-  const [templateString, setTemplateString] = useState(modifierType.displayFlags.template_string ?? "");
-  const [multipleItemSeparator, setMultipleItemSeparator] = useState(modifierType.displayFlags.multiple_item_separator ?? "");
-  const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState(modifierType.displayFlags.non_empty_group_prefix ?? "");
-  const [nonEmptyGroupSuffix, setNonEmptyGroupSuffix] = useState(modifierType.displayFlags.non_empty_group_suffix ?? "");
-  const [is3p, setIs3p] = useState(modifierType.displayFlags.is3p);
+  const [ordinal, setOrdinal] = useState(modifierTypeEntry.modifierType.ordinal);
+  const [name, setName] = useState(modifierTypeEntry.modifierType.name);
+  const [displayName, setDisplayName] = useState(modifierTypeEntry.modifierType.displayName ?? "");
+  const [externalIds, setExternalIds] = useState(modifierTypeEntry.modifierType.externalIDs);
+  const [minSelected, setMinSelected] = useState(modifierTypeEntry.modifierType.min_selected || 0);
+  const [maxSelected, setMaxSelected] = useState(modifierTypeEntry.modifierType.max_selected || null);
+  const [omitOptionIfNotAvailable, setOmitOptionIfNotAvailable] = useState(modifierTypeEntry.modifierType.displayFlags.omit_options_if_not_available ?? false);
+  const [omitSectionIfNoAvailableOptions, setOmitSectionIfNoAvailableOptions] = useState(modifierTypeEntry.modifierType.displayFlags.omit_section_if_no_available_options ?? false);
+  const [useToggleIfOnlyTwoOptions, setUseToggleIfOnlyTwoOptions] = useState(modifierTypeEntry.modifierType.displayFlags.use_toggle_if_only_two_options ?? false);
+  const [isHiddenDuringCustomization, setIsHiddenDuringCustomization] = useState(modifierTypeEntry.modifierType.displayFlags.hidden ?? false);
+  const [modifierClass, setModifierClass] = useState(modifierTypeEntry.modifierType.displayFlags.modifier_class ?? MODIFIER_CLASS.ADD);
+  const [emptyDisplayAs, setEmptyDisplayAs] = useState(modifierTypeEntry.modifierType.displayFlags.empty_display_as ?? DISPLAY_AS.OMIT);
+  const [templateString, setTemplateString] = useState(modifierTypeEntry.modifierType.displayFlags.template_string ?? "");
+  const [multipleItemSeparator, setMultipleItemSeparator] = useState(modifierTypeEntry.modifierType.displayFlags.multiple_item_separator ?? "");
+  const [nonEmptyGroupPrefix, setNonEmptyGroupPrefix] = useState(modifierTypeEntry.modifierType.displayFlags.non_empty_group_prefix ?? "");
+  const [nonEmptyGroupSuffix, setNonEmptyGroupSuffix] = useState(modifierTypeEntry.modifierType.displayFlags.non_empty_group_suffix ?? "");
+  const [is3p, setIs3p] = useState(modifierTypeEntry.modifierType.displayFlags.is3p);
 
   // product instance indexed state
   const [expandedPanels, setExpandedPanel] = useIndexedState(useState(Array(modifierTypeEntry.options.length).fill(false)));

@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "../element.delete.component";
 import { HOST_API } from "../../../../config";
-import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { selectBaseProductName } from "../../../../redux/store";
 
 export interface ProductQuickActionProps {
-  product: IProduct;
-  productName: string;
+  product_id: string;
   onCloseCallback: VoidFunction;
 }
-const ProductDeleteContainer = ({ product, productName, onCloseCallback }: ProductQuickActionProps) => {
+const ProductDeleteContainer = ({ product_id, onCloseCallback }: ProductQuickActionProps) => {
+  const productName = useAppSelector(s=>selectBaseProductName(s, product_id));
   const { enqueueSnackbar } = useSnackbar();
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
@@ -21,7 +22,7 @@ const ProductDeleteContainer = ({ product, productName, onCloseCallback }: Produ
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "delete:catalog" } });
-        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product.id}`, {
+        const response = await fetch(`${HOST_API}/api/v1/menu/product/${product_id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

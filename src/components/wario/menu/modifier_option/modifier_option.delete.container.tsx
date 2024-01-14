@@ -3,16 +3,18 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ElementDeleteComponent from "../element.delete.component";
 import { HOST_API } from "../../../../config";
-import { IOption } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { getModifierOptionById } from "@wcp/wario-ux-shared";
 
 export interface ModifierOptionQuickActionProps {
-  modifier_option: IOption;
+  modifier_option_id: string;
   onCloseCallback: VoidFunction;
 }
-const ModifierOptionDeleteContainer = ({ modifier_option, onCloseCallback }: ModifierOptionQuickActionProps) => {
+const ModifierOptionDeleteContainer = ({ modifier_option_id, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+  const modifier_option = useAppSelector(s=> getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 

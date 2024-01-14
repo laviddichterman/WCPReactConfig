@@ -4,40 +4,24 @@ import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGett
 import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD, GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GridDetailPanelToggleCell } from "@mui/x-data-grid-pro";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { FormControlLabel, Tooltip, Switch, IconButton } from '@mui/material';
-import { CatalogCategoryEntry, ICategory } from "@wcp/wcpshared";
+import { CatalogCategoryEntry } from "@wcp/wcpshared";
 import ProductTableContainer from "../product/product_table.container";
 import TableWrapperComponent from "../../table_wrapper.component";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import { DialogContainer } from "@wcp/wario-ux-shared";
-import CategoryEditContainer from "./category.edit.container";
-import CategoryDeleteContainer from "./category.delete.container";
-import InterstitialDialog from "../../interstitial.dialog.component";
-import CategoryAddContainer from "./category.add.container";
-import ProductAddContainer from "../product/product.add.container";
-import ProductImportContainer from "../product/product.import.container";
-import HierarchicalProductImportContainer from "../product/hierarchical_product.import.container";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
+import { openCategoryDelete, openCategoryEdit, openCategoryInterstitial, setEnableCategoryTreeView, setHideDisabled } from '../../../../redux/slices/CatalogSlice';
 
 
 type ValueGetterRow = GridValueGetterParams<any, CatalogCategoryEntry>;
 
 const CategoryTableContainer = () => {
+  const dispatch = useAppDispatch();
   const products = useAppSelector(s => s.ws.catalog?.products ?? {});
   const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
-
+  const hideDisabled = useAppSelector(s=> s.catalog.hideDisabledProducts);
+  const enableCategoryTreeView = useAppSelector(s=> s.catalog.enableCategoryTreeView);
   const apiRef = useGridApiRef();
 
   const [panelsExpandedSize, setPanelsExpandedSize] = useState<Record<string, number>>({});
-  const [hideDisabled, setHideDisabled] = useState(true);
-
-  const [isCategoryInterstitialOpen, setIsCategoryInterstitialOpen] = useState(false);
-  const [isCategoryAddOpen, setIsCategoryAddOpen] = useState(false);
-  const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false);
-  const [isCategoryDeleteOpen, setIsCategoryDeleteOpen] = useState(false);
-  const [categoryToEdit, setCategoryToEdit] = useState<ICategory | null>(null);
-
-  const [isProductAddOpen, setIsProductAddOpen] = useState(false);
-  const [isProductImportOpen, setIsProductImportOpen] = useState(false);
-  const [isHierarchicalProductImportOpen, setIsHierarchicalProductImportOpen] = useState(false);
 
   const setPanelsExpandedSizeForRow = useCallback((row: string) => (size: number) => {
     setPanelsExpandedSize({ ...panelsExpandedSize, [row]: size });
@@ -70,103 +54,7 @@ const CategoryTableContainer = () => {
       [row.category.name],
     [categories]);
 
-  const editCategory = (row: CatalogCategoryEntry) => () => {
-    setIsCategoryEditOpen(true);
-    setCategoryToEdit(row.category);
-  };
-
-  const deleteCategory = (row: CatalogCategoryEntry) => () => {
-    setIsCategoryDeleteOpen(true);
-    setCategoryToEdit(row.category);
-  };
-
   return (
-    <>
-    <InterstitialDialog
-            dialogTitle={"Add new..."}
-            options={[
-              {
-                title: "Add Category",
-                cb: () => {
-                  setIsCategoryAddOpen(true);
-                },
-                open: isCategoryAddOpen,
-                onClose: () => setIsCategoryAddOpen(false),
-                component: (
-                  <CategoryAddContainer
-                    onCloseCallback={() => {
-                      setIsCategoryAddOpen(false);
-                    }}
-                  />
-                ),
-              },
-              {
-                title: "Add Product",
-                cb: () => setIsProductAddOpen(true),
-                open: isProductAddOpen,
-                onClose: () => setIsProductAddOpen(false),
-                component: (
-                  <ProductAddContainer
-                    onCloseCallback={() => {
-                      setIsProductAddOpen(false);
-                    }}
-                  />
-                ),
-              },
-              {
-                title: "Import Products",
-                cb: () => setIsProductImportOpen(true),
-                open: isProductImportOpen,
-                onClose: () => setIsProductImportOpen(false),
-                component: (
-                  <ProductImportContainer
-                    onCloseCallback={() => {
-                      setIsProductImportOpen(false);
-                    }}
-                  />
-                ),
-              },
-              {
-                title: "Import Hierarchical Products",
-                cb: () => setIsHierarchicalProductImportOpen(true),
-                open: isHierarchicalProductImportOpen,
-                onClose: () => setIsHierarchicalProductImportOpen(false),
-                component: (
-                  <HierarchicalProductImportContainer
-                    onCloseCallback={() => {
-                      setIsHierarchicalProductImportOpen(false);
-                    }}
-                  />
-                ),
-              },
-            ]}
-            onClose={() => setIsCategoryInterstitialOpen(false)}
-            open={isCategoryInterstitialOpen}
-          />
-      <DialogContainer
-        title={"Edit Category"}
-        onClose={() => setIsCategoryEditOpen(false)}
-        open={isCategoryEditOpen}
-        innerComponent={
-          categoryToEdit !== null &&
-          <CategoryEditContainer
-            onCloseCallback={() => setIsCategoryEditOpen(false)}
-            category={categoryToEdit}
-          />
-        }
-      />
-      <DialogContainer
-        title={"Delete Category"}
-        onClose={() => setIsCategoryDeleteOpen(false)}
-        open={isCategoryDeleteOpen}
-        innerComponent={
-          categoryToEdit !== null &&
-          <CategoryDeleteContainer
-            onCloseCallback={() => setIsCategoryDeleteOpen(false)}
-            category={categoryToEdit}
-          />
-        }
-      />
       <TableWrapperComponent
         sx={{ minWidth: '750px' }}
         title="Catalog Tree View"
@@ -187,13 +75,13 @@ const CategoryTableContainer = () => {
               placeholder
               icon={<Tooltip title="Edit Category"><Edit /></Tooltip>}
               label="Edit Category"
-              onClick={editCategory(params.row)}
+              onClick={() => dispatch(openCategoryEdit(params.row.category.id))}
               key={`EDIT${params.id}`} />,
             <GridActionsCellItem
               placeholder
               icon={<Tooltip title="Delete Category"><DeleteOutline /></Tooltip>}
               label="Delete Category"
-              onClick={deleteCategory(params.row)}
+              onClick={() => dispatch(openCategoryDelete(params.row.category.id))}
               key={`DELETE${params.id}`} />
           ]
         },
@@ -209,20 +97,32 @@ const CategoryTableContainer = () => {
         ]}
         toolbarActions={[
           {
-            size: 5,
+            size: 4,
             elt: <FormControlLabel
               sx={{ mx: 2 }}
               key="HIDE"
               control={<Switch
                 checked={hideDisabled}
-                onChange={e => setHideDisabled(e.target.checked)}
+                onChange={e => dispatch(setHideDisabled(e.target.checked))}
                 name="Hide Disabled" />}
               labelPlacement="end"
               label="Hide Disabled" />
           },
+          // {
+          //   size: 4,
+          //   elt: <FormControlLabel
+          //     sx={{ mx: 2 }}
+          //     key="TOGGLECAT"
+          //     control={<Switch
+          //       checked={enableCategoryTreeView}
+          //       onChange={e => dispatch(setEnableCategoryTreeView(e.target.checked))}
+          //       name="Category Tree View" />}
+          //     labelPlacement="end"
+          //     label="Category Tree View" />
+          // },
           {
             size: 1,
-            elt: <Tooltip key="AddNew" title="Add new..."><IconButton onClick={() => setIsCategoryInterstitialOpen(true)}><AddBox /></IconButton></Tooltip>
+            elt: <Tooltip key="AddNew" title="Add new..."><IconButton onClick={() => dispatch(openCategoryInterstitial())}><AddBox /></IconButton></Tooltip>
           }
         ]}
         rows={Object.values(categories)}
@@ -243,7 +143,6 @@ const CategoryTableContainer = () => {
         }}
         disableToolbar={false}
       />
-    </>
   );
 };
 
