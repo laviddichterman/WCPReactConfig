@@ -21,7 +21,7 @@ export interface CatalogManagerState {
 
 const initialState: CatalogManagerState = {
   dialogueState: 'NONE',
-  enableCategoryTreeView: false,
+  enableCategoryTreeView: true,
   selectedCategoryId: null,
   selectedModifierOptionId: null,
   selectedModifierTypeId: null,

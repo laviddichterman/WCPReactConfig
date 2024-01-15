@@ -1,4 +1,4 @@
-import { useCallback, Dispatch, SetStateAction } from "react";
+import { useCallback, Dispatch, SetStateAction, ReactNode } from "react";
 import { format } from 'date-fns';
 import { DisableDataCheck, DISABLE_REASON, IProduct, IProductInstance, ReduceArrayToMapByKey } from '@wcp/wcpshared';
 import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
@@ -7,7 +7,7 @@ import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cance
 import Tooltip from '@mui/material/Tooltip';
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
-import TableWrapperComponent from "../../table_wrapper.component";
+import TableWrapperComponent, { ToolbarAction } from "../../table_wrapper.component";
 
 import { openProductClassCopy, openProductClassDelete, openProductClassDisable, openProductClassDisableUntilEod, openProductClassEdit, openProductClassEnable, openProductInstanceAdd, openProductInstanceDelete, openProductInstanceEdit } from "../../../../redux/slices/CatalogSlice";
 
@@ -18,11 +18,17 @@ interface ProductTableContainerProps {
   products: RowType[];
   setPanelsExpandedSize: Dispatch<SetStateAction<number>>;
   disableToolbar: boolean;
+  pagination?: boolean;
+  title?: ReactNode;
+  toolbarActions?: ToolbarAction[];
 }
 const ProductTableContainer = ({
   products,
   setPanelsExpandedSize,
-  disableToolbar
+  disableToolbar,
+  pagination,
+  title,
+  toolbarActions
 }: ProductTableContainerProps) => {
   const dispatch = useAppDispatch();
   const catalog = useAppSelector(s => s.ws.catalog!);
@@ -80,6 +86,12 @@ const ProductTableContainer = ({
       <TableWrapperComponent
         disableToolbar={disableToolbar}
         apiRef={apiRef}
+        disableSelectionOnClick
+        initialState={ pagination ? {
+          pagination: {
+            pageSize: 25,
+          },
+        }: undefined}
         columns={[{
           headerName: "Actions",
           field: 'actions',
@@ -88,47 +100,47 @@ const ProductTableContainer = ({
             const base_piid = params.row.product.baseProductId;
             const title = base_piid !== null ? catalog.productInstances[base_piid].displayName : "Incomplete Product";
             const ADD_PRODUCT_INSTANCE = (<GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title={`Add Product Instance to ${title}`}><AddBox /></Tooltip>}
               label={`Add Product Instance to ${title}`}
               onClick={() => dispatch(openProductInstanceAdd(params.row.product.id))}
             />);
             const EDIT_PRODUCT = (<GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title={`Edit ${title}`}><Edit /></Tooltip>}
               label={`Edit ${title}`}
               onClick={() => dispatch(openProductClassEdit(params.row.product.id))}
             />);
             const ENABLE_PRODUCT = (<GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title={`Enable ${title}`}><CheckCircle /></Tooltip>}
               label={`Enable ${title}`}
               onClick={() => dispatch(openProductClassEnable(params.row.product.id))}
               showInMenu
             />);
             const DISABLE_PRODUCT_UNTIL_EOD = (<GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title={`Disable ${title} Until End-of-Day`}><BedtimeOff /></Tooltip>}
               label={`Disable ${title} Until EOD`}
               onClick={() => dispatch(openProductClassDisableUntilEod(params.row.product.id))}
               showInMenu
             />);
             const DISABLE_PRODUCT = (<GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title={`Disable ${title}`}><Cancel /></Tooltip>}
               label={`Disable ${title}`}
               onClick={() => dispatch(openProductClassDisable(params.row.product.id))}
               showInMenu
             />);
             const COPY_PRODUCT = (<GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title={`Copy ${title}`}><LibraryAdd /></Tooltip>}
               label={`Copy ${title}`}
               onClick={() => dispatch(openProductClassCopy(params.row.product.id))}
               showInMenu
             />);
             const DELETE_PRODUCT = (<GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title={`Delete ${title}`}><DeleteOutline /></Tooltip>}
               label={`Delete ${title}`}
               onClick={() => dispatch(openProductClassDelete(params.row.product.id))}
@@ -147,6 +159,10 @@ const ProductTableContainer = ({
         { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => v.row.product.disabled !== null && DisableDataCheck(v.row.product.disabled, null, CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.row.product.disabled.start > v.row.product.disabled.end ? "True" : `${format(v.row.product.disabled.start, "MMMM dd, y hh:mm a")} to ${format(v.row.product.disabled.end, "MMMM dd, y hh:mm a")}`) : "False", flex: 1 },
         ]}
         rows={products}
+        title={title}
+        toolbarActions={toolbarActions}
+        pagination={pagination}
+        hideFooter={pagination !== true}
         getRowId={(row: RowType) => row.product.id}
         getDetailPanelContent={getDetailPanelContent}
         getDetailPanelHeight={getDetailPanelHeight}

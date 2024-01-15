@@ -38,27 +38,27 @@ const ModifierTypeTableContainer = () => {
           type: 'actions',
           getActions: (params: GridRowParams<CatalogModifierEntry>) => [
             <GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title="Edit Modifier Type"><Edit /></Tooltip>}
               label="Edit Modifier Type"
               onClick={() => dispatch(openModifierTypeEdit(params.row.modifierType.id))}
               key="EDITMT" />,
             <GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title="Add Modifier Option"><AddBox /></Tooltip>}
               label="Add Modifier Option"
               onClick={() => dispatch(openModifierOptionAdd(params.row.modifierType.id))}
               showInMenu
               key="ADDMO" />,
             <GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title="Copy Modifier Type"><LibraryAdd /></Tooltip>}
               label="Copy Modifier Type"
               onClick={() => dispatch(openModifierTypeCopy(params.row.modifierType.id))}
               showInMenu
               key="COPYMT" />,
             <GridActionsCellItem
-              placeholder
+              placeholder={undefined}
               icon={<Tooltip title="Delete Modifier Type"><DeleteOutline /></Tooltip>}
               label="Delete Modifier Type"
               onClick={() => dispatch(openModifierTypeDelete(params.row.modifierType.id))}
@@ -80,6 +80,7 @@ const ModifierTypeTableContainer = () => {
       getDetailPanelContent={getDetailPanelContent}
       getDetailPanelHeight={getDetailPanelHeight}
       disableToolbar={false}
+      disableSelectionOnClick
     />
   </>
   );

@@ -72,6 +72,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
       <TableWrapperComponent
         title="Orders Needing Attention"
         apiRef={apiRef}
+        disableSelectionOnClick
         enableSearch={true}
         columns={[
           { headerName: "Date", field: "date", valueGetter: (v: { row: WOrderInstance }) => v.row.fulfillment.selectedDate, flex: 1 },
@@ -83,7 +84,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
             type: 'actions',
             getActions: (params: GridRowParams<WOrderInstance>) => [
               <GridActionsCellItem
-                placeholder
+                placeholder={undefined}
                 icon={<Tooltip title="Confirm Order"><CheckCircleOutline /></Tooltip>}
                 label="Confirm Order"
                 disabled={orderSliceState === 'PENDING'}

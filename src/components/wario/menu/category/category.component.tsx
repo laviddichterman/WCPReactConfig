@@ -14,7 +14,7 @@ export interface CategoryEditProps {
   onCloseCallback: VoidFunction;
 }
 export type CategoryComponentProps = {
-  categoryIds: EntityId[];
+  categoryIds: string[];
   confirmText: string;
 } & Pick<ElementActionComponentProps, 'onCloseCallback' | 'onConfirmClick' | 'isProcessing'> &
   ValSetValNamed<string | null, 'description'> &
@@ -29,7 +29,7 @@ export type CategoryComponentProps = {
   ValSetValNamed<string[], 'serviceDisable'>;
 
 const CategoryComponent = (props: CategoryComponentProps) => {
-  const selectCategoryById = useAppSelector(s => (id: EntityId) => getCategoryEntryById(s.ws.categories, id));
+  const selectCategoryById = useAppSelector(s => (id: string) => getCategoryEntryById(s.ws.categories, id));
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
   return (
     <ElementActionComponent

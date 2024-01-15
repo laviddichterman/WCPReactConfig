@@ -32,6 +32,7 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
     <>
       <TableWrapperComponent
         sx={{ minWidth: "750px" }}
+        disableSelectionOnClick
         disableToolbar={false}
         title="Product Instance Functions"
         toolbarActions={[{
@@ -48,14 +49,14 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
             type: 'actions',
             getActions: (params: GridRowParams<IProductInstanceFunction>) => [
               <GridActionsCellItem
-                placeholder
+                placeholder={undefined}
                 icon={<Tooltip title="Edit Product Function"><Edit /></Tooltip>}
                 label="Edit Product Function"
                 onClick={editProductFunction(params.row)}
                 key="EditPF"
               />,
               <GridActionsCellItem
-                placeholder
+                placeholder={undefined}
                 icon={<Tooltip title="Delete Product Function"><DeleteOutline /></Tooltip>}
                 label="Delete Product Function"
                 onClick={deleteProductFunction(params.row)}

@@ -35,6 +35,7 @@ const PrinterGroupTableContainer = () => {
       <TableWrapperComponent
         sx={{ minWidth: '750px' }}
         title="Printer Group View"
+        disableSelectionOnClick
         apiRef={apiRef}
         columns={[
           {
@@ -43,13 +44,13 @@ const PrinterGroupTableContainer = () => {
             type: 'actions',
             getActions: (params: GridRowParams<PrinterGroup>) => [
               <GridActionsCellItem
-                placeholder
+                placeholder={undefined}
                 icon={<Tooltip title="Edit Printer Group"><Edit /></Tooltip>}
                 label="Edit Printer Group"
                 onClick={editPrinterGroup(params.row)}
                 key={`EDIT${params.id}`} />,
               <GridActionsCellItem
-                placeholder
+                placeholder={undefined}
                 icon={<Tooltip title="Delete Printer Group"><DeleteOutline /></Tooltip>}
                 label="Delete Printer Group"
                 onClick={deletePrinterGroup(params.row)}

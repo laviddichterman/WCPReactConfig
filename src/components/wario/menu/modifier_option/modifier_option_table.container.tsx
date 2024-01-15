@@ -23,6 +23,7 @@ const ModifierOptionTableContainer = ({
   return (
       <TableWrapperComponent
         disableToolbar
+        disableSelectionOnClick
         autoHeight={false}
         rowThreshold={0}
         columns={[

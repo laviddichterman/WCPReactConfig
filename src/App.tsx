@@ -9,7 +9,7 @@ import { ProgressBarStyle } from './components/ProgressBar';
 import NotistackProvider from './components/NotistackProvider';
 import MotionLazyContainer from './components/animate/MotionLazyContainer';
 import { useAppDispatch, useAppSelector } from './hooks/useRedux';
-import { IsSocketDataLoaded, SocketIoActions, AdapterCurrentTimeOverrideUtils } from '@wcp/wario-ux-shared';
+import { IsSocketDataLoaded, AdapterCurrentTimeOverrideUtils, startConnection } from '@wcp/wario-ux-shared';
 import { useMemo, useEffect } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { queryPrinterGroups } from './redux/slices/PrinterGroupSlice';
@@ -36,7 +36,7 @@ export default function App() {
   const DateAdapter = useMemo(() => AdapterCurrentTimeOverrideUtils(isSocketDataLoaded ? currentTime : Date.now()), [isSocketDataLoaded, currentTime]);
   useEffect(() => {
     if (socketIoState === 'NONE') {
-      dispatch(SocketIoActions.startConnection());
+      dispatch(startConnection());
     }
   }, [socketIoState, dispatch]);
   useEffect(() => {

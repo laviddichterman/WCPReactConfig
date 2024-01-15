@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 // @mui
 import { Container, Grid } from '@mui/material';
 // hooks
@@ -6,6 +6,13 @@ import useSettings from '../../hooks/useSettings';
 // components
 import Page from '../../components/Page';
 import { useAppSelector } from '../../hooks/useRedux';
+import ProductTableContainer from '../../components/wario/menu/product/product_table.container';
+import CategoryDialoguesContainer from '../../components/wario/menu/category_dialogues.container';
+import ModifierDialoguesContainer from '../../components/wario/menu/modifier_dialogues.container';
+import CategoryTableContainer from '../../components/wario/menu/category/category_table.container';
+import ModifierTypeTableContainer from '../../components/wario/menu/modifier_type/modifier_type_table.container';
+import ProductInstanceFunctionTableContainer from '../../components/wario/menu/product_instance_function/product_instance_function_table.container';
+import PrinterGroupTableContainer from '../../components/wario/menu/printer_group/PrinterGroupTableContainer';
 
 export default function GeneralCatalog() {
   const { themeStretch } = useSettings();
@@ -36,6 +43,8 @@ export default function GeneralCatalog() {
               <Grid item xs={12}>
                 <ProductTableContainer
                   disableToolbar={false}
+                  title={"Products without a category"}
+                  pagination={true}
                   products={orphanedProducts}
                   setPanelsExpandedSize={() => (0)} // no need for the panels expanded size here... i don't think
                 />
@@ -57,11 +66,3 @@ export default function GeneralCatalog() {
     </Page>
   );
 }
-
-const CategoryDialoguesContainer = React.lazy(() => import("../../components/wario/menu/category_dialogues.container"));
-const ModifierDialoguesContainer = React.lazy(() => import("../../components/wario/menu/modifier_dialogues.container"));
-const CategoryTableContainer = React.lazy(() => import("../../components/wario/menu/category/category_table.container"));
-const ModifierTypeTableContainer = React.lazy(() => import("../../components/wario/menu/modifier_type/modifier_type_table.container"));
-const ProductTableContainer = React.lazy(() => import("../../components/wario/menu/product/product_table.container"));
-const ProductInstanceFunctionTableContainer = React.lazy(() => import("../../components/wario/menu/product_instance_function/product_instance_function_table.container"));
-const PrinterGroupTableContainer = React.lazy(() => import("../../components/wario/menu/printer_group/PrinterGroupTableContainer"));

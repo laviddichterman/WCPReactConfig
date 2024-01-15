@@ -4,13 +4,13 @@ import axiosInstance from "../../utils/axios";
 import uuidv4 from "../../utils/uuidv4";
 import { enqueueSnackbar } from 'notistack'
 import { parseISO, subDays } from "date-fns";
-export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>({ selectId: entry => entry.id });
+export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>();
 export const { selectAll: getWOrderInstances, selectById: getWOrderInstanceById, selectIds: getWOrderInstanceIds } =
   WOrderInstanceAdapter.getSelectors();
 
 type RequestStatus =  'FAILED' | 'PENDING' | 'IDLE';
 export interface OrderManagerState {
-  orders: EntityState<WOrderInstance>;  
+  orders: EntityState<WOrderInstance, string>;  
   requestStatus: RequestStatus;
   pollingStatus: RequestStatus;
 }
