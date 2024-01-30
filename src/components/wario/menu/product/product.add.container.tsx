@@ -7,7 +7,8 @@ import { CURRENCY, IMoney, IProductInstance, IProductModifier, IRecurringInterva
 import { ProductInstanceContainer, UncommittedProduct } from "./instance/product_instance.component";
 import { useSnackbar } from "notistack";
 
-export interface ProductAddRequestType extends UncommittedProduct {
+export interface ProductAddRequestType {
+  product: UncommittedProduct;
   instances: Omit<IProductInstance, 'id' | 'productId'>[];
 }
 
@@ -46,7 +47,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [price, setPrice] = useState<IMoney>({ amount: 0, currency: CURRENCY.USD });
   const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
   const [availability, setAvailability] = useState<IRecurringInterval | null>(null);
-  const [timing, setTiming] = useState<PrepTiming|null>(null);
+  const [timing, setTiming] = useState<PrepTiming | null>(null);
   const [disabled, setDisabled] = useState<IWInterval | null>(null);
   const [serviceDisable, setServiceDisable] = useState([]);
   const [flavorMax, setFlavorMax] = useState(10);
@@ -58,7 +59,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [showNameOfBaseProduct, setShowNameOfBaseProduct] = useState(true);
   const [singularNoun, setSingularNoun] = useState("");
   const [parentCategories, setParentCategories] = useState<string[]>([]);
-  const [printerGroup, setPrinterGroup] = useState<string|null>(null);
+  const [printerGroup, setPrinterGroup] = useState<string | null>(null);
   const [modifiers, setModifiers] = useState<IProductModifier[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
@@ -97,27 +98,29 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
               }
             }
           }],
-          disabled,
-          availability,
-          serviceDisable,
-          timing,
-          price,
-          externalIDs: externalIds,
-          displayFlags: {
-            is3p,
-            bake_differential: bakeDifferentialMax,
-            show_name_of_base_product: showNameOfBaseProduct,
-            flavor_max: flavorMax,
-            bake_max: bakeMax,
-            singular_noun: singularNoun,
-            order_guide: {
-              suggestions: orderGuideSuggestionFunctions,
-              warnings: orderGuideWarningFunctions
-            }
-          },
-          category_ids: parentCategories,
-          printerGroup,
-          modifiers: modifiers,
+          product: {
+            disabled,
+            availability,
+            serviceDisable,
+            timing,
+            price,
+            externalIDs: externalIds,
+            displayFlags: {
+              is3p,
+              bake_differential: bakeDifferentialMax,
+              show_name_of_base_product: showNameOfBaseProduct,
+              flavor_max: flavorMax,
+              bake_max: bakeMax,
+              singular_noun: singularNoun,
+              order_guide: {
+                suggestions: orderGuideSuggestionFunctions,
+                warnings: orderGuideWarningFunctions
+              }
+            },
+            category_ids: parentCategories,
+            printerGroup,
+            modifiers: modifiers,
+          }
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
           method: "POST",

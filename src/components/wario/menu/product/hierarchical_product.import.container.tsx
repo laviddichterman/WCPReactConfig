@@ -2,7 +2,7 @@ import { useState, Dispatch, SetStateAction } from "react";
 import { Grid, TextField, Autocomplete } from '@mui/material';
 
 import { ParseResult } from "papaparse";
-import { IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
+import { IProductInstance, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -14,10 +14,11 @@ import { ProductAddRequestType } from "./product.add.container";
 import { ValSetValNamed } from '../../../../utils/common';
 import ProductModifierComponent from "./ProductModifierComponent";
 import GenericCsvImportComponent from "../../generic_csv_import.component";
+import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
 
-const delay = (ms : number) => new Promise(res => setTimeout(res, ms));
-
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 interface CSVProduct {
+  ID: string;
   Categories: string;
   DisplayName: string;
   Description: string;
@@ -41,6 +42,7 @@ type HierarchicalProductImportComponentProps = {
   disableConfirmOn: boolean;
   setFileData: Dispatch<SetStateAction<CSVProduct[]>>;
 } & ValSetValNamed<string[], 'parentCategories'> &
+  ValSetValNamed<boolean, 'createCategories'> &
   ValSetValNamed<string | null, 'printerGroup'> &
   ValSetValNamed<IProductModifier[], 'modifiers'>;
 
@@ -78,15 +80,15 @@ const HierarchicalProductImportComponent = (props: HierarchicalProductImportComp
               renderInput={(params) => <TextField {...params} label="Printer Group" />}
             />
           </Grid>
-          {/* <Grid item xs={12}>
+          <Grid item xs={12}>
             <ToggleBooleanPropertyComponent
-              disabled={props.isProcessing} 
-              label="Create Categories"
-              setValue={props.setIs3p}
-              value={props.is3p}
+              disabled={props.isProcessing}
+              label="Create Missing Categories"
+              setValue={props.setCreateCategories}
+              value={props.createCategories}
               labelPlacement={'end'}
             />
-          </Grid> */}
+          </Grid>
           <Grid item xs={12}>
             <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={props.setModifiers} />
           </Grid>
@@ -291,7 +293,7 @@ export interface IProductDisplayFlags {
  */
 
 function GenerateHierarchicalProductStructure(acc: HierarchicalProductStructure, curr: CSVProduct, depth: number): HierarchicalProductStructure {
-  const splitCats = curr.Categories.split(',');
+  const splitCats = curr.Category.split(',');
   if (depth < splitCats.length) {
     acc.subcategories[splitCats[depth]] = GenerateHierarchicalProductStructure(
       Object.hasOwn(acc.subcategories, splitCats[depth]) ?
@@ -307,7 +309,8 @@ function GenerateHierarchicalProductStructure(acc: HierarchicalProductStructure,
 }
 
 function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: string, modifiers: IProductModifier[], parentCategories: string[], printerGroup: string | null): ProductAddRequestType {
-  const { Categories, Description, DisplayName, PosName, Price, Shortname, ...others } = prod;
+  // omit Categories to get it inside the externalIds
+  const { Description, DisplayName, PosName, Price, Shortname, ...others } = prod;
   const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
   return {
     instances: [{
@@ -338,33 +341,35 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
       ordinal: ordinal,
       shortcode: Shortname,
     }],
-    disabled: null,
-    availability: null,
-    timing: null,
-    externalIDs: [],
-    serviceDisable: [],
-    price: { amount: Number.parseFloat(Price) * 100, currency: "USD" },
-    displayFlags: {
-      is3p: false,
-      bake_differential: 100,
-      show_name_of_base_product: true,
-      flavor_max: 10,
-      bake_max: 10,
-      singular_noun: singularNoun,
-      order_guide: {
-        suggestions: [],
-        warnings: []
-      }
-    },
-    category_ids: parentCategories,
-    printerGroup,
-    modifiers
+    product: {
+      disabled: null,
+      availability: null,
+      timing: null,
+      externalIDs: [],
+      serviceDisable: [],
+      price: { amount: Number.parseFloat(Price) * 100, currency: "USD" },
+      displayFlags: {
+        is3p: false,
+        bake_differential: 100,
+        show_name_of_base_product: true,
+        flavor_max: 10,
+        bake_max: 10,
+        singular_noun: singularNoun,
+        order_guide: {
+          suggestions: [],
+          warnings: []
+        }
+      },
+      category_ids: parentCategories,
+      printerGroup,
+      modifiers
+    }
   } satisfies ProductAddRequestType;
 }
 
 function GenerateProducts(catalog: HierarchicalProductStructure, modifiers: IProductModifier[], parentCategories: string[], printerGroup: string | null): ProductAddRequestType[] {
   let ordinal = 0;
-  const ProcessCat = (cat: HierarchicalProductStructure):ProductAddRequestType[] => {
+  const ProcessCat = (cat: HierarchicalProductStructure): ProductAddRequestType[] => {
     // const categoryPreferenceModifierTypeRequest: Omit<IOptionType, "id"> & { options: Omit<IOption, 'modifierTypeId' | 'id'>[]; } = {
     //   name: `${cat.category} preference`,
     //   displayName: cat.category,
@@ -394,63 +399,64 @@ function GenerateProducts(catalog: HierarchicalProductStructure, modifiers: IPro
 }
 
 const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunction }) => {
-    const { enqueueSnackbar } = useSnackbar();
-    const [parentCategories, setParentCategories] = useState<string[]>([]);
-    const [printerGroup, setPrinterGroup] = useState<string | null>(null);
-    const [modifiers, setModifiers] = useState<IProductModifier[]>([]);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [data, setData] = useState<CSVProduct[]>([]);
-    const { getAccessTokenSilently } = useAuth0();
+  const { enqueueSnackbar } = useSnackbar();
+  const [parentCategories, setParentCategories] = useState<string[]>([]);
+  const [printerGroup, setPrinterGroup] = useState<string | null>(null);
+  const [createCategories, setCreateCategories] = useState(true);
+  const [modifiers, setModifiers] = useState<IProductModifier[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [data, setData] = useState<CSVProduct[]>([]);
+  const { getAccessTokenSilently } = useAuth0();
 
-    const addProducts = async () => {
-      if (!isProcessing) {
-        setIsProcessing(true);
-        // step 1: structure the data
-        const catalog = data.reduce((acc: HierarchicalProductStructure, curr: CSVProduct) =>
-          GenerateHierarchicalProductStructure(acc, curr, 0), { category: "", products: [], subcategories: {} } satisfies HierarchicalProductStructure);
-        const products = GenerateProducts(catalog, modifiers, parentCategories, printerGroup);
-        for (let i = 0; i < products.length; ++i) {
-          try {
-            const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
-            
-            const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(products[i]),
-            });
-            if (response.status === 201) {
-              enqueueSnackbar(`Imported ${products[i].instances[0].displayName}.`);
-              await delay(1000);
-            }
-          } catch (error) {
-            enqueueSnackbar(`Unable to import ${products[i].instances[0].displayName}. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
-            console.error(error);
-          }
+  const addProducts = async () => {
+    if (!isProcessing) {
+      setIsProcessing(true);
+      // step 1: structure the data
+      const catalog = data.reduce((acc: HierarchicalProductStructure, curr: CSVProduct) =>
+        GenerateHierarchicalProductStructure(acc, curr, 0), { category: "", products: [], subcategories: {} } satisfies HierarchicalProductStructure);
+      const products = GenerateProducts(catalog, modifiers, parentCategories, printerGroup);
+      try {
+        const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
+
+        const response = await fetch(`${HOST_API}/api/v1/menu/productbatch/`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(products),
+        });
+        if (response.status === 201) {
+          enqueueSnackbar(`Imported batch products.`);
+          await delay(1000);
         }
+      } catch (error) {
+        enqueueSnackbar(`Unable to import. Got error: ${JSON.stringify(error, null, 2)}.`, { variant: "error" });
+        console.error(error);
       }
-      setIsProcessing(false);
-      onCloseCallback();
-    };
-
-    return (
-      <HierarchicalProductImportComponent
-        confirmText="Import"
-        onCloseCallback={onCloseCallback}
-        onConfirmClick={() => addProducts()}
-        isProcessing={isProcessing}
-        disableConfirmOn={isProcessing || data.length === 0}
-        parentCategories={parentCategories}
-        setParentCategories={setParentCategories}
-        printerGroup={printerGroup}
-        setPrinterGroup={setPrinterGroup}
-        modifiers={modifiers}
-        setModifiers={setModifiers}
-        setFileData={setData}
-      />
-    );
+    }
+    setIsProcessing(false);
+    onCloseCallback();
   };
 
-  export default HierarchicalProductImportContainer;
+  return (
+    <HierarchicalProductImportComponent
+      confirmText="Import"
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={() => addProducts()}
+      isProcessing={isProcessing}
+      disableConfirmOn={isProcessing || data.length === 0 || (createCategories && parentCategories.length > 1)}
+      createCategories={createCategories}
+      setCreateCategories={setCreateCategories}
+      parentCategories={parentCategories}
+      setParentCategories={setParentCategories}
+      printerGroup={printerGroup}
+      setPrinterGroup={setPrinterGroup}
+      modifiers={modifiers}
+      setModifiers={setModifiers}
+      setFileData={setData}
+    />
+  );
+};
+
+export default HierarchicalProductImportContainer;

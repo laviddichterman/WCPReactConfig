@@ -209,31 +209,33 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const productCopyBody: ProductAddRequestType = {
+          product: {
+            price: price,
+            serviceDisable,
+            externalIDs: externalIds,
+            displayFlags: {
+              is3p,
+              bake_differential: bakeDifferentialMax,
+              show_name_of_base_product: showNameOfBaseProduct,
+              flavor_max: flavorMax,
+              bake_max: bakeMax,
+              singular_noun: singularNoun,
+              order_guide: {
+                suggestions: orderGuideSuggestionFunctions,
+                warnings: orderGuideWarningFunctions
+              }
+            },
+            category_ids: parentCategories,
+            printerGroup,
+            modifiers: modifiers,
+            disabled,
+            availability,
+            timing
+          },
           instances: [
             getUncommittedProductInstanceForIndex(indexOfBase),
             ...productEntry.instances.flatMap((x, i) => copyPIFlags[i] && indexOfBase !== i ?
               [getUncommittedProductInstanceForIndex(i)] : [])],
-          price: price,
-          serviceDisable,
-          externalIDs: externalIds,
-          displayFlags: {
-            is3p,
-            bake_differential: bakeDifferentialMax,
-            show_name_of_base_product: showNameOfBaseProduct,
-            flavor_max: flavorMax,
-            bake_max: bakeMax,
-            singular_noun: singularNoun,
-            order_guide: {
-              suggestions: orderGuideSuggestionFunctions,
-              warnings: orderGuideWarningFunctions
-            }
-          },
-          category_ids: parentCategories,
-          printerGroup,
-          modifiers: modifiers,
-          disabled,
-          availability,
-          timing
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
           method: "POST",
