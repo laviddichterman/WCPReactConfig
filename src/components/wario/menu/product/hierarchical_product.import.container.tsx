@@ -2,7 +2,7 @@ import { useState, Dispatch, SetStateAction } from "react";
 import { Grid, TextField, Autocomplete } from '@mui/material';
 
 import { ParseResult } from "papaparse";
-import { IProductInstance, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
+import { IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -293,7 +293,7 @@ export interface IProductDisplayFlags {
  */
 
 function GenerateHierarchicalProductStructure(acc: HierarchicalProductStructure, curr: CSVProduct, depth: number): HierarchicalProductStructure {
-  const splitCats = curr.Category.split(',');
+  const splitCats = curr.Categories.split(',');
   if (depth < splitCats.length) {
     acc.subcategories[splitCats[depth]] = GenerateHierarchicalProductStructure(
       Object.hasOwn(acc.subcategories, splitCats[depth]) ?
@@ -305,7 +305,7 @@ function GenerateHierarchicalProductStructure(acc: HierarchicalProductStructure,
         }, curr, depth + 1);
     return acc;
   }
-  return { ...acc, products: [...acc.products, curr] } satisfies HierarchicalProductStructure;
+  return { ...acc, products: [...acc.products, curr] } as HierarchicalProductStructure;
 }
 
 function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: string, modifiers: IProductModifier[], parentCategories: string[], printerGroup: string | null): ProductAddRequestType {
@@ -427,7 +427,7 @@ const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallba
           body: JSON.stringify(products),
         });
         if (response.status === 201) {
-          enqueueSnackbar(`Imported batch products.`);
+          enqueueSnackbar(`Imported ${products.length} products.`);
           await delay(1000);
         }
       } catch (error) {

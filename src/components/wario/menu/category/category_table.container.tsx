@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
-import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD, GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GridDetailPanelToggleCell } from "@mui/x-data-grid-pro";
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
+import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD, GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GridDetailPanelToggleCell } from "@mui/x-data-grid-premium";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { FormControlLabel, Tooltip, Switch, IconButton } from '@mui/material';
 import { CatalogCategoryEntry } from "@wcp/wcpshared";
@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openCategoryDelete, openCategoryEdit, openCategoryInterstitial, setEnableCategoryTreeView, setHideDisabled } from '../../../../redux/slices/CatalogSlice';
 
 
-type ValueGetterRow = GridValueGetterParams<any, CatalogCategoryEntry>;
+type ValueGetterRow = GridValueGetterParams<CatalogCategoryEntry>;
 
 const CategoryTableContainer = () => {
   const dispatch = useAppDispatch();
@@ -71,6 +71,19 @@ const CategoryTableContainer = () => {
         41 +
         (getProductsInCategory(row.category.id).length * 36)) : 0, [getProductsInCategory, panelsExpandedSize]);
 
+  const onRowClick = useCallback((params: GridRowParams<CatalogCategoryEntry>) => {
+    // if there are children categories and this row's children are not expanded, then expand the children, 
+    // otherwise if there are products in this category, toggle the detail panel, else collapse the children categories
+    const rowNode = apiRef.current.getRowNode(params.id);
+    const isGroupNode = (rowNode && rowNode.type === 'group');
+    console.log({rowNode});
+    if (params.row.children.length && isGroupNode) {
+      apiRef.current.setRowChildrenExpansion(params.id, !rowNode.childrenExpanded);
+    } else if (getProductsInCategory(params.id as string).length) {
+      apiRef.current.toggleDetailPanel(params.id);
+    }
+  }, [apiRef]);
+
   const getDetailPanelContent = useCallback(({ row }: { row: CatalogCategoryEntry }) => getProductsInCategory(row.category.id).length ? (
     <ProductTableContainer
       disableToolbar={true}
@@ -90,7 +103,6 @@ const CategoryTableContainer = () => {
     <TableWrapperComponent
       sx={{ minWidth: '750px' }}
       title="Catalog Tree View"
-      disableSelectionOnClick
       apiRef={apiRef}
       treeData
       getTreeDataPath={(row: CatalogCategoryEntry) => DeriveTreePath(row)}
@@ -105,13 +117,11 @@ const CategoryTableContainer = () => {
         type: 'actions',
         getActions: (params: GridRowParams<CatalogCategoryEntry>) => [
           <GridActionsCellItem
-            placeholder={undefined}
             icon={<Tooltip title="Edit Category"><Edit /></Tooltip>}
             label="Edit Category"
             onClick={() => dispatch(openCategoryEdit(params.row.category.id))}
             key={`EDIT${params.id}`} />,
           <GridActionsCellItem
-            placeholder={undefined}
             icon={<Tooltip title="Delete Category"><DeleteOutline /></Tooltip>}
             label="Delete Category"
             onClick={() => dispatch(openCategoryDelete(params.row.category.id))}
@@ -134,17 +144,7 @@ const CategoryTableContainer = () => {
       getDetailPanelContent={getDetailPanelContent}
       getDetailPanelHeight={getDetailPanelHeight}
       rowThreshold={0}
-      onRowClick={(params: GridRowParams<CatalogCategoryEntry>) => {
-        // if there are children categories and this row's children are not expanded, then expand the children, 
-        // otherwise if there are products in this category, toggle the detail panel, else collapse the children categories
-        if (params.row.children.length && !apiRef.current.getCellParams(params.id, "ordinal").rowNode.childrenExpanded) {
-          apiRef.current.setRowChildrenExpansion(params.id, true);
-        } else if (getProductsInCategory(params.id as string).length) {
-          apiRef.current.toggleDetailPanel(params.id);
-        } else {
-          apiRef.current.setRowChildrenExpansion(params.id, false);
-        }
-      }}
+      onRowClick={onRowClick}
       disableToolbar={false}
     /> :
     <ProductTableContainer

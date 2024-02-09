@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
 import { IProductInstanceFunction, WFunctional } from "@wcp/wcpshared";
@@ -32,7 +32,7 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
     <>
       <TableWrapperComponent
         sx={{ minWidth: "750px" }}
-        disableSelectionOnClick
+        disableRowSelectionOnClick
         disableToolbar={false}
         title="Product Instance Functions"
         toolbarActions={[{
@@ -49,14 +49,12 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
             type: 'actions',
             getActions: (params: GridRowParams<IProductInstanceFunction>) => [
               <GridActionsCellItem
-                placeholder={undefined}
                 icon={<Tooltip title="Edit Product Function"><Edit /></Tooltip>}
                 label="Edit Product Function"
                 onClick={editProductFunction(params.row)}
                 key="EditPF"
               />,
               <GridActionsCellItem
-                placeholder={undefined}
                 icon={<Tooltip title="Delete Product Function"><DeleteOutline /></Tooltip>}
                 label="Delete Product Function"
                 onClick={deleteProductFunction(params.row)}

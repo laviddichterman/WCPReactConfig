@@ -8,8 +8,8 @@ import { Button, Card, Tooltip, Typography, Box } from "@mui/material";
 import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
 import { CheckCircleOutline } from "@mui/icons-material";
-import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
-import { useGridApiRef } from "@mui/x-data-grid-pro";
+import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
+import { useGridApiRef } from "@mui/x-data-grid-premium";
 import { selectEventTitleStringForOrder, selectOrdersNeedingAttention } from "../../../redux/store";
 import { WOrderComponentCard } from "./WOrderComponentCard";
 import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";
@@ -72,7 +72,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
       <TableWrapperComponent
         title="Orders Needing Attention"
         apiRef={apiRef}
-        disableSelectionOnClick
+        disableRowSelectionOnClick
         enableSearch={true}
         columns={[
           { headerName: "Date", field: "date", valueGetter: (v: { row: WOrderInstance }) => v.row.fulfillment.selectedDate, flex: 1 },
@@ -84,7 +84,6 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
             type: 'actions',
             getActions: (params: GridRowParams<WOrderInstance>) => [
               <GridActionsCellItem
-                placeholder={undefined}
                 icon={<Tooltip title="Confirm Order"><CheckCircleOutline /></Tooltip>}
                 label="Confirm Order"
                 disabled={orderSliceState === 'PENDING'}

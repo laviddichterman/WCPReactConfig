@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
 import { Edit, DeleteOutline, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
 import { DisableDataCheck, DISABLE_REASON, IOption, IOptionType } from '@wcp/wcpshared';
@@ -23,7 +23,7 @@ const ModifierOptionTableContainer = ({
   return (
       <TableWrapperComponent
         disableToolbar
-        disableSelectionOnClick
+        disableRowSelectionOnClick
         autoHeight={false}
         rowThreshold={0}
         columns={[
@@ -34,34 +34,29 @@ const ModifierOptionTableContainer = ({
             getActions: (params: GridRowParams<IOption>) => {
               const title = params.row.displayName ? params.row.displayName : "Modifier Option";
               const EDIT_MODIFIER_OPTION = (<GridActionsCellItem
-                placeholder
                 icon={<Tooltip title={`Edit ${title}`}><Edit /></Tooltip>}
                 label={`Edit ${title}`}
                 onClick={() => dispatch(openModifierOptionEdit(params.row.id))}
               />);
               const DELETE_MODIFIER_OPTION = (<GridActionsCellItem
-                placeholder
                 icon={<Tooltip title={`Delete ${title}`}><DeleteOutline /></Tooltip>}
                 label={`Delete ${title}`}
                 onClick={() => dispatch(openModifierOptionDelete(params.row.id))}
                 showInMenu
               />);
               const ENABLE_MODIFIER_OPTION = (<GridActionsCellItem
-                placeholder
                 icon={<Tooltip title={`Enable ${title}`}><CheckCircle /></Tooltip>}
                 label={`Enable ${title}`}
                 onClick={() => dispatch(openModifierOptionEnable(params.row.id))}
                 showInMenu
               />);
               const DISABLE_MODIFIER_OPTION_UNTIL_EOD = (<GridActionsCellItem
-                placeholder
                 icon={<Tooltip title={`Disable ${title} Until End-of-Day`}><BedtimeOff /></Tooltip>}
                 label={`Disable ${title} Until EOD`}
                 onClick={() => dispatch(openModifierOptionDisableUntilEod(params.row.id))}
                 showInMenu
               />)
               const DISABLE_MODIFIER_OPTION = (<GridActionsCellItem
-                placeholder
                 icon={<Tooltip title={`Disable ${title}`}><Cancel /></Tooltip>}
                 label={`Disable ${title}`}
                 onClick={() => dispatch(openModifierOptionDisable(params.row.id))}

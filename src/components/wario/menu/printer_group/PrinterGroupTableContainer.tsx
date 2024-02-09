@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
-import { useGridApiRef } from "@mui/x-data-grid-pro";
+import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
+import { useGridApiRef } from "@mui/x-data-grid-premium";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
 import { PrinterGroup } from "@wcp/wcpshared";
@@ -35,7 +35,7 @@ const PrinterGroupTableContainer = () => {
       <TableWrapperComponent
         sx={{ minWidth: '750px' }}
         title="Printer Group View"
-        disableSelectionOnClick
+        disableRowSelectionOnClick
         apiRef={apiRef}
         columns={[
           {
@@ -44,13 +44,11 @@ const PrinterGroupTableContainer = () => {
             type: 'actions',
             getActions: (params: GridRowParams<PrinterGroup>) => [
               <GridActionsCellItem
-                placeholder={undefined}
                 icon={<Tooltip title="Edit Printer Group"><Edit /></Tooltip>}
                 label="Edit Printer Group"
                 onClick={editPrinterGroup(params.row)}
                 key={`EDIT${params.id}`} />,
               <GridActionsCellItem
-                placeholder={undefined}
                 icon={<Tooltip title="Delete Printer Group"><DeleteOutline /></Tooltip>}
                 label="Delete Printer Group"
                 onClick={deletePrinterGroup(params.row)}

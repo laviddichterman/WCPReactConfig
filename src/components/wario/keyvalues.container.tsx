@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Box, Card, CardHeader, Grid, Button, TextField, Paper, Popper, Typography, CardContent, CardActions } from "@mui/material";
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
 import TableWrapperComponent from "./table_wrapper.component";
 
 function isOverflown(element: any) {
@@ -155,7 +155,6 @@ const KeyValuesContainer = function<T>(props: KeyValuesContainerProps<T>) {
     type: 'actions',
     getActions: (params: GridRowParams) => [
       <GridActionsCellItem
-        placeholder
         key={"delete"}
         icon={<HighlightOffIcon />}
         label={"Delete"}
@@ -197,15 +196,14 @@ const KeyValuesContainer = function<T>(props: KeyValuesContainerProps<T>) {
           }
           <div style={{ height: "100%", overflow: "auto" }}>
             <TableWrapperComponent
-              experimentalFeatures={{ newEditingApi: true }}
               processRowUpdate={(newRow: KeyValuesRowType<T>) => {
                 setLocalValues({ ...localValues, [newRow.key]: newRow });
                 return newRow;
               }}
               disableToolbar
               columns={[
-                { headerName: "Key", field: "key", valueGetter: (v: GridValueGetterParams<any, KeyValuesRowType<T>>) => v.row.key, flex: 1 },
-                { headerName: "Value", editable: props.canEdit, field: "value", valueGetter: (v: GridValueGetterParams<any, KeyValuesRowType<T>>) => v.row.value, flex: 4, renderCell: renderCellExpand },
+                { headerName: "Key", field: "key", valueGetter: (v: GridValueGetterParams<KeyValuesRowType<T>>) => v.row.key, flex: 1 },
+                { headerName: "Value", editable: props.canEdit, field: "value", valueGetter: (v: GridValueGetterParams<KeyValuesRowType<T>>) => v.row.value, flex: 4, renderCell: renderCellExpand },
                 ...removeColumn
               ]}
               getRowId={(row) => row.key}

@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem } from "@mui/x-data-grid-premium";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
 import { OrderFunctional, OrderInstanceFunction } from "@wcp/wcpshared";
@@ -32,6 +32,7 @@ const OrderInstanceFunctionTableContainer = (props: OIFTableContainerProps) => {
     <TableWrapperComponent
     sx={{minWidth: "750px"}}
       disableToolbar={false}
+      disableRowSelectionOnClick
       title="Order Instance Functions"
       toolbarActions={[{
         size: 1,
@@ -47,14 +48,12 @@ const OrderInstanceFunctionTableContainer = (props: OIFTableContainerProps) => {
           type: 'actions',
           getActions: (params) => [
             <GridActionsCellItem
-              placeholder
               icon={<Tooltip title="Edit Order Function"><Edit /></Tooltip>}
               label="Edit Order Function"
               onClick={editOrderFunction(params.row)}
               key="EditPF"
             />,
             <GridActionsCellItem
-              placeholder
               icon={<Tooltip title="Delete Order Function"><DeleteOutline /></Tooltip>}
               label="Delete Order Function"
               onClick={deleteOrderFunction(params.row)}
