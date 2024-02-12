@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { addDays, parseISO } from "date-fns";
 import { TextField, IconButton, Button, Grid, Card, CardHeader, Divider } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { DatePicker } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 
 import { CURRENCY, IMoney, IssueStoreCreditRequest, MoneyToDisplayString, StoreCreditType, WDateUtils } from "@wcp/wcpshared";
 import { HOST_API } from "../../config";
@@ -11,6 +11,7 @@ import { useAppSelector } from "../../hooks/useRedux";
 import { IMoneyPropertyComponent } from "./property-components/IMoneyPropertyComponent";
 import { StringPropertyComponent } from "./property-components/StringPropertyComponent";
 import { useSnackbar } from "notistack";
+import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
 
 const DEFAULT_MONEY = { amount: 500, currency: CURRENCY.USD };
 const StoreCreditIssueComponent = () => {
@@ -18,6 +19,7 @@ const StoreCreditIssueComponent = () => {
   const { getAccessTokenSilently } = useAuth0();
 
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
+  const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
   const [amount, setAmount] = useState<IMoney>(DEFAULT_MONEY);
   const [addedBy, setAddedBy] = useState("");
   const [reason, setReason] = useState("");
@@ -27,7 +29,7 @@ const StoreCreditIssueComponent = () => {
   const [recipientEmailError, setRecipientEmailError] = useState(false);
   const [expiration, setExpiration] = useState<string | null>(WDateUtils.formatISODate(addDays(CURRENT_TIME, 60)));
   const [isProcessing, setIsProcessing] = useState(false);
-  
+
   const validateRecipientEmail = () => {
     //setRecipientEmailError(recipientEmail.length >= 1 && !EMAIL_REGEX.test(recipientEmail))
     // TODO: use yup.isEmail
@@ -77,7 +79,7 @@ const StoreCreditIssueComponent = () => {
     <Card>
       <CardHeader title="Issue a store credit for a customer"
         subheader="Note: purchased store credit MUST be done through our website!"
-        sx={{pb: 1}}
+        sx={{ pb: 1 }}
       />
       <Divider />
       <Grid sx={{ p: 1 }} container spacing={1.5} justifyContent="center">
@@ -125,18 +127,23 @@ const StoreCreditIssueComponent = () => {
           />
         </Grid>
         <Grid item xs={10} md={5}>
-          <DatePicker
-            renderInput={(props) => <TextField fullWidth sx={{ height: '10%' }} {...props} />}
-            disableMaskedInput
-            showToolbar={false}
-            minDate={addDays(CURRENT_TIME, 30)}
-            label="Expiration"
-            value={expiration ? parseISO(expiration) : null}
-            onChange={(date) => { setExpiration(date ? WDateUtils.formatISODate(date) : null) }}
-            inputFormat={WDateUtils.ServiceDateDisplayFormat}
-          />
+          <LocalizationProvider dateAdapter={DateAdapter}>
+            <DatePicker
+              sx={{ height: '10%' }}
+              minDate={addDays(CURRENT_TIME, 30)}
+              label="Expiration"
+              value={expiration ? parseISO(expiration) : null}
+              onChange={(date) => { setExpiration(date ? WDateUtils.formatISODate(date) : null) }}
+              format={WDateUtils.ServiceDateDisplayFormat}
+              slotProps={{
+                textField: { fullWidth: true },
+                toolbar: {
+                  hidden: true,
+                },
+              }} />
+          </LocalizationProvider>
         </Grid>
-        <Grid item xs={2} md={1} sx={{my: 'auto'}}>
+        <Grid item xs={2} md={1} sx={{ my: 'auto' }}>
           <IconButton
             sx={{ m: 'auto' }}
             edge="start"
@@ -156,7 +163,7 @@ const StoreCreditIssueComponent = () => {
             setValue={setReason}
           />
         </Grid>
-        <Grid item xs={3} md={1} sx={{my: 'auto', width: "100%"}}>
+        <Grid item xs={3} md={1} sx={{ my: 'auto', width: "100%" }}>
           <Button
             sx={{ m: 'auto', width: "100%" }}
             onClick={handleSubmit}

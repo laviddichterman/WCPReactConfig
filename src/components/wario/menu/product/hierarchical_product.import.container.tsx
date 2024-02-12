@@ -364,7 +364,7 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
       printerGroup,
       modifiers
     }
-  } satisfies ProductAddRequestType;
+  } as ProductAddRequestType;
 }
 
 function GenerateProducts(catalog: HierarchicalProductStructure, modifiers: IProductModifier[], parentCategories: string[], printerGroup: string | null): ProductAddRequestType[] {
@@ -413,7 +413,7 @@ const HierarchicalProductImportContainer = ({ onCloseCallback }: { onCloseCallba
       setIsProcessing(true);
       // step 1: structure the data
       const catalog = data.reduce((acc: HierarchicalProductStructure, curr: CSVProduct) =>
-        GenerateHierarchicalProductStructure(acc, curr, 0), { category: "", products: [], subcategories: {} } satisfies HierarchicalProductStructure);
+        GenerateHierarchicalProductStructure(acc, curr, 0), { category: "", products: [], subcategories: {} } as HierarchicalProductStructure);
       const products = GenerateProducts(catalog, modifiers, parentCategories, printerGroup);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });

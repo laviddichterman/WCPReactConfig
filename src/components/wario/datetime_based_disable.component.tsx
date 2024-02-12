@@ -1,10 +1,11 @@
 import { endOfDay, getTime } from 'date-fns'
 import { Grid, TextField } from "@mui/material";
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { IWInterval } from "@wcp/wcpshared";
 import { useAppSelector } from "../../hooks/useRedux";
 import { ValSetVal } from "src/utils/common";
 import { ToggleBooleanPropertyComponent } from "./property-components/ToggleBooleanPropertyComponent";
+import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
 
 export type DatetimeBasedDisableComponentProps = {
   disabled: boolean;
@@ -15,6 +16,7 @@ export const IsDisableValueValid = (value: IWInterval | null) =>
 
 const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps) => {
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
+  const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
 
   const updateDisabledStart = (start: number) => {
     props.setValue({ ...props.value!, start: getTime(start) });
@@ -49,31 +51,29 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
         </Grid>
       }
       {(props.value !== null && props.value.start !== 1 && props.value.end !== 0) &&
-        <>
+        <LocalizationProvider dateAdapter={DateAdapter}>
           <Grid item xs={6}>
             <DateTimePicker
-              renderInput={(props) => <TextField fullWidth {...props} />}
               label={"Disabled Start"}
               disablePast
               value={props.value.start}
               onChange={(date) => date !== null && updateDisabledStart(date)}
-              inputFormat="MMM dd, y hh:mm a"
-              disableMaskedInput
+              format="MMM dd, y hh:mm a"
+              slotProps={{ textField: { fullWidth: true } }}
             />
           </Grid>
           <Grid item xs={6}>
             <DateTimePicker
-              renderInput={(props) => <TextField fullWidth {...props} />}
               label={"Disabled End"}
               disablePast
               minDateTime={props.value.start}
               value={props.value.end}
               onChange={(date) => date !== null && updateDisabledEnd(date)}
-              inputFormat="MMM dd, y hh:mm a"
-              disableMaskedInput
+              format="MMM dd, y hh:mm a"
+              slotProps={{ textField: { fullWidth: true } }}
             />
           </Grid>
-        </>}
+        </LocalizationProvider>}
     </Grid>
   );
 };

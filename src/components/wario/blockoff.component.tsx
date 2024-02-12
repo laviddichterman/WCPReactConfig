@@ -16,7 +16,7 @@ import {
   Autocomplete
 } from '@mui/material'
 import { Done, HighlightOff } from '@mui/icons-material';
-import { StaticDatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
 import { useAuth0 } from '@auth0/auth0-react';
 import { GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wcpshared";
 
@@ -24,6 +24,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { HOST_API } from '../../config';
 import { setSelectedDate, setStartTime, setEndTime, toggleSelectedService, setSelectedServices, setStartOptions, setEndOptions } from "../../redux/slices/BlockOffSlice";
 import { useSnackbar } from "notistack";
+import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
 
 const TrimOptionsBeforeDisabled = function <T extends { disabled: boolean; }>(opts: T[]) {
   const idx = opts.findIndex((elt: T) => elt.disabled);
@@ -63,6 +64,7 @@ const BlockOffComp = () => {
   const fulfillments = useAppSelector(s => s.ws.fulfillments!);
   const filteredFulfillments = useMemo(() => Object.values(fulfillments).filter((x) => WDateUtils.HasOperatingHours(x.operatingHours)), [fulfillments])
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
+  const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -266,121 +268,119 @@ const BlockOffComp = () => {
     }
   }
 
-  return (
-    filteredFulfillments.length === 0 ? <div>Fulfillments need operating hours for this page to be useful</div> :
-    <>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title="Add Blocked-Off Time:" sx={{ mb: 3 }} />
-          <Grid container>
-            <Grid item container xs={12} sx={{ mx: 6 }}>
-              {
-                filteredFulfillments.map((x) => (
-                  <Grid item xs={Math.floor(12 / filteredFulfillments.length)} key={x.id}>
-                    <ServiceSelectionCheckbox
-                      service_name={x.displayName}
-                      selected={selectedServices.indexOf(x.id) !== -1}
-                      onChange={() => onChangeServiceSelection(x.id)}
-                    />
-                  </Grid>
-                ))
-              }
-            </Grid>
-            <Grid item xs={12} sm={7} >
-              <StaticDatePicker
-                renderInput={(props) => <TextField {...props} />}
-                displayStaticWrapperAs="desktop"
-                openTo="day"
-                showToolbar={false}
-                minDate={new Date(CURRENT_TIME)}
-                maxDate={add(CURRENT_TIME, { days: 60 })}
-                shouldDisableDate={e => !HasOptionsForDate(WDateUtils.formatISODate(e))}
-                value={selectedDate ? parseISO(selectedDate) : null}
-                onChange={(date) => handleSetSelectedDate(date)}
-                inputFormat={WDateUtils.ServiceDateDisplayFormat}
+  return filteredFulfillments.length === 0 ? <div>Fulfillments need operating hours for this page to be useful</div> :
+  <>
+    <Grid item xs={12}>
+      <Card>
+        <CardHeader title="Add Blocked-Off Time:" sx={{ mb: 3 }} />
+        <Grid container>
+          <Grid item container xs={12} sx={{ mx: 6 }}>
+            {
+              filteredFulfillments.map((x) => (
+                <Grid item xs={Math.floor(12 / filteredFulfillments.length)} key={x.id}>
+                  <ServiceSelectionCheckbox
+                    service_name={x.displayName}
+                    selected={selectedServices.indexOf(x.id) !== -1}
+                    onChange={() => onChangeServiceSelection(x.id)}
+                  />
+                </Grid>
+              ))
+            }
+          </Grid>
+          <Grid item xs={12} sm={7} >
+          <LocalizationProvider dateAdapter={DateAdapter}>
+            <StaticDatePicker
+              slotProps={{ toolbar: {hidden: true}}}
+              displayStaticWrapperAs="desktop"
+              openTo="day"
+              minDate={new Date(CURRENT_TIME)}
+              maxDate={add(CURRENT_TIME, { days: 60 })}
+              shouldDisableDate={e => !HasOptionsForDate(WDateUtils.formatISODate(e))}
+              value={selectedDate ? parseISO(selectedDate) : null}
+              onChange={(date) => handleSetSelectedDate(date)}
+            />
+            </LocalizationProvider>
+          </Grid>
+          <Grid container spacing={2} sx={{ my: 'auto', px: 1, pb: 1 }} item xs={12} sm={5}>
+            <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
+              <Autocomplete
+                sx={{ m: 'auto', maxWidth: 200 }}
+                disableClearable
+                className="col"
+                options={startOptions.filter(x => !x.disabled).map(x => x.value)}
+                isOptionEqualToValue={(o, v) => o === v}
+                getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
+                // @ts-ignore
+                value={startTime}
+                onChange={(_, v) => onChangeLowerBound(v)}
+                disabled={selectedDate === null}
+                renderInput={(params) => <TextField {...params} label={"Start"}
+                />}
               />
             </Grid>
-            <Grid container spacing={2} sx={{ my: 'auto', px: 1, pb: 1 }} item xs={12} sm={5}>
-              <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
-                <Autocomplete
-                  sx={{ m: 'auto', maxWidth: 200 }}
-                  disableClearable
-                  className="col"
-                  options={startOptions.filter(x => !x.disabled).map(x => x.value)}
-                  isOptionEqualToValue={(o, v) => o === v}
-                  getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
-                  // @ts-ignore
-                  value={startTime}
-                  onChange={(_, v) => onChangeLowerBound(v)}
-                  disabled={selectedDate === null}
-                  renderInput={(params) => <TextField {...params} label={"Start"}
-                  />}
-                />
-              </Grid>
-              <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
-                <Autocomplete
-                  sx={{ m: 'auto', maxWidth: 200 }}
-                  disableClearable
-                  className="col"
-                  options={endOptions.filter(x => !x.disabled).map(x => x.value)}
-                  isOptionEqualToValue={(o, v) => o === v}
-                  getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
-                  // @ts-ignore
-                  value={endTime}
-                  onChange={(_, v) => onChangeUpperBound(v)}
-                  disabled={selectedDate === null || startTime === null}
-                  renderInput={(params) => <TextField  {...params} label={"End"}
-                  />}
-                />
-              </Grid>
-              <Grid item xs={2} sm={12} sx={{ mx: 'auto', py: 2, alignContent: "center" }}>
-                <Button sx={{ m: 'auto', width: '100%', height: '100%' }} onClick={() => postBlockedOff()} disabled={!canPostBlockedOff || isProcessing}>
-                  Add
-                </Button>
-              </Grid>
+            <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
+              <Autocomplete
+                sx={{ m: 'auto', maxWidth: 200 }}
+                disableClearable
+                className="col"
+                options={endOptions.filter(x => !x.disabled).map(x => x.value)}
+                isOptionEqualToValue={(o, v) => o === v}
+                getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
+                // @ts-ignore
+                value={endTime}
+                onChange={(_, v) => onChangeUpperBound(v)}
+                disabled={selectedDate === null || startTime === null}
+                renderInput={(params) => <TextField  {...params} label={"End"}
+                />}
+              />
+            </Grid>
+            <Grid item xs={2} sm={12} sx={{ mx: 'auto', py: 2, alignContent: "center" }}>
+              <Button sx={{ m: 'auto', width: '100%', height: '100%' }} onClick={() => postBlockedOff()} disabled={!canPostBlockedOff || isProcessing}>
+                Add
+              </Button>
             </Grid>
           </Grid>
-        </Card>
-      </Grid>
-      <Grid item container sx={{py:3}} spacing={3}>
-      {filteredFulfillments.filter(x=>x.blockedOff.length > 0).map((fulfillment, _, arr) =>
-        <Grid key={fulfillment.id} sx={{mx: 'auto'}} item xs={12} md={Math.min(Math.max(Math.floor(12 / arr.length), 6), 6)} lg={Math.min(Math.max(Math.floor(12 / arr.length), 4), 4)}>
-          <Card>
-            <CardHeader title={`${fulfillment.displayName} Blocked-Off Intervals`} />
-            <List component="nav">
-              { /* Note: the blocked off array should be pre-sorted */ }
-              {fulfillment.blockedOff.map((entry) => (
-                <Container key={`${fulfillment.id}.${entry.key}`}>
-                  <ListItem>
-                    {format(parseISO(entry.key), WDateUtils.ServiceDateDisplayFormat)}
-                    <ListItemSecondaryAction>
-                      <IconButton hidden={entry.value.length === 0} edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(fulfillment.id, entry.key)}>
-                        <HighlightOff />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                  <List sx={{ ml: 2 }}>
-                    {entry.value.map((interval, i) => {
-                      return (
-                        <ListItem key={i}>
-                          <ListItemText primary={IntervalToString(interval)} />
-                          <ListItemSecondaryAction>
-                            <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(fulfillment.id, entry.key, interval)}>
-                              <HighlightOff />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                </Container>
-              ))}
-            </List>
-          </Card>
-        </Grid>)}
         </Grid>
-    </>
-  );
+      </Card>
+    </Grid>
+    <Grid item container sx={{py:3}} spacing={3}>
+    {filteredFulfillments.filter(x=>x.blockedOff.length > 0).map((fulfillment, _, arr) =>
+      <Grid key={fulfillment.id} sx={{mx: 'auto'}} item xs={12} md={Math.min(Math.max(Math.floor(12 / arr.length), 6), 6)} lg={Math.min(Math.max(Math.floor(12 / arr.length), 4), 4)}>
+        <Card>
+          <CardHeader title={`${fulfillment.displayName} Blocked-Off Intervals`} />
+          <List component="nav">
+            { /* Note: the blocked off array should be pre-sorted */ }
+            {fulfillment.blockedOff.map((entry) => (
+              <Container key={`${fulfillment.id}.${entry.key}`}>
+                <ListItem>
+                  {format(parseISO(entry.key), WDateUtils.ServiceDateDisplayFormat)}
+                  <ListItemSecondaryAction>
+                    <IconButton hidden={entry.value.length === 0} edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(fulfillment.id, entry.key)}>
+                      <HighlightOff />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <List sx={{ ml: 2 }}>
+                  {entry.value.map((interval, i) => {
+                    return (
+                      <ListItem key={i}>
+                        <ListItemText primary={IntervalToString(interval)} />
+                        <ListItemSecondaryAction>
+                          <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(fulfillment.id, entry.key, interval)}>
+                            <HighlightOff />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Container>
+            ))}
+          </List>
+        </Card>
+      </Grid>)}
+      </Grid>
+  </>;
 }
 
 export default BlockOffComp;

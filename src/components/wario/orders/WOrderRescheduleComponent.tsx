@@ -8,8 +8,9 @@ import { ElementActionComponent, ElementActionComponentProps } from "../menu/ele
 import { Autocomplete, Grid, TextField } from "@mui/material";
 import { add, parseISO } from "date-fns";
 import { range } from 'lodash';
-import { StaticDatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
 import { getWOrderInstanceById, rescheduleOrder } from "../../../redux/slices/OrdersSlice";
+import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
 
 type WOrderRescheduleComponentProps = { orderId: string; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
@@ -20,6 +21,7 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
   const fulfillmentTimeStep = useMemo(() => fulfillments[order.fulfillment.selectedService].timeStep, [fulfillments, order]);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
+  const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
 
   const [selectedDate, setSelectedDate] = useState(order.fulfillment.selectedDate ?? "");
   const [selectedTime, setSelectedTime] = useState(order.fulfillment.selectedTime ?? 1440);
@@ -40,17 +42,20 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
       body={
         <>
           <Grid item xs={12} sm={6}>
-            <StaticDatePicker
-              renderInput={(props) => <TextField {...props} />}
-              displayStaticWrapperAs="desktop"
-              openTo="day"
-              showToolbar={false}
-              minDate={new Date(CURRENT_TIME)}
-              maxDate={add(CURRENT_TIME, { days: 60 })}
-              value={parseISO(selectedDate)}
-              onChange={(date) => setSelectedDate(WDateUtils.formatISODate(date!))}
-              inputFormat={WDateUtils.ServiceDateDisplayFormat}
-            />
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <StaticDatePicker
+                displayStaticWrapperAs="desktop"
+                openTo="day"
+                minDate={new Date(CURRENT_TIME)}
+                maxDate={add(CURRENT_TIME, { days: 60 })}
+                value={parseISO(selectedDate)}
+                onChange={(date) => setSelectedDate(WDateUtils.formatISODate(date!))}
+                slotProps={{
+                  toolbar: {
+                    hidden: true,
+                  },
+                }} />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Autocomplete
