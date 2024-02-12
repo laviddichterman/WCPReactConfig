@@ -159,7 +159,9 @@ const KeyValuesContainer = function<T>(props: KeyValuesContainerProps<T>) {
         icon={<HighlightOffIcon />}
         label={"Delete"}
         onClick={() => {
-          setLocalValues({...localValues, [params.id.toString()]: { key: params.id.toString(), value: null } });
+          const valueCopy = {...localValues};
+          delete valueCopy[params.id.toString()];
+          setLocalValues(valueCopy);
         }} />
     ]
   }] : [];
