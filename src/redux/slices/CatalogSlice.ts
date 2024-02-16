@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { GridRowId } from "@mui/x-data-grid-premium";
+import { createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 
 type CatalogDialog = 'NONE' |
   'CategoryInterstitial' | 'CategoryAdd' | 'CategoryEdit' | 'CategoryDelete' |
@@ -7,6 +8,8 @@ type CatalogDialog = 'NONE' |
   'ModifierTypeAdd' | 'ModifierTypeEdit' | 'ModifierTypeCopy' | 'ModifierTypeDelete' |
   'ModifierOptionAdd' | 'ModifierOptionEdit' | 'ModifierOptionDelete' | 'ModifierOptionEnable' | 'ModifierOptionDisable' | 'ModifierOptionDisableUntilEod'
 
+export interface DetailPanelSize { id: GridRowId; size: number; };
+const CatalogDetailPanelSizeAdapter = createEntityAdapter<DetailPanelSize>();
 export interface CatalogManagerState {
   dialogueState: CatalogDialog;
   enableCategoryTreeView: boolean;
@@ -16,7 +19,7 @@ export interface CatalogManagerState {
   selectedProductInstanceId: string | null;
   selectedModifierOptionId: string | null;
   selectedModifierTypeId: string | null;
-
+  detailPanelSizes: EntityState<DetailPanelSize, GridRowId>;
 }
 
 const initialState: CatalogManagerState = {
@@ -27,7 +30,8 @@ const initialState: CatalogManagerState = {
   selectedModifierTypeId: null,
   selectedProductClassId: null,
   selectedProductInstanceId: null,
-  hideDisabledProducts: true
+  hideDisabledProducts: true,
+  detailPanelSizes: CatalogDetailPanelSizeAdapter.getInitialState()
 }
 
 
@@ -148,13 +152,17 @@ const CatalogManagerSlice = createSlice({
       state.selectedModifierOptionId = action.payload;
       state.dialogueState = 'ModifierOptionEnable';
     },
-
+    setDetailPanelSizeForRowId(state, action: PayloadAction<DetailPanelSize>) {
+      console.log({action})
+      CatalogDetailPanelSizeAdapter.upsertOne(state.detailPanelSizes, action.payload);
+    }
 
   },
 
 });
 
 export const {
+  setDetailPanelSizeForRowId,
   setHideDisabled, setEnableCategoryTreeView,
   closeDialogue, openCategoryInterstitial, openCategoryAdd, openCategoryDelete, openCategoryEdit,
   openProductClassAdd, openProductClassDelete, openProductClassEdit, openProductClassCopy, openProductClassDisable, openProductClassDisableUntilEod, openProductClassEnable,
@@ -163,3 +171,5 @@ export const {
   openModifierOptionAdd, openModifierOptionDelete, openModifierOptionDisable, openModifierOptionDisableUntilEod, openModifierOptionEdit, openModifierOptionEnable,
   openModifierTypeAdd, openModifierTypeCopy, openModifierTypeDelete, openModifierTypeEdit } = CatalogManagerSlice.actions;
 export const CatalogManagerReducer = CatalogManagerSlice.reducer;
+export const { selectAll: getDetailPanelSizes, selectById: getDetailPanelSizeById, selectIds: getDetailPanelIds } =
+  CatalogDetailPanelSizeAdapter.getSelectors();

@@ -1,162 +1,173 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
 import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD, GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GridDetailPanelToggleCell } from "@mui/x-data-grid-premium";
-import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
-import { FormControlLabel, Tooltip, Switch, IconButton } from '@mui/material';
-import { CatalogCategoryEntry } from "@wcp/wcpshared";
+import { DeleteOutline, Edit } from "@mui/icons-material";
+import { Tooltip } from '@mui/material';
 import ProductTableContainer from "../product/product_table.container";
-import TableWrapperComponent from "../../table_wrapper.component";
+import TableWrapperComponent, { ToolbarAction } from "../../table_wrapper.component";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
-import { openCategoryDelete, openCategoryEdit, openCategoryInterstitial, setEnableCategoryTreeView, setHideDisabled } from '../../../../redux/slices/CatalogSlice';
+import { openCategoryDelete, openCategoryEdit, setDetailPanelSizeForRowId } from '../../../../redux/slices/CatalogSlice';
+import { localCreateSelector, RootState, selectProductIdsInCategoryAfterDisableFilter } from "../../../../redux/store";
+import { getCategoryEntryById, getCategoryEntryIds } from "@wcp/wario-ux-shared";
+import { createSelector } from "reselect";
 
 
-type ValueGetterRow = GridValueGetterParams<CatalogCategoryEntry>;
+interface RowType { path: string[]; id: string; };
 
-const CategoryTableContainer = () => {
+const DetailPanelContent = (params: GridRowParams<RowType>) => {
   const dispatch = useAppDispatch();
-  const products = useAppSelector(s => s.ws.catalog?.products ?? {});
-  const categories = useAppSelector(s => s.ws.catalog?.categories ?? {});
-  const hideDisabled = useAppSelector(s => s.catalog.hideDisabledProducts);
-  const enableCategoryTreeView = useAppSelector(s => s.catalog.enableCategoryTreeView);
+  const productsInCategory = useAppSelector(s => selectProductIdsInCategoryAfterDisableFilter(s, params.row.id));
+  return productsInCategory && <ProductTableContainer
+    disableToolbar={true}
+    product_ids={productsInCategory}
+    setPanelsExpandedSize={(size: number) => dispatch(setDetailPanelSizeForRowId({ id: params.row.id, size: size }))}
+  />;
+};
+
+const selectCategoryCallLineName = localCreateSelector(
+  (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
+  (category) => category.category.display_flags.call_line_name
+);
+
+const CategoryCallLineName = (params: GridRenderCellParams<RowType>) => {
+  const callLineName = useAppSelector(s => selectCategoryCallLineName(s, params.row.id));
+  return <>{callLineName}</>;
+}
+
+const selectCategoryOrdinal = localCreateSelector(
+  (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
+  (category) => category.category.ordinal
+);
+
+const CategoryOrdinal = (params: GridRenderCellParams<RowType>) => {
+  const ordinal = useAppSelector(s => selectCategoryOrdinal(s, params.row.id));
+  return <>{ordinal}</>;
+}
+
+const selectCategoryDescription = localCreateSelector(
+  (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
+  (category) => category.category.description
+);
+
+const CategoryDescription = (params: GridRenderCellParams<RowType>) => {
+  const desc = useAppSelector(s => selectCategoryDescription(s, params.row.id));
+  return <>{desc}</>;
+}
+
+const selectCategorySubheading = localCreateSelector(
+  (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
+  (category) => category.category.subheading
+);
+
+const CategorySubheading = (params: GridRenderCellParams<RowType>) => {
+  const subheading = useAppSelector(s => selectCategorySubheading(s, params.row.id));
+  return <>{subheading}</>;
+}
+
+const selectCategoryFootnotes = localCreateSelector(
+  (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
+  (category) => category.category.footnotes
+);
+
+const CategoryFootnotes = (params: GridRenderCellParams<RowType>) => {
+  const footnotes = useAppSelector(s => selectCategoryFootnotes(s, params.row.id));
+  return <>{footnotes}</>;
+}
+
+const CategoryGridDetailPanelToggleCell = (params: GridRenderCellParams<RowType>) => {
+  const products = useAppSelector(s => selectProductIdsInCategoryAfterDisableFilter(s, params.id as string));
+  return products.length > 0 ? <GridDetailPanelToggleCell {...params} /> : <></>
+}
+
+const selectCategoryIdsWithTreePath = createSelector(
+  (s: RootState) => s.ws.categories,
+  (categories) => {
+    const pathMap: Record<string, string[]> = {};
+    const ComputePath: (cId: string) => string[] = (cId) => {
+      if (!Object.hasOwn(pathMap, cId)) {
+        const cat = getCategoryEntryById(categories, cId);
+        pathMap[cId] = cat.category.parent_id !== null ? [...ComputePath(cat.category.parent_id), cat.category.name] : [cat.category.name];
+      }
+      return pathMap[cId];
+    };
+    const category_ids = getCategoryEntryIds(categories);
+    return category_ids.map(x => ({ path: ComputePath(x), id: x }));
+  }
+);
+
+interface CategoryTableContainerProps {
+  toolbarActions?: ToolbarAction[];
+}
+
+const CategoryTableContainer = (props: CategoryTableContainerProps) => {
+  const dispatch = useAppDispatch();
+  const categories = useAppSelector(selectCategoryIdsWithTreePath);
+  // const getDetailPanelHeight = useAppSelector(s => ({ row }: { row: CatalogCategoryEntry }) => selectDetailPanelSizeForRowId(s, row.category.id));
   const apiRef = useGridApiRef();
 
-  const [panelsExpandedSize, setPanelsExpandedSize] = useState<Record<string, number>>({});
-
-  const toolbarActions = useMemo(() => [
-    {
-      size: 4,
-      elt: <FormControlLabel
-        sx={{ mx: 2 }}
-        key="HIDE"
-        control={<Switch
-          checked={hideDisabled}
-          onChange={e => dispatch(setHideDisabled(e.target.checked))}
-          name="Hide Disabled" />}
-        labelPlacement="end"
-        label="Hide Disabled" />
-    },
-    {
-      size: 4,
-      elt: <FormControlLabel
-        sx={{ mx: 2 }}
-        key="TOGGLECAT"
-        control={<Switch
-          checked={enableCategoryTreeView}
-          onChange={e => dispatch(setEnableCategoryTreeView(e.target.checked))}
-          name="Category Tree View" />}
-        labelPlacement="end"
-        label="Category Tree View" />
-    },
-    {
-      size: 1,
-      elt: <Tooltip key="AddNew" title="Add new..."><IconButton onClick={() => dispatch(openCategoryInterstitial())}><AddBox /></IconButton></Tooltip>
-    }
-  ], [dispatch, enableCategoryTreeView, hideDisabled]);
-
-  const setPanelsExpandedSizeForRow = useCallback((row: string) => (size: number) => {
-    setPanelsExpandedSize({ ...panelsExpandedSize, [row]: size });
-  }, [panelsExpandedSize]);
-
-  const productsAfterDisableFilter = useMemo(() => !hideDisabled ? Object.values(products) : Object.values(products).filter((x) =>
-    (!x.product.disabled || x.product.disabled.start <= x.product.disabled.end)),
-    [products, hideDisabled]);
-
-  const getProductsInCategory = useCallback((categoryId: string) => Object.values(productsAfterDisableFilter).filter((x) =>
-    x.product.category_ids.includes(categoryId)), [productsAfterDisableFilter]);
-
-  const getDetailPanelHeight = useCallback(({ row }: { row: CatalogCategoryEntry }) =>
-    getProductsInCategory(row.category.id).length ?
-      ((Object.hasOwn(panelsExpandedSize, row.category.id) ? panelsExpandedSize[row.category.id] : 0) +
-        41 +
-        (getProductsInCategory(row.category.id).length * 36)) : 0, [getProductsInCategory, panelsExpandedSize]);
-
-  const onRowClick = useCallback((params: GridRowParams<CatalogCategoryEntry>) => {
+  const onRowClick = useCallback((params: GridRowParams<RowType>) => {
     // if there are children categories and this row's children are not expanded, then expand the children, 
     // otherwise if there are products in this category, toggle the detail panel, else collapse the children categories
     const rowNode = apiRef.current.getRowNode(params.id);
     const isGroupNode = (rowNode && rowNode.type === 'group');
-    console.log({rowNode});
-    if (params.row.children.length && isGroupNode) {
+    if (isGroupNode) {
       apiRef.current.setRowChildrenExpansion(params.id, !rowNode.childrenExpanded);
-    } else if (getProductsInCategory(params.id as string).length) {
+    } else {
       apiRef.current.toggleDetailPanel(params.id);
     }
   }, [apiRef]);
 
-  const getDetailPanelContent = useCallback(({ row }: { row: CatalogCategoryEntry }) => getProductsInCategory(row.category.id).length ? (
-    <ProductTableContainer
-      disableToolbar={true}
-      products={getProductsInCategory(row.category.id)}
-      setPanelsExpandedSize={setPanelsExpandedSizeForRow(row.category.id)}
-    />) : "",
-    [getProductsInCategory,
-      setPanelsExpandedSizeForRow]);
-
-  const DeriveTreePath: (row: CatalogCategoryEntry) => string[] = useCallback((row) =>
-    row.category.parent_id !== null ?
-      [...DeriveTreePath(categories[row.category.parent_id]), row.category.name] :
-      [row.category.name],
-    [categories]);
-
-  return (enableCategoryTreeView ?
-    <TableWrapperComponent
-      sx={{ minWidth: '750px' }}
-      title="Catalog Tree View"
-      apiRef={apiRef}
-      treeData
-      getTreeDataPath={(row: CatalogCategoryEntry) => DeriveTreePath(row)}
-      columns={[{
-        ...GRID_DETAIL_PANEL_TOGGLE_COL_DEF,
-        type: "string",
-        renderCell: (params: GridRenderCellParams<CatalogCategoryEntry>) => getProductsInCategory(params.id as string).length > 0 ? <GridDetailPanelToggleCell {...params} /> : <></>
-      },
-      {
-        headerName: "Actions",
-        field: 'actions',
-        type: 'actions',
-        getActions: (params: GridRowParams<CatalogCategoryEntry>) => [
-          <GridActionsCellItem
-            icon={<Tooltip title="Edit Category"><Edit /></Tooltip>}
-            label="Edit Category"
-            onClick={() => dispatch(openCategoryEdit(params.row.category.id))}
-            key={`EDIT${params.id}`} />,
-          <GridActionsCellItem
-            icon={<Tooltip title="Delete Category"><DeleteOutline /></Tooltip>}
-            label="Delete Category"
-            onClick={() => dispatch(openCategoryDelete(params.row.category.id))}
-            key={`DELETE${params.id}`} />
-        ]
-      },
-      {
-        field: GRID_TREE_DATA_GROUPING_FIELD,
-        flex: 40
-      },
-      { headerName: "Ordinal", field: "ordinal", valueGetter: (v: ValueGetterRow) => v.row.category.ordinal, flex: 3 },
-      { headerName: "Call Line Name", field: "category.display_flags.call_line_name", valueGetter: (v: ValueGetterRow) => v.row.category.display_flags.call_line_name, flex: 3 },
-      { headerName: "Description", field: "category.description", valueGetter: (v: ValueGetterRow) => v.row.category.description, flex: 3 },
-      { headerName: "Subheading", field: "category.subheading", valueGetter: (v: ValueGetterRow) => v.row.category.subheading, flex: 3 },
-      { headerName: "Footnotes", field: "category.footnotes", valueGetter: (v: ValueGetterRow) => v.row.category.footnotes, flex: 3 },
-      ]}
-      toolbarActions={toolbarActions}
-      rows={Object.values(categories)}
-      getRowId={(row: CatalogCategoryEntry) => row.category.id}
-      getDetailPanelContent={getDetailPanelContent}
-      getDetailPanelHeight={getDetailPanelHeight}
-      rowThreshold={0}
-      onRowClick={onRowClick}
-      disableToolbar={false}
-    /> :
-    <ProductTableContainer
-      title="Product Table View"
-      disableToolbar={false}
-      pagination={true}
-      toolbarActions={toolbarActions}
-      products={productsAfterDisableFilter}
-      setPanelsExpandedSize={() => (0)} // no need for the panels expanded size here... i don't think
-    />
-
-  );
+  return <TableWrapperComponent
+    sx={{ minWidth: '750px' }}
+    title="Catalog Tree View"
+    apiRef={apiRef}
+    disableRowSelectionOnClick
+    onCellClick={() => false}
+    treeData
+    getTreeDataPath={(row: RowType) => row.path}
+    columns={[{
+      ...GRID_DETAIL_PANEL_TOGGLE_COL_DEF,
+      type: "string",
+      renderCell: (params: GridRenderCellParams<RowType>) => <CategoryGridDetailPanelToggleCell {...params} />
+    },
+    {
+      headerName: "Actions",
+      field: 'actions',
+      type: 'actions',
+      getActions: (params: GridRowParams<RowType>) => [
+        <GridActionsCellItem
+          icon={<Tooltip title="Edit Category"><Edit /></Tooltip>}
+          label="Edit Category"
+          onClick={() => dispatch(openCategoryEdit(params.row.id))}
+          key={`EDIT${params.id}`} />,
+        <GridActionsCellItem
+          icon={<Tooltip title="Delete Category"><DeleteOutline /></Tooltip>}
+          label="Delete Category"
+          onClick={() => dispatch(openCategoryDelete(params.row.id))}
+          key={`DELETE${params.id}`} />
+      ]
+    },
+    {
+      field: GRID_TREE_DATA_GROUPING_FIELD,
+      flex: 40
+    },
+    { headerName: "Ordinal", field: "ordinal", renderCell: (params) => <CategoryOrdinal {...params} />, flex: 3 },
+    { headerName: "Call Line Name", field: "category.display_flags.call_line_name", renderCell: (params) => <CategoryCallLineName {...params} />, flex: 3 },
+    { headerName: "Description", field: "category.description", renderCell: (params) => <CategoryDescription {...params} />, flex: 3 },
+    { headerName: "Subheading", field: "category.subheading", renderCell: (params) => <CategorySubheading {...params} />, flex: 3 },
+    { headerName: "Footnotes", field: "category.footnotes", renderCell: (params) => <CategoryFootnotes {...params} />, flex: 3 },
+    ]}
+    toolbarActions={props.toolbarActions}
+    rows={categories}
+    getRowId={(row: RowType) => row.id}
+    getDetailPanelContent={(params: GridRowParams<RowType>) => <DetailPanelContent  {...params} />}
+    getDetailPanelHeight={() => "auto"}
+    // getDetailPanelHeight={getDetailPanelHeight}
+    // rowThreshold={0}
+    onRowClick={onRowClick}
+    disableToolbar={false}
+  />;
 };
 
 export default CategoryTableContainer;
