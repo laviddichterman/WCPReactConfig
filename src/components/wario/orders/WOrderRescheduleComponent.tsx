@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { WDateUtils } from "@wcp/wcpshared";
 import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 import { Autocomplete, Grid, TextField } from "@mui/material";
-import { add, parseISO } from "date-fns";
+import { addDays, parseISO, startOfDay } from "date-fns";
 import { range } from 'lodash';
 import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
 import { getWOrderInstanceById, rescheduleOrder } from "../../../redux/slices/OrdersSlice";
@@ -26,7 +26,7 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
   const order = useAppSelector(s => getWOrderInstanceById(s.orders.orders, props.orderId))!;
   const fulfillmentTimeStep = useAppSelector(s=>selectFulfillmentForOrderId(s, props.orderId).timeStep);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
-  const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
+  const minDay = useAppSelector(s => startOfDay(s.ws.currentTime));
   const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
 
   const [selectedDate, setSelectedDate] = useState(order.fulfillment.selectedDate ?? "");
@@ -52,8 +52,8 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
               <StaticDatePicker
                 displayStaticWrapperAs="desktop"
                 openTo="day"
-                minDate={new Date(CURRENT_TIME)}
-                maxDate={add(CURRENT_TIME, { days: 60 })}
+                minDate={minDay}
+                maxDate={addDays(minDay, 60 )}
                 value={parseISO(selectedDate)}
                 onChange={(date) => setSelectedDate(WDateUtils.formatISODate(date!))}
                 slotProps={{

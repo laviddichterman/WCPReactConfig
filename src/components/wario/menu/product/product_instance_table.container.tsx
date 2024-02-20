@@ -1,4 +1,4 @@
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";

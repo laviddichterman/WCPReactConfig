@@ -3,7 +3,6 @@ import { ElementActionComponent, ElementActionComponentProps } from "../element.
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getCategoryEntryById, getFulfillments } from "@wcp/wario-ux-shared";
 import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wcpshared";
-import { EntityId } from "@reduxjs/toolkit";
 import { StringEnumPropertyComponent } from "../../property-components/StringEnumPropertyComponent";
 import { IntNumericPropertyComponent } from "../../property-components/IntNumericPropertyComponent";
 import { ValSetValNamed } from "../../../../utils/common";
