@@ -10,12 +10,11 @@ import { useState, useRef, useEffect } from 'react';
 import { Card } from '@mui/material';
 
 // hooks
-import useSettings from '../../../hooks/useSettings';
 import useResponsive from '../../../hooks/useResponsive';
 // components
 import CalendarStyle, { CalendarView } from './CalendarStyle';
 // sections
-import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
+import { useAppSelector } from '../../../hooks/useRedux';
 import { selectOrdersAsEvents } from '../../../redux/store';
 import CalendarToolbar from './CalendarToolbar';
 
@@ -26,10 +25,8 @@ export interface OrderCalendarProps {
 }
 
 export default function OrderCalendar(props: OrderCalendarProps) {
-  const { themeStretch } = useSettings();
   const currentTime = useAppSelector(s=>s.ws.currentTime);
 
-  const dispatch = useAppDispatch();
   const orders = useAppSelector(selectOrdersAsEvents);
 
   const isDesktop = useResponsive('up', 'sm');
