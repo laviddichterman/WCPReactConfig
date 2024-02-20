@@ -10,15 +10,21 @@ import { add, parseISO } from "date-fns";
 import { range } from 'lodash';
 import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
 import { getWOrderInstanceById, rescheduleOrder } from "../../../redux/slices/OrdersSlice";
-import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
+import { getFulfillmentById, SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
+import { localCreateSelector, RootState } from "../../../redux/store";
+
+const selectFulfillmentForOrderId = localCreateSelector(
+  (s: RootState, _oId: string) => s.ws.fulfillments,
+  (s: RootState, oId: string) => getWOrderInstanceById(s.orders.orders, oId),
+  (fulfillments, order) => getFulfillmentById(fulfillments, order.fulfillment.selectedService)
+)
 
 type WOrderRescheduleComponentProps = { orderId: string; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
   const order = useAppSelector(s => getWOrderInstanceById(s.orders.orders, props.orderId))!;
-  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
-  const fulfillmentTimeStep = useMemo(() => fulfillments[order.fulfillment.selectedService].timeStep, [fulfillments, order]);
+  const fulfillmentTimeStep = useAppSelector(s=>selectFulfillmentForOrderId(s, props.orderId).timeStep);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));

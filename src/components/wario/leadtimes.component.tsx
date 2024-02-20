@@ -5,27 +5,29 @@ import { HOST_API } from '../../config';
 import { useAppSelector } from '../../hooks/useRedux';
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
 import { useSnackbar } from 'notistack';
+import { getFulfillments } from '@wcp/wario-ux-shared';
+import { FulfillmentConfig } from '@wcp/wcpshared';
 
-const GenerateCleanDirtyArray = (fulfillments: Record<string, any>) => Object.entries(fulfillments).reduce((acc, [key, v]) => ({ ...acc, [key]: false }), {})
+const GenerateCleanDirtyArray = (fulfillments: FulfillmentConfig[]) => fulfillments.reduce((acc, fulfillment) => ({ ...acc, [fulfillment.id]: false }), {})
 
 const LeadTimesComp = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { getAccessTokenSilently } = useAuth0();
 
-  const FULFILLMENTS = useAppSelector(s => s.ws.fulfillments!);
+  const FULFILLMENTS = useAppSelector(s => getFulfillments(s.ws.fulfillments));
   const [dirty, setDirty] = useState<Record<string, boolean>>(GenerateCleanDirtyArray(FULFILLMENTS));
-  const [localLeadTime, setLocalLeadTime] = useState<Record<string, number>>(Object.values(FULFILLMENTS).reduce((acc, x) => ({ ...acc, [x.id]: x.leadTime }), {}));
+  const [localLeadTime, setLocalLeadTime] = useState<Record<string, number>>(FULFILLMENTS.reduce((acc, x) => ({ ...acc, [x.id]: x.leadTime }), {}));
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({ ...acc, [key]: dirty[key] ? value : FULFILLMENTS[key].leadTime }), {}))
+    setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({ ...acc, [key]: dirty[key] ? value : FULFILLMENTS.find(x=>x.id === key)?.leadTime ?? 35 }), {}))
   }, [FULFILLMENTS, dirty, localLeadTime]);
   const leadtimesToUpdate = useMemo(() => Object.entries(localLeadTime).reduce((acc, [key, value]) => dirty[key] ? ({ ...acc, [key]: value }) : acc, {}), [dirty, localLeadTime]);
 
   const onChangeLeadTimes = (fId: string, leadTime: number) => {
     if (localLeadTime[fId] !== leadTime) {
       setLocalLeadTime({ ...localLeadTime, [fId]: leadTime });
-      setDirty({ ...dirty, [fId]: FULFILLMENTS[fId].leadTime !== leadTime });
+      setDirty({ ...dirty, [fId]: FULFILLMENTS.find(x=>x.id === fId)?.leadTime !== leadTime });
     }
   };
 
@@ -46,17 +48,9 @@ const LeadTimesComp = () => {
           enqueueSnackbar(
             `
               Updated lead time(s): ${Object.entries(leadtimesToUpdate).map(([key, value]) => 
-                `${FULFILLMENTS[key].displayName}: ${value} minutes`
+                `${FULFILLMENTS.find(x=>x.id === key)?.displayName}: ${value} minutes`
               )}
             `)
-
-            /**
-             *             <span>
-              Updated lead time(s): {Object.entries(leadtimesToUpdate).map(([key, value]) => (
-                <ul key={key}>{`${FULFILLMENTS[key].displayName}: ${value} minutes`}</ul>)
-              )}
-            </span>)
-             */
           setDirty(GenerateCleanDirtyArray(FULFILLMENTS));
         }
         setIsProcessing(false);

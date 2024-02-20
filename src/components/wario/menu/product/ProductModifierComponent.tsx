@@ -6,6 +6,7 @@ import {
   Autocomplete,
   CardHeader
 } from '@mui/material';
+import { getFulfillments } from '@wcp/wario-ux-shared';
 import { IProductModifier } from '@wcp/wcpshared';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { ValSetValNamed } from '../../../../utils/common';
@@ -17,7 +18,7 @@ type ProductModifierComponentProps = {
 
 const ProductModifierComponent = (props: ProductModifierComponentProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
-  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
+  const fulfillments = useAppSelector(s => getFulfillments(s.ws.fulfillments));
 
   const handleSetModifiers = (mods: string[]) => {
     const oldModsAsRecord = props.modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)
@@ -69,7 +70,7 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
                     options={Object.keys(fulfillments)}
                     value={modifier.serviceDisable}
                     onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
-                    getOptionLabel={(option) => fulfillments[option].displayName}
+                    getOptionLabel={(option) => fulfillments.find((v)=>v.id === option)?.displayName ?? "INVALID"}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => <TextField {...params} label="Disabled Services" />}
                   />

@@ -1,5 +1,5 @@
 import type { WOrderInstance } from "@wcp/wcpshared";
-import { ServiceInfoTableComponent } from '@wcp/wario-ux-shared';
+import { getFulfillmentById, ServiceInfoTableComponent } from '@wcp/wario-ux-shared';
 import { useAppSelector } from "../../../hooks/useRedux";
 
 export type WOrderServiceInfoTableContainerProps = {
@@ -7,7 +7,8 @@ export type WOrderServiceInfoTableContainerProps = {
 };
 
 export const WOrderServiceInfoTableContainer = ({ order }: WOrderServiceInfoTableContainerProps) => {
-  const fulfillmentConfig = useAppSelector(s => s.ws.fulfillments![order.fulfillment.selectedService]);
-  return <ServiceInfoTableComponent  customerInfo={order.customerInfo} fulfillment={order.fulfillment} fulfillmentConfig={fulfillmentConfig} specialInstructions={order.specialInstructions ?? ""} />
+  const displayName = useAppSelector(s=>getFulfillmentById(s.ws.fulfillments, order.fulfillment.selectedService).displayName);
+  const minDuration = useAppSelector(s=>getFulfillmentById(s.ws.fulfillments, order.fulfillment.selectedService).minDuration);
+  return <ServiceInfoTableComponent  customerInfo={order.customerInfo} fulfillment={order.fulfillment} fulfillmentConfig={{ displayName, minDuration }} specialInstructions={order.specialInstructions ?? ""} />
   
 }

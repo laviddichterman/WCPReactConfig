@@ -18,6 +18,7 @@ import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 import ProductModifierComponent from "./ProductModifierComponent";
 import RecurrenceRuleBuilderComponent from '../../RecurrenceRuleBuilderComponent';
 import PrepTimingPropertyComponent from '../../PrepTimingPropertyComponent';
+import { getFulfillments } from '@wcp/wario-ux-shared';
 
 
 type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
@@ -52,7 +53,7 @@ interface ProductComponentProps {
 const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComponentFieldsNoBaseId & ProductComponentProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
-  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
+  const fulfillments = useAppSelector(s => getFulfillments(s.ws.fulfillments));
   const [availabilityIsValid, setAvailabilityIsValid] = useState(true);
 
   const handleSetModifiers = (mods: IProductModifier[]) => {
@@ -175,12 +176,12 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
             <Autocomplete
               multiple
               filterSelectedOptions
-              options={Object.keys(fulfillments)}
+              options={fulfillments.map(x=>x.id)}
               value={props.serviceDisable}
               onChange={(_, v) => {
                 props.setServiceDisable(v);
               }}
-              getOptionLabel={(option) => fulfillments[option]?.displayName ?? "INVALID"}
+              getOptionLabel={(option) => fulfillments.find((v)=>v.id === option)?.displayName ?? "INVALID"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />

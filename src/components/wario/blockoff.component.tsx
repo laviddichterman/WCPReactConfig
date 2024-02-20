@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
-import { add, format, formatISO, parseISO } from "date-fns";
+import { add, format, formatISO, parseISO, startOfDay } from "date-fns";
 import {
   Card,
   CardHeader,
@@ -18,13 +18,14 @@ import {
 import { Done, HighlightOff } from '@mui/icons-material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wcpshared";
+import { FulfillmentConfig, GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wcpshared";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { useAppSelector } from "../../hooks/useRedux";
 import { HOST_API } from '../../config';
-import { setSelectedDate, setStartTime, setEndTime, toggleSelectedService, setSelectedServices, setStartOptions, setEndOptions } from "../../redux/slices/BlockOffSlice";
 import { useSnackbar } from "notistack";
-import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
+import { getFulfillmentById, getFulfillments, SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
+import { localCreateSelector, RootState } from "../../redux/store";
+import { ValSetValNamed } from "../../utils/common";
 
 const TrimOptionsBeforeDisabled = function <T extends { disabled: boolean; }>(opts: T[]) {
   const idx = opts.findIndex((elt: T) => elt.disabled);
@@ -37,10 +38,10 @@ interface ServiceSelectionCheckboxProps {
   service_name: React.ReactNode;
 }
 
-const IntervalToString = (interval: IWInterval) => interval.start === interval.end ? 
-  WDateUtils.MinutesToPrintTime(interval.start) : 
-  (interval.start === 0 && interval.end === 1440 ? 
-    'all day' : 
+const IntervalToString = (interval: IWInterval) => interval.start === interval.end ?
+  WDateUtils.MinutesToPrintTime(interval.start) :
+  (interval.start === 0 && interval.end === 1440 ?
+    'all day' :
     `${WDateUtils.MinutesToPrintTime(interval.start)} to ${WDateUtils.MinutesToPrintTime(interval.end)}`);
 
 const ServiceSelectionCheckbox = (props: ServiceSelectionCheckboxProps) => {
@@ -57,98 +58,211 @@ const ServiceSelectionCheckbox = (props: ServiceSelectionCheckboxProps) => {
   )
 }
 
+const selectFulfillmentIdAndNamesWithOperatingHours = localCreateSelector(
+  (s: RootState) => s.ws.fulfillments,
+  (fulfillments) => getFulfillments(fulfillments).filter(x => WDateUtils.HasOperatingHours(x.operatingHours)).map(x => ({ id: x.id, name: x.displayName }))
+)
+
+const selectSelectedFulfillments = localCreateSelector(
+  (s: RootState, _selectedServices: string[]) => s.ws.fulfillments,
+  (s: RootState, selectedServices: string[]) => selectedServices,
+  (fulfillments, selectedFulfillments) => selectedFulfillments.map(x => getFulfillmentById(fulfillments, x))
+)
+
+const OptionsForDate = (fulfillments: Pick<FulfillmentConfig, "blockedOff" | "timeStep" | "leadTime" | "leadTimeOffset" | "operatingHours" | "specialHours">[], isoDate: string | null, currentTimeISO: string) => {
+  if (fulfillments.length > 0 && isoDate) {
+    const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(fulfillments, isoDate, 0);
+    return WDateUtils.GetOptionsForDate(INFO, isoDate, currentTimeISO);
+  }
+  return [];
+}
+
+const selectOptionsForDate = localCreateSelector(
+  (s: RootState, _isoDate: string | null, selectedServices: string[]) => selectSelectedFulfillments(s, selectedServices),
+  (_s: RootState, isoDate: string | null, _selectedServices: string[]) => isoDate,
+  (s: RootState, _isoDate: string | null, _selectedServices: string[]) => formatISO(s.ws.currentTime),
+  (selectedServices, isoDate, currentTimeIsoString) => OptionsForDate(selectedServices, isoDate, currentTimeIsoString)
+)
+
+type FulfillmentBlockOffListProps = { fId: string } & ValSetValNamed<boolean, 'isProcessing'>;
+const FulfillmentBlockOffList = (props: FulfillmentBlockOffListProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { getAccessTokenSilently } = useAuth0();
+  const filteredFulfillments = useAppSelector(selectFulfillmentIdAndNamesWithOperatingHours);
+  const fulfillmentName = useAppSelector((s: RootState) => getFulfillmentById(s.ws.fulfillments, props.fId).displayName);
+  const fulfillmentBlockOffArray = useAppSelector((s: RootState) => getFulfillmentById(s.ws.fulfillments, props.fId).blockedOff);
+  const deleteBlockedOff = async (fulfillmentId: string, isoDate: string, interval: IWInterval) => {
+    try {
+      const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order_config" } });
+      const body: PostBlockedOffToFulfillmentsRequest = {
+        date: isoDate,
+        fulfillmentIds: [fulfillmentId],
+        interval: interval
+      };
+      const response = await fetch(
+        `${HOST_API}/api/v1/config/timing/blockoff`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+      if (response.status === 201) {
+        enqueueSnackbar(`
+            Removed ${IntervalToString(interval)} block on
+            ${format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}
+            for ${fulfillmentName}`)
+      }
+    } catch (error) {
+      enqueueSnackbar(`Unable to update blocked off intervals. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
+      console.error(error);
+    }
+  };
+
+  const removeBlockedOffForDate = async (fulfillmentId: string, isoDate: string) => {
+    return removeBlockedOffInterval(fulfillmentId, isoDate, { start: 0, end: 1440 })
+  }
+
+  const removeBlockedOffInterval = async (fulfillmentId: string, isoDate: string, interval: IWInterval) => {
+    if (!props.isProcessing) {
+      props.setIsProcessing(true);
+      await deleteBlockedOff(fulfillmentId, isoDate, interval);
+      props.setIsProcessing(false);
+    }
+  }
+  return fulfillmentBlockOffArray.length > 0 ? <Grid key={props.fId} sx={{ mx: 'auto' }} item xs={12} md={Math.min(Math.max(Math.floor(12 / filteredFulfillments.length), 6), 6)} lg={Math.min(Math.max(Math.floor(12 / filteredFulfillments.length), 4), 4)}>
+    <Card>
+      <CardHeader title={`${fulfillmentName} Blocked-Off Intervals`} />
+      <List component="nav">
+        { /* Note: the blocked off array should be pre-sorted */}
+        {fulfillmentBlockOffArray.map((entry) => (
+          <Container key={`${props.fId}.${entry.key}`}>
+            <ListItem>
+              {format(parseISO(entry.key), WDateUtils.ServiceDateDisplayFormat)}
+              <ListItemSecondaryAction>
+                <IconButton hidden={entry.value.length === 0} edge="end" size="small" disabled={props.isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(props.fId, entry.key)}>
+                  <HighlightOff />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <List sx={{ ml: 2 }}>
+              {entry.value.map((interval, i) => {
+                return (
+                  <ListItem key={i}>
+                    <ListItemText primary={IntervalToString(interval)} />
+                    <ListItemSecondaryAction>
+                      <IconButton edge="end" size="small" disabled={props.isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(props.fId, entry.key, interval)}>
+                        <HighlightOff />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Container>
+        ))}
+      </List>
+    </Card>
+  </Grid> : <></>
+}
+
+export const selectNextAvailableServiceDate = localCreateSelector(
+  (s: RootState, _selectedServices: string[]) => s.ws.currentTime,
+  (s: RootState, _selectedServices: string[]) => s.ws.fulfillments,
+  (_s: RootState, selectedServices: string[]) => selectedServices,
+  (currentTime, fulfillments, selectedServices) => GetNextAvailableServiceDate(selectedServices.map(x => getFulfillmentById(fulfillments, x)), formatISO(currentTime), 0)
+);
+
+
+const DateSelector = ({ selectedDate, selectedServices, setSelectedDate }: { selectedServices: string[] } & ValSetValNamed<string | null, 'selectedDate'>) => {
+  const DateAdapter = useAppSelector(SelectDateFnsAdapter);
+  const isoCurrentDate = useAppSelector(s => formatISO(s.ws.currentTime));
+  const selectedFulfillmentInfo = useAppSelector(s => selectSelectedFulfillments(s, selectedServices));
+  const minDate = useMemo(() => startOfDay(isoCurrentDate), [isoCurrentDate]);
+  const getOptionsForDate = useCallback((isoDate: string) =>
+    OptionsForDate(selectedFulfillmentInfo, isoDate, isoCurrentDate),
+    [selectedFulfillmentInfo, isoCurrentDate]);
+  const handleSetSelectedDate = useCallback((date: Date | null) => {
+    if (date) {
+      const isoDate = WDateUtils.formatISODate(date);
+      setSelectedDate(isoDate);
+    } else {
+      setSelectedDate(null);
+    }
+  }, [setSelectedDate]);
+  return (<LocalizationProvider dateAdapter={DateAdapter}>
+    <StaticDatePicker
+      slotProps={{ toolbar: { hidden: true } }}
+      displayStaticWrapperAs="desktop"
+      openTo="day"
+      minDate={minDate}
+      maxDate={add(minDate, { days: 60 })}
+      shouldDisableDate={e => getOptionsForDate(WDateUtils.formatISODate(e)).length === 0}
+      value={selectedDate ? parseISO(selectedDate) : null}
+      onChange={(date) => handleSetSelectedDate(date)}
+    />
+  </LocalizationProvider>)
+}
+
 const BlockOffComp = () => {
   const { enqueueSnackbar } = useSnackbar();
-  
-  const dispatch = useAppDispatch();
-  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
-  const filteredFulfillments = useMemo(() => Object.values(fulfillments).filter((x) => WDateUtils.HasOperatingHours(x.operatingHours)), [fulfillments])
-  const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
-  const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
-  const [isProcessing, setIsProcessing] = useState(false);
-  const { getAccessTokenSilently } = useAuth0();
 
-  const startTime = useAppSelector(s => s.blockOff.startTime);
-  const endTime = useAppSelector(s => s.blockOff.endTime);
-  const selectedDate = useAppSelector(s => s.blockOff.selectedDate);
-  const startOptions = useAppSelector(s=>s.blockOff.startOptions);
-  const endOptions = useAppSelector(s=>s.blockOff.endOptions);
-  const selectedServices = useAppSelector(s => s.blockOff.selectedServices);
+  const fulfillmentIdsAndNames = useAppSelector(selectFulfillmentIdAndNamesWithOperatingHours);
+
+  const [selectedServices, setSelectedServices] = useState<string[]>(fulfillmentIdsAndNames.map(x => x.id));
+  const nextAvailableDate = useAppSelector(s => selectNextAvailableServiceDate(s, selectedServices));
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(nextAvailableDate?.selectedDate ?? null);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [endTime, setEndTime] = useState<number | null>(null);
 
   const canPostBlockedOff = useMemo(() => selectedDate !== null && startTime !== null && endTime !== null, [selectedDate, startTime, endTime]);
 
-  const GetOptionsForDate = useCallback((isoDate: string) => {
-    if (selectedServices.length > 0) {
-      const INFO = WDateUtils.GetInfoMapForAvailabilityComputation(selectedServices.map(x => fulfillments[x]), isoDate, 0);
-      return WDateUtils.GetOptionsForDate(INFO, isoDate, formatISO(CURRENT_TIME));
-    }
-    return [];
-  }, [selectedServices, fulfillments, CURRENT_TIME]);
-  const HasOptionsForDate = useCallback((isoDate: string) => GetOptionsForDate(isoDate).filter(x => !x.disabled).length, [GetOptionsForDate]);
+  const timeOptions = useAppSelector(s => selectOptionsForDate(s, selectedDate, selectedServices));
+  const endTimeOptions = useMemo(() => startTime !== null ? TrimOptionsBeforeDisabled(timeOptions.filter(x => x.value >= startTime)) : timeOptions, [startTime, timeOptions]);
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { getAccessTokenSilently } = useAuth0();
+
+  const handleSetSelectedDate = useCallback((date: string | null) => setSelectedDate(date || nextAvailableDate?.selectedDate || null), [setSelectedDate, nextAvailableDate])
 
   useEffect(() => {
-    let starts = selectedDate !== null ? GetOptionsForDate(selectedDate) : [];
-    if (starts.length === 0) {
-        // go to find next available
-        const next = GetNextAvailableServiceDate(selectedServices.map(x => fulfillments[x]), formatISO(CURRENT_TIME), 0)
-        if (next !== null) {
-          const newSelectedDate = next.selectedDate;
-          const newStart = next.selectedTime;
-          const newStarts = GetOptionsForDate(newSelectedDate);
-          const newEnds = TrimOptionsBeforeDisabled(newStarts.filter(x => x.value >= newStart))
-          dispatch(setStartOptions(newStarts));
-          dispatch(setEndOptions(newEnds));
-          dispatch(setSelectedDate(newSelectedDate));
-          dispatch(setStartTime(newStart));
-          dispatch(setEndTime(newStart));
-        }
-        // this shouldn't happen
-        return;
-    } else { // effectively selectedDate !== null AND starts.length > 0
-      // if startTime is not valid
-      if (startTime === null || starts.findIndex(x=>x.value === startTime) === -1) {
-        // we need a new start time, set it to the first option.
-        // in this case, endOptions will be the set to starts
-        const newStart = starts[0].value;
-        dispatch(setStartTime(newStart));
-        if (endTime === null || starts.findIndex(x=>x.value === endTime) === -1) {
-          // and endTime will be set to newStart if its previous value is no longer good
-          dispatch(setEndTime(newStart));
-          dispatch(setEndOptions(starts));
-        } 
-      } else {
-        // start time is good! and is potentially not the first option
-        // just need to recompute ends and verify the end time
-        const newEnds = TrimOptionsBeforeDisabled(starts.filter(x => x.value >= startTime))
-        if (endTime === null || newEnds.findIndex(x=>x.value === endTime) === -1) {
-          dispatch(setEndTime(newEnds[0].value));
-        }
-        dispatch(setEndOptions(newEnds));
-        dispatch(setStartOptions(starts));
+    if (selectedServices.length === 0 && fulfillmentIdsAndNames.length > 0) {
+      setSelectedServices(fulfillmentIdsAndNames.map(x => x.id));
+    }
+  }, [selectedServices, fulfillmentIdsAndNames]);
+
+  // make sure we stay on a day with options
+  useEffect(() => {
+    if (timeOptions.length === 0) {
+      // go to find next available
+      if (nextAvailableDate) {
+        setSelectedDate(nextAvailableDate.selectedDate);
+        setStartTime(nextAvailableDate.selectedTime);
+        setEndTime(nextAvailableDate.selectedTime);
       }
     }
-  }, [startTime, endTime, selectedDate, selectedServices, fulfillments, CURRENT_TIME, GetOptionsForDate]);
+  }, [timeOptions, nextAvailableDate]);
 
   useEffect(() => {
-    if (selectedServices.length === 0 && filteredFulfillments.length > 0) {
-      dispatch(setSelectedServices(filteredFulfillments.map(x=>x.id)));
+    if (timeOptions.length && (startTime === null || timeOptions.findIndex(x => x.value === startTime) === -1)) {
+      setStartTime(timeOptions[0].value);
     }
-  }, [selectedServices, filteredFulfillments]);
-  useEffect(() => {
-    if (startTime === null || !startOptions.find(x => x.value === startTime)) {
-      if (startOptions.length > 0) {
-        dispatch(setStartTime(startOptions[0].value));
-      }
-    }
-  }, [startTime, startOptions]);
+  }, [timeOptions, startTime])
 
   useEffect(() => {
-    if (endTime === null || !endOptions.find(x => x.value === endTime)) {
-      if (endOptions.length > 0) {
-        dispatch(setEndTime(endOptions[0].value));
-      }
+    if (endTimeOptions.length && startTime !== null &&
+      (endTime === null ||
+        endTimeOptions.findIndex(x => x.value === endTime) === -1 ||
+        endTime < startTime)) {
+      setEndTime(endTimeOptions[0].value);
     }
-  }, [startTime, endTime, endOptions]);
+  }, [endTimeOptions, endTime, startTime])
+
+
   const postBlockedOff = async () => {
     if (!isProcessing && selectedDate !== null && startTime !== null && endTime !== null) {
       try {
@@ -176,17 +290,9 @@ const BlockOffComp = () => {
         if (response.status === 201) {
           enqueueSnackbar(`Blocked off ${IntervalToString(interval)} on
               ${format(parseISO(selectedDate), WDateUtils.ServiceDateDisplayFormat)} 
-              for services: ${selectedServices.map(fId => fulfillments[fId].displayName).join(', ')}`)
-          
-          /**
-           *             <span>
-              Blocked off {IntervalToString(interval)} on <br />
-              {format(parseISO(selectedDate), WDateUtils.ServiceDateDisplayFormat)}<br />
-              for services: {selectedServices.map(fId => fulfillments[fId].displayName).join(', ')}
-            </span>)
-           */
-              dispatch(setStartTime(null));
-          dispatch(setEndTime(null));
+              for services: ${selectedServices.map(fId => fulfillmentIdsAndNames.find((x) => x.id === fId)!.name).join(', ')}`)
+          setStartTime(null);
+          setEndTime(null);
         }
       } catch (error) {
         enqueueSnackbar(`Unable to update blocked off intervals. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
@@ -195,192 +301,85 @@ const BlockOffComp = () => {
     }
   };
 
-  const deleteBlockedOff = async (fulfillmentId: string, isoDate: string, interval: IWInterval) => {
-    try {
-      const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:order_config" } });
-      const body: PostBlockedOffToFulfillmentsRequest = {
-        date: isoDate,
-        fulfillmentIds: [fulfillmentId],
-        interval: interval
-      };
-      const response = await fetch(
-        `${HOST_API}/api/v1/config/timing/blockoff`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        }
-      );
-      if (response.status === 201) {
-        enqueueSnackbar(`
-            Removed ${IntervalToString(interval)} block on
-            ${format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}
-            for ${fulfillments[fulfillmentId].displayName}`)
-      }
-      /**
-       * <span>
-            Removed {IntervalToString(interval)} block on <br />
-            {format(parseISO(isoDate), WDateUtils.ServiceDateDisplayFormat)}<br />
-            for {fulfillments[fulfillmentId].displayName}
-          </span>
-       */
-    } catch (error) {
-      enqueueSnackbar(`Unable to update blocked off intervals. Got error: ${JSON.stringify(error)}.`, { variant: "error" });
-      console.error(error);
-    }
-  };
-
-  const removeBlockedOffForDate = async (fulfillmentId: string, isoDate: string) => {
-    if (!isProcessing) {
-      setIsProcessing(true);
-      await deleteBlockedOff(fulfillmentId, isoDate, { start: 0, end: 1440 });
-      setIsProcessing(false);
-    }
-  }
-
-  const removeBlockedOffInterval = async (fulfillmentId: string, isoDate: string, interval: IWInterval) => {
-    if (!isProcessing) {
-      setIsProcessing(true);
-      await deleteBlockedOff(fulfillmentId, isoDate, interval);
-      setIsProcessing(false);
-    }
-  }
-
   const onChangeServiceSelection = (fulfillmentId: string) => {
-    dispatch(toggleSelectedService(fulfillmentId));
-  }
-
-  const onChangeLowerBound = (e: number) => {
-    dispatch(setStartTime(e));
-  }
-  const onChangeUpperBound = (e: number) => {
-    dispatch(setEndTime(e));
-  }
-  const handleSetSelectedDate = (date: Date | null) => {
-    if (date) {
-      const isoDate = WDateUtils.formatISODate(date);
-      dispatch(setSelectedDate(isoDate));
+    const loc = selectedServices.indexOf(fulfillmentId);
+    if (loc === -1) {
+      setSelectedServices([...selectedServices, fulfillmentId]);
     } else {
-      dispatch(setSelectedDate(null));
+      const newSelectedServices = [...selectedServices]
+      newSelectedServices.splice(loc, 1);
+      setSelectedServices(newSelectedServices);
     }
   }
 
-  return filteredFulfillments.length === 0 ? <div>Fulfillments need operating hours for this page to be useful</div> :
-  <>
-    <Grid item xs={12}>
-      <Card>
-        <CardHeader title="Add Blocked-Off Time:" sx={{ mb: 3 }} />
-        <Grid container>
-          <Grid item container xs={12} sx={{ mx: 6 }}>
-            {
-              filteredFulfillments.map((x) => (
-                <Grid item xs={Math.floor(12 / filteredFulfillments.length)} key={x.id}>
-                  <ServiceSelectionCheckbox
-                    service_name={x.displayName}
-                    selected={selectedServices.indexOf(x.id) !== -1}
-                    onChange={() => onChangeServiceSelection(x.id)}
-                  />
-                </Grid>
-              ))
-            }
-          </Grid>
-          <Grid item xs={12} sm={7} >
-          <LocalizationProvider dateAdapter={DateAdapter}>
-            <StaticDatePicker
-              slotProps={{ toolbar: {hidden: true}}}
-              displayStaticWrapperAs="desktop"
-              openTo="day"
-              minDate={new Date(CURRENT_TIME)}
-              maxDate={add(CURRENT_TIME, { days: 60 })}
-              shouldDisableDate={e => !HasOptionsForDate(WDateUtils.formatISODate(e))}
-              value={selectedDate ? parseISO(selectedDate) : null}
-              onChange={(date) => handleSetSelectedDate(date)}
-            />
-            </LocalizationProvider>
-          </Grid>
-          <Grid container spacing={2} sx={{ my: 'auto', px: 1, pb: 1 }} item xs={12} sm={5}>
-            <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
-              <Autocomplete
-                sx={{ m: 'auto', maxWidth: 200 }}
-                disableClearable
-                className="col"
-                options={startOptions.filter(x => !x.disabled).map(x => x.value)}
-                isOptionEqualToValue={(o, v) => o === v}
-                getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
-                // @ts-ignore
-                value={startTime}
-                onChange={(_, v) => onChangeLowerBound(v)}
-                disabled={selectedDate === null}
-                renderInput={(params) => <TextField {...params} label={"Start"}
-                />}
-              />
-            </Grid>
-            <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
-              <Autocomplete
-                sx={{ m: 'auto', maxWidth: 200 }}
-                disableClearable
-                className="col"
-                options={endOptions.filter(x => !x.disabled).map(x => x.value)}
-                isOptionEqualToValue={(o, v) => o === v}
-                getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
-                // @ts-ignore
-                value={endTime}
-                onChange={(_, v) => onChangeUpperBound(v)}
-                disabled={selectedDate === null || startTime === null}
-                renderInput={(params) => <TextField  {...params} label={"End"}
-                />}
-              />
-            </Grid>
-            <Grid item xs={2} sm={12} sx={{ mx: 'auto', py: 2, alignContent: "center" }}>
-              <Button sx={{ m: 'auto', width: '100%', height: '100%' }} onClick={() => postBlockedOff()} disabled={!canPostBlockedOff || isProcessing}>
-                Add
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Card>
-    </Grid>
-    <Grid item container sx={{py:3}} spacing={3}>
-    {filteredFulfillments.filter(x=>x.blockedOff.length > 0).map((fulfillment, _, arr) =>
-      <Grid key={fulfillment.id} sx={{mx: 'auto'}} item xs={12} md={Math.min(Math.max(Math.floor(12 / arr.length), 6), 6)} lg={Math.min(Math.max(Math.floor(12 / arr.length), 4), 4)}>
+  return fulfillmentIdsAndNames.length === 0 ? <div>Fulfillments need operating hours for this page to be useful</div> :
+    <>
+      <Grid item xs={12}>
         <Card>
-          <CardHeader title={`${fulfillment.displayName} Blocked-Off Intervals`} />
-          <List component="nav">
-            { /* Note: the blocked off array should be pre-sorted */ }
-            {fulfillment.blockedOff.map((entry) => (
-              <Container key={`${fulfillment.id}.${entry.key}`}>
-                <ListItem>
-                  {format(parseISO(entry.key), WDateUtils.ServiceDateDisplayFormat)}
-                  <ListItemSecondaryAction>
-                    <IconButton hidden={entry.value.length === 0} edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffForDate(fulfillment.id, entry.key)}>
-                      <HighlightOff />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <List sx={{ ml: 2 }}>
-                  {entry.value.map((interval, i) => {
-                    return (
-                      <ListItem key={i}>
-                        <ListItemText primary={IntervalToString(interval)} />
-                        <ListItemSecondaryAction>
-                          <IconButton edge="end" size="small" disabled={isProcessing} aria-label="delete" onClick={() => removeBlockedOffInterval(fulfillment.id, entry.key, interval)}>
-                            <HighlightOff />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    );
-                  })}
-                </List>
-              </Container>
-            ))}
-          </List>
+          <CardHeader title="Add Blocked-Off Time:" sx={{ mb: 3 }} />
+          <Grid container>
+            <Grid item container xs={12} sx={{ mx: 6 }}>
+              {
+                fulfillmentIdsAndNames.map((x) => (
+                  <Grid item xs={Math.floor(12 / fulfillmentIdsAndNames.length)} key={x.id}>
+                    <ServiceSelectionCheckbox
+                      service_name={x.name}
+                      selected={selectedServices.indexOf(x.id) !== -1}
+                      onChange={() => onChangeServiceSelection(x.id)}
+                    />
+                  </Grid>
+                ))
+              }
+            </Grid>
+            <Grid item xs={12} sm={7} >
+              <DateSelector selectedDate={selectedDate} selectedServices={selectedServices} setSelectedDate={handleSetSelectedDate} />
+            </Grid>
+            <Grid container spacing={2} sx={{ my: 'auto', px: 1, pb: 1 }} item xs={12} sm={5}>
+              <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
+                <Autocomplete
+                  sx={{ m: 'auto', maxWidth: 200 }}
+                  disableClearable
+                  className="col"
+                  options={timeOptions.filter(x => !x.disabled).map(x => x.value)}
+                  isOptionEqualToValue={(o, v) => o === v}
+                  getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
+                  // @ts-ignore
+                  value={startTime}
+                  onChange={(_, v) => setStartTime(v)}
+                  disabled={selectedDate === null}
+                  renderInput={(params) => <TextField {...params} label={"Start"}
+                  />}
+                />
+              </Grid>
+              <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
+                <Autocomplete
+                  sx={{ m: 'auto', maxWidth: 200 }}
+                  disableClearable
+                  className="col"
+                  options={endTimeOptions.filter(x => !x.disabled).map(x => x.value)}
+                  isOptionEqualToValue={(o, v) => o === v}
+                  getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
+                  // @ts-ignore
+                  value={endTime}
+                  onChange={(_, v) => setEndTime(v)}
+                  disabled={selectedDate === null || startTime === null}
+                  renderInput={(params) => <TextField  {...params} label={"End"}
+                  />}
+                />
+              </Grid>
+              <Grid item xs={2} sm={12} sx={{ mx: 'auto', py: 2, alignContent: "center" }}>
+                <Button sx={{ m: 'auto', width: '100%', height: '100%' }} onClick={() => postBlockedOff()} disabled={!canPostBlockedOff || isProcessing}>
+                  Add
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
         </Card>
-      </Grid>)}
       </Grid>
-  </>;
+      <Grid item container sx={{ py: 3 }} spacing={3}>
+        {fulfillmentIdsAndNames.map((fulfillment) => <FulfillmentBlockOffList fId={fulfillment.id} key={fulfillment.id} isProcessing={isProcessing} setIsProcessing={setIsProcessing} />)}
+      </Grid>
+    </>;
 }
 
 export default BlockOffComp;

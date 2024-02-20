@@ -1,7 +1,7 @@
 import { Grid, TextField, Autocomplete } from "@mui/material";
 import { ElementActionComponent, ElementActionComponentProps } from "../element.action.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { getCategoryEntryById } from "@wcp/wario-ux-shared";
+import { getCategoryEntryById, getFulfillments } from "@wcp/wario-ux-shared";
 import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wcpshared";
 import { EntityId } from "@reduxjs/toolkit";
 import { StringEnumPropertyComponent } from "../../property-components/StringEnumPropertyComponent";
@@ -30,7 +30,7 @@ export type CategoryComponentProps = {
 
 const CategoryComponent = (props: CategoryComponentProps) => {
   const selectCategoryById = useAppSelector(s => (id: string) => getCategoryEntryById(s.ws.categories, id));
-  const fulfillments = useAppSelector(s => s.ws.fulfillments!);
+  const fulfillments = useAppSelector(s => getFulfillments(s.ws.fulfillments));
   return (
     <ElementActionComponent
       onCloseCallback={props.onCloseCallback}
@@ -114,12 +114,12 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               multiple
               fullWidth
               filterSelectedOptions
-              options={Object.keys(fulfillments)}
+              options={fulfillments.map(x=>x.id)}
               value={props.serviceDisable.map((x) => String(x))}
               onChange={(_, v) => {
                 props.setServiceDisable(v);
               }}
-              getOptionLabel={(option) => fulfillments[option]?.displayName ?? "INVALID"}
+              getOptionLabel={(option) => fulfillments.find((v)=>v.id === option)?.displayName ?? "INVALID"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />

@@ -15,6 +15,8 @@ import WOrderForceSendComponent from "./WOrderForceSendComponent";
 import { ElementActionComponentProps } from "../menu/element.action.component";
 import WOrderMoveComponent from "./WOrderMoveComponent";
 import WOrderRawDataDisplayComponent from "./WOrderRawDataDisplay";
+import { localCreateSelector, RootState } from "../../../redux/store";
+import { getFulfillmentById } from "@wcp/wario-ux-shared";
 
 const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
   switch (status) {
@@ -39,7 +41,15 @@ export type WOrderComponentCardProps = {
 
 type ComponentCardMode = 'info' | 'reschedule' | 'cancel' | 'rawData' | 'forceSend';
 
-
+const selectOrderSubheader = localCreateSelector(
+  (s: RootState, oId: string) => getWOrderInstanceById(s.orders.orders, oId).fulfillment,
+  (s: RootState, _oId: string) => s.ws.fulfillments,
+  (orderFulfillment, fulfillments) => {
+    const fulfillmentConfig = getFulfillmentById(fulfillments, orderFulfillment.selectedService);
+    const serviceTimeInterval = DateTimeIntervalBuilder(orderFulfillment, fulfillmentConfig.maxDuration);
+    return `${fulfillmentConfig.displayName} on ${format(serviceTimeInterval.start, WDateUtils.ServiceDateDisplayFormat)} at ${ComputeServiceTimeDisplayString(fulfillmentConfig.minDuration, orderFulfillment.selectedTime)}`;
+  }
+)
 
 export const WOrderComponentCard = ({ orderId, onCloseCallback, handleConfirmOrder, ...other }: WOrderComponentCardProps) => {
   const hasExpoPrinter = useAppSelector(s => getPrinterGroups(s.printerGroup.printerGroups).filter(x => x.isExpo).length > 0);
@@ -48,12 +58,7 @@ export const WOrderComponentCard = ({ orderId, onCloseCallback, handleConfirmOrd
     const constumerInfo = getWOrderInstanceById(s.orders.orders, orderId)!.customerInfo;
     return `${constumerInfo.givenName} ${constumerInfo.familyName}`;
   });
-  const orderSubheader = useAppSelector(s => {
-    const orderFulfillment = getWOrderInstanceById(s.orders.orders, orderId)!.fulfillment;
-    const fulfillmentConfig = s.ws.fulfillments![orderFulfillment.selectedService]!;
-    const serviceTimeInterval = DateTimeIntervalBuilder(orderFulfillment, fulfillmentConfig);
-    return `${fulfillmentConfig.displayName} on ${format(serviceTimeInterval.start, WDateUtils.ServiceDateDisplayFormat)} at ${ComputeServiceTimeDisplayString(fulfillmentConfig.minDuration, orderFulfillment.selectedTime)}`;
-  });
+  const orderSubheader = useAppSelector(s => selectOrderSubheader(s, orderId));
   const [mode, setMode] = useState<ComponentCardMode>('info');
   return <Card sx={GetStyleForOrderStatus(orderStatus)} {...other}>
     <CardHeader

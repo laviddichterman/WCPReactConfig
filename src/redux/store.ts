@@ -1,6 +1,6 @@
 import { EventInput } from '@fullcalendar/core';
 import { configureStore, createSelector, createSelectorCreator, lruMemoize, weakMapMemoize } from '@reduxjs/toolkit';
-import { CatalogSelectors, selectGroupedAndOrderedCart, getProductEntryById, getProductInstanceById, getProductEntries } from '@wcp/wario-ux-shared';
+import { CatalogSelectors, selectGroupedAndOrderedCart, getProductEntryById, getProductInstanceById, getProductEntries, getFulfillmentById, getCategoryEntryById } from '@wcp/wario-ux-shared';
 import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, DisableDataCheck, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WOrderStatus } from '@wcp/wcpshared';
 import { shallowEqual } from 'react-redux';
 import { rootReducer } from './rootReducer';
@@ -63,20 +63,27 @@ export const selectRebuiltSortedCart = createSelector(
   (catalogSelectors, serviceTime, fulfillmentId, cart) => RebuildAndSortCart(cart, catalogSelectors, serviceTime, fulfillmentId)
 )
 
+export const selectSelectedFulfillment = createSelector(
+  (s: RootState, _: WOrderInstance) => s.ws.fulfillments,
+  (_: RootState, order: WOrderInstance) => order.fulfillment.selectedService,
+  (fulfillments, selectedFulfillmentId) => getFulfillmentById(fulfillments, selectedFulfillmentId)
+)
+
 export const selectEventTitleStringForOrder = localCreateSelector(
-  (s: RootState, _: WOrderInstance) => CatalogSelectors(s.ws),
-  (s: RootState, order: WOrderInstance) => s.ws.fulfillments![order.fulfillment.selectedService],
+  (s: RootState, _: WOrderInstance) => s.ws.categories,
+  (s: RootState, _: WOrderInstance) => s.ws.productInstances,
+  (s: RootState, order: WOrderInstance) => selectSelectedFulfillment(s, order),
   (_: RootState, order: WOrderInstance) => order,
   (s: RootState, order: WOrderInstance) => selectRebuiltSortedCart(s, order),
-  (catalogSelectors, fulfillmentConfig, order, rebuiltCart) => EventTitleStringBuilder(catalogSelectors, fulfillmentConfig, `${order.customerInfo.givenName} ${order.customerInfo.familyName}`, order.fulfillment, rebuiltCart, order.specialInstructions ?? "")
+  (categories, productInstances, fulfillmentConfig, order, rebuiltCart) => EventTitleStringBuilder({ category: (id: string) => getCategoryEntryById(categories, id), productInstance: (id: string) => getProductInstanceById(productInstances, id) }, fulfillmentConfig, `${order.customerInfo.givenName} ${order.customerInfo.familyName}`, order.fulfillment, rebuiltCart, order.specialInstructions ?? "")
 );
 
 export const selectOrderAsEvent = localCreateSelector(
-  (s: RootState, order: WOrderInstance) => s.ws.fulfillments![order.fulfillment.selectedService],
+  (s: RootState, order: WOrderInstance) => selectSelectedFulfillment(s, order).maxDuration,
   (_: RootState, order: WOrderInstance) => order,
   selectEventTitleStringForOrder,
-  (fulfillmentConfig, order, eventTitle): EventInput => {
-    const dateTimeInterval = DateTimeIntervalBuilder(order.fulfillment, fulfillmentConfig);
+  (fulfillmentMaxDuration, order, eventTitle): EventInput => {
+    const dateTimeInterval = DateTimeIntervalBuilder(order.fulfillment, fulfillmentMaxDuration);
     return {
       id: order.id,
       title: eventTitle,

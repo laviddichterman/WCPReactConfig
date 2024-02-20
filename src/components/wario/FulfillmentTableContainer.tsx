@@ -7,6 +7,7 @@ import { Tooltip, IconButton } from '@mui/material';
 import TableWrapperComponent from "./table_wrapper.component";
 import { useAppSelector } from "../../hooks/useRedux";
 import { FulfillmentConfig } from "@wcp/wcpshared";
+import { getFulfillments } from "@wcp/wario-ux-shared";
 
 export interface FulfillmentTableContainerProps {
   setIsFulfillmentEditOpen: Dispatch<SetStateAction<boolean>>;
@@ -20,7 +21,7 @@ const FulfillmentTableContainer = ({
   setIsFulfillmentAddOpen,
   setFulfillmentToEdit
 }: FulfillmentTableContainerProps) => {
-  const fulfillments = useAppSelector(s=>s.ws.fulfillments ?? {});
+  const fulfillments = useAppSelector(s=>getFulfillments(s.ws.fulfillments));
   const apiRef = useGridApiRef();
 
   const editFulfillment = (fulfillment : FulfillmentConfig) => () => {
@@ -64,8 +65,7 @@ const FulfillmentTableContainer = ({
         size: 1,
         elt: <Tooltip key="ADDNEW" title="Add Fulfillment"><IconButton onClick={() => setIsFulfillmentAddOpen(true)}><AddBox /></IconButton></Tooltip>
       }]}
-      rows={Object.values(fulfillments)}
-      rowThreshold={0}
+      rows={fulfillments}
       disableRowSelectionOnClick
     />
   );
