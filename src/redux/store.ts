@@ -74,8 +74,13 @@ export const selectEventTitleStringForOrder = localCreateSelector(
   (s: RootState, order: WOrderInstance) => selectSelectedFulfillment(s, order),
   (_: RootState, order: WOrderInstance) => order,
   (s: RootState, order: WOrderInstance) => selectRebuiltSortedCart(s, order),
-  (categories, productInstances, fulfillmentConfig, order, rebuiltCart) => EventTitleStringBuilder({ category: (id: string) => getCategoryEntryById(categories, id), productInstance: (id: string) => getProductInstanceById(productInstances, id) }, fulfillmentConfig, `${order.customerInfo.givenName} ${order.customerInfo.familyName}`, order.fulfillment, rebuiltCart, order.specialInstructions ?? "")
-);
+  (categories, productInstances, fulfillmentConfig, order, rebuiltCart) => EventTitleStringBuilder(
+    { category: (id: string) => getCategoryEntryById(categories, id), productInstance: (id: string) => getProductInstanceById(productInstances, id) },
+    fulfillmentConfig, 
+    `${order.customerInfo.givenName} ${order.customerInfo.familyName}`, 
+    order.fulfillment, 
+    rebuiltCart, 
+    order.specialInstructions ?? ""));
 
 export const selectOrderAsEvent = localCreateSelector(
   (s: RootState, order: WOrderInstance) => selectSelectedFulfillment(s, order).maxDuration,

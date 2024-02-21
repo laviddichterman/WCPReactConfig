@@ -8,8 +8,8 @@ import { Button, Card, Tooltip, Typography, Box } from "@mui/material";
 import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
 import { CheckCircleOutline } from "@mui/icons-material";
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
-import { useGridApiRef } from "@mui/x-data-grid-premium";
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams, useGridApiRef } from "@mui/x-data-grid-premium";
+
 import { selectEventTitleStringForOrder, selectOrdersNeedingAttention } from "../../../redux/store";
 import { WOrderComponentCard } from "./WOrderComponentCard";
 import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";
@@ -18,10 +18,10 @@ export interface OrderManagerComponentProps {
   handleConfirmOrder: (id: string) => void;
 }
 
-interface RowType { row: WOrderInstance };
+type RowType = WOrderInstance;
 
 const EventTitle = (params: GridRenderCellParams<RowType>) => {
-  const selectEventTitleString = useAppSelector(s=> (order: WOrderInstance) => selectEventTitleStringForOrder(s, params.row.row));
+  const selectEventTitleString = useAppSelector(s => selectEventTitleStringForOrder(s, params.row));
   return <>{selectEventTitleString}</>;
 }
 
@@ -79,9 +79,9 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
         disableRowSelectionOnClick
         enableSearch={true}
         columns={[
-          { headerName: "Date", field: "date", valueGetter: (v: { row: WOrderInstance }) => v.row.fulfillment.selectedDate, flex: 1 },
-          { headerName: "Time", field: "time", valueGetter: (v: { row: WOrderInstance }) => WDateUtils.MinutesToPrintTime(v.row.fulfillment.selectedTime), flex: 1},
-          { headerName: "ShortName", field: "ordinal", renderCell: (params) => <EventTitle {...params} />, flex: 5 },
+          { headerName: "Date", field: "date", valueGetter: (v: GridValueGetterParams<RowType>) => v.row.fulfillment.selectedDate, flex: 1 },
+          { headerName: "Time", field: "time", valueGetter: (v: GridValueGetterParams<RowType>) => WDateUtils.MinutesToPrintTime(v.row.fulfillment.selectedTime), flex: 1},
+          { headerName: "ShortName", field: "ordinal", renderCell: (params: GridRenderCellParams<RowType>) => <EventTitle {...params} />, flex: 5 },
           {
             headerName: "Confirm",
             field: 'actions',
