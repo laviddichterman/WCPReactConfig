@@ -19,6 +19,7 @@ type ProductModifierComponentProps = {
 const ProductModifierComponent = (props: ProductModifierComponentProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
   const fulfillments = useAppSelector(s => getFulfillments(s.ws.fulfillments));
+  console.log({fulfillments})
 
   const handleSetModifiers = (mods: string[]) => {
     const oldModsAsRecord = props.modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)
@@ -67,7 +68,7 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
                     multiple
                     disabled={props.isProcessing}
                     filterSelectedOptions
-                    options={Object.keys(fulfillments)}
+                    options={fulfillments.map(x=>x.id)}
                     value={modifier.serviceDisable}
                     onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
                     getOptionLabel={(option) => fulfillments.find((v)=>v.id === option)?.displayName ?? "INVALID"}
