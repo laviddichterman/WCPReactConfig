@@ -8,8 +8,8 @@ import ProductTableContainer from "../product/product_table.container";
 import TableWrapperComponent, { ToolbarAction } from "../../table_wrapper.component";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openCategoryDelete, openCategoryEdit, setDetailPanelSizeForRowId } from '../../../../redux/slices/CatalogSlice';
-import { localCreateSelector, RootState, selectProductIdsInCategoryAfterDisableFilter } from "../../../../redux/store";
-import { getCategoryEntryById, getCategoryEntryIds } from "@wcp/wario-ux-shared";
+import { RootState, selectProductIdsInCategoryAfterDisableFilter } from "../../../../redux/store";
+import { weakMapCreateSelector, getCategoryEntryById, getCategoryEntryIds } from "@wcp/wario-ux-shared";
 import { createSelector } from "reselect";
 
 
@@ -25,7 +25,7 @@ const DetailPanelContent = (params: GridRowParams<RowType>) => {
   />;
 };
 
-const selectCategoryCallLineName = localCreateSelector(
+const selectCategoryCallLineName = weakMapCreateSelector(
   (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
   (category) => category.category.display_flags.call_line_name
 );
@@ -35,7 +35,7 @@ const CategoryCallLineName = (params: GridRenderCellParams<RowType>) => {
   return <>{callLineName}</>;
 }
 
-const selectCategoryOrdinal = localCreateSelector(
+const selectCategoryOrdinal = weakMapCreateSelector(
   (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
   (category) => category.category.ordinal
 );
@@ -45,7 +45,7 @@ const CategoryOrdinal = (params: GridRenderCellParams<RowType>) => {
   return <>{ordinal}</>;
 }
 
-const selectCategoryDescription = localCreateSelector(
+const selectCategoryDescription = weakMapCreateSelector(
   (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
   (category) => category.category.description
 );
@@ -55,7 +55,7 @@ const CategoryDescription = (params: GridRenderCellParams<RowType>) => {
   return <>{desc}</>;
 }
 
-const selectCategorySubheading = localCreateSelector(
+const selectCategorySubheading = weakMapCreateSelector(
   (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
   (category) => category.category.subheading
 );
@@ -65,7 +65,7 @@ const CategorySubheading = (params: GridRenderCellParams<RowType>) => {
   return <>{subheading}</>;
 }
 
-const selectCategoryFootnotes = localCreateSelector(
+const selectCategoryFootnotes = weakMapCreateSelector(
   (s: RootState, cId: string) => getCategoryEntryById(s.ws.categories, cId),
   (category) => category.category.footnotes
 );

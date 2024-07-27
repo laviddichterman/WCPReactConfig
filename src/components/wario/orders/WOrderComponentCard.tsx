@@ -15,8 +15,8 @@ import WOrderForceSendComponent from "./WOrderForceSendComponent";
 import { ElementActionComponentProps } from "../menu/element.action.component";
 import WOrderMoveComponent from "./WOrderMoveComponent";
 import WOrderRawDataDisplayComponent from "./WOrderRawDataDisplay";
-import { localCreateSelector, RootState } from "../../../redux/store";
-import { getFulfillmentById } from "@wcp/wario-ux-shared";
+import { RootState } from "../../../redux/store";
+import { weakMapCreateSelector, getFulfillmentById } from "@wcp/wario-ux-shared";
 
 const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
   switch (status) {
@@ -41,7 +41,7 @@ export type WOrderComponentCardProps = {
 
 type ComponentCardMode = 'info' | 'reschedule' | 'cancel' | 'rawData' | 'forceSend';
 
-const selectOrderSubheader = localCreateSelector(
+const selectOrderSubheader = weakMapCreateSelector(
   (s: RootState, oId: string) => getWOrderInstanceById(s.orders.orders, oId).fulfillment,
   (s: RootState, _oId: string) => s.ws.fulfillments,
   (orderFulfillment, fulfillments) => {

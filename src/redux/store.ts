@@ -1,8 +1,7 @@
 import { EventInput } from '@fullcalendar/core';
-import { configureStore, createSelector, createSelectorCreator, lruMemoize, weakMapMemoize } from '@reduxjs/toolkit';
-import { CatalogSelectors, selectGroupedAndOrderedCart, getProductEntryById, getProductInstanceById, getProductEntries, getFulfillmentById, getCategoryEntryById } from '@wcp/wario-ux-shared';
+import { configureStore, createSelector } from '@reduxjs/toolkit';
+import { weakMapCreateSelector, lruMemoizeOptionsWithSize, CatalogSelectors, selectGroupedAndOrderedCart, getProductEntryById, getProductInstanceById, getProductEntries, getFulfillmentById, getCategoryEntryById, SelectBaseProductNameByProductId, SelectParentProductEntryFromProductInstanceId } from '@wcp/wario-ux-shared';
 import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WOrderStatus } from '@wcp/wcpshared';
-import { shallowEqual } from 'react-redux';
 import { rootReducer } from './rootReducer';
 import { getWOrderInstances } from './slices/OrdersSlice';
 //import { SocketAuthMiddleware } from './slices/SocketAuthMiddleware';
@@ -19,27 +18,7 @@ export const store = configureStore({
   },
 });
 
-export const localCreateSelector = createSelectorCreator({
-  memoize: weakMapMemoize,
-  argsMemoize: weakMapMemoize
-});
-
-export const lruMemoizeOptionsWithSize = (size: number) => ({
-  memoize: lruMemoize,
-  memoizeOptions: {
-    equalityCheck: shallowEqual,
-    resultEqualityCheck: shallowEqual,
-    maxSize: size
-  },
-  argsMemoize: lruMemoize,
-  argsMemoizeOptions: {
-    equalityCheck: shallowEqual,
-    resultEqualityCheck: shallowEqual,
-    maxSize: size
-  }
-});
-
-export const selectCoreCartWProduct = localCreateSelector(
+export const selectCoreCartWProduct = weakMapCreateSelector(
   (s: RootState, _: CoreCartEntry<WCPProductV2Dto>[], __: Date | number, ___: string) => s.ws,
   (_: RootState, cart: CoreCartEntry<WCPProductV2Dto>[], __: Date | number, ___: string) => cart,
   (_: RootState, ___: CoreCartEntry<WCPProductV2Dto>[], serviceTime: Date | number, __: string) => serviceTime,
@@ -68,7 +47,7 @@ export const selectSelectedFulfillment = createSelector(
   (fulfillments, selectedFulfillmentId) => getFulfillmentById(fulfillments, selectedFulfillmentId)
 )
 
-export const selectEventTitleStringForOrder = localCreateSelector(
+export const selectEventTitleStringForOrder = weakMapCreateSelector(
   (s: RootState, _: WOrderInstance) => s.ws.categories,
   (s: RootState, _: WOrderInstance) => s.ws.productInstances,
   (s: RootState, order: WOrderInstance) => selectSelectedFulfillment(s, order),
@@ -82,7 +61,7 @@ export const selectEventTitleStringForOrder = localCreateSelector(
     rebuiltCart, 
     order.specialInstructions ?? ""));
 
-export const selectOrderAsEvent = localCreateSelector(
+export const selectOrderAsEvent = weakMapCreateSelector(
   (s: RootState, order: WOrderInstance) => selectSelectedFulfillment(s, order).maxDuration,
   (_: RootState, order: WOrderInstance) => order,
   selectEventTitleStringForOrder,
@@ -115,59 +94,32 @@ export const selectOrdersNeedingAttention = createSelector(
   (orders, currentDate) => orders.filter(x => x.status === WOrderStatus.OPEN && x.fulfillment.selectedDate === currentDate)
 );
 
-export const selectBaseProductName = localCreateSelector(
-  (s: RootState, productClassId: string) => getProductEntryById(s.ws.products, productClassId),
-  (s: RootState, _: string) => s.ws.productInstances,
-  (productEntry, productInstances) =>
-    productEntry ? getProductInstanceById(productInstances, productEntry.product.baseProductId)?.displayName ?? "UNDEFINED" : "UNDEFINED",
-);
+export const selectBaseProductName = (s: RootState, productClassId: string) => SelectBaseProductNameByProductId(s.ws, productClassId);
 
-export const selectParentProductEntryFromProductInstanceId = localCreateSelector(
-  (s: RootState) => s.ws.products,
-  (s: RootState, productInstanceId: string) => getProductInstanceById(s.ws.productInstances, productInstanceId),
-  (products, productInstance) =>
-    productInstance ? getProductEntryById(products, productInstance.productId) : undefined,
-);
+export const selectParentProductEntryFromProductInstanceId = (s: RootState, productId: string) => SelectParentProductEntryFromProductInstanceId(s.ws, productId);
 
-export const selectProductsAfterDisableFilter = localCreateSelector(
+export const selectProductsAfterDisableFilter = weakMapCreateSelector(
   (s: RootState) => getProductEntries(s.ws.products),
   (s: RootState) => s.catalog.hideDisabledProducts,
-  (products, hideDisabledProducts) => !hideDisabledProducts ? Object.values(products) : Object.values(products).filter((x) =>
+  (products, hideDisabledProducts) => !hideDisabledProducts ? products : products.filter((x) =>
     (!x.product.disabled || x.product.disabled.start <= x.product.disabled.end))
 );
 
-export const selectProductIdsAfterDisableFilter = localCreateSelector(
+export const selectProductIdsAfterDisableFilter = weakMapCreateSelector(
   (s: RootState) => getProductEntries(s.ws.products),
   (s: RootState) => s.catalog.hideDisabledProducts,
-  (products, hideDisabledProducts) => (!hideDisabledProducts ? Object.values(products) : Object.values(products).filter((x) =>
+  (products, hideDisabledProducts) => (!hideDisabledProducts ? products : products.filter((x) =>
     (!x.product.disabled || x.product.disabled.start <= x.product.disabled.end))).map(x=>x.product.id)
 );
 
-export const selectProductIdsInCategoryAfterDisableFilter = localCreateSelector(
+export const selectProductIdsInCategoryAfterDisableFilter = weakMapCreateSelector(
   (s: RootState, _: string) => selectProductsAfterDisableFilter(s),
   (_: RootState, categoryId: string) => categoryId,
-  (productsAfterDisableFilter, categoryId) => Object.values(productsAfterDisableFilter).filter((x) =>
+  (productsAfterDisableFilter, categoryId) => productsAfterDisableFilter.filter((x) =>
     x.product.category_ids.includes(categoryId)).map(x=>x.product.id)
 );
 
-// export const selectDetailPanelSizeForRowId = localCreateSelector(
-//   (s: RootState, categoryId: string) => selectProductIdsInCategoryAfterDisableFilter(s, categoryId),
-//   (s: RootState, categoryId: string) => getDetailPanelSizeById(s.catalog.detailPanelSizes, categoryId),
-//   (productsInCategory, detailPanelSizeEntry) => { 
-//     return productsInCategory.length ? ((detailPanelSizeEntry ? detailPanelSizeEntry.size : 0) + 41 + (productsInCategory.length * 36)) : 0;
-//   }
-// )
-
-// export const selectDisableDataForProductId = localCreateSelector(
-//   (s: RootState, productClassId: string, __: boolean) => getProductEntryById(s.ws.products, productClassId),
-//   (s: RootState, _: string, __: boolean) => s.ws.currentTime,
-//   (_: RootState, __: string, considerAvailability: boolean) => considerAvailability,
-//   (productEntry, currentTime, considerAvailability) => { 
-//     return DisableDataCheck(productEntry.product.disabled, considerAvailability ? productEntry.product.availability : null, currentTime);
-//   }
-// );
-
-export const selectOrphanedProductIds = localCreateSelector(
+export const selectOrphanedProductIds = weakMapCreateSelector(
   (s: RootState) => getProductEntries(s.ws.products),
   (products) => products.filter(
     (x) =>

@@ -10,8 +10,8 @@ import { getPrinterGroupById } from '../../../../redux/slices/PrinterGroupSlice'
 import TableWrapperComponent, { ToolbarAction } from "../../table_wrapper.component";
 
 import { openProductClassCopy, openProductClassDelete, openProductClassDisable, openProductClassDisableUntilEod, openProductClassEdit, openProductClassEnable, openProductInstanceAdd } from "../../../../redux/slices/CatalogSlice";
-import { RootState, localCreateSelector } from "../../../../redux/store";
-import { getModifierTypeEntryById, getProductEntryById, getProductInstanceById } from "@wcp/wario-ux-shared";
+import { RootState } from "../../../../redux/store";
+import { weakMapCreateSelector, getModifierTypeEntryById, getProductEntryById, getProductInstanceById } from "@wcp/wario-ux-shared";
 import ProductInstanceTableContainer from "./product_instance_table.container";
 
 
@@ -36,7 +36,7 @@ const DisableDataToString = (disableData: ReturnType<typeof DisableDataCheck>) =
 }
 
 
-const selectRows = localCreateSelector(
+const selectRows = weakMapCreateSelector(
   (s: RootState, _: string[]) => s.ws.products,
   (s: RootState, _: string[]) => s.ws.productInstances,
   (s: RootState, _: string[]) => s.ws.currentTime,
@@ -50,7 +50,7 @@ const selectRows = localCreateSelector(
   }
 );
 
-const selectProductModifierList = localCreateSelector(
+const selectProductModifierList = weakMapCreateSelector(
   (s: RootState, pid: string) => getProductEntryById(s.ws.products, pid),
   (s: RootState, _: string) => s.ws.modifierEntries,
   (product, modifiers) => {
@@ -64,7 +64,7 @@ const ProductModifierList = (params: GridRenderCellParams<RowType>) => {
   return <>{displayString}</>;
 }
 
-const selectProductPrinterName = localCreateSelector(
+const selectProductPrinterName = weakMapCreateSelector(
   (s: RootState, pid: string) => getProductEntryById(s.ws.products, pid),
   (s: RootState, _: string) => s.printerGroup.printerGroups,
   (product, printerGroups) => {
@@ -77,7 +77,7 @@ const ProductPrinterGroupName = (params: GridRenderCellParams<RowType>) => {
   return <>{displayString}</>;
 }
 
-const selectProductPrice = localCreateSelector(
+const selectProductPrice = weakMapCreateSelector(
   (s: RootState, pid: string) => getProductEntryById(s.ws.products, pid),
   (product) => {
     return `$${Number(product.product.price.amount / 100).toFixed(2)}`;

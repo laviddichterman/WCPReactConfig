@@ -10,10 +10,10 @@ import { addDays, parseISO, startOfDay } from "date-fns";
 import { range } from 'lodash';
 import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
 import { getWOrderInstanceById, rescheduleOrder } from "../../../redux/slices/OrdersSlice";
-import { getFulfillmentById, SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
-import { localCreateSelector, RootState } from "../../../redux/store";
+import { weakMapCreateSelector, getFulfillmentById, SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
+import { RootState } from "../../../redux/store";
 
-const selectFulfillmentForOrderId = localCreateSelector(
+const selectFulfillmentForOrderId = weakMapCreateSelector(
   (s: RootState, _oId: string) => s.ws.fulfillments,
   (s: RootState, oId: string) => getWOrderInstanceById(s.orders.orders, oId),
   (fulfillments, order) => getFulfillmentById(fulfillments, order.fulfillment.selectedService)

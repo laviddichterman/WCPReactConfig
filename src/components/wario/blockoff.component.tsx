@@ -23,8 +23,8 @@ import { FulfillmentConfig, GetNextAvailableServiceDate, IWInterval, PostBlocked
 import { useAppSelector } from "../../hooks/useRedux";
 import { HOST_API } from '../../config';
 import { useSnackbar } from "notistack";
-import { getFulfillmentById, getFulfillments, SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
-import { localCreateSelector, RootState } from "../../redux/store";
+import { weakMapCreateSelector, getFulfillmentById, getFulfillments, SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
+import { RootState } from "../../redux/store";
 import { ValSetValNamed } from "../../utils/common";
 
 const TrimOptionsBeforeDisabled = function <T extends { disabled: boolean; }>(opts: T[]) {
@@ -58,12 +58,12 @@ const ServiceSelectionCheckbox = (props: ServiceSelectionCheckboxProps) => {
   )
 }
 
-const selectFulfillmentIdAndNamesWithOperatingHours = localCreateSelector(
+const selectFulfillmentIdAndNamesWithOperatingHours = weakMapCreateSelector(
   (s: RootState) => s.ws.fulfillments,
   (fulfillments) => getFulfillments(fulfillments).filter(x => WDateUtils.HasOperatingHours(x.operatingHours)).map(x => ({ id: x.id, name: x.displayName }))
 )
 
-const selectSelectedFulfillments = localCreateSelector(
+const selectSelectedFulfillments = weakMapCreateSelector(
   (s: RootState, _selectedServices: string[]) => s.ws.fulfillments,
   (s: RootState, selectedServices: string[]) => selectedServices,
   (fulfillments, selectedFulfillments) => selectedFulfillments.map(x => getFulfillmentById(fulfillments, x))
@@ -77,7 +77,7 @@ const OptionsForDate = (fulfillments: Pick<FulfillmentConfig, "blockedOff" | "ti
   return [];
 }
 
-const selectOptionsForDate = localCreateSelector(
+const selectOptionsForDate = weakMapCreateSelector(
   (s: RootState, _isoDate: string | null, selectedServices: string[]) => selectSelectedFulfillments(s, selectedServices),
   (_s: RootState, isoDate: string | null, _selectedServices: string[]) => isoDate,
   (s: RootState, _isoDate: string | null, _selectedServices: string[]) => formatISO(s.ws.currentTime),
@@ -169,7 +169,7 @@ const FulfillmentBlockOffList = (props: FulfillmentBlockOffListProps) => {
   </Grid> : <></>
 }
 
-export const selectNextAvailableServiceDate = localCreateSelector(
+export const selectNextAvailableServiceDate = weakMapCreateSelector(
   (s: RootState, _selectedServices: string[]) => s.ws.currentTime,
   (s: RootState, _selectedServices: string[]) => s.ws.fulfillments,
   (_s: RootState, selectedServices: string[]) => selectedServices,

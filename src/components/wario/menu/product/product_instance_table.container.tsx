@@ -5,22 +5,22 @@ import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import TableWrapperComponent from "../../table_wrapper.component";
 
 import { openProductInstanceDelete, openProductInstanceEdit } from "../../../../redux/slices/CatalogSlice";
-import { getProductInstanceById } from "@wcp/wario-ux-shared";
+import { weakMapCreateSelector, getProductInstanceById } from "@wcp/wario-ux-shared";
 import { createStructuredSelector } from "reselect";
-import { localCreateSelector, RootState } from "../../../../redux/store";
+import { RootState } from "../../../../redux/store";
 
 // type ValueGetterRow = GridValueGetterParams<RowType>;
 interface RowType { id: string; base: boolean; };
 
 const productInstanceDisplayValueSelectors = createStructuredSelector({
-  displayName: (s:RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).displayName,
-  description: (s:RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).description,
-  ordinal: (s:RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).ordinal,
-  shortcode: (s:RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).shortcode,
-  ordinalOrder: (s:RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).displayFlags.order.ordinal || 0,
-  ordinalMenu: (s:RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).displayFlags.menu.ordinal || 0,
+  displayName: (s: RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).displayName,
+  description: (s: RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).description,
+  ordinal: (s: RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).ordinal,
+  shortcode: (s: RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).shortcode,
+  ordinalOrder: (s: RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).displayFlags.order.ordinal || 0,
+  ordinalMenu: (s: RootState, piId: string) => getProductInstanceById(s.ws.productInstances, piId).displayFlags.menu.ordinal || 0,
 },
-localCreateSelector
+  weakMapCreateSelector
 )
 
 const ProductInstanceDisplayName = (params: GridRenderCellParams<RowType>) => {
@@ -83,11 +83,11 @@ const ProductInstanceTableContainer = ({
           ]
         },
         { headerName: "Name", field: "item.display_name", renderCell: (params) => <ProductInstanceDisplayName {...params} />, flex: 1 },
-        { headerName: "Ordinal", field: "ordinal", renderCell: (params) => <ProductInstanceOrdinal {...params} />},
-        { headerName: "Menu Ordinal", field: "menuOrdinal", renderCell: (params) => <ProductInstanceOrdinalMenu {...params} />},
+        { headerName: "Ordinal", field: "ordinal", renderCell: (params) => <ProductInstanceOrdinal {...params} /> },
+        { headerName: "Menu Ordinal", field: "menuOrdinal", renderCell: (params) => <ProductInstanceOrdinalMenu {...params} /> },
         { headerName: "Order Ordinal", field: "orderOrdinal", renderCell: (params) => <ProductInstanceOrdinalOrder {...params} /> },
         { headerName: "Shortcode", field: "item.shortcode", renderCell: (params) => <ProductInstanceShortcode {...params} /> },
-        { headerName: "Description", field: "item.description", renderCell: (params) => <ProductInstanceDescription {...params} />  },
+        { headerName: "Description", field: "item.description", renderCell: (params) => <ProductInstanceDescription {...params} /> },
 
       ]}
       rows={product_instance_ids}
