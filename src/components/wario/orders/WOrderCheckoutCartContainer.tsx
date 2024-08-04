@@ -1,6 +1,6 @@
 import { ComputeCartSubTotal, ComputeTaxAmount, ComputeTipBasis, ComputeTipValue, DateTimeIntervalBuilder, WOrderInstance } from "@wcp/wcpshared";
 import { useMemo } from "react";
-import { CatalogSelectors, getFulfillmentById, SelectTaxRate, WCheckoutCartComponent } from '@wcp/wario-ux-shared';
+import { SelectCatalogSelectors, getFulfillmentById, SelectTaxRate, WCheckoutCartComponent } from '@wcp/wario-ux-shared';
 import { useAppSelector } from "../../../hooks/useRedux";
 import { selectFullGroupedCartInfo } from "../../../redux/store";
 
@@ -12,7 +12,7 @@ export type WOrderCheckoutCartContainerProps = {
 
 export const WOrderCheckoutCartContainer = (props: WOrderCheckoutCartContainerProps) => {
   const TAX_RATE = useAppSelector(SelectTaxRate);
-  const catalogSelectors = useAppSelector(s => CatalogSelectors(s.ws));
+  const catalogSelectors = useAppSelector(s => SelectCatalogSelectors(s.ws));
   const fulfillmentMaxDuration = useAppSelector(s => getFulfillmentById(s.ws.fulfillments, props.order.fulfillment.selectedService).maxDuration);
   const serviceTimeInterval = useMemo(() => DateTimeIntervalBuilder(props.order.fulfillment, fulfillmentMaxDuration), [props.order.fulfillment, fulfillmentMaxDuration]);
   const fullGroupedCart = useAppSelector(s => selectFullGroupedCartInfo(s, props.order.cart, serviceTimeInterval.start, props.order.fulfillment.selectedService));
