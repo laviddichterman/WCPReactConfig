@@ -42,7 +42,7 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
           <ToggleBooleanPropertyComponent
             disabled={props.disabled}
             label="Blanket Disable"
-            value={props.value.start === 1 && props.value.end === 0}
+            value={props.value.start > props.value.end}
             setValue={(isBlanket) => props.setValue(isBlanket ? 
               { start: 1, end: 0 } : 
               { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) })}
@@ -50,7 +50,7 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
           />
         </Grid>
       }
-      {(props.value !== null && props.value.start !== 1 && props.value.end !== 0) &&
+      {(props.value !== null && (props.value.start <= props.value.end)) &&
         <LocalizationProvider dateAdapter={DateAdapter}>
           <Grid item xs={6}>
             <DateTimePicker

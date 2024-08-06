@@ -23,6 +23,7 @@ interface CSVProduct {
   PosName: string;
   Shortname: string;
   Price: string;
+  Disabled: string;
   [index: string]: string;
 };
 
@@ -318,8 +319,10 @@ function GenerateHierarchicalProductStructure(acc: HierarchicalProductStructure,
 
 function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: string, modifiers: IProductModifier[], parentCategories: string[], printerGroup: string | null): UpsertProductBatch {
   // omit Categories to get it inside the externalIds
-  const { ID, Description, DisplayName, PosName, Price, Shortname, ...others } = prod;
+  const { ID, Description, DisplayName, PosName, Price, Shortname, Disabled, ...others } = prod;
   const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
+  const disabledValue = (/true/i).test(Disabled) ? { start: 1, end: 0 } : null;
+  console.log( { disabledValue, Disabled } );
   if (ID) {
     const [productId, productInstanceId] = ID.split('/');
     return {
@@ -333,7 +336,7 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
         modifiers,
 
         // stuff below is not needed, but the current API requires it
-        disabled: null,
+        disabled: disabledValue,
         availability: null,
         timing: null,
         serviceDisable: [],
@@ -383,7 +386,7 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
   }
   return {
     product: {
-      disabled: null,
+      disabled: disabledValue,
       availability: null,
       timing: null,
       externalIDs: [],
@@ -475,6 +478,7 @@ type BatchUpsertProductResponse = {
 const ResponseBodyToCSVProducts = (responseBody: BatchUpsertProductResponse): CSVProduct[] => {
   return responseBody.flatMap((r) => r.instances.map((i) => ({
     ID: `${r.product.id}/${i.id}`,
+    Disabled: r.product.disabled && r.product.disabled.start > r.product.disabled.end ? "TRUE" : "FALSE",
     Categories: i.externalIDs.filter(x=>x.key === 'Categories').map(x=>x.value).join(','),
     DisplayName: i.displayName,
     Description: i.description,
