@@ -318,10 +318,10 @@ function GenerateHierarchicalProductStructure(acc: HierarchicalProductStructure,
 
 function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: string, modifiers: IProductModifier[], parentCategories: string[], printerGroup: string | null): UpsertProductBatch {
   // omit Categories to get it inside the externalIds
-  const { id, Description, DisplayName, PosName, Price, Shortname, ...others } = prod;
+  const { ID, Description, DisplayName, PosName, Price, Shortname, ...others } = prod;
   const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
-  if (id) {
-    const [productId, productInstanceId] = id.split('/');
+  if (ID) {
+    const [productId, productInstanceId] = ID.split('/');
     return {
       product: {
         id: productId,
