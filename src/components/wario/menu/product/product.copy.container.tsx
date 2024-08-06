@@ -8,9 +8,9 @@ import { ProductInstanceContainer } from "./instance/product_instance.component"
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getProductEntryById } from "@wcp/wario-ux-shared";
-import { ProductAddRequestType } from "./product.add.container";
 import { useSnackbar } from "notistack";
 import { useIndexedState } from "../../../../utils/common";
+import { CreateProductBatch } from "@wcp/wcpshared";
 
 export interface ProductCopyContainerProps {
   product_id: string;
@@ -208,7 +208,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
-        const productCopyBody: ProductAddRequestType = {
+        const productCopyBody: CreateProductBatch = {
           product: {
             price: price,
             serviceDisable,

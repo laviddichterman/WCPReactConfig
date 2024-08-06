@@ -19,7 +19,6 @@ type ProductModifierComponentProps = {
 const ProductModifierComponent = (props: ProductModifierComponentProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
   const fulfillments = useAppSelector(s => getFulfillments(s.ws.fulfillments));
-  console.log({fulfillments})
 
   const handleSetModifiers = (mods: string[]) => {
     const oldModsAsRecord = props.modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)

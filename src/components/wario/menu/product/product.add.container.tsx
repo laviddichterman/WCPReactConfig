@@ -3,14 +3,9 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import ProductComponent from "./product.component";
 import { HOST_API } from "../../../../config";
-import { CURRENCY, IMoney, IProductInstance, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
-import { ProductInstanceContainer, UncommittedProduct } from "./instance/product_instance.component";
+import { CreateProductBatch, CURRENCY, IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
+import { ProductInstanceContainer } from "./instance/product_instance.component";
 import { useSnackbar } from "notistack";
-
-export interface ProductAddRequestType {
-  product: UncommittedProduct;
-  instances: Omit<IProductInstance, 'id' | 'productId'>[];
-}
 
 interface ProductAddContainerProps {
   onCloseCallback: VoidFunction;
@@ -69,7 +64,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
-        const body: ProductAddRequestType = {
+        const body: CreateProductBatch = {
           instances: [{
             displayName,
             description,

@@ -4,15 +4,13 @@ import { Grid, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, Radio
 
 import { ElementActionComponent } from "../../element.action.component";
 import { useAppSelector } from "../../../../../hooks/useRedux";
-import { ICatalogModifiers, IProduct, ProductModifierEntry, OptionPlacement, OptionQualifier, PriceDisplay, KeyValue } from "@wcp/wcpshared";
+import { ICatalogModifiers, CreateIProduct, ProductModifierEntry, OptionPlacement, OptionQualifier, PriceDisplay, KeyValue } from "@wcp/wcpshared";
 import { ValSetValNamed } from "../../../../../utils/common";
 import { ToggleBooleanPropertyComponent } from "../../../property-components/ToggleBooleanPropertyComponent";
 import { IntNumericPropertyComponent } from "../../../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../../../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../../../property-components/StringPropertyComponent";
 import { ExternalIdsExpansionPanelComponent } from "../../../ExternalIdsExpansionPanelComponent";
-
-export type UncommittedProduct = Omit<IProduct, 'id' | 'baseProductId'>;
 
 export type ProductInstanceComponentProps =
 ValSetValNamed<string, 'displayName'> & 
@@ -40,7 +38,7 @@ ValSetValNamed<string, 'displayName'> &
   ValSetValNamed<KeyValue[], 'externalIds'> &
 
   {
-    parent_product: UncommittedProduct;
+    parent_product: CreateIProduct;
     isProcessing: boolean;
   };
 
@@ -317,7 +315,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
 };
 
 const normalizeModifiersAndOptions = (
-  parent_product: UncommittedProduct,
+  parent_product: CreateIProduct,
   modifier_types_map: ICatalogModifiers,
   minimizedModifiers: ProductModifierEntry[]
 ): ProductModifierEntry[] => {

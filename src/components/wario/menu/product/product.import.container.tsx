@@ -2,7 +2,7 @@ import React, { useState, Dispatch, SetStateAction } from "react";
 import { Grid, TextField, Autocomplete } from '@mui/material';
 
 import { ParseResult } from "papaparse";
-import { IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
+import { CreateProductBatch, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -10,7 +10,6 @@ import { ElementActionComponent } from "./../element.action.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 import { HOST_API } from "../../../../config";
-import { ProductAddRequestType } from "./product.add.container";
 import { ValSetValNamed } from '../../../../utils/common';
 import ProductModifierComponent from "./ProductModifierComponent";
 import GenericCsvImportComponent from "../../generic_csv_import.component";
@@ -157,7 +156,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
-        const body: ProductAddRequestType[] = products;
+        const body: CreateProductBatch[] = products;
         const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {
           method: "POST",
           headers: {
