@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
+import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
 import { useGridApiRef } from "@mui/x-data-grid-premium";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
@@ -9,8 +9,6 @@ import TableWrapperComponent from "../../table_wrapper.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from "src/redux/slices/PrinterGroupSlice";
 import { DialogContainer } from "@wcp/wario-ux-shared";
-
-type ValueGetterRow = GridValueGetterParams<any, PrinterGroup>;
 
 const PrinterGroupTableContainer = () => {
   const printerGroups = useAppSelector(s => getPrinterGroups(s.printerGroup.printerGroups));
@@ -55,9 +53,9 @@ const PrinterGroupTableContainer = () => {
                 key={`DELETE${params.id}`} />
             ]
           },
-          { headerName: "Name", field: "name", valueGetter: (v: ValueGetterRow) => v.row.name, flex: 4 },
-          { headerName: "Single Item Per Ticket", field: "row.singleItemPerTicket", valueGetter: (v: ValueGetterRow) => v.row.singleItemPerTicket, flex: 3 },
-          { headerName: "Is Expo", field: "row.isExpo", valueGetter: (v: ValueGetterRow) => v.row.isExpo, flex: 2 },
+          { headerName: "Name", field: "name", valueGetter: (_v, row: PrinterGroup) => row.name, flex: 4 },
+          { headerName: "Single Item Per Ticket", field: "row.singleItemPerTicket", valueGetter: (_v, row: PrinterGroup) => row.singleItemPerTicket, flex: 3 },
+          { headerName: "Is Expo", field: "row.isExpo", valueGetter: (_v, row: PrinterGroup) => row.isExpo, flex: 2 },
         ]}
         toolbarActions={[{
           size: 1,
@@ -65,7 +63,6 @@ const PrinterGroupTableContainer = () => {
         }]}
         rows={Object.values(printerGroups)}
         getRowId={(row: PrinterGroup) => row.id}
-        rowThreshold={0}
         disableToolbar={false}
       />
       <DialogContainer

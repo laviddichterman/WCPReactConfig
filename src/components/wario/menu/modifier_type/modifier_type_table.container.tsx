@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 import { AddBox, Edit, DeleteOutline, LibraryAdd } from "@mui/icons-material";
-import { GridActionsCellItem, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
+import { GridActionsCellItem, GridRowParams, GridValidRowModel } from "@mui/x-data-grid-premium";
 import { useGridApiRef } from "@mui/x-data-grid-premium";
 import { Tooltip, IconButton } from '@mui/material';
 import ModifierOptionTableContainer from "../modifier_option/modifier_option_table.container";
@@ -9,8 +9,6 @@ import TableWrapperComponent from "../../table_wrapper.component";
 import { CatalogModifierEntry } from "@wcp/wcpshared";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openModifierOptionAdd, openModifierTypeAdd, openModifierTypeCopy, openModifierTypeDelete, openModifierTypeEdit } from "../../../../redux/slices/CatalogSlice";
-
-type ValueGetterRow = GridValueGetterParams<any, CatalogModifierEntry>;
 
 const ModifierTypeTableContainer = () => {
   const dispatch = useAppDispatch();
@@ -62,10 +60,10 @@ const ModifierTypeTableContainer = () => {
               key="DELMT" />
           ]
         },
-        { headerName: "Name", sortable: false, field: "Modifier Name", valueGetter: (v: ValueGetterRow) => v.row.modifierType.name, flex: 10 },
-        { headerName: "Display Name", field: "displayName", valueGetter: (v: ValueGetterRow) => v.row.modifierType.displayName, flex: 3 },
-        { headerName: "Ordinal", field: "ordinal", valueGetter: (v: ValueGetterRow) => v.row.modifierType.ordinal, flex: 1 },
-        { headerName: "Min/Max Selected", sortable: false, hideable: false, field: "min_max", valueGetter: (v: ValueGetterRow) => `${v.row.modifierType.min_selected}/${v.row.modifierType.max_selected ?? ""}`, flex: 2 },
+        { headerName: "Name", sortable: false, field: "Modifier Name", valueGetter: (_v, row: CatalogModifierEntry) => row.modifierType.name, flex: 10 },
+        { headerName: "Display Name", field: "displayName", valueGetter: (_v, row: CatalogModifierEntry) => row.modifierType.displayName, flex: 3 },
+        { headerName: "Ordinal", field: "ordinal", valueGetter: (_v, row: CatalogModifierEntry) => row.modifierType.ordinal, flex: 1 },
+        { headerName: "Min/Max Selected", sortable: false, hideable: false, field: "min_max", valueGetter: (_v, row: CatalogModifierEntry) => `${row.modifierType.min_selected}/${row.modifierType.max_selected ?? ""}`, flex: 2 },
       ]}
       toolbarActions={[{
         size: 1,

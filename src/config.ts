@@ -3,7 +3,7 @@ import { enUS, esES } from '@mui/material/locale';
 import { SettingsValueProps } from './components/settings/type';
 // routes
 import { PATH_DASHBOARD } from './routes/paths';
-import { LicenseInfo } from '@mui/x-license-pro';
+import { LicenseInfo } from '@mui/x-license';
 // API
 // ----------------------------------------------------------------------
 

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
 import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
 import { Tooltip, IconButton } from '@mui/material';
-import { IProductInstanceFunction, WFunctional } from "@wcp/wcpshared";
+import { IAbstractExpression, IProductInstanceFunction, WFunctional } from "@wcp/wcpshared";
 import TableWrapperComponent from "../../table_wrapper.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getModifierTypeEntryById, getModifierOptionById, getProductInstanceFunctions, DialogContainer } from "@wcp/wario-ux-shared";
@@ -62,8 +62,8 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
               />
             ]
           },
-          { headerName: "Name", field: "name", valueGetter: (v: { row: IProductInstanceFunction }) => v.row.name, flex: 1 },
-          { headerName: "Function", field: "expression", valueGetter: (v: { row: IProductInstanceFunction }) => WFunctional.AbstractExpressionStatementToString(v.row.expression, { modifierEntry: modifierTypeSelector, option: modifierOptionSelector }), flex: 3 },
+          { headerName: "Name", field: "name", flex: 1 },
+          { headerName: "Function", field: "expression", valueGetter: (v: IAbstractExpression) => WFunctional.AbstractExpressionStatementToString(v, { modifierEntry: modifierTypeSelector, option: modifierOptionSelector }), flex: 3 },
         ]}
       />
       <DialogContainer

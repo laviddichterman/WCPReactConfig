@@ -25,7 +25,6 @@ const ModifierOptionTableContainer = ({
         disableToolbar
         disableRowSelectionOnClick
         autoHeight={false}
-        rowThreshold={0}
         columns={[
           {
             headerName: "Actions",

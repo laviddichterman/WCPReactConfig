@@ -1,7 +1,7 @@
 import { useCallback, Dispatch, SetStateAction, useState } from "react";
 import { format } from 'date-fns';
 import { DISABLE_REASON, DisableDataCheck } from '@wcp/wcpshared';
-import { GridActionsCellItem, GridRenderCellParams, GridRowId, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
+import { GridActionsCellItem, GridRenderCellParams, GridRowId, GridRowParams } from "@mui/x-data-grid-premium";
 import { useGridApiRef } from "@mui/x-data-grid-premium";
 import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
@@ -14,9 +14,7 @@ import { RootState } from "../../../../redux/store";
 import { weakMapCreateSelector, getModifierTypeEntryById, getProductEntryById, getProductInstanceById } from "@wcp/wario-ux-shared";
 import ProductInstanceTableContainer from "./product_instance_table.container";
 
-
 type RowType = { id: string; disableData: ReturnType<typeof DisableDataCheck>; name: string }
-type ValueGetterRow = GridValueGetterParams<RowType>;
 
 const DisableDataToString = (disableData: ReturnType<typeof DisableDataCheck>) => {
   switch (disableData.enable) {
@@ -194,11 +192,11 @@ const ProductTableContainer = ({
             return params.row.disableData.enable !== DISABLE_REASON.ENABLED ? [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, ENABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT] : [ADD_PRODUCT_INSTANCE, EDIT_PRODUCT, DISABLE_PRODUCT_UNTIL_EOD, DISABLE_PRODUCT, COPY_PRODUCT, DELETE_PRODUCT];
           }
         },
-        { headerName: "Name", field: "display_name", valueGetter: (v: ValueGetterRow) => v.row.name, flex: 6 },
+        { headerName: "Name", field: "name", flex: 6 },
         { headerName: "Price", field: "product.price.amount", renderCell: (params) => <ProductPrice {...params} /> },
         { headerName: "Modifiers", field: "product.modifiers", renderCell: (params) => <ProductModifierList {...params} />, flex: 3 },
         { headerName: "Printer", field: "product.printerGroup", renderCell: (params) => <ProductPrinterGroupName {...params} />, flex: 3 },
-        { headerName: "Disabled", field: "product.disabled", valueGetter: (v: ValueGetterRow) => DisableDataToString(v.row.disableData), flex: 1 },
+        { headerName: "Disabled", field: "disableData", valueGetter: (v: ReturnType<typeof DisableDataCheck>) => DisableDataToString(v), flex: 1 },
         ]}
         rows={productIdRows}
         title={title}

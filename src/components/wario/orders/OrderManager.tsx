@@ -8,7 +8,7 @@ import { Button, Card, Tooltip, Typography, Box } from "@mui/material";
 import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
 import TableWrapperComponent from "../table_wrapper.component";
 import { CheckCircleOutline } from "@mui/icons-material";
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams, useGridApiRef } from "@mui/x-data-grid-premium";
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
 
 import { selectEventTitleStringForOrder, selectOrdersNeedingAttention } from "../../../redux/store";
 import { WOrderComponentCard } from "./WOrderComponentCard";
@@ -79,8 +79,8 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
         disableRowSelectionOnClick
         enableSearch={true}
         columns={[
-          { headerName: "Date", field: "date", valueGetter: (v: GridValueGetterParams<RowType>) => v.row.fulfillment.selectedDate, flex: 1 },
-          { headerName: "Time", field: "time", valueGetter: (v: GridValueGetterParams<RowType>) => WDateUtils.MinutesToPrintTime(v.row.fulfillment.selectedTime), flex: 1},
+          { headerName: "Date", field: "date", valueGetter: (_v, row: RowType) => row.fulfillment.selectedDate, flex: 1 },
+          { headerName: "Time", field: "time", valueGetter: (_v, row: RowType) => WDateUtils.MinutesToPrintTime(row.fulfillment.selectedTime), flex: 1},
           { headerName: "ShortName", field: "ordinal", renderCell: (params: GridRenderCellParams<RowType>) => <EventTitle {...params} />, flex: 5 },
           {
             headerName: "Confirm",
@@ -99,7 +99,6 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
         onRowClick={(params) => apiRef.current.toggleDetailPanel(params.id)}
         getDetailPanelContent={(params) => <WOrderComponentCard orderId={params.row.id} handleConfirmOrder={handleConfirmOrder} onCloseCallback={null} />}
         rows={orders}
-        rowThreshold={0}
       />
     </Card>
 

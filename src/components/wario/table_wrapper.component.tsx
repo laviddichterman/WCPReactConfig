@@ -1,38 +1,39 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   GridToolbarContainer,
   GridToolbarQuickFilter,
-  GridToolbarQuickFilterProps
+  ToolbarPropsOverrides
 } from '@mui/x-data-grid-premium';
 import Grid from "@mui/material/Grid";
-import { DataGridPremium, DataGridPremiumProps } from "@mui/x-data-grid-premium";
+import { DataGridPremium, DataGridPremiumProps, GridToolbarProps } from "@mui/x-data-grid-premium";
 
 export interface ToolbarAction {
   size: number; elt: React.ReactNode;
 }
 export interface CustomToolbarProps {
-  showQuickFilter?: boolean;
-  quickFilterProps: GridToolbarQuickFilterProps;
   title: React.ReactNode;
   actions: ToolbarAction[];
 }
+declare module '@mui/x-data-grid-premium' {
+  interface ToolbarPropsOverrides {
+    actions: ToolbarAction[];
+  }
+}
 
-function CustomToolbar({ showQuickFilter, quickFilterProps, title, actions = [] }: CustomToolbarProps) {
+const CustomToolbar = ({ showQuickFilter, quickFilterProps, title, actions = [] }: GridToolbarProps & ToolbarPropsOverrides) => {
   const actionSizeSum = actions.reduce((acc, x) => acc + x.size, 0);
   return (
     <GridToolbarContainer >
-      <Grid container item xs={12} sx={{ m: 'auto', width: '100%' }}>
-        <Grid item xs={showQuickFilter ? 12 : 12 - actionSizeSum} md={showQuickFilter ? 6 : 12 - actionSizeSum}>
+      <Grid container  sx={{ m: 'auto', width: '100%' }}>
+      <Grid item xs={showQuickFilter ? 12 : 12 - actionSizeSum} md={showQuickFilter ? 6 : 12 - actionSizeSum}>
           <Typography variant="h5">{title}</Typography>
         </Grid>
-        {showQuickFilter &&
-          <Grid sx={{ py: 1 }} item xs={12 - actionSizeSum} md={6 - actionSizeSum} >
-            <GridToolbarQuickFilter {...quickFilterProps} />
-          </Grid>
-        }
-        {actions.map((action, idx) => (<Grid item sx={{ py: 1 }} xs={action.size} key={idx}>{action.elt}</Grid>))}
+      {showQuickFilter && <Grid sx={{ py: 1 }} item xs={12 - actionSizeSum} md={6 - actionSizeSum} ><GridToolbarQuickFilter {...quickFilterProps} /></Grid>}
+      {actions.map((action: ToolbarAction, idx: number) => (<Grid item  xs={action.size} key={idx}>{action.elt}</Grid>))}
       </Grid>
+
+        
     </GridToolbarContainer>
   );
 }
@@ -52,16 +53,16 @@ const TableWrapperComponent = ({
   ...forwardParams
 }: TableWrapperComponentProps & DataGridPremiumProps) => (
   <DataGridPremium
-    componentsProps={{
+    slotProps={{
       toolbar: {
         title,
         actions: toolbarActions || [],
-        showQuickFilter: enableSearch ?? undefined,
+        showQuickFilter: enableSearch === true,
         quickFilterProps: enableSearch ? { debounceMs: 500 } : undefined,
       },
     }}
-    components={disableToolbar ? {} : {
-      Toolbar: CustomToolbar,
+    slots={disableToolbar ? {} : {
+      toolbar: CustomToolbar,
     }}
     density="compact"
     hideFooter

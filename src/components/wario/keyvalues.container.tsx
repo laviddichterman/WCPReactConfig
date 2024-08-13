@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Box, Card, CardHeader, Grid, Button, TextField, Paper, Popper, Typography, CardContent, CardActions } from "@mui/material";
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams, GridValueGetterParams } from "@mui/x-data-grid-premium";
+import { GridActionsCellItem, GridColDef, GridRenderCellParams, GridRowParams, GridValueGetter } from "@mui/x-data-grid-premium";
 import TableWrapperComponent from "./table_wrapper.component";
 
 function isOverflown(element: any) {
@@ -128,12 +128,12 @@ export type KeyValuesContainerProps<T> = {
 }
 
 
-const KeyValuesContainer = function<T>(props: KeyValuesContainerProps<T>) {
+const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>) {
   // localValues keeps track of new and dirty values, everything else we should get from props.values
   const [localValues, setLocalValues] = useState<Record<string, RowTypeNullable<T> | KeyValuesRowType<T>>>({});
   const valuesAsRecord = useMemo(() => props.values.reduce((acc: Record<string, KeyValuesRowType<T>>, x) => ({ ...acc, [x.key]: x }), {}), [props.values]);
-  const mergedRecord = useMemo(() => ({ ...valuesAsRecord, ...localValues}), [valuesAsRecord, localValues]);
-  const mergedValues = useMemo(() => Object.values(mergedRecord).filter(x=>x.value !== null) as KeyValuesRowType<T>[], [mergedRecord]);
+  const mergedRecord = useMemo(() => ({ ...valuesAsRecord, ...localValues }), [valuesAsRecord, localValues]);
+  const mergedValues = useMemo(() => Object.values(mergedRecord).filter(x => x.value !== null) as KeyValuesRowType<T>[], [mergedRecord]);
   const [newkey, setNewkey] = useState("");
   const [newvalue, setNewvalue] = useState<string | number | boolean>("");
 
@@ -143,28 +143,12 @@ const KeyValuesContainer = function<T>(props: KeyValuesContainerProps<T>) {
     setLocalValues(newLocalValues);
     if (props.setValues) {
       // @ts-ignore
-      props.setValues(Object.values({ ...valuesAsRecord, ...newLocalValues}).filter(x=>x.value !== null));
+      props.setValues(Object.values({ ...valuesAsRecord, ...newLocalValues }).filter(x => x.value !== null));
     }
     setNewkey("");
     setNewvalue("");
   }
 
-  const removeColumn = props.canRemove ? [{
-    headerName: "Delete",
-    field: 'actions',
-    type: 'actions',
-    getActions: (params: GridRowParams) => [
-      <GridActionsCellItem
-        key={"delete"}
-        icon={<HighlightOffIcon />}
-        label={"Delete"}
-        onClick={() => {
-          const valueCopy = {...localValues};
-          delete valueCopy[params.id.toString()];
-          setLocalValues(valueCopy);
-        }} />
-    ]
-  }] : [];
   return (
     <div>
       <Card>
@@ -198,15 +182,34 @@ const KeyValuesContainer = function<T>(props: KeyValuesContainerProps<T>) {
           }
           <div style={{ height: "100%", overflow: "auto" }}>
             <TableWrapperComponent
+
+              /* TODO: FIX!! editing a row doesn't work right now. At the moment we need to add a row with the same key and an updated value */
               processRowUpdate={(newRow: KeyValuesRowType<T>) => {
                 setLocalValues({ ...localValues, [newRow.key]: newRow });
                 return newRow;
               }}
               disableToolbar
               columns={[
-                { headerName: "Key", field: "key", valueGetter: (v: GridValueGetterParams<KeyValuesRowType<T>>) => v.row.key, flex: 1 },
-                { headerName: "Value", editable: props.canEdit, field: "value", valueGetter: (v: GridValueGetterParams<KeyValuesRowType<T>>) => v.row.value, flex: 4, renderCell: renderCellExpand },
-                ...removeColumn
+                { headerName: "Key", field: "key", valueGetter: (_v, row) => row.key, flex: 1 },
+                { headerName: "Value", editable: props.canEdit, field: "value", valueGetter: (_v, row) => row.value, flex: 4, renderCell: renderCellExpand },
+                ...(props.canRemove ? [{
+                  field: 'actions',
+                  type: 'actions',
+                  getActions: (params: GridRowParams) => {
+                    return [
+                      // FIX ME! this doesn't work right now
+                      <GridActionsCellItem
+                        key={"delete"}
+                        icon={<HighlightOffIcon />}
+                        label={"Delete"}
+                        onClick={() => {
+                          const valueCopy = { ...localValues };
+                          delete valueCopy[params.id.toString()];
+                          setLocalValues(valueCopy);
+                        }} />
+                    ];
+                  }
+                }] satisfies GridColDef[] : [])
               ]}
               getRowId={(row) => row.key}
               rows={mergedValues} toolbarActions={[]} />
