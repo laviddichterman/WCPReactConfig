@@ -16,9 +16,9 @@ import { IMoneyPropertyComponent } from '../../property-components/IMoneyPropert
 import { ExternalIdsExpansionPanelComponent } from '../../ExternalIdsExpansionPanelComponent';
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
 import ProductModifierComponent from "./ProductModifierComponent";
-import RecurrenceRuleBuilderComponent from '../../RecurrenceRuleBuilderComponent';
 import PrepTimingPropertyComponent from '../../PrepTimingPropertyComponent';
 import { getFulfillments } from '@wcp/wario-ux-shared';
+import AvailabilityListBuilderComponent from '../../AvailabilityListBuilderComponent';
 
 
 type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
@@ -26,7 +26,7 @@ type ProductComponentFieldsNoBaseId =
   ValSetValNamed<IMoney, 'price'> &
   ValSetValNamed<KeyValue[], 'externalIds'> &
   ValSetValNamed<IWInterval | null, 'disabled'> &
-  ValSetValNamed<IRecurringInterval | null, 'availability'> &
+  ValSetValNamed<IRecurringInterval[], 'availability'> &
   ValSetValNamed<PrepTiming | null, 'timing'> &
   ValSetValNamed<string[], 'serviceDisable'> &
   ValSetValNamed<number, 'flavorMax'> &
@@ -209,7 +209,7 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
             <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={handleSetModifiers} />
           </Grid>
           <Grid item xs={12}>
-            <RecurrenceRuleBuilderComponent
+            <AvailabilityListBuilderComponent
               availabilityIsValid={availabilityIsValid}
               setAvailabilityIsValid={setAvailabilityIsValid}
               disabled={props.isProcessing}

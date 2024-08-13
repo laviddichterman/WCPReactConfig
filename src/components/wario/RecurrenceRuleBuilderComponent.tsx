@@ -1,5 +1,5 @@
 import { differenceInMinutes, format, isValid, setDay, setMilliseconds, setMinutes, setMonth, setSeconds, startOfDay, toDate } from 'date-fns'
-import { Autocomplete, Grid, TextField } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, FormControlLabel, Grid, IconButton, TextField, Typography } from "@mui/material";
 import { DateTimePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { IRecurringInterval, IWInterval, WDateUtils } from "@wcp/wcpshared";
 import { ValSetVal, ValSetValNamed } from "../../utils/common";
@@ -11,6 +11,7 @@ import { CheckedNumericInput } from './CheckedNumericTextInput';
 import { MappingEnumPropertyComponent } from './property-components/MappingEnumPropertyComponent';
 import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
 import { useAppSelector } from '../../hooks/useRedux';
+import { ExpandMore } from '@mui/icons-material';
 
 
 export type RecurrenceRuleBuilderComponentProps =
@@ -28,9 +29,9 @@ export type RecurrenceRuleBuilderComponentProps =
 // 
 
 const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentProps) => {
-  const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
   const { setAvailabilityIsValid, setValue } = props;
-  const [specifyAvailability, setSpecifyAvailability] = useState(props.value !== null);
+  const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
+  const [ isExpanded, setIsExpanded ] = useState(false);
   const [useRRule, setUseRRule] = useState(props.value !== null && props.value.rrule !== "");
   const [localInterval, setLocalInterval] = useState<IWInterval>(props.value?.interval ?? { start: -1, end: -1 });
   const [frequency, setFreqency] = useState<Frequency>(props.value?.rrule ? RRule.fromString(props.value.rrule).options.freq : Frequency.WEEKLY);
@@ -60,11 +61,6 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
     }
   }, [useRRule, frequency, count, rInterval, byWeekDay, byMonth]);
   useEffect(() => {
-    if (!specifyAvailability) {
-      setAvailabilityIsValid(true);
-      setValue(null);
-      return;
-    }
     if ((useRRule && localInterval.start > localInterval.end) ||
       (useRRule && currentRRule === undefined) ||
       (!useRRule && localInterval.start > 0 && localInterval.end > 0 && localInterval.start > localInterval.end)) {
@@ -73,7 +69,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
     }
     setValue({ interval: localInterval, rrule: currentRRule?.toString() ?? "" });
     setAvailabilityIsValid(true);
-  }, [localInterval, currentRRule, useRRule, setAvailabilityIsValid, setValue, specifyAvailability]);
+  }, [localInterval, currentRRule, useRRule, setAvailabilityIsValid, setValue]);
 
   const handleSetUseRRule = (newValue: boolean) => {
     if (useRRule === true && newValue === false) {
@@ -85,139 +81,150 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
     setUseRRule(newValue);
   }
   return (
-    <LocalizationProvider dateAdapter={DateAdapter}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          {!specifyAvailability ? "" : (props.availabilityIsValid ? (currentRRule ? (`${currentRRule.toText()} from ${WDateUtils.MinutesToPrintTime(localInterval.start)} to ${WDateUtils.MinutesToPrintTime(localInterval.end)}`) : `${localInterval.start === -1 ? 'The Beginning of Time' : format(localInterval.start, WDateUtils.ISODateTimeNoOffset)} to ${localInterval.end === -1 ? 'The End of Time' : format(localInterval.end, WDateUtils.ISODateTimeNoOffset)}`) : "Availability is not valid")}
+    <Accordion sx={{ p: 2 }} expanded={isExpanded} onChange={(_e, ex) => setIsExpanded(ex)}  >
+    <AccordionSummary expandIcon={<ExpandMore />}>
+      <Grid container>
+        <Grid item xs>
+          <Typography sx={{ ml: 4 }}>
+            {(props.value !== null && props.availabilityIsValid ? 
+              (currentRRule ? 
+              (`${currentRRule.toText()} from ${WDateUtils.MinutesToPrintTime(localInterval.start)} to ${WDateUtils.MinutesToPrintTime(localInterval.end)}`) : 
+              `${localInterval.start === -1 ? 'The Beginning of Time' : format(localInterval.start, WDateUtils.ISODateTimeNoOffset)} to ${localInterval.end === -1 ? 'The End of Time' : 
+              format(localInterval.end, WDateUtils.ISODateTimeNoOffset)}`) : 
+              "Availability is not valid")}
+          </Typography>
         </Grid>
-        <Grid item xs={specifyAvailability ? 6 : 12}>
-          <ToggleBooleanPropertyComponent
-            disabled={props.disabled}
-            label="Specify Availability"
-            value={specifyAvailability}
-            setValue={setSpecifyAvailability}
+        <Grid item xs={2}>
+          <FormControlLabel sx={{ float: "right" }} control={
+            <IconButton edge="end" size="small" disabled={props.disabled} aria-label="delete" onClick={() => props.setValue(null)}></IconButton>
+          } 
+            label="Delete"
           />
         </Grid>
-        {specifyAvailability === true && (
-          <>
-            <Grid item xs={6}>
-              <ToggleBooleanPropertyComponent
-                disabled={props.disabled || !specifyAvailability}
-                label="Use Recurrence Rule"
-                value={useRRule}
-                setValue={handleSetUseRRule}
-              />
-            </Grid>
-            {useRRule ? (
-              <>
-                <Grid container item xs={6} sm={4}>
-                  <MappingEnumPropertyComponent
-                    disabled={props.disabled}
-                    label="Frequency"
-                    value={frequency}
-                    setValue={setFreqency}
-                    options={{ 'Daily': Frequency.DAILY, 'Weekly': Frequency.WEEKLY, 'Monthly': Frequency.MONTHLY }}
-                  />
-                </Grid>
+      </Grid>
+    </AccordionSummary>
+    <AccordionDetails>
+    <LocalizationProvider dateAdapter={DateAdapter}>
+      <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <ToggleBooleanPropertyComponent
+              disabled={props.disabled}
+              label="Use Recurrence Rule"
+              value={useRRule}
+              setValue={handleSetUseRRule}
+            />
+          </Grid>
+          {useRRule ? (
+            <>
+              <Grid container item xs={6} sm={4}>
+                <MappingEnumPropertyComponent
+                  disabled={props.disabled}
+                  label="Frequency"
+                  value={frequency}
+                  setValue={setFreqency}
+                  options={{ 'Daily': Frequency.DAILY, 'Weekly': Frequency.WEEKLY, 'Monthly': Frequency.MONTHLY }}
+                />
+              </Grid>
 
-                <Grid item xs={6} sm={4}>
-                  <CheckedNumericInput
-                    label="Count"
-                    type="number"
-                    inputProps={{ inputMode: 'numeric', min: 1, pattern: '[0-9]*', step: 1 }}
-                    value={count}
-                    disabled={props.disabled}
-                    onChange={(e) => setCount(e)}
-                    parseFunction={(v) => v !== null && v ? parseInt(v) : null}
-                    allowEmpty={true} />
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                  <IntNumericPropertyComponent
-                    disabled={props.disabled}
-                    label="Interval"
-                    value={rInterval}
-                    setValue={setRInterval}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Autocomplete
-                    multiple
-                    filterSelectedOptions 
-                    options={[RRule.MO, RRule.TU, RRule.WE, RRule.TH, RRule.FR, RRule.SA, RRule.SU,]}
-                    value={byWeekDay}
-                    onChange={(_, v: Weekday[]) => setByWeekDay(v.sort((a, b) => a.getJsWeekday() - b.getJsWeekday()))}
-                    getOptionLabel={(option) => format(setDay(Date.now(), option.getJsWeekday()), 'EEEE')}
-                    isOptionEqualToValue={(option, value) => option.weekday === value.weekday }
-                    renderInput={(params) => <TextField {...params} label="By Weekday" />}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Autocomplete
-                    multiple
-                    filterSelectedOptions
-                    options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
-                    value={byMonth}
-                    onChange={(_, v: number[]) => setByMonth(v.sort())}
-                    getOptionLabel={(option) => format(setMonth(Date.now(), option - 1), 'MMM')}
-                    isOptionEqualToValue={(option, value) => option === value}
-                    renderInput={(params) => <TextField {...params} label="By Month" />}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TimePicker
-                    slotProps={{ textField: { fullWidth: true } }}
-                    label="From Time"
-                    //maxTime={setMinutes(startOfDay(Date.now()), localInterval.end)}
-                    value={setMinutes(startOfDay(Date.now()), localInterval.start)}
-                    onChange={(e) => e !== null && isValid(e) ? setLocalInterval({ ...localInterval, start: differenceInMinutes(e, startOfDay(Date.now())) }) : 0}
-                  // localeText={ { toolbarTitle: "From Time"}}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TimePicker
-                    slotProps={{ textField: { fullWidth: true } }}
-                    label="Until Time"
-                    //minTime={setMinutes(startOfDay(Date.now()), localInterval.start)}
-                    value={setMinutes(startOfDay(Date.now()), localInterval.end)}
-                    onChange={(e) => {
-                      console.log({ e })
-                      return e !== null && isValid(e) ? setLocalInterval({ ...localInterval, end: differenceInMinutes(e, startOfDay(Date.now())) }) : 1439
-                    }}
-                  // renderInput={(params) => <TextField {...params} fullWidth label="Until Time" />}
-                  />
-                </Grid>
-              </>
-            ) : (
-              // show a from and to date-time picker similar to disable 
-              <>
-                <Grid item xs={6}>
-                  <DateTimePicker
-                    slotProps={{ textField: { fullWidth: true } }}
-                    disabled={props.disabled}
-                    label={"Start"}
-                    value={localInterval.start > 0 ? toDate(localInterval.start) : null}
-                    onChange={(date: Date) => setLocalInterval({ start: date && date.valueOf() > 0 ? setMilliseconds(setSeconds(date, 0), 0).valueOf() : -1, end: localInterval.end })}
-                    format="MMM dd, y hh:mm a"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <DateTimePicker
-                    disabled={props.disabled}
-                    slotProps={{ textField: { fullWidth: true } }}
-                    label={"End"}
-                    minDateTime={localInterval.start > 0 ? toDate(localInterval.start) : null}
-                    value={localInterval.end > 0 ? toDate(localInterval.end) : null}
-                    onChange={(date: Date) => setLocalInterval({ start: localInterval.start, end: date && date.valueOf() > 0 ? setMilliseconds(setSeconds(date, 0), 0).valueOf() : -1 })}
-                    format="MMM dd, y hh:mm a"
-                  />
-                </Grid>
-              </>
-            )}
-          </>
-        )}
+              <Grid item xs={6} sm={4}>
+                <CheckedNumericInput
+                  label="Count"
+                  type="number"
+                  inputProps={{ inputMode: 'numeric', min: 1, pattern: '[0-9]*', step: 1 }}
+                  value={count}
+                  disabled={props.disabled}
+                  onChange={(e) => setCount(e)}
+                  parseFunction={(v) => v !== null && v ? parseInt(v) : null}
+                  allowEmpty={true} />
+              </Grid>
+              <Grid item xs={6} sm={4}>
+                <IntNumericPropertyComponent
+                  disabled={props.disabled}
+                  label="Interval"
+                  value={rInterval}
+                  setValue={setRInterval}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Autocomplete
+                  multiple
+                  filterSelectedOptions
+                  options={[RRule.MO, RRule.TU, RRule.WE, RRule.TH, RRule.FR, RRule.SA, RRule.SU,]}
+                  value={byWeekDay}
+                  onChange={(_, v: Weekday[]) => setByWeekDay(v.sort((a, b) => a.getJsWeekday() - b.getJsWeekday()))}
+                  getOptionLabel={(option) => format(setDay(Date.now(), option.getJsWeekday()), 'EEEE')}
+                  isOptionEqualToValue={(option, value) => option.weekday === value.weekday}
+                  renderInput={(params) => <TextField {...params} label="By Weekday" />}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Autocomplete
+                  multiple
+                  filterSelectedOptions
+                  options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+                  value={byMonth}
+                  onChange={(_, v: number[]) => setByMonth(v.sort())}
+                  getOptionLabel={(option) => format(setMonth(Date.now(), option - 1), 'MMM')}
+                  isOptionEqualToValue={(option, value) => option === value}
+                  renderInput={(params) => <TextField {...params} label="By Month" />}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TimePicker
+                  slotProps={{ textField: { fullWidth: true } }}
+                  label="From Time"
+                  //maxTime={setMinutes(startOfDay(Date.now()), localInterval.end)}
+                  value={setMinutes(startOfDay(Date.now()), localInterval.start)}
+                  onChange={(e) => e !== null && isValid(e) ? setLocalInterval({ ...localInterval, start: differenceInMinutes(e, startOfDay(Date.now())) }) : 0}
+                // localeText={ { toolbarTitle: "From Time"}}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TimePicker
+                  slotProps={{ textField: { fullWidth: true } }}
+                  label="Until Time"
+                  //minTime={setMinutes(startOfDay(Date.now()), localInterval.start)}
+                  value={setMinutes(startOfDay(Date.now()), localInterval.end)}
+                  onChange={(e) => {
+                    console.log({ e })
+                    return e !== null && isValid(e) ? setLocalInterval({ ...localInterval, end: differenceInMinutes(e, startOfDay(Date.now())) }) : 1439
+                  }}
+                // renderInput={(params) => <TextField {...params} fullWidth label="Until Time" />}
+                />
+              </Grid>
+            </>
+          ) : (
+            // show a from and to date-time picker similar to disable 
+            <>
+            <Grid item xs={6}></Grid>
+              <Grid item xs={6}>
+                <DateTimePicker
+                  slotProps={{ textField: { fullWidth: true } }}
+                  disabled={props.disabled}
+                  label={"Start"}
+                  value={localInterval.start > 0 ? toDate(localInterval.start) : null}
+                  onChange={(date: Date) => setLocalInterval({ start: date && date.valueOf() > 0 ? setMilliseconds(setSeconds(date, 0), 0).valueOf() : -1, end: localInterval.end })}
+                  format="MMM dd, y hh:mm a"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <DateTimePicker
+                  disabled={props.disabled}
+                  slotProps={{ textField: { fullWidth: true } }}
+                  label={"End"}
+                  minDateTime={localInterval.start > 0 ? toDate(localInterval.start) : null}
+                  value={localInterval.end > 0 ? toDate(localInterval.end) : null}
+                  onChange={(date: Date) => setLocalInterval({ start: localInterval.start, end: date && date.valueOf() > 0 ? setMilliseconds(setSeconds(date, 0), 0).valueOf() : -1 })}
+                  format="MMM dd, y hh:mm a"
+                />
+              </Grid>
+            </>
+          )}
 
       </Grid>
     </LocalizationProvider>
+    </AccordionDetails>
+    </Accordion>
   );
 };
 

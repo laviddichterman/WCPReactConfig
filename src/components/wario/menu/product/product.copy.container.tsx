@@ -21,7 +21,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
   const productEntry = useAppSelector(s => getProductEntryById(s.ws.products, product_id)!);
   const allProductInstances = useAppSelector(s => s.ws.catalog!.productInstances);
   const [price, setPrice] = useState(productEntry.product.price);
-  const [availability, setAvailability] = useState(productEntry.product.availability ?? null);
+  const [availability, setAvailability] = useState(productEntry.product.availability ?? []);
   const [timing, setTiming] = useState(productEntry.product.timing);
   const [disabled, setDisabled] = useState(productEntry.product.disabled ?? null);
   const [externalIds, setExternalIds] = useState(productEntry.product.externalIDs);

@@ -45,7 +45,7 @@ const selectRows = weakMapCreateSelector(
     return pids.map(x => {
       const productEntry = getProductEntryById(products, x);
       const name = getProductInstanceById(productInstances, productEntry.product.baseProductId)?.displayName ?? "UNDEFINED";
-      return { id: x, disableData: DisableDataCheck(productEntry.product.disabled, null, currentTime), name }
+      return { id: x, disableData: DisableDataCheck(productEntry.product.disabled, [], currentTime), name }
     })
   }
 );

@@ -337,7 +337,7 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
 
         // stuff below is not needed, but the current API requires it
         disabled: disabledValue,
-        availability: null,
+        availability: [],
         timing: null,
         serviceDisable: [],
         displayFlags: {
@@ -387,7 +387,7 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
   return {
     product: {
       disabled: disabledValue,
-      availability: null,
+      availability: [],
       timing: null,
       externalIDs: [],
       serviceDisable: [],

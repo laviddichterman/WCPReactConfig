@@ -11,7 +11,7 @@ import { FloatNumericPropertyComponent } from "../../property-components/FloatNu
 import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
 import { ExternalIdsExpansionPanelComponent } from "../../ExternalIdsExpansionPanelComponent";
-import RecurrenceRuleBuilderComponent from "../../RecurrenceRuleBuilderComponent";
+import AvailabilityListBuilderComponent from "../../AvailabilityListBuilderComponent";
 import { useState } from "react";
 
 type ModifierOptionContainerProps =
@@ -30,7 +30,7 @@ type ModifierOptionContainerProps =
   ValSetValNamed<boolean, 'allowOTS'> &
   ValSetValNamed<boolean, 'omitFromShortname'> &
   ValSetValNamed<boolean, 'omitFromName'> &
-  ValSetValNamed<IRecurringInterval | null, 'availability'> &
+  ValSetValNamed<IRecurringInterval[], 'availability'> &
   ValSetValNamed<IWInterval | null, 'disabled'> &
   {
     modifierType: Omit<IOptionType, 'id'>;
@@ -188,13 +188,13 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
         />
       </Grid>
       <Grid item xs={12}>
-        <RecurrenceRuleBuilderComponent
-          availabilityIsValid={props.availabilityIsValid}
-          setAvailabilityIsValid={props.setAvailabilityIsValid}
-          disabled={props.isProcessing}
-          value={props.availability}
-          setValue={props.setAvailability}
-        />
+        <AvailabilityListBuilderComponent
+              availabilityIsValid={props.availabilityIsValid}
+              setAvailabilityIsValid={props.setAvailabilityIsValid}
+              disabled={props.isProcessing}
+              value={props.availability}
+              setValue={props.setAvailability}
+            />
       </Grid>
       <Grid item xs={12}>
         <DatetimeBasedDisableComponent

@@ -100,7 +100,7 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
       const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
       return {
         product: {
-          availability: null,
+          availability: [],
           timing: null,
           disabled: null,
           externalIDs: [],
