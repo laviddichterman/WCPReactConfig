@@ -25,7 +25,7 @@ const CustomToolbar = ({ showQuickFilter, quickFilterProps, title, actions = [] 
   const actionSizeSum = actions.reduce((acc, x) => acc + x.size, 0);
   return (
     <GridToolbarContainer >
-      <Grid container  sx={{ m: 'auto', width: '100%' }}>
+      <Grid container sx={{ m: 'auto', width: '100%' }}>
       <Grid item xs={showQuickFilter ? 12 : 12 - actionSizeSum} md={showQuickFilter ? 6 : 12 - actionSizeSum}>
           <Typography variant="h5">{title}</Typography>
         </Grid>

@@ -57,9 +57,9 @@ const FulfillmentTableContainer = ({
             key={`DELETE${params.row.id}`} />
         ]
       },
-      { headerName: "Display Name", field: "displayName", valueGetter: (v: { row: FulfillmentConfig }) => v.row.displayName, flex: 4 },
-      { headerName: "Ordinal", field: "ordinal", valueGetter: (v: { row: FulfillmentConfig }) => v.row.ordinal, flex: 1 },
-      { headerName: "FulfillmentType", field: "fulfillment", valueGetter: (v: { row: FulfillmentConfig }) => v.row.service, flex: 2 },
+      { headerName: "Display Name", field: "displayName", flex: 4 },
+      { headerName: "Ordinal", field: "ordinal", flex: 1 },
+      { headerName: "FulfillmentType", field: "service", flex: 2 },
       ]}
       toolbarActions={[{
         size: 1,
