@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.61",
+  "version": "0.4.62",
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@emotion/cache": "^11.13.1",
@@ -79,7 +79,7 @@
     "@types/geojson": "^7946.0.14",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.7",
-    "@types/node": "^22.2.0",
+    "@types/node": "^22.3.0",
     "@types/nprogress": "^0.2.3",
     "@types/numeral": "^2.0.5",
     "@types/papaparse": "^5.3.14",
