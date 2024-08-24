@@ -1,12 +1,12 @@
 // utils
 import { useAuth0 } from '@auth0/auth0-react';
-import createAvatar from '../utils/createAvatar';
+import { createAvatar } from '../utils/createAvatar';
 //
-import Avatar, { Props as AvatarProps } from './Avatar';
+import { Avatar, Props as AvatarProps } from './Avatar';
 
 // ----------------------------------------------------------------------
 
-export default function MyAvatar({ ...other }: AvatarProps) {
+export function MyAvatar({ ...other }: AvatarProps) {
   const { user } = useAuth0();
 
   return (

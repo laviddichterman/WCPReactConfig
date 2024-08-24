@@ -1,6 +1,6 @@
 import { EventInput } from '@fullcalendar/core';
 import { configureStore, createSelector } from '@reduxjs/toolkit';
-import { weakMapCreateSelector, lruMemoizeOptionsWithSize, SelectCatalogSelectors, selectGroupedAndOrderedCart, getProductEntryById, getProductInstanceById, getProductEntries, getFulfillmentById, getCategoryEntryById, SelectBaseProductNameByProductId, SelectParentProductEntryFromProductInstanceId } from '@wcp/wario-ux-shared';
+import { getCategoryEntryById, getFulfillmentById, getProductEntries, getProductInstanceById, lruMemoizeOptionsWithSize, SelectBaseProductNameByProductId, SelectCatalogSelectors, selectGroupedAndOrderedCart, SelectParentProductEntryFromProductInstanceId, weakMapCreateSelector } from '@wcp/wario-ux-shared';
 import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WOrderStatus } from '@wcp/wcpshared';
 import { rootReducer } from './rootReducer';
 import { getWOrderInstances } from './slices/OrdersSlice';
@@ -55,10 +55,10 @@ export const selectEventTitleStringForOrder = weakMapCreateSelector(
   (s: RootState, order: WOrderInstance) => selectRebuiltSortedCart(s, order),
   (categories, productInstances, fulfillmentConfig, order, rebuiltCart) => EventTitleStringBuilder(
     { category: (id: string) => getCategoryEntryById(categories, id), productInstance: (id: string) => getProductInstanceById(productInstances, id) },
-    fulfillmentConfig, 
-    `${order.customerInfo.givenName} ${order.customerInfo.familyName}`, 
-    order.fulfillment, 
-    rebuiltCart, 
+    fulfillmentConfig,
+    `${order.customerInfo.givenName} ${order.customerInfo.familyName}`,
+    order.fulfillment,
+    rebuiltCart,
     order.specialInstructions ?? ""));
 
 export const selectOrderAsEvent = weakMapCreateSelector(
@@ -109,14 +109,14 @@ export const selectProductIdsAfterDisableFilter = weakMapCreateSelector(
   (s: RootState) => getProductEntries(s.ws.products),
   (s: RootState) => s.catalog.hideDisabledProducts,
   (products, hideDisabledProducts) => (!hideDisabledProducts ? products : products.filter((x) =>
-    (!x.product.disabled || x.product.disabled.start <= x.product.disabled.end))).map(x=>x.product.id)
+    (!x.product.disabled || x.product.disabled.start <= x.product.disabled.end))).map(x => x.product.id)
 );
 
 export const selectProductIdsInCategoryAfterDisableFilter = weakMapCreateSelector(
   (s: RootState, _: string) => selectProductsAfterDisableFilter(s),
   (_: RootState, categoryId: string) => categoryId,
   (productsAfterDisableFilter, categoryId) => productsAfterDisableFilter.filter((x) =>
-    x.product.category_ids.includes(categoryId)).map(x=>x.product.id)
+    x.product.category_ids.includes(categoryId)).map(x => x.product.id)
 );
 
 export const selectOrphanedProductIds = weakMapCreateSelector(
@@ -124,5 +124,5 @@ export const selectOrphanedProductIds = weakMapCreateSelector(
   (products) => products.filter(
     (x) =>
       x.product.category_ids.filter((x) => x && x.length > 0).length === 0
-  ).map(x=>x.product.id)
+  ).map(x => x.product.id)
 );

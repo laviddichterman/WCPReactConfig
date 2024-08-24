@@ -1,16 +1,16 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { FulfillmentTime, ResponseSuccess, WDateUtils, WOrderInstance } from "@wcp/wcpshared";
-import axiosInstance from "../../utils/axios";
-import uuidv4 from "../../utils/uuidv4";
-import { enqueueSnackbar } from 'notistack'
+import { FulfillmentTime, ResponseSuccess, WOrderInstance } from "@wcp/wcpshared";
+import { enqueueSnackbar } from 'notistack';
+import { axiosInstance } from "../../utils/axios";
+import { uuidv4 } from "../../utils/uuidv4";
 // import { parseISO, subDays } from "date-fns";
 export const WOrderInstanceAdapter = createEntityAdapter<WOrderInstance>();
 export const { selectAll: getWOrderInstances, selectById: getWOrderInstanceById, selectIds: getWOrderInstanceIds } =
   WOrderInstanceAdapter.getSelectors();
 
-type RequestStatus =  'FAILED' | 'PENDING' | 'IDLE';
+type RequestStatus = 'FAILED' | 'PENDING' | 'IDLE';
 export interface OrderManagerState {
-  orders: EntityState<WOrderInstance, string>;  
+  orders: EntityState<WOrderInstance, string>;
   requestStatus: RequestStatus;
   pollingStatus: RequestStatus;
 }
@@ -23,14 +23,14 @@ const initialState: OrderManagerState = {
 
 export const pollOpenOrders = createAsyncThunk<WOrderInstance[], { token: string; date: string | null; }>(
   'orders/pollOpen',
-  async ({token, date }) => {
+  async ({ token, date }) => {
     const response = await axiosInstance.get('/api/v1/order', {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
 
       },
-      params: { ...(date ? { date } : { })  },
+      params: { ...(date ? { date } : {}) },
       // params: { ...(date ? { date: WDateUtils.formatISODate(subDays(parseISO(date), 1)) } : { })  },
     });
     return response.data;

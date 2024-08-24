@@ -1,17 +1,16 @@
-import { useCallback, Dispatch, SetStateAction, useState } from "react";
-import { format } from 'date-fns';
+import { AddBox, BedtimeOff, Cancel, CheckCircle, DeleteOutline, Edit, LibraryAdd } from "@mui/icons-material";
+import { Tooltip } from '@mui/material';
+import { GridActionsCellItem, GridRenderCellParams, GridRowId, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
 import { DISABLE_REASON, DisableDataCheck } from '@wcp/wcpshared';
-import { GridActionsCellItem, GridRenderCellParams, GridRowId, GridRowParams } from "@mui/x-data-grid-premium";
-import { useGridApiRef } from "@mui/x-data-grid-premium";
-import { AddBox, DeleteOutline, Edit, LibraryAdd, BedtimeOff, CheckCircle, Cancel } from "@mui/icons-material";
-import Tooltip from '@mui/material/Tooltip';
+import { format } from 'date-fns';
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroupById } from '../../../../redux/slices/PrinterGroupSlice';
-import TableWrapperComponent, { ToolbarAction } from "../../table_wrapper.component";
+import { TableWrapperComponent, ToolbarAction } from "../../table_wrapper.component";
 
+import { getModifierTypeEntryById, getProductEntryById, getProductInstanceById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
 import { openProductClassCopy, openProductClassDelete, openProductClassDisable, openProductClassDisableUntilEod, openProductClassEdit, openProductClassEnable, openProductInstanceAdd } from "../../../../redux/slices/CatalogSlice";
 import { RootState } from "../../../../redux/store";
-import { weakMapCreateSelector, getModifierTypeEntryById, getProductEntryById, getProductInstanceById } from "@wcp/wario-ux-shared";
 import ProductInstanceTableContainer from "./product_instance_table.container";
 
 type RowType = { id: string; disableData: ReturnType<typeof DisableDataCheck>; name: string }

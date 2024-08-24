@@ -1,7 +1,7 @@
 import { memo } from 'react';
 // @mui
+import { AppBar, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Container, AppBar } from '@mui/material';
 // config
 import { HEADER } from '../../../config';
 // components
@@ -27,7 +27,7 @@ const RootStyle = styled(AppBar)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-function NavbarHorizontal() {
+function NavbarHorizontalGenerator() {
   return (
     <RootStyle>
       <Container maxWidth={false}>
@@ -37,4 +37,4 @@ function NavbarHorizontal() {
   );
 }
 
-export default memo(NavbarHorizontal);
+export const NavbarHorizontal = memo(NavbarHorizontalGenerator);

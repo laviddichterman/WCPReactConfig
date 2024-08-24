@@ -7,7 +7,7 @@ import { ScrollbarProps } from './types';
 
 // ----------------------------------------------------------------------
 
-function Scrollbar({ children, sx, ...other }: ScrollbarProps) {
+function ScrollbarGenerator({ children, sx, ...other }: ScrollbarProps) {
   const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent;
 
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
@@ -29,4 +29,4 @@ function Scrollbar({ children, sx, ...other }: ScrollbarProps) {
   );
 }
 
-export default memo(Scrollbar);
+export const Scrollbar = memo(ScrollbarGenerator);

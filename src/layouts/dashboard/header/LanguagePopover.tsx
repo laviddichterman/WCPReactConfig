@@ -2,15 +2,15 @@ import { useState } from 'react';
 // @mui
 import { MenuItem, Stack } from '@mui/material';
 // hooks
-import useLocales from '../../../hooks/useLocales';
+import { useLocales } from '../../../hooks/useLocales';
 // components
-import Image from '../../../components/Image';
-import MenuPopover from '../../../components/MenuPopover';
+import { Image } from '../../../components/Image';
+import { MenuPopover } from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
 
 // ----------------------------------------------------------------------
 
-export default function LanguagePopover() {
+export function LanguagePopover() {
   const { allLangs, currentLang, onChangeLang } = useLocales();
 
   const [open, setOpen] = useState<HTMLElement | null>(null);

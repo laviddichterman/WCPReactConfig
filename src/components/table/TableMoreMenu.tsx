@@ -1,8 +1,8 @@
 // @mui
 import { IconButton } from '@mui/material';
 //
-import Iconify from '../Iconify';
-import MenuPopover from '../MenuPopover';
+import { Iconify } from '../Iconify';
+import { MenuPopover } from '../MenuPopover';
 
 // ----------------------------------------------------------------------
 

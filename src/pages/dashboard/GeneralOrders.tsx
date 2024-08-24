@@ -1,17 +1,17 @@
 // @mui
 import { Container, Dialog, Grid } from '@mui/material';
 // hooks
-import useSettings from '../../hooks/useSettings';
+import { useSettings } from '../../hooks/useSettings';
 // components
-import Page from '../../components/Page';
+import { Page } from '../../components/Page';
 // sections
-import OrderManagerComponent from '../../components/wario/orders/OrderManager';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useCallback, useState } from 'react';
+import { OrderCalendar } from '../../components/wario/orders/OrderCalendar';
+import { OrderManagerComponent } from '../../components/wario/orders/OrderManager';
 import { WOrderComponentCard } from '../../components/wario/orders/WOrderComponentCard';
 import { useAppDispatch } from "../../hooks/useRedux";
 import { confirmOrder } from '../../redux/slices/OrdersSlice';
-import OrderCalendar from '../../components/wario/orders/OrderCalendar';
-import { useCallback, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
 
 // ----------------------------------------------------------------------
 export default function GeneralOrders() {
@@ -35,7 +35,7 @@ export default function GeneralOrders() {
           </Grid>
         </Grid>
       </Container>
-        {selectedOrderId !== null ? <Dialog scroll={'body'} fullWidth maxWidth={'xl'} open={selectedOrderId !== null} onClose={() => setSelectedOrderId(null)}><WOrderComponentCard orderId={selectedOrderId!} handleConfirmOrder={handleConfirmOrder} onCloseCallback={() => setSelectedOrderId(null)} /></Dialog> : "" }
+      {selectedOrderId !== null ? <Dialog scroll={'body'} fullWidth maxWidth={'xl'} open={selectedOrderId !== null} onClose={() => setSelectedOrderId(null)}><WOrderComponentCard orderId={selectedOrderId!} handleConfirmOrder={handleConfirmOrder} onCloseCallback={() => setSelectedOrderId(null)} /></Dialog> : ""}
     </Page>
   );
 }

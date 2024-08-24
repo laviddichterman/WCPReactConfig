@@ -2,8 +2,8 @@ import { m } from 'framer-motion';
 // @mui
 import { Container, Typography } from '@mui/material';
 // components
-import { MotionContainer, varBounce } from '../components/animate';
 import { useAuth0 } from '@auth0/auth0-react';
+import { MotionContainer, varBounce } from '../components/animate';
 
 // ----------------------------------------------------------------------
 

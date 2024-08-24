@@ -1,11 +1,11 @@
 // @mui
-import { List, Box } from '@mui/material';
+import { Box, List } from '@mui/material';
 // hooks
-import useLocales from '../../../hooks/useLocales';
+import { useLocales } from '../../../hooks/useLocales';
 //
 import { NavSectionProps } from '../type';
-import { ListSubheaderStyle } from './style';
 import NavList from './NavList';
+import { ListSubheaderStyle } from './style';
 
 // ----------------------------------------------------------------------
 

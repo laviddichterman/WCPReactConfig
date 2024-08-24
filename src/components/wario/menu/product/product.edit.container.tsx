@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ProductComponent from "./product.component";
-import { HOST_API } from "../../../../config";
+import { getProductEntryById } from "@wcp/wario-ux-shared";
 import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
-import { useAppSelector } from "src/hooks/useRedux";
-import { getProductEntryById } from "@wcp/wario-ux-shared";
+import { HOST_API } from "../../../../config";
+import { useAppSelector } from "../../../../hooks/useRedux";
 import { selectBaseProductName } from "../../../../redux/store";
+import { ProductComponent } from "./product.component";
 
 export interface ProductEditContainerProps {
   product_id: string;
@@ -17,8 +17,8 @@ export interface ProductEditContainerProps {
 const ProductEditContainer = ({ product_id, onCloseCallback }: ProductEditContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const productName = useAppSelector(s=>selectBaseProductName(s, product_id));
-  const product = useAppSelector(s=>getProductEntryById(s.ws.products, product_id)!.product);
+  const productName = useAppSelector(s => selectBaseProductName(s, product_id));
+  const product = useAppSelector(s => getProductEntryById(s.ws.products, product_id)!.product);
 
   const [price, setPrice] = useState(product.price);
   const [baseProductId, setBaseProductId] = useState(product.baseProductId);
@@ -60,7 +60,7 @@ const ProductEditContainer = ({ product_id, onCloseCallback }: ProductEditContai
             flavor_max: flavorMax,
             bake_max: bakeMax,
             singular_noun: singularNoun,
-            order_guide: { 
+            order_guide: {
               suggestions: orderGuideSuggestionFunctions,
               warnings: orderGuideWarningFunctions
             }

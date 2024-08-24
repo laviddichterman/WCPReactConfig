@@ -1,6 +1,6 @@
 // @mui
-import { styled } from '@mui/material/styles';
 import { OutlinedInputProps, TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -8,7 +8,7 @@ interface Props extends OutlinedInputProps {
   stretchStart?: number;
 }
 
-const InputStyle = styled(TextField, {
+export const InputStyle = styled(TextField, {
   shouldForwardProp: (prop) => prop !== 'stretchStart',
 })<Props>(({ stretchStart, theme }) => ({
   '& .MuiOutlinedInput-root': {
@@ -34,5 +34,3 @@ const InputStyle = styled(TextField, {
     borderColor: `${theme.palette.grey[500_32]} !important`,
   },
 }));
-
-export default InputStyle;

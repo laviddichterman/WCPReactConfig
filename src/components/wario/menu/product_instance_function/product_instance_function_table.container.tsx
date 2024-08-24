@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
+import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
+import { IconButton, Tooltip } from '@mui/material';
 import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
-import { AddBox, Edit, DeleteOutline } from "@mui/icons-material";
-import { Tooltip, IconButton } from '@mui/material';
+import { DialogContainer, getModifierOptionById, getModifierTypeEntryById, getProductInstanceFunctions } from "@wcp/wario-ux-shared";
 import { IAbstractExpression, IProductInstanceFunction, WFunctional } from "@wcp/wcpshared";
-import TableWrapperComponent from "../../table_wrapper.component";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { getModifierTypeEntryById, getModifierOptionById, getProductInstanceFunctions, DialogContainer } from "@wcp/wario-ux-shared";
+import { TableWrapperComponent } from "../../table_wrapper.component";
 interface PIFTableContainerProps {
 
 }
@@ -67,45 +67,45 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
         ]}
       />
       <DialogContainer
-              maxWidth={"xl"}
-              title={"Add Product Instance Function"}
-              onClose={() => setIsProductInstanceFunctionAddOpen(false)}
-              open={isProductInstanceFunctionAddOpen}
-              innerComponent={
-                <ProductInstanceFunctionAddContainer
-                  onCloseCallback={() => setIsProductInstanceFunctionAddOpen(false)}
-                />
-              }
-            />
-            <DialogContainer
-              maxWidth={"xl"}
-              title={"Edit Product Instance Function"}
-              onClose={() => setIsProductInstanceFunctionEditOpen(false)}
-              open={isProductInstanceFunctionEditOpen}
-              innerComponent={
-                pifIdToEdit !== null &&
-                <ProductInstanceFunctionEditContainer
-                  onCloseCallback={() => setIsProductInstanceFunctionEditOpen(false)}
-                  pifId={pifIdToEdit}
-                />
-              }
-            />
-            <DialogContainer
-              title={"Delete Product Instance Function"}
-              onClose={() => {
-                setIsProductInstanceFunctionDeleteOpen(false);
-              }}
-              open={isProductInstanceFunctionDeleteOpen}
-              innerComponent={
-                pifIdToEdit !== null &&
-                <ProductInstanceFunctionDeleteContainer
-                  onCloseCallback={() => {
-                    setIsProductInstanceFunctionDeleteOpen(false);
-                  }}
-                  pifId={pifIdToEdit}
-                />
-              }
-            />
+        maxWidth={"xl"}
+        title={"Add Product Instance Function"}
+        onClose={() => setIsProductInstanceFunctionAddOpen(false)}
+        open={isProductInstanceFunctionAddOpen}
+        innerComponent={
+          <ProductInstanceFunctionAddContainer
+            onCloseCallback={() => setIsProductInstanceFunctionAddOpen(false)}
+          />
+        }
+      />
+      <DialogContainer
+        maxWidth={"xl"}
+        title={"Edit Product Instance Function"}
+        onClose={() => setIsProductInstanceFunctionEditOpen(false)}
+        open={isProductInstanceFunctionEditOpen}
+        innerComponent={
+          pifIdToEdit !== null &&
+          <ProductInstanceFunctionEditContainer
+            onCloseCallback={() => setIsProductInstanceFunctionEditOpen(false)}
+            pifId={pifIdToEdit}
+          />
+        }
+      />
+      <DialogContainer
+        title={"Delete Product Instance Function"}
+        onClose={() => {
+          setIsProductInstanceFunctionDeleteOpen(false);
+        }}
+        open={isProductInstanceFunctionDeleteOpen}
+        innerComponent={
+          pifIdToEdit !== null &&
+          <ProductInstanceFunctionDeleteContainer
+            onCloseCallback={() => {
+              setIsProductInstanceFunctionDeleteOpen(false);
+            }}
+            pifId={pifIdToEdit}
+          />
+        }
+      />
     </>
   );
 };

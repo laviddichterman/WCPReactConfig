@@ -1,6 +1,6 @@
-import { forwardRef } from 'react';
+import { AvatarProps, Avatar as MUIAvatar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Avatar as MUIAvatar, AvatarProps } from '@mui/material';
+import { forwardRef } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ export interface Props extends AvatarProps {
   color?: AvatarColor;
 }
 
-const Avatar = forwardRef<HTMLDivElement, Props>(
+export const Avatar = forwardRef<HTMLDivElement, Props>(
   ({ color = 'default', children, sx, ...other }, ref) => {
     const theme = useTheme();
 
@@ -40,5 +40,3 @@ const Avatar = forwardRef<HTMLDivElement, Props>(
     );
   }
 );
-
-export default Avatar;

@@ -1,5 +1,5 @@
+import { Box, Button, DialogActions, DialogContent, Grid, LinearProgress } from '@mui/material';
 import React from "react";
-import { Grid, Button, LinearProgress, DialogContent, DialogActions, Box } from '@mui/material';
 
 const GenerateActionsHtmlFromList = (actions: React.ReactNode[]) => actions.length === 0 ? "" :
   (<Grid container justifyContent="flex-end" item xs={12}>
@@ -43,7 +43,7 @@ const ElementActionComponent = ({
   return (
     <Box>
       <DialogContent>
-        <Grid container rowSpacing={2} spacing={2}  justifyContent="center">
+        <Grid container rowSpacing={2} spacing={2} justifyContent="center">
           {body}
         </Grid>
       </DialogContent>
@@ -55,4 +55,4 @@ const ElementActionComponent = ({
   );
 };
 
-export { GenerateActionsHtmlFromList, ElementActionComponent };
+export { ElementActionComponent, GenerateActionsHtmlFromList };

@@ -1,25 +1,25 @@
-import React from 'react';
-import { DialogContainer, IDialogContainer } from '@wcp/wario-ux-shared';
-import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import { DialogContainer, IDialogContainer } from '@wcp/wario-ux-shared';
+import React from 'react';
 
 interface InterstitialDialogProps {
   onClose: IDialogContainer['onClose'];
   dialogTitle: string;
-  options: { 
-    title: string; 
-    onClose: IDialogContainer['onClose']; 
-    open: boolean; 
-    component: React.ReactNode; 
+  options: {
+    title: string;
+    onClose: IDialogContainer['onClose'];
+    open: boolean;
+    component: React.ReactNode;
     cb: VoidFunction;
   }[];
   open: boolean;
 };
 
-export default function InterstitialDialog(props : InterstitialDialogProps) {
+export default function InterstitialDialog(props: InterstitialDialogProps) {
   const { onClose, dialogTitle, options, open } = props;
 
-  const handleListItemClick = (e : React.MouseEvent<HTMLDivElement>, cb: VoidFunction) => {
+  const handleListItemClick = (e: React.MouseEvent<HTMLDivElement>, cb: VoidFunction) => {
     onClose(e, 'backdropClick');
     cb();
   };
@@ -27,19 +27,19 @@ export default function InterstitialDialog(props : InterstitialDialogProps) {
   return (
     <>
       {options.map((option) => (
-        <DialogContainer 
+        <DialogContainer
           maxWidth={"xl"}
-          key={option.title} 
+          key={option.title}
           title={option.title}
-          onClose={option.onClose} 
-          open={option.open} 
-          innerComponent={option.component} 
+          onClose={option.onClose}
+          open={option.open}
+          innerComponent={option.component}
         />
       ))}
-      <DialogContainer 
-        onClose={onClose} 
-        open={open} 
-        title={dialogTitle} 
+      <DialogContainer
+        onClose={onClose}
+        open={open}
+        title={dialogTitle}
         innerComponent={(
           <List>
             {options.map((option) => (

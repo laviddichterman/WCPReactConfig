@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-import { HOST_API } from "../../config";
-import KeyValuesContainer from "./keyvalues.container";
 import { KeyValue } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useEffect, useState } from "react";
+import { HOST_API } from "../../config";
+import KeyValuesContainer from "./keyvalues.container";
 
-const KeyValuesComponent = () => {
+export const KeyValuesComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const [KEYVALUES, setKEYVALUES] = useState<Record<string, string> | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -32,7 +32,7 @@ const KeyValuesComponent = () => {
     }
   }, [isLoading, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout]);
 
-  const onSubmit = async (values : KeyValue[]) => {
+  const onSubmit = async (values: KeyValue[]) => {
     if (!isProcessing) {
       setIsProcessing(true);
       try {
@@ -43,7 +43,7 @@ const KeyValuesComponent = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values.reduce((acc: Record<string, string>, x) => ({...acc, [x.key]: x.value }), {}))
+          body: JSON.stringify(values.reduce((acc: Record<string, string>, x) => ({ ...acc, [x.key]: x.value }), {}))
         });
         if (response.status === 201) {
           enqueueSnackbar(`Updated Key Value Store.`)
@@ -56,13 +56,12 @@ const KeyValuesComponent = () => {
       }
     }
   };
-  return KEYVALUES !== null ? <KeyValuesContainer 
-    canAdd 
-    canEdit 
-    canRemove 
-    isProcessing={isProcessing} 
-    title="Key Value Store" 
-    onSubmit={onSubmit} 
-    values={Object.entries(KEYVALUES).map(([key, value])=>({ key, value }))}  /> : <></>
+  return KEYVALUES !== null ? <KeyValuesContainer
+    canAdd
+    canEdit
+    canRemove
+    isProcessing={isProcessing}
+    title="Key Value Store"
+    onSubmit={onSubmit}
+    values={Object.entries(KEYVALUES).map(([key, value]) => ({ key, value }))} /> : <></>
 };
-export default KeyValuesComponent;

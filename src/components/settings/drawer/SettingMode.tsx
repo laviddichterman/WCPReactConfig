@@ -1,10 +1,10 @@
 // @mui
+import { CardActionArea, Grid, RadioGroup } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Grid, RadioGroup, CardActionArea } from '@mui/material';
 // hooks
-import useSettings from '../../../hooks/useSettings';
+import { useSettings } from '../../../hooks/useSettings';
 //
-import Iconify from '../../Iconify';
+import { Iconify } from '../../Iconify';
 import BoxMask from './BoxMask';
 
 // ----------------------------------------------------------------------

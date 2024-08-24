@@ -1,8 +1,8 @@
 // @mui
-import { styled, alpha } from '@mui/material/styles';
-import { Grid, RadioGroup, CardActionArea, Box, Stack } from '@mui/material';
+import { Box, CardActionArea, Grid, RadioGroup, Stack } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 // hooks
-import useSettings from '../../../hooks/useSettings';
+import { useSettings } from '../../../hooks/useSettings';
 //
 import BoxMask from './BoxMask';
 

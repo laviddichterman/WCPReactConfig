@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import { getTime, endOfDay } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
-import Grid from "@mui/material/Grid";
-import { ElementActionComponent } from "../element.action.component";
+import { Grid } from "@mui/material";
+import { getProductEntryById } from "@wcp/wario-ux-shared";
+import { IProduct } from "@wcp/wcpshared";
+import { endOfDay, getTime } from 'date-fns';
+import { useSnackbar } from "notistack";
+import { useState } from "react";
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { ProductQuickActionProps } from './product.delete.container';
-import { IProduct } from "@wcp/wcpshared";
-import { useSnackbar } from "notistack";
 import { selectBaseProductName } from "../../../../redux/store";
-import { getProductEntryById } from "@wcp/wario-ux-shared";
+import { ElementActionComponent } from "../element.action.component";
+import { ProductQuickActionProps } from './product.delete.container';
 
 const ProductDisableUntilEodContainer = ({ product_id, onCloseCallback }: ProductQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const productName = useAppSelector(s=>selectBaseProductName(s, product_id));
-  const product = useAppSelector(s=>getProductEntryById(s.ws.products, product_id)!.product);
+  const productName = useAppSelector(s => selectBaseProductName(s, product_id));
+  const product = useAppSelector(s => getProductEntryById(s.ws.products, product_id)!.product);
   const [isProcessing, setIsProcessing] = useState(false);
-  const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
+  const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const { getAccessTokenSilently } = useAuth0();
   const editProduct = async () => {
     if (!isProcessing) {

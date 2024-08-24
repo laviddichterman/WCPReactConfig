@@ -1,16 +1,15 @@
 import { useCallback } from "react";
 
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
-import { useGridApiRef, GRID_TREE_DATA_GROUPING_FIELD, GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GridDetailPanelToggleCell } from "@mui/x-data-grid-premium";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import { Tooltip } from '@mui/material';
-import ProductTableContainer from "../product/product_table.container";
-import TableWrapperComponent, { ToolbarAction } from "../../table_wrapper.component";
+import { GRID_DETAIL_PANEL_TOGGLE_COL_DEF, GRID_TREE_DATA_GROUPING_FIELD, GridActionsCellItem, GridDetailPanelToggleCell, GridRenderCellParams, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
+import { getCategoryEntryById, getCategoryEntryIds, weakMapCreateSelector } from "@wcp/wario-ux-shared";
+import { createSelector } from "reselect";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openCategoryDelete, openCategoryEdit, setDetailPanelSizeForRowId } from '../../../../redux/slices/CatalogSlice';
 import { RootState, selectProductIdsInCategoryAfterDisableFilter } from "../../../../redux/store";
-import { weakMapCreateSelector, getCategoryEntryById, getCategoryEntryIds } from "@wcp/wario-ux-shared";
-import { createSelector } from "reselect";
+import { TableWrapperComponent, ToolbarAction } from "../../table_wrapper.component";
+import ProductTableContainer from "../product/product_table.container";
 
 
 interface RowType { path: string[]; id: string; };

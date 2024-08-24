@@ -1,18 +1,18 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
-import { Grid, TextField, Autocomplete } from '@mui/material';
+import { Autocomplete, Grid, TextField } from '@mui/material';
+import { Dispatch, SetStateAction, useState } from "react";
 
-import { ParseResult } from "papaparse";
+import { useAuth0 } from '@auth0/auth0-react';
 import { CreateProductBatch, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
-import { useAuth0 } from '@auth0/auth0-react';
+import { ParseResult } from "papaparse";
 
-import { ElementActionComponent } from "./../element.action.component";
+import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
-import { HOST_API } from "../../../../config";
 import { ValSetValNamed } from '../../../../utils/common';
-import ProductModifierComponent from "./ProductModifierComponent";
 import GenericCsvImportComponent from "../../generic_csv_import.component";
+import { ElementActionComponent } from "./../element.action.component";
+import ProductModifierComponent from "./ProductModifierComponent";
 
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 

@@ -1,9 +1,9 @@
 // @mui
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Container, Typography, Button } from '@mui/material';
 // components
-import Page from '../components/Page';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Page } from '../components/Page';
 
 // ----------------------------------------------------------------------
 const RootStyle = styled('div')(({ theme }) => ({

@@ -9,7 +9,7 @@ interface Props extends BoxProps {
   disabledLink?: boolean;
 }
 
-export default function Logo({ disabledLink = false, sx, ...other }: Props) {
+export function Logo({ disabledLink = false, sx, ...other }: Props) {
   const logo = (
     <Box sx={{ width: 40, height: 40, ...sx }} {...other} >
       <LogoSVG />

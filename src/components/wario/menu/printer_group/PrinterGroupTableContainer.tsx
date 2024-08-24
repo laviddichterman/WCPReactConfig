@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 
-import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
-import { useGridApiRef } from "@mui/x-data-grid-premium";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
-import { Tooltip, IconButton } from '@mui/material';
-import { PrinterGroup } from "@wcp/wcpshared";
-import TableWrapperComponent from "../../table_wrapper.component";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import { getPrinterGroups } from "src/redux/slices/PrinterGroupSlice";
+import { IconButton, Tooltip } from '@mui/material';
+import { GridActionsCellItem, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
 import { DialogContainer } from "@wcp/wario-ux-shared";
+import { PrinterGroup } from "@wcp/wcpshared";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { getPrinterGroups } from "../../../../redux/slices/PrinterGroupSlice";
+import { TableWrapperComponent } from "../../table_wrapper.component";
 
 const PrinterGroupTableContainer = () => {
   const printerGroups = useAppSelector(s => getPrinterGroups(s.printerGroup.printerGroups));

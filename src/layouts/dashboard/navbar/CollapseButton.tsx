@@ -10,7 +10,7 @@ type Props = {
   collapseClick: boolean;
 };
 
-export default function CollapseButton({ onToggleCollapse, collapseClick }: Props) {
+export function CollapseButton({ onToggleCollapse, collapseClick }: Props) {
   return (
     <IconButtonAnimate onClick={onToggleCollapse}>
       <Box

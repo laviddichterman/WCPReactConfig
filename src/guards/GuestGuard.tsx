@@ -3,8 +3,8 @@ import { Navigate } from 'react-router-dom';
 // routes
 import { PATH_DASHBOARD } from '../routes/paths';
 // components
-import LoadingScreen from '../components/LoadingScreen';
 import { useAuth0 } from '@auth0/auth0-react';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 // ----------------------------------------------------------------------
 

@@ -1,13 +1,13 @@
 import { Outlet } from 'react-router-dom';
 // @mui
-import { Box, Container, Typography, Stack } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 // components
-import Logo from '../../components/Logo';
+import { Logo } from '../../components/Logo';
 //
 
 // ----------------------------------------------------------------------
 
-export default function MainLayout() {
+export function MainLayout() {
   return (
     <Stack sx={{ minHeight: 1 }}>
 
@@ -27,7 +27,7 @@ export default function MainLayout() {
           <Logo sx={{ mb: 1, mx: 'auto' }} />
 
           <Typography variant="caption" component="p">
-            © {new Date().getFullYear()}&nbsp;made by&nbsp;Lavid Industries LLC,<br/>released under the GNU General Public License v3
+            © {new Date().getFullYear()}&nbsp;made by&nbsp;Lavid Industries LLC,<br />released under the GNU General Public License v3
           </Typography>
         </Container>
       </Box>

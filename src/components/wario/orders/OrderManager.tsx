@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
 
+import { CheckCircleOutline } from "@mui/icons-material";
+import { Box, Button, Card, Tooltip, Typography } from "@mui/material";
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
+import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { pollOpenOrders, unlockOrders } from "../../../redux/slices/OrdersSlice";
-import { Button, Card, Tooltip, Typography, Box } from "@mui/material";
-import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
-import TableWrapperComponent from "../table_wrapper.component";
-import { CheckCircleOutline } from "@mui/icons-material";
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
+import { TableWrapperComponent } from "../table_wrapper.component";
 
+import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";
 import { selectEventTitleStringForOrder, selectOrdersNeedingAttention } from "../../../redux/store";
 import { WOrderComponentCard } from "./WOrderComponentCard";
-import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";
 
-export interface OrderManagerComponentProps { 
+export interface OrderManagerComponentProps {
   handleConfirmOrder: (id: string) => void;
 }
 
@@ -25,9 +25,9 @@ const EventTitle = (params: GridRenderCellParams<RowType>) => {
   return <>{selectEventTitleString}</>;
 }
 
-const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentProps) => {
+export const OrderManagerComponent = ({ handleConfirmOrder }: OrderManagerComponentProps) => {
   const apiRef = useGridApiRef();
-  const currentTime = useAppSelector(s=>s.ws.currentTime);
+  const currentTime = useAppSelector(s => s.ws.currentTime);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
   const [hasNewOrder, setHasNewOrder] = useState(orders.length > 0);
   const [suppressedNewOrderNoticeForOrder, setSuppressedNewOrderNotice] = useState<Record<string, boolean>>({});
   useEffect(() => {
-    if (orders.filter(x=>!Object.hasOwn(suppressedNewOrderNoticeForOrder, x.id)).length > 0) {
+    if (orders.filter(x => !Object.hasOwn(suppressedNewOrderNoticeForOrder, x.id)).length > 0) {
       setHasNewOrder(true);
     }
     else {
@@ -46,10 +46,10 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
     }
   }, [orders]);
   const suppressNotice = () => {
-    setSuppressedNewOrderNotice(orders.reduce((acc, order) => ({...acc, [order.id]: true }), suppressedNewOrderNoticeForOrder));
+    setSuppressedNewOrderNotice(orders.reduce((acc, order) => ({ ...acc, [order.id]: true }), suppressedNewOrderNoticeForOrder));
     setHasNewOrder(false);
   }
-  
+
   useEffect(() => {
     const pollForOrders = async () => {
       if (pollOpenOrdersStatus !== 'PENDING') {
@@ -80,7 +80,7 @@ const OrderManagerComponent = ({ handleConfirmOrder } : OrderManagerComponentPro
         enableSearch={true}
         columns={[
           { headerName: "Date", field: "date", valueGetter: (_v, row: RowType) => row.fulfillment.selectedDate, flex: 1 },
-          { headerName: "Time", field: "time", valueGetter: (_v, row: RowType) => WDateUtils.MinutesToPrintTime(row.fulfillment.selectedTime), flex: 1},
+          { headerName: "Time", field: "time", valueGetter: (_v, row: RowType) => WDateUtils.MinutesToPrintTime(row.fulfillment.selectedTime), flex: 1 },
           { headerName: "ShortName", field: "ordinal", renderCell: (params: GridRenderCellParams<RowType>) => <EventTitle {...params} />, flex: 5 },
           {
             headerName: "Confirm",

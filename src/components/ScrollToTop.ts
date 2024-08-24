@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
-export default function ScrollToTop() {
+export function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {

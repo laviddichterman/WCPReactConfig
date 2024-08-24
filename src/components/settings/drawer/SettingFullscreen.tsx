@@ -1,9 +1,9 @@
 import { useState } from 'react';
 // @mui
-import { alpha } from '@mui/material/styles';
 import { Button } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 //
-import Iconify from '../../Iconify';
+import { Iconify } from '../../Iconify';
 
 // ----------------------------------------------------------------------
 

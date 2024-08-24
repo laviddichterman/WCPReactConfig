@@ -1,6 +1,6 @@
 // @mui
-import { styled } from '@mui/material/styles';
 import { Popover, PopoverProps } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ interface Props extends PopoverProps {
   disabledArrow?: boolean;
 }
 
-export default function MenuPopover({
+export function MenuPopover({
   children,
   arrow = 'top-right',
   disabledArrow,

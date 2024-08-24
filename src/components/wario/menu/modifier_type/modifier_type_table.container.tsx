@@ -1,14 +1,13 @@
 import { useCallback } from "react";
 
-import { AddBox, Edit, DeleteOutline, LibraryAdd } from "@mui/icons-material";
-import { GridActionsCellItem, GridRowParams, GridValidRowModel } from "@mui/x-data-grid-premium";
-import { useGridApiRef } from "@mui/x-data-grid-premium";
-import { Tooltip, IconButton } from '@mui/material';
-import ModifierOptionTableContainer from "../modifier_option/modifier_option_table.container";
-import TableWrapperComponent from "../../table_wrapper.component";
+import { AddBox, DeleteOutline, Edit, LibraryAdd } from "@mui/icons-material";
+import { IconButton, Tooltip } from '@mui/material';
+import { GridActionsCellItem, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
 import { CatalogModifierEntry } from "@wcp/wcpshared";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openModifierOptionAdd, openModifierTypeAdd, openModifierTypeCopy, openModifierTypeDelete, openModifierTypeEdit } from "../../../../redux/slices/CatalogSlice";
+import { TableWrapperComponent } from "../../table_wrapper.component";
+import ModifierOptionTableContainer from "../modifier_option/modifier_option_table.container";
 
 const ModifierTypeTableContainer = () => {
   const dispatch = useAppDispatch();

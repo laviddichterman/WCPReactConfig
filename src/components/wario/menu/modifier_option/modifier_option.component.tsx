@@ -1,18 +1,18 @@
-import { Grid, TextField, Autocomplete } from "@mui/material";
+import { Autocomplete, Grid, TextField } from "@mui/material";
 import { IMoney, IOptionType, IRecurringInterval, IWInterval, KeyValue, RecordProductInstanceFunctions } from "@wcp/wcpshared";
 
-import DatetimeBasedDisableComponent, { IsDisableValueValid } from "../../datetime_based_disable.component";
-import { ElementActionComponent } from "../element.action.component";
+import { useState } from "react";
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { ValSetValNamed } from "../../../../utils/common";
+import AvailabilityListBuilderComponent from "../../AvailabilityListBuilderComponent";
+import DatetimeBasedDisableComponent, { IsDisableValueValid } from "../../datetime_based_disable.component";
+import { ExternalIdsExpansionPanelComponent } from "../../ExternalIdsExpansionPanelComponent";
+import { FloatNumericPropertyComponent } from "../../property-components/FloatNumericPropertyComponent";
 import { IMoneyPropertyComponent } from "../../property-components/IMoneyPropertyComponent";
 import { IntNumericPropertyComponent } from "../../property-components/IntNumericPropertyComponent";
-import { FloatNumericPropertyComponent } from "../../property-components/FloatNumericPropertyComponent";
-import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
-import { ExternalIdsExpansionPanelComponent } from "../../ExternalIdsExpansionPanelComponent";
-import AvailabilityListBuilderComponent from "../../AvailabilityListBuilderComponent";
-import { useState } from "react";
+import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
+import { ElementActionComponent } from "../element.action.component";
 
 type ModifierOptionContainerProps =
   ValSetValNamed<string, 'displayName'> &
@@ -189,12 +189,12 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
       </Grid>
       <Grid item xs={12}>
         <AvailabilityListBuilderComponent
-              availabilityIsValid={props.availabilityIsValid}
-              setAvailabilityIsValid={props.setAvailabilityIsValid}
-              disabled={props.isProcessing}
-              value={props.availability}
-              setValue={props.setAvailability}
-            />
+          availabilityIsValid={props.availabilityIsValid}
+          setAvailabilityIsValid={props.setAvailabilityIsValid}
+          disabled={props.isProcessing}
+          value={props.availability}
+          setValue={props.setAvailability}
+        />
       </Grid>
       <Grid item xs={12}>
         <DatetimeBasedDisableComponent

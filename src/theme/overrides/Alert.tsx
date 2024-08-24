@@ -5,7 +5,7 @@ import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from './CustomIcons';
 
 // ----------------------------------------------------------------------
 
-export default function Alert(theme: Theme) {
+export function Alert(theme: Theme) {
   const isLight = theme.palette.mode === 'light';
 
   const standardStyle = (color: ColorSchema) => ({

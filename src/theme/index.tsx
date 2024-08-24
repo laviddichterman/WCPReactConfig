@@ -1,20 +1,20 @@
-import { useMemo, ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 // @mui
 import { CssBaseline } from '@mui/material';
 import {
   createTheme,
-  ThemeOptions,
   ThemeProvider as MUIThemeProvider,
   StyledEngineProvider,
+  ThemeOptions,
 } from '@mui/material/styles';
 // hooks
-import useSettings from '../hooks/useSettings';
+import { useSettings } from '../hooks/useSettings';
 //
-import palette from './palette';
-import typography from './typography';
 import breakpoints from './breakpoints';
 import componentsOverride from './overrides';
+import palette from './palette';
 import shadows, { customShadows } from './shadows';
+import typography from './typography';
 
 // ----------------------------------------------------------------------
 

@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import Grid from "@mui/material/Grid";
-import { ElementActionComponent } from "../element.action.component";
-import { HOST_API } from "../../../../config";
-import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
+import { Grid } from "@mui/material";
+import { getModifierOptionById } from "@wcp/wario-ux-shared";
 import { IOption } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { getModifierOptionById } from "@wcp/wario-ux-shared";
+import { ElementActionComponent } from "../element.action.component";
+import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
 
 const ModifierOptionDisableContainer = ({ modifier_option_id, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifier_option = useAppSelector(s=> getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
+  const modifier_option = useAppSelector(s => getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const editModifierOption = async () => {

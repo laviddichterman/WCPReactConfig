@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 
-export default function useTabs(defaultValues?: string) {
+export function useTabs(defaultValues?: string) {
   const [currentTab, setCurrentTab] = useState(defaultValues || '');
 
   return {

@@ -153,7 +153,7 @@ const CatalogManagerSlice = createSlice({
       state.dialogueState = 'ModifierOptionEnable';
     },
     setDetailPanelSizeForRowId(state, action: PayloadAction<DetailPanelSize>) {
-      console.log({action})
+      console.log({ action })
       CatalogDetailPanelSizeAdapter.upsertOne(state.detailPanelSizes, action.payload);
     }
 

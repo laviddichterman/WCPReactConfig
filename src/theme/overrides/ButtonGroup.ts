@@ -2,7 +2,7 @@ import { Theme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-export default function ButtonGroup(theme: Theme) {
+export function ButtonGroup(theme: Theme) {
   const styleContained = (
     color: 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error'
   ) => ({

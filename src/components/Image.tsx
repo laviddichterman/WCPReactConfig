@@ -1,7 +1,7 @@
 import { LazyLoadImage, LazyLoadImageProps } from 'react-lazy-load-image-component';
 // @mui
-import { Theme } from '@mui/material/styles';
 import { Box, BoxProps, SxProps } from '@mui/material';
+import { Theme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ interface Props extends IProps {
   disabledEffect?: boolean;
 }
 
-export default function Image({
+export function Image({
   ratio,
   disabledEffect = false,
   effect = 'blur',

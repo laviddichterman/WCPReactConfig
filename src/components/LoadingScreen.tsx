@@ -1,10 +1,10 @@
 import { m } from 'framer-motion';
 // @mui
-import { alpha, styled } from '@mui/material/styles';
 import { Box, SxProps } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 //
-import Logo from './Logo';
-import ProgressBar from './ProgressBar';
+import { Logo } from './Logo';
+import { ProgressBar } from './ProgressBar';
 
 // ----------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ type Props = {
   sx?: SxProps;
 };
 
-export default function LoadingScreen({ isDashboard, ...other }: Props) {
+export function LoadingScreen({ isDashboard, ...other }: Props) {
   return (
     <>
       <ProgressBar />

@@ -2,28 +2,27 @@
 import { enUS, esES } from '@mui/material/locale';
 import { SettingsValueProps } from './components/settings/type';
 // routes
-import { PATH_DASHBOARD } from './routes/paths';
 import { LicenseInfo } from '@mui/x-license';
+import { PATH_DASHBOARD } from './routes/paths';
 // API
 // ----------------------------------------------------------------------
 
-export const HOST_API = process.env.REACT_APP_HOST_API_KEY || '';
+export const HOST_API = import.meta.env.VITE_HOST_API_KEY || '';
 
 export const AUTH0_API = {
-  clientId: process.env.REACT_APP_AUTH0_CLIENT_ID,
-  domain: process.env.REACT_APP_AUTH0_DOMAIN,
-  scope: process.env.REACT_APP_AUTH0_SCOPE,
-  audience: process.env.REACT_APP_AUTH0_AUDIENCE
+  clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
+  domain: import.meta.env.VITE_AUTH0_DOMAIN,
+  scope: import.meta.env.VITE_AUTH0_SCOPE,
+  audience: import.meta.env.VITE_AUTH0_AUDIENCE
 };
 
 export const SOCKETIO = {
-  ns: process.env.REACT_APP_SOCKETIO_NS,
+  ns: import.meta.env.VITE_SOCKETIO_NS,
 }
 
-export const MAPBOX_API = process.env.REACT_APP_MAPBOX_API;
+export const MAPBOX_API = import.meta.env.VITE_MAPBOX_API;
 
-export const MUI_LICENSE = process.env.REACT_APP_MUI_KEY;
-LicenseInfo.setLicenseKey(MUI_LICENSE!);
+LicenseInfo.setLicenseKey(import.meta.env.VITE_MUI_KEY);
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.orders;

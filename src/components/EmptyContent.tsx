@@ -1,8 +1,8 @@
 // @mui
+import { Box, BoxProps, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Typography, Box, BoxProps } from '@mui/material';
 //
-import Image from './Image';
+import { Image } from './Image';
 
 // ----------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ interface Props extends BoxProps {
   description?: string;
 }
 
-export default function EmptyContent({ title, description, img, ...other }: Props) {
+export function EmptyContent({ title, description, img, ...other }: Props) {
   return (
     <RootStyle {...other}>
       <Image

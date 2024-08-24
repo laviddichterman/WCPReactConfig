@@ -1,10 +1,10 @@
 import { m } from 'framer-motion';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
+import { Button, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Button, Typography, Container } from '@mui/material';
 // components
-import Page from '../components/Page';
+import { Page } from '../components/Page';
 import { MotionContainer, varBounce } from '../components/animate';
 
 // ----------------------------------------------------------------------
@@ -39,7 +39,7 @@ export default function Page403() {
               Please refer to your system administrator
             </Typography>
           </m.div>
-          
+
           <Button to="/" size="large" variant="contained" component={RouterLink}>
             Go to Home
           </Button>

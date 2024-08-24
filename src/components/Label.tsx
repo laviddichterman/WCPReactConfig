@@ -1,6 +1,6 @@
 // @mui
-import { alpha, Theme, useTheme, styled } from '@mui/material/styles';
-import { BoxProps, Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
+import { alpha, styled, Theme, useTheme } from '@mui/material/styles';
 // theme
 import { ColorSchema } from '../theme/palette';
 
@@ -59,21 +59,21 @@ const RootStyle = styled('span')(
 
       ...(color !== 'default'
         ? {
-            ...(variant === 'filled' && { ...styleFilled(color) }),
-            ...(variant === 'outlined' && { ...styleOutlined(color) }),
-            ...(variant === 'ghost' && { ...styleGhost(color) }),
-          }
+          ...(variant === 'filled' && { ...styleFilled(color) }),
+          ...(variant === 'outlined' && { ...styleOutlined(color) }),
+          ...(variant === 'ghost' && { ...styleGhost(color) }),
+        }
         : {
-            ...(variant === 'outlined' && {
-              backgroundColor: 'transparent',
-              color: theme.palette.text.primary,
-              border: `1px solid ${theme.palette.grey[500_32]}`,
-            }),
-            ...(variant === 'ghost' && {
-              color: isLight ? theme.palette.text.secondary : theme.palette.common.white,
-              backgroundColor: theme.palette.grey[500_16],
-            }),
+          ...(variant === 'outlined' && {
+            backgroundColor: 'transparent',
+            color: theme.palette.text.primary,
+            border: `1px solid ${theme.palette.grey[500_32]}`,
           }),
+          ...(variant === 'ghost' && {
+            color: isLight ? theme.palette.text.secondary : theme.palette.common.white,
+            backgroundColor: theme.palette.grey[500_16],
+          }),
+        }),
     };
   }
 );
@@ -87,7 +87,7 @@ interface Props extends BoxProps {
   variant?: LabelVariant;
 }
 
-export default function Label({
+export function Label({
   children,
   color = 'default',
   variant = 'ghost',
@@ -105,7 +105,7 @@ export default function Label({
 
   return (
     <RootStyle
-    // @ts-ignore
+      // @ts-ignore
       ownerState={{ color, variant }}
       sx={{
         ...(startIcon && { pl: 0.75 }),

@@ -1,10 +1,10 @@
-import React, { Dispatch, SetStateAction, useMemo, useState, useEffect } from "react";
-import type { ValSetVal } from "../../../../utils/common";
-import { Autocomplete, Grid, TextField, FormControlLabel, FormLabel, Card, CardContent, CardHeader, Radio, RadioGroup, List, ListItem, FormControl, Switch } from "@mui/material";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import { ConstLiteralDiscriminator, IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, MetadataField, OptionPlacement, OptionQualifier, LogicalFunctionOperator, ProductInstanceFunctionType, ProductMetadataExpression, PRODUCT_LOCATION, WFunctional } from "@wcp/wcpshared";
-import { CheckedNumericInput } from "../../CheckedNumericTextInput";
+import { Autocomplete, Card, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, List, ListItem, Radio, RadioGroup, Switch, TextField } from "@mui/material";
 import { getModifierOptionById, getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+import { ConstLiteralDiscriminator, IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, LogicalFunctionOperator, MetadataField, OptionPlacement, OptionQualifier, PRODUCT_LOCATION, ProductInstanceFunctionType, ProductMetadataExpression, WFunctional } from "@wcp/wcpshared";
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import type { ValSetVal } from "../../../../utils/common";
+import { CheckedNumericInput } from "../../CheckedNumericTextInput";
 
 export interface DiscriminatedFunctionalComponentProps<T> {
   expression_types: Record<string, React.ReactNode>;
@@ -30,7 +30,7 @@ const AbstractExpressionFunctionalComponent = ({
     <List>
       <ListItem>
         <Card>
-          { title !== null ? <CardHeader title={title} /> : ""}
+          {title !== null ? <CardHeader title={title} /> : ""}
           <CardContent>
             <FormControl component="fieldset">
               <FormLabel>Expression Type</FormLabel>
@@ -76,8 +76,8 @@ const AbstractExpressionFunctionalContainer = ({
   value,
   setValue
 }: ValSetVal<IAbstractExpression | null>) => {
-  const modifierTypeSelector = useAppSelector(s => (id : string) => getModifierTypeEntryById(s.ws.modifierEntries, id));
-  const modifierOptionSelector = useAppSelector(s=> (id: string) => getModifierOptionById(s.ws.modifierOptions, id));
+  const modifierTypeSelector = useAppSelector(s => (id: string) => getModifierTypeEntryById(s.ws.modifierEntries, id));
+  const modifierOptionSelector = useAppSelector(s => (id: string) => getModifierOptionById(s.ws.modifierOptions, id));
   const [discriminator, setDiscriminator] = useState<ProductInstanceFunctionType | null>(value?.discriminator ?? null);
   const [expr, setExpr] = useState<IAbstractExpression['expr'] | null>(value?.expr ?? null);
   useEffect(() => {
@@ -491,76 +491,76 @@ const ConstStringLiteralComponent = ({ value, setValue }: ValSetVal<string | nul
   />
 };
 
-const ConstNumberLiteralComponent = ({ value, setValue }: ValSetVal<number | null>) =>  <CheckedNumericInput
-    type="number"
-    size="small"
-    fullWidth
-    label="Literal Value"
-    inputProps={{ inputMode: 'decimal', pattern: '[0-9]+([.,][0-9]+)?' }}
-    // @ts-ignore
-    value={value || ""} 
-    onChange={(e: number | null) => setValue(e)}
-    parseFunction={(e) => parseFloat(e === null ? "0" : e)}
-    allowEmpty={true} />;
+const ConstNumberLiteralComponent = ({ value, setValue }: ValSetVal<number | null>) => <CheckedNumericInput
+  type="number"
+  size="small"
+  fullWidth
+  label="Literal Value"
+  inputProps={{ inputMode: 'decimal', pattern: '[0-9]+([.,][0-9]+)?' }}
+  // @ts-ignore
+  value={value || ""}
+  onChange={(e: number | null) => setValue(e)}
+  parseFunction={(e) => parseFloat(e === null ? "0" : e)}
+  allowEmpty={true} />;
 
-const ConstModifierPlacementLiteralComponent = function({ value, setValue }: ValSetVal<number | null>) {
+const ConstModifierPlacementLiteralComponent = function ({ value, setValue }: ValSetVal<number | null>) {
   return (
-  <FormControl component="fieldset">
-    <FormLabel>Placement Value</FormLabel>
-    <RadioGroup
-      aria-label="Placement Value"
-      name="Placement Value"
-      row
-      value={value}
-      onChange={(e) => setValue(parseInt(e.target.value as keyof typeof OptionPlacement))}
-    >
-      {[OptionPlacement.NONE, OptionPlacement.LEFT, OptionPlacement.RIGHT, OptionPlacement.WHOLE].map((val, idx) => (
-        <FormControlLabel
-          key={idx}
-          control={<Radio disableRipple />}
-          value={val}
-          label={OptionPlacement[val]}
-        />
-      ))}
-    </RadioGroup>
-  </FormControl>);
+    <FormControl component="fieldset">
+      <FormLabel>Placement Value</FormLabel>
+      <RadioGroup
+        aria-label="Placement Value"
+        name="Placement Value"
+        row
+        value={value}
+        onChange={(e) => setValue(parseInt(e.target.value as keyof typeof OptionPlacement))}
+      >
+        {[OptionPlacement.NONE, OptionPlacement.LEFT, OptionPlacement.RIGHT, OptionPlacement.WHOLE].map((val, idx) => (
+          <FormControlLabel
+            key={idx}
+            control={<Radio disableRipple />}
+            value={val}
+            label={OptionPlacement[val]}
+          />
+        ))}
+      </RadioGroup>
+    </FormControl>);
 };
 
-const ConstModifierQualifierLiteralComponent = function({ value, setValue }: ValSetVal<number | null>) {
+const ConstModifierQualifierLiteralComponent = function ({ value, setValue }: ValSetVal<number | null>) {
   return (
-  <FormControl component="fieldset">
-    <FormLabel>Qualifier Value</FormLabel>
-    <RadioGroup
-      aria-label="Qualifier Value"
-      name="Qualifier Value"
-      row
-      value={value}
-      onChange={(e) => setValue(parseInt(e.target.value as keyof typeof OptionQualifier))}
-    >
-      {[OptionQualifier.REGULAR, OptionQualifier.HEAVY, OptionQualifier.LITE, OptionQualifier.OTS].map((val, idx) => (
-        <FormControlLabel
-          key={idx}
-          control={<Radio disableRipple />}
-          value={val}
-          label={val}
-        />
-      ))}
-    </RadioGroup>
-  </FormControl>);
+    <FormControl component="fieldset">
+      <FormLabel>Qualifier Value</FormLabel>
+      <RadioGroup
+        aria-label="Qualifier Value"
+        name="Qualifier Value"
+        row
+        value={value}
+        onChange={(e) => setValue(parseInt(e.target.value as keyof typeof OptionQualifier))}
+      >
+        {[OptionQualifier.REGULAR, OptionQualifier.HEAVY, OptionQualifier.LITE, OptionQualifier.OTS].map((val, idx) => (
+          <FormControlLabel
+            key={idx}
+            control={<Radio disableRipple />}
+            value={val}
+            label={val}
+          />
+        ))}
+      </RadioGroup>
+    </FormControl>);
 };
 
-const ConstBooleanLiteralComponent = function({ value, setValue }: ValSetVal<boolean | null>) {
+const ConstBooleanLiteralComponent = function ({ value, setValue }: ValSetVal<boolean | null>) {
   return (
     <FormControlLabel
-    control={
-      <Switch
-        checked={value || false}
-        onChange={e => setValue(e.target.checked)}
-        name="Boolean Literal"
-      />
-    }
-    label="Can Split"
-  />);
+      control={
+        <Switch
+          checked={value || false}
+          onChange={e => setValue(e.target.checked)}
+          name="Boolean Literal"
+        />
+      }
+      label="Can Split"
+    />);
 };
 
 ConstLiteralFunctionalComponent = ({
@@ -611,14 +611,14 @@ ConstLiteralFunctionalComponent = ({
     ),
     [ConstLiteralDiscriminator.MODIFIER_PLACEMENT]: (
       <ConstModifierPlacementLiteralComponent
-      // <ConstNumberLiteralComponent
+        // <ConstNumberLiteralComponent
         value={innerValue as number}
         setValue={setInnerValue}
       />
     ),
     [ConstLiteralDiscriminator.MODIFIER_QUALIFIER]: (
       <ConstModifierQualifierLiteralComponent
-      // <ConstNumberLiteralComponent
+        // <ConstNumberLiteralComponent
         value={innerValue as number}
         setValue={setInnerValue}
       />

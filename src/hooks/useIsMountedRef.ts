@@ -1,8 +1,8 @@
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 // ----------------------------------------------------------------------
 
-export default function useIsMountedRef() {
+export function useIsMountedRef() {
   const isMounted = useRef(true);
 
   useEffect(

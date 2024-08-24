@@ -1,16 +1,16 @@
 import { useCallback, useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography, Switch, FormControlLabel } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import ProductComponent from "./product.component";
-import { ProductInstanceContainer } from "./instance/product_instance.component";
+import { Accordion, AccordionDetails, AccordionSummary, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
+import { getProductEntryById } from "@wcp/wario-ux-shared";
+import { CreateProductBatch } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { getProductEntryById } from "@wcp/wario-ux-shared";
-import { useSnackbar } from "notistack";
 import { useIndexedState } from "../../../../utils/common";
-import { CreateProductBatch } from "@wcp/wcpshared";
+import { ProductInstanceContainer } from "./instance/product_instance.component";
+import { ProductComponent } from "./product.component";
 
 export interface ProductCopyContainerProps {
   product_id: string;

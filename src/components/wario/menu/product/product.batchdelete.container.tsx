@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ElementDeleteComponent from "../element.delete.component";
-import { HOST_API } from "../../../../config";
 import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { HOST_API } from "../../../../config";
+import ElementDeleteComponent from "../element.delete.component";
 
 export interface ProductQuickActionProps {
   products: IProduct[];
@@ -27,7 +27,7 @@ const BatchProductDeleteContainer = ({ products, onCloseCallback }: ProductQuick
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(products.map(x=>x.id)),
+          body: JSON.stringify(products.map(x => x.id)),
         });
         if (response.status === 200) {
           enqueueSnackbar(`Deleted products.`)

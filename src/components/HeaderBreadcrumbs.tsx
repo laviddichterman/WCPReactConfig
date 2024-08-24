@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 // @mui
-import { Box, Typography, Link } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 //
-import Breadcrumbs, { Props as BreadcrumbsProps } from './Breadcrumbs';
+import { Breadcrumbs, Props as BreadcrumbsProps } from './Breadcrumbs';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ interface Props extends BreadcrumbsProps {
   moreLink?: string | string[];
 }
 
-export default function HeaderBreadcrumbs({
+export function HeaderBreadcrumbs({
   links,
   action,
   heading,

@@ -1,10 +1,10 @@
 import { Grid } from "@mui/material";
 import { PrepTiming } from "@wcp/wcpshared";
-import { ValSetVal } from "../../utils/common";
-import { ToggleBooleanPropertyComponent } from "./property-components/ToggleBooleanPropertyComponent";
 import { useState } from 'react';
+import { ValSetVal } from "../../utils/common";
 import { FloatNumericPropertyComponent } from './property-components/FloatNumericPropertyComponent';
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
+import { ToggleBooleanPropertyComponent } from "./property-components/ToggleBooleanPropertyComponent";
 
 export type PrepTimingPropertyComponentProps =
   ValSetVal<PrepTiming | null> & {

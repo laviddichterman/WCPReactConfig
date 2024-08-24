@@ -19,7 +19,7 @@ function getAvatarColor(name: string) {
   return 'default';
 }
 
-export default function createAvatar(name: string) {
+export function createAvatar(name: string) {
   return {
     name: getFirstCharacter(name),
     color: getAvatarColor(name),

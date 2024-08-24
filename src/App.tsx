@@ -3,16 +3,16 @@ import Router from './routes';
 // theme
 import ThemeProvider from './theme';
 // components
-import ThemeSettings from './components/settings';
-import ScrollToTop from './components/ScrollToTop';
-import { ProgressBarStyle } from './components/ProgressBar';
-import NotistackProvider from './components/NotistackProvider';
-import MotionLazyContainer from './components/animate/MotionLazyContainer';
-import { useAppDispatch, useAppSelector } from './hooks/useRedux';
+import { useAuth0 } from '@auth0/auth0-react';
 import { startConnection } from '@wcp/wario-ux-shared';
 import { useEffect } from 'react';
+import { NotistackProvider } from './components/NotistackProvider';
+import { ProgressBarStyle } from './components/ProgressBar';
+import { ScrollToTop } from './components/ScrollToTop';
+import MotionLazyContainer from './components/animate/MotionLazyContainer';
+import ThemeSettings from './components/settings';
+import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import { queryPrinterGroups } from './redux/slices/PrinterGroupSlice';
-import { useAuth0 } from '@auth0/auth0-react';
 
 
 /*
@@ -39,23 +39,23 @@ export default function App() {
     async function init() {
       const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
       dispatch(queryPrinterGroups(token));
-    } 
+    }
     if (pgQueryState === 'FAILED' || pgQueryState === 'NONE') {
       init();
     }
   }, [getAccessTokenSilently, dispatch, pgQueryState])
   return (
-      <MotionLazyContainer>
-        <ThemeProvider>
-          <ThemeSettings>
-            <NotistackProvider>
-              <ProgressBarStyle />
-              <ScrollToTop />
-              <Router />
-            </NotistackProvider>
-          </ThemeSettings>
-        </ThemeProvider>
-      </MotionLazyContainer>
+    <MotionLazyContainer>
+      <ThemeProvider>
+        <ThemeSettings>
+          <NotistackProvider>
+            <ProgressBarStyle />
+            <ScrollToTop />
+            <Router />
+          </NotistackProvider>
+        </ThemeSettings>
+      </ThemeProvider>
+    </MotionLazyContainer>
   );
 }
 

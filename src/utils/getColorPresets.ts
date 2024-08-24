@@ -70,7 +70,7 @@ export const bluePreset = colorPresets[3];
 export const orangePreset = colorPresets[4];
 export const redPreset = colorPresets[5];
 
-export default function getColorPresets(presetsKey: ThemeColorPresets) {
+export function getColorPresets(presetsKey: ThemeColorPresets) {
   return {
     purple: purplePreset,
     cyan: cyanPreset,

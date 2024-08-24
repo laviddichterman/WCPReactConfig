@@ -1,27 +1,27 @@
 import { AnimatePresence, m } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
+import { Backdrop, Divider, IconButton, Stack, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
-import { Stack, Divider, Backdrop, Typography, IconButton } from '@mui/material';
 // hooks
-import useSettings from '../../../hooks/useSettings';
+import { useSettings } from '../../../hooks/useSettings';
 // utils
-import cssStyles from '../../../utils/cssStyles';
+import { cssStyles } from '../../../utils/cssStyles';
 // config
 import { NAVBAR, defaultSettings } from '../../../config';
 //
-import Iconify from '../../Iconify';
-import Scrollbar from '../../scrollbar/Scrollbar';
 import { varFade } from '../../animate';
+import { Iconify } from '../../Iconify';
+import { Scrollbar } from '../../scrollbar/Scrollbar';
 //
-import ToggleButton from './ToggleButton';
-import SettingMode from './SettingMode';
-import SettingLayout from './SettingLayout';
-import SettingStretch from './SettingStretch';
+import SettingColorPresets from './SettingColorPresets';
 import SettingContrast from './SettingContrast';
 import SettingDirection from './SettingDirection';
 import SettingFullscreen from './SettingFullscreen';
-import SettingColorPresets from './SettingColorPresets';
+import SettingLayout from './SettingLayout';
+import SettingMode from './SettingMode';
+import SettingStretch from './SettingStretch';
+import ToggleButton from './ToggleButton';
 
 // ----------------------------------------------------------------------
 
@@ -71,15 +71,15 @@ export default function SettingsDrawer() {
   const varSidebar =
     themeDirection !== 'rtl'
       ? varFade({
-          distance: NAVBAR.BASE_WIDTH,
-          durationIn: 0.32,
-          durationOut: 0.32,
-        }).inRight
+        distance: NAVBAR.BASE_WIDTH,
+        durationIn: 0.32,
+        durationOut: 0.32,
+      }).inRight
       : varFade({
-          distance: NAVBAR.BASE_WIDTH,
-          durationIn: 0.32,
-          durationOut: 0.32,
-        }).inLeft;
+        distance: NAVBAR.BASE_WIDTH,
+        durationIn: 0.32,
+        durationOut: 0.32,
+      }).inLeft;
 
   useEffect(() => {
     if (open) {

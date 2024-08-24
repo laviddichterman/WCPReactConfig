@@ -1,23 +1,23 @@
 // @mui
+import { AppBar, Box, Stack, Toolbar } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar } from '@mui/material';
 // hooks
-import useOffSetTop from '../../../hooks/useOffSetTop';
-import useResponsive from '../../../hooks/useResponsive';
+import { useOffSetTop } from '../../../hooks/useOffSetTop';
+import { useResponsive } from '../../../hooks/useResponsive';
 // utils
-import cssStyles from '../../../utils/cssStyles';
+import { cssStyles } from '../../../utils/cssStyles';
 // config
 import { HEADER, NAVBAR } from '../../../config';
 // components
-import Logo from '../../../components/Logo';
-import Label from '../../../components/Label';
-import Iconify from '../../../components/Iconify';
-import { IconButtonAnimate } from '../../../components/animate';
 import PACKAGE from '../../../../package.json';
+import { Iconify } from '../../../components/Iconify';
+import { Label } from '../../../components/Label';
+import { Logo } from '../../../components/Logo';
+import { IconButtonAnimate } from '../../../components/animate';
 
 //
-import LanguagePopover from './LanguagePopover';
-import AccountPopover from './AccountPopover';
+import { AccountPopover } from './AccountPopover';
+import { LanguagePopover } from './LanguagePopover';
 
 // ----------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ type Props = {
   verticalLayout?: boolean;
 };
 
-export default function DashboardHeader({
+export function DashboardHeader({
   onOpenSidebar,
   isCollapse = false,
   verticalLayout = false,
@@ -80,8 +80,8 @@ export default function DashboardHeader({
           px: { md: 5 },
         }}
       >
-        {isDesktop && verticalLayout ? <><Logo sx={{ mr: 2.5 }}/>
-        <Label color="info" sx={{ ml: 1 }}>
+        {isDesktop && verticalLayout ? <><Logo sx={{ mr: 2.5 }} />
+          <Label color="info" sx={{ ml: 1 }}>
             {`v${PACKAGE.version}`}
           </Label>
         </> : ""}

@@ -1,16 +1,16 @@
-import FullCalendar from '@fullcalendar/react'; // => request placed at the top
-import { EventClickArg } from '@fullcalendar/core'
-import listPlugin from '@fullcalendar/list';
+import { EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list';
+import FullCalendar from '@fullcalendar/react'; // => request placed at the top
 import timeGridPlugin from '@fullcalendar/timegrid';
 import timelinePlugin from '@fullcalendar/timeline';
 //
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // @mui
 import { Card } from '@mui/material';
 
 // hooks
-import useResponsive from '../../../hooks/useResponsive';
+import { useResponsive } from '../../../hooks/useResponsive';
 // components
 import CalendarStyle, { CalendarView } from './CalendarStyle';
 // sections
@@ -24,8 +24,8 @@ export interface OrderCalendarProps {
   selectOrderById: (id: string) => void;
 }
 
-export default function OrderCalendar(props: OrderCalendarProps) {
-  const currentTime = useAppSelector(s=>s.ws.currentTime);
+export function OrderCalendar(props: OrderCalendarProps) {
+  const currentTime = useAppSelector(s => s.ws.currentTime);
 
   const orders = useAppSelector(selectOrdersAsEvents);
 
@@ -88,40 +88,40 @@ export default function OrderCalendar(props: OrderCalendarProps) {
   };
 
   return (
-      <Card>
-        <CalendarStyle>
-          <CalendarToolbar
-            date={date}
-            view={view}
-            onNextDate={handleClickDateNext}
-            onPrevDate={handleClickDatePrev}
-            onToday={handleClickToday}
-            onChangeView={handleChangeView}
-          />
-          <FullCalendar
-            weekends
-            selectable
-            //eventDataTransform={()}
-            events={orders}
-            ref={calendarRef}
-            rerenderDelay={10}
-            initialDate={date}
-            initialView={view}
-            dayMaxEventRows={3}
-            eventDisplay="block"
-            headerToolbar={false}
-            allDayMaintainDuration
-            eventClick={handleSelectEvent}
-            height={isDesktop ? 720 : 'auto'}
-            plugins={[
-              
-              listPlugin,
-              dayGridPlugin,
-              timelinePlugin,
-              timeGridPlugin,
-            ]}
-          />
-        </CalendarStyle>
-      </Card>
+    <Card>
+      <CalendarStyle>
+        <CalendarToolbar
+          date={date}
+          view={view}
+          onNextDate={handleClickDateNext}
+          onPrevDate={handleClickDatePrev}
+          onToday={handleClickToday}
+          onChangeView={handleChangeView}
+        />
+        <FullCalendar
+          weekends
+          selectable
+          //eventDataTransform={()}
+          events={orders}
+          ref={calendarRef}
+          rerenderDelay={10}
+          initialDate={date}
+          initialView={view}
+          dayMaxEventRows={3}
+          eventDisplay="block"
+          headerToolbar={false}
+          allDayMaintainDuration
+          eventClick={handleSelectEvent}
+          height={isDesktop ? 720 : 'auto'}
+          plugins={[
+
+            listPlugin,
+            dayGridPlugin,
+            timelinePlugin,
+            timeGridPlugin,
+          ]}
+        />
+      </CalendarStyle>
+    </Card>
   );
 }

@@ -1,6 +1,6 @@
-import { Stack, InputAdornment, TextField, MenuItem } from '@mui/material';
+import { InputAdornment, MenuItem, Stack, TextField } from '@mui/material';
 // components
-import Iconify from '../../../../components/Iconify';
+import { Iconify } from '../../../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ type Props = {
   onFilterRole: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function UserTableToolbar({
+export function UserTableToolbar({
   filterName,
   filterRole,
   onFilterName,

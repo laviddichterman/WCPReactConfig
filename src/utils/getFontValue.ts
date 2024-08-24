@@ -2,11 +2,11 @@
 import { useTheme } from '@mui/material/styles';
 import { Variant } from '@mui/material/styles/createTypography';
 // hooks
-import useResponsive from '../hooks/useResponsive';
+import { useResponsive } from '../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
-export default function GetFontValue(variant: Variant) {
+export function GetFontValue(variant: Variant) {
   const theme = useTheme();
 
   const breakpoints = useWidth();

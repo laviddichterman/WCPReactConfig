@@ -1,12 +1,12 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { PrinterGroup } from "@wcp/wcpshared";
-import axiosInstance from "../../utils/axios";
+import { axiosInstance } from "../../utils/axios";
 export const PrinterGroupAdapter = createEntityAdapter<PrinterGroup>();
 export const { selectAll: getPrinterGroups, selectById: getPrinterGroupById, selectIds: getPrinterGroupIds } =
-PrinterGroupAdapter.getSelectors();
+  PrinterGroupAdapter.getSelectors();
 
 export interface OrderManagerState {
-  printerGroups: EntityState<PrinterGroup, string>;  
+  printerGroups: EntityState<PrinterGroup, string>;
   requestStatus: 'NONE' | 'START' | 'SUCCESS' | 'FAILED';
 }
 

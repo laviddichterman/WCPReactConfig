@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
 import {
+  Autocomplete,
   Grid,
   TextField,
-  Autocomplete,
 } from '@mui/material';
-import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../../datetime_based_disable.component';
-import { ElementActionComponent } from '../element.action.component';
-import { IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, ReduceArrayToMapByKey } from '@wcp/wcpshared';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { ValSetValNamed } from '../../../../utils/common';
-import { StringPropertyComponent } from '../../property-components/StringPropertyComponent';
-import { FloatNumericPropertyComponent } from '../../property-components/FloatNumericPropertyComponent';
-import { ToggleBooleanPropertyComponent } from '../../property-components/ToggleBooleanPropertyComponent';
-import { IMoneyPropertyComponent } from '../../property-components/IMoneyPropertyComponent';
-import { ExternalIdsExpansionPanelComponent } from '../../ExternalIdsExpansionPanelComponent';
-import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
-import ProductModifierComponent from "./ProductModifierComponent";
-import PrepTimingPropertyComponent from '../../PrepTimingPropertyComponent';
 import { getFulfillments } from '@wcp/wario-ux-shared';
+import { IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, ReduceArrayToMapByKey } from '@wcp/wcpshared';
+import React, { useState } from 'react';
+import { useAppSelector } from '../../../../hooks/useRedux';
+import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
+import { ValSetValNamed } from '../../../../utils/common';
 import AvailabilityListBuilderComponent from '../../AvailabilityListBuilderComponent';
+import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../../datetime_based_disable.component';
+import { ExternalIdsExpansionPanelComponent } from '../../ExternalIdsExpansionPanelComponent';
+import PrepTimingPropertyComponent from '../../PrepTimingPropertyComponent';
+import { FloatNumericPropertyComponent } from '../../property-components/FloatNumericPropertyComponent';
+import { IMoneyPropertyComponent } from '../../property-components/IMoneyPropertyComponent';
+import { StringPropertyComponent } from '../../property-components/StringPropertyComponent';
+import { ToggleBooleanPropertyComponent } from '../../property-components/ToggleBooleanPropertyComponent';
+import { ElementActionComponent } from '../element.action.component';
+import ProductModifierComponent from "./ProductModifierComponent";
 
 
 type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
@@ -50,7 +50,7 @@ interface ProductComponentProps {
   children?: React.ReactNode;
 };
 
-const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComponentFieldsNoBaseId & ProductComponentProps) => {
+export const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComponentFieldsNoBaseId & ProductComponentProps) => {
   const catalog = useAppSelector(s => s.ws.catalog!);
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   const fulfillments = useAppSelector(s => getFulfillments(s.ws.fulfillments));
@@ -176,12 +176,12 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
             <Autocomplete
               multiple
               filterSelectedOptions
-              options={fulfillments.map(x=>x.id)}
+              options={fulfillments.map(x => x.id)}
               value={props.serviceDisable}
               onChange={(_, v) => {
                 props.setServiceDisable(v);
               }}
-              getOptionLabel={(option) => fulfillments.find((v)=>v.id === option)?.displayName ?? "INVALID"}
+              getOptionLabel={(option) => fulfillments.find((v) => v.id === option)?.displayName ?? "INVALID"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />
@@ -237,5 +237,3 @@ const ProductComponent = (props: ProductComponentPropsModeSpecific & ProductComp
     />
   );
 };
-
-export default ProductComponent;

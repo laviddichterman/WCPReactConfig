@@ -2,15 +2,15 @@ import { Card, Container } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
-import useSettings from '../../hooks/useSettings';
+import { useSettings } from '../../hooks/useSettings';
 // components
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import { HeaderBreadcrumbs } from '../../components/HeaderBreadcrumbs';
+import { Page } from '../../components/Page';
 // sections
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   ProfileCover,
 } from '../../sections/@dashboard/user/profile';
-import { useAuth0 } from '@auth0/auth0-react';
 
 
 export default function UserProfile() {

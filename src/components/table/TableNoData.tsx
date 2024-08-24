@@ -1,7 +1,7 @@
 // @mui
-import { TableRow, TableCell } from '@mui/material';
+import { TableCell, TableRow } from '@mui/material';
 //
-import EmptyContent from '../EmptyContent';
+import { EmptyContent } from '../EmptyContent';
 
 // ----------------------------------------------------------------------
 

@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 
-import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 import { Grid, TextField } from "@mui/material";
+import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 
 import { cancelOrder } from "../../../redux/slices/OrdersSlice";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
@@ -33,8 +33,8 @@ const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
     disableConfirmOn={orderSliceState === 'PENDING' || !confirmCheckbox}
     confirmText={'Process Order Cancelation'}
     body={<>
-        <Grid item xs={12}>
-<TextField
+      <Grid item xs={12}>
+        <TextField
           multiline
           fullWidth
           minRows={cancelationReason.split('\n').length + 1}
@@ -43,18 +43,18 @@ const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
           value={cancelationReason}
           onChange={(e) => setCancelationReason(e.target.value)}
         />
-        </Grid>
-        <Grid item xs={12}>
-        <ToggleBooleanPropertyComponent 
-        disabled={orderSliceState === 'PENDING'}
-        label="Cancellation is permanent, confirm this is understood before proceeding"
-        setValue={setConfirmCheckbox}
-        value={confirmCheckbox}
-        labelPlacement={"end"}
+      </Grid>
+      <Grid item xs={12}>
+        <ToggleBooleanPropertyComponent
+          disabled={orderSliceState === 'PENDING'}
+          label="Cancellation is permanent, confirm this is understood before proceeding"
+          setValue={setConfirmCheckbox}
+          value={confirmCheckbox}
+          labelPlacement={"end"}
         />
 
-        </Grid>
-        </>
+      </Grid>
+    </>
     }
   />)
 };

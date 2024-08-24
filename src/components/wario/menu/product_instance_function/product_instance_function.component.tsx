@@ -1,10 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
 
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import AbstractExpressionFunctionalContainer from './abstract_expression_functional.container';
-import { ElementActionComponent, ElementActionComponentProps } from "../element.action.component";
+import { Grid, TextField } from "@mui/material";
 import { IAbstractExpression } from "@wcp/wcpshared";
+import { ElementActionComponent, ElementActionComponentProps } from "../element.action.component";
+import AbstractExpressionFunctionalContainer from './abstract_expression_functional.container';
 
 export interface ProductInstanceFunctionComponentProps {
   isProcessing: boolean;

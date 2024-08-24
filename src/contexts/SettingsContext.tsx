@@ -1,18 +1,18 @@
-import { ReactNode, useEffect, createContext } from 'react';
+import { createContext, ReactNode, useEffect } from 'react';
 // hooks
-import useLocalStorage from '../hooks/useLocalStorage';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 // utils
-import getColorPresets, { colorPresets, defaultPreset } from '../utils/getColorPresets';
+import { colorPresets, defaultPreset, getColorPresets } from '../utils/getColorPresets';
 // config
 import { defaultSettings } from '../config';
 // @type
 import {
-  ThemeMode,
-  ThemeLayout,
+  SettingsContextProps,
+  ThemeColorPresets,
   ThemeContrast,
   ThemeDirection,
-  ThemeColorPresets,
-  SettingsContextProps,
+  ThemeLayout,
+  ThemeMode,
 } from '../components/settings/type';
 
 // ----------------------------------------------------------------------
@@ -20,32 +20,32 @@ import {
 const initialState: SettingsContextProps = {
   ...defaultSettings,
   // Mode
-  onToggleMode: () => {},
-  onChangeMode: () => {},
+  onToggleMode: () => { },
+  onChangeMode: () => { },
 
   // Direction
-  onToggleDirection: () => {},
-  onChangeDirection: () => {},
-  onChangeDirectionByLang: () => {},
+  onToggleDirection: () => { },
+  onChangeDirection: () => { },
+  onChangeDirectionByLang: () => { },
 
   // Layout
-  onToggleLayout: () => {},
-  onChangeLayout: () => {},
+  onToggleLayout: () => { },
+  onChangeLayout: () => { },
 
   // Contrast
-  onToggleContrast: () => {},
-  onChangeContrast: () => {},
+  onToggleContrast: () => { },
+  onChangeContrast: () => { },
 
   // Color
-  onChangeColor: () => {},
+  onChangeColor: () => { },
   setColor: defaultPreset,
   colorOption: [],
 
   // Stretch
-  onToggleStretch: () => {},
+  onToggleStretch: () => { },
 
   // Reset
-  onResetSetting: () => {},
+  onResetSetting: () => { },
 };
 
 const SettingsContext = createContext(initialState);
@@ -219,4 +219,5 @@ function SettingsProvider({ children }: SettingsProviderProps) {
   );
 }
 
-export { SettingsProvider, SettingsContext };
+export { SettingsContext, SettingsProvider };
+

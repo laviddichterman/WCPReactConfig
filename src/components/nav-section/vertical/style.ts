@@ -1,15 +1,15 @@
 // @mui
-import { alpha, styled } from '@mui/material/styles';
 import {
-  ListItemText,
-  ListItemIcon,
-  ListSubheader,
   ListItemButton,
-  ListItemTextProps,
   ListItemButtonProps,
+  ListItemIcon,
+  ListItemText,
+  ListItemTextProps,
+  ListSubheader,
 } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 // utils
-import cssStyles from '../../../utils/cssStyles';
+import { cssStyles } from '../../../utils/cssStyles';
 // config
 import { ICON, NAVBAR } from '../../../config';
 
@@ -39,9 +39,9 @@ export const ListItemStyle = styled(ListItemButton, {
   // Active item
   ...(active &&
     depth !== 1 && {
-      color: theme.palette.text.primary,
-      backgroundColor: 'transparent',
-    }),
+    color: theme.palette.text.primary,
+    backgroundColor: 'transparent',
+  }),
   // Sub item
   ...(depth && {
     ...(depth > 1 && {

@@ -1,15 +1,15 @@
-import { ReactNode, useRef } from 'react';
 import { IconifyIcon } from '@iconify/react';
-import { SnackbarProvider, SnackbarKey, CustomContentProps } from 'notistack';
+import { SnackbarKey, SnackbarProvider } from 'notistack';
+import { ReactNode, useRef } from 'react';
 // @mui
+import { Box, GlobalStyles } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
-import { Box, GlobalStyles, Collapse } from '@mui/material';
 // hooks
-import useSettings from '../hooks/useSettings';
+import { useSettings } from '../hooks/useSettings';
 // theme
 import { ColorSchema } from '../theme/palette';
 //
-import Iconify from './Iconify';
+import { Iconify } from './Iconify';
 import { IconButtonAnimate } from './animate';
 
 // ----------------------------------------------------------------------
@@ -32,10 +32,10 @@ function SnackbarStyles() {
             color: theme.palette.grey[isLight ? 0 : 800],
             backgroundColor: theme.palette.grey[isLight ? 900 : 0],
             '&.SnackbarItem-variantSuccess, &.SnackbarItem-variantError, &.SnackbarItem-variantWarning, &.SnackbarItem-variantInfo':
-              {
-                color: theme.palette.text.primary,
-                backgroundColor: theme.palette.background.paper,
-              },
+            {
+              color: theme.palette.text.primary,
+              backgroundColor: theme.palette.background.paper,
+            },
             [theme.breakpoints.up('md')]: {
               minWidth: 240,
             },
@@ -77,7 +77,7 @@ type Props = {
 // })
 
 
-export default function NotistackProvider({ children }: Props) {
+export function NotistackProvider({ children }: Props) {
   const { themeDirection } = useSettings();
 
   const isRTL = themeDirection === 'rtl';
@@ -98,10 +98,10 @@ export default function NotistackProvider({ children }: Props) {
         maxSnack={5}
         preventDuplicate
         autoHideDuration={3000}
-      //   Components={{
-      //     HTMLComponent: MyCustomSuccessNotification,
-      //     reportComplete: ReportComplete,
-      // }}
+        //   Components={{
+        //     HTMLComponent: MyCustomSuccessNotification,
+        //     reportComplete: ReportComplete,
+        // }}
         variant="success" // Set default variant
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         iconVariant={{

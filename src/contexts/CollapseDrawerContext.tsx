@@ -1,6 +1,6 @@
-import { ReactNode, createContext, useState, useEffect } from 'react';
+import { ReactNode, createContext, useEffect, useState } from 'react';
 // hooks
-import useResponsive from '../hooks/useResponsive';
+import { useResponsive } from '../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
@@ -17,9 +17,9 @@ const initialState: CollapseDrawerContextProps = {
   isCollapse: false,
   collapseClick: false,
   collapseHover: false,
-  onToggleCollapse: () => {},
-  onHoverEnter: () => {},
-  onHoverLeave: () => {},
+  onToggleCollapse: () => { },
+  onHoverEnter: () => { },
+  onHoverLeave: () => { },
 };
 
 const CollapseDrawerContext = createContext(initialState);
@@ -75,4 +75,5 @@ function CollapseDrawerProvider({ children }: CollapseDrawerProviderProps) {
   );
 }
 
-export { CollapseDrawerProvider, CollapseDrawerContext };
+export { CollapseDrawerContext, CollapseDrawerProvider };
+

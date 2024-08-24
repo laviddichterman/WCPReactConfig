@@ -3,10 +3,10 @@ import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import {
   Box,
-  Link,
-  Typography,
   BreadcrumbsProps,
+  Link,
   Breadcrumbs as MUIBreadcrumbs,
+  Typography,
 } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -22,7 +22,7 @@ export interface Props extends BreadcrumbsProps {
   activeLast?: boolean;
 }
 
-export default function Breadcrumbs({ links, activeLast = false, ...other }: Props) {
+export function Breadcrumbs({ links, activeLast = false, ...other }: Props) {
   const currentLink = links[links.length - 1].name;
 
   const listDefault = links.map((link) => <LinkItem key={link.name} link={link} />);

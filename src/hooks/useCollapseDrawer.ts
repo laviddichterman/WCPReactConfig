@@ -3,6 +3,4 @@ import { CollapseDrawerContext } from '../contexts/CollapseDrawerContext';
 
 // ----------------------------------------------------------------------
 
-const useCollapseDrawer = () => useContext(CollapseDrawerContext);
-
-export default useCollapseDrawer;
+export const useCollapseDrawer = () => useContext(CollapseDrawerContext);

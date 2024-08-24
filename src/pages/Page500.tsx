@@ -1,10 +1,10 @@
+import { styled } from '@mui/material/styles';
 import { m } from 'framer-motion';
 import { Link as RouterLink } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
 // @mui
-import { Button, Typography, Container } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 // components
-import Page from '../components/Page';
+import { Page } from '../components/Page';
 import { MotionContainer, varBounce } from '../components/animate';
 
 // ----------------------------------------------------------------------

@@ -3,19 +3,19 @@ import { useState } from 'react';
 import {
   Box,
   Card,
-  Container,
-  Typography,
   CardHeader,
+  Container,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 // hooks
-import useSettings from '../../hooks/useSettings';
+import { useSettings } from '../../hooks/useSettings';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import { HeaderBreadcrumbs } from '../../components/HeaderBreadcrumbs';
+import { Page } from '../../components/Page';
 // guards
 import RoleBasedGuard from '../../guards/RoleBasedGuard';
 

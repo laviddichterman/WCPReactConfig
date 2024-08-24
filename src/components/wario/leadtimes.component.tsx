@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Card, CardHeader, Grid, Button } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react';
+import { Button, Card, CardHeader, Grid } from '@mui/material';
+import { getFulfillments } from '@wcp/wario-ux-shared';
+import { FulfillmentConfig } from '@wcp/wcpshared';
+import { useSnackbar } from 'notistack';
+import { useEffect, useMemo, useState } from 'react';
 import { HOST_API } from '../../config';
 import { useAppSelector } from '../../hooks/useRedux';
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
-import { useSnackbar } from 'notistack';
-import { getFulfillments } from '@wcp/wario-ux-shared';
-import { FulfillmentConfig } from '@wcp/wcpshared';
 
 const GenerateCleanDirtyArray = (fulfillments: FulfillmentConfig[]) => fulfillments.reduce((acc, fulfillment) => ({ ...acc, [fulfillment.id]: false }), {})
 
@@ -20,14 +20,14 @@ const LeadTimesComp = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({ ...acc, [key]: dirty[key] ? value : FULFILLMENTS.find(x=>x.id === key)?.leadTime ?? 35 }), {}))
+    setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({ ...acc, [key]: dirty[key] ? value : FULFILLMENTS.find(x => x.id === key)?.leadTime ?? 35 }), {}))
   }, [FULFILLMENTS, dirty, localLeadTime]);
   const leadtimesToUpdate = useMemo(() => Object.entries(localLeadTime).reduce((acc, [key, value]) => dirty[key] ? ({ ...acc, [key]: value }) : acc, {}), [dirty, localLeadTime]);
 
   const onChangeLeadTimes = (fId: string, leadTime: number) => {
     if (localLeadTime[fId] !== leadTime) {
       setLocalLeadTime({ ...localLeadTime, [fId]: leadTime });
-      setDirty({ ...dirty, [fId]: FULFILLMENTS.find(x=>x.id === fId)?.leadTime !== leadTime });
+      setDirty({ ...dirty, [fId]: FULFILLMENTS.find(x => x.id === fId)?.leadTime !== leadTime });
     }
   };
 
@@ -47,9 +47,9 @@ const LeadTimesComp = () => {
         if (response.status === 201) {
           enqueueSnackbar(
             `
-              Updated lead time(s): ${Object.entries(leadtimesToUpdate).map(([key, value]) => 
-                `${FULFILLMENTS.find(x=>x.id === key)?.displayName}: ${value} minutes`
-              )}
+              Updated lead time(s): ${Object.entries(leadtimesToUpdate).map(([key, value]) =>
+              `${FULFILLMENTS.find(x => x.id === key)?.displayName}: ${value} minutes`
+            )}
             `)
           setDirty(GenerateCleanDirtyArray(FULFILLMENTS));
         }

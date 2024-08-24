@@ -1,23 +1,23 @@
 // @mui
 import { Container, Grid } from '@mui/material';
 // hooks
-import useSettings from '../../hooks/useSettings';
+import { useSettings } from '../../hooks/useSettings';
 // components
-import Page from '../../components/Page';
-import { useAppSelector } from '../../hooks/useRedux';
-import ProductTableContainer from '../../components/wario/menu/product/product_table.container';
+import { Page } from '../../components/Page';
+import CatalogTableContainer from '../../components/wario/menu/category/catalog_table.container';
 import CategoryDialoguesContainer from '../../components/wario/menu/category_dialogues.container';
 import ModifierDialoguesContainer from '../../components/wario/menu/modifier_dialogues.container';
 import ModifierTypeTableContainer from '../../components/wario/menu/modifier_type/modifier_type_table.container';
-import ProductInstanceFunctionTableContainer from '../../components/wario/menu/product_instance_function/product_instance_function_table.container';
 import PrinterGroupTableContainer from '../../components/wario/menu/printer_group/PrinterGroupTableContainer';
+import ProductTableContainer from '../../components/wario/menu/product/product_table.container';
+import ProductInstanceFunctionTableContainer from '../../components/wario/menu/product_instance_function/product_instance_function_table.container';
+import { useAppSelector } from '../../hooks/useRedux';
 import { selectOrphanedProductIds } from '../../redux/store';
-import CatalogTableContainer from '../../components/wario/menu/category/catalog_table.container';
 
 export default function GeneralCatalog() {
   const { themeStretch } = useSettings();
-  const isCatalogLoaded = useAppSelector(s=>s.ws.catalog !== null);
-  const orphanedProductIds = useAppSelector(s=>selectOrphanedProductIds(s));
+  const isCatalogLoaded = useAppSelector(s => s.ws.catalog !== null);
+  const orphanedProductIds = useAppSelector(s => selectOrphanedProductIds(s));
 
   if (!isCatalogLoaded) {
     return <>Loading...</>;

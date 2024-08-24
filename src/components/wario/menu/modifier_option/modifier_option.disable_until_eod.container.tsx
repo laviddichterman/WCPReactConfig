@@ -1,21 +1,21 @@
-import { useState } from "react";
-import { getTime, endOfDay } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
-import Grid from "@mui/material/Grid";
+import { Grid } from "@mui/material";
+import { endOfDay, getTime } from 'date-fns';
+import { useState } from "react";
 
-import { ElementActionComponent } from "../element.action.component";
-import { HOST_API } from "../../../../config";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
+import { getModifierOptionById } from "@wcp/wario-ux-shared";
 import { IOption } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
-import { getModifierOptionById } from "@wcp/wario-ux-shared";
+import { HOST_API } from "../../../../config";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { ElementActionComponent } from "../element.action.component";
+import { ModifierOptionQuickActionProps } from "./modifier_option.delete.container";
 
 const ModifierOptionDisableUntilEodContainer = ({ modifier_option_id, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifier_option = useAppSelector(s=> getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
+  const modifier_option = useAppSelector(s => getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
   const [isProcessing, setIsProcessing] = useState(false);
-  const CURRENT_TIME = useAppSelector(s=>s.ws.currentTime);
+  const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const { getAccessTokenSilently } = useAuth0();
   const editModifierOption = async () => {
     if (!isProcessing) {

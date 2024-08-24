@@ -1,27 +1,27 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // @mui
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Box, Container, Typography, Stack } from '@mui/material';
 // hooks
-import useSettings from '../../hooks/useSettings';
 import { IsSocketDataLoaded } from '@wcp/wario-ux-shared';
+import { useSettings } from '../../hooks/useSettings';
 
-import useResponsive from '../../hooks/useResponsive';
-import useCollapseDrawer from '../../hooks/useCollapseDrawer';
+import { useCollapseDrawer } from '../../hooks/useCollapseDrawer';
+import { useResponsive } from '../../hooks/useResponsive';
 // config
-import { HEADER, NAVBAR } from '../../config';
 import PACKAGE from '../../../package.json';
+import { HEADER, NAVBAR } from '../../config';
 
 //
-import Label from '../../components/Label';
+import { Label } from '../../components/Label';
 
-import DashboardHeader from './header';
-import NavbarVertical from './navbar/NavbarVertical';
-import NavbarHorizontal from './navbar/NavbarHorizontal';
-import { useAppSelector } from '../../hooks/useRedux';
-import LoadingScreen from '../../components/LoadingScreen';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { LoadingScreen } from '../../components/LoadingScreen';
+import { useAppSelector } from '../../hooks/useRedux';
+import { DashboardHeader } from './header';
+import { NavbarHorizontal } from './navbar/NavbarHorizontal';
+import NavbarVertical from './navbar/NavbarVertical';
 
 // ----------------------------------------------------------------------
 
@@ -53,8 +53,8 @@ const MainStyle = styled('main', {
 // ----------------------------------------------------------------------
 
 function DashboardLayout() {
-  const isLoaded = useAppSelector(s=>IsSocketDataLoaded(s.ws));
-  const catalog = useAppSelector(s=>s.ws.catalog);
+  const isLoaded = useAppSelector(s => IsSocketDataLoaded(s.ws));
+  const catalog = useAppSelector(s => s.ws.catalog);
 
   const { collapseClick, isCollapse } = useCollapseDrawer();
 
@@ -97,9 +97,9 @@ function DashboardLayout() {
           <Outlet />
         </Box>
         <Container>
-              <Stack><Typography variant="caption" component="p">WARIO Dashboard Version: <Label>v{PACKAGE.version}</Label></Typography></Stack> 
-              {catalog ? <Stack><Typography variant="caption" component="p">WARIO Backend Server Version: <Label>{`v${catalog.api.major}.${catalog.api.minor}.${catalog.api.patch}`}</Label></Typography></Stack> : ""}
-          </Container>
+          <Stack><Typography variant="caption" component="p">WARIO Dashboard Version: <Label>v{PACKAGE.version}</Label></Typography></Stack>
+          {catalog ? <Stack><Typography variant="caption" component="p">WARIO Backend Server Version: <Label>{`v${catalog.api.major}.${catalog.api.minor}.${catalog.api.patch}`}</Label></Typography></Stack> : ""}
+        </Container>
       </>
     );
   }
@@ -122,4 +122,4 @@ function DashboardLayout() {
   );
 }
 
-export default withAuthenticationRequired(DashboardLayout, { onRedirecting: () =><LoadingScreen />});
+export default withAuthenticationRequired(DashboardLayout, { onRedirecting: () => <LoadingScreen /> });

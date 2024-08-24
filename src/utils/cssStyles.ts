@@ -29,7 +29,7 @@ function getDirection(value = 'bottom') {
 
 // ----------------------------------------------------------------------
 
-export default function cssStyles(theme?: Theme) {
+export function cssStyles(theme?: Theme) {
   return {
     bgBlur: (props?: BackgroundBlurProps) => {
       const color = props?.color || theme?.palette.background.default || '#000000';

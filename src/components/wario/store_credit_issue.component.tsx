@@ -1,20 +1,21 @@
-import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-import { addDays, parseISO } from "date-fns";
-import { IconButton, Button, Grid, Card, CardHeader, Divider } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { Button, Card, CardHeader, Divider, Grid, IconButton } from "@mui/material";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { addDays, parseISO } from "date-fns";
+import { useState } from "react";
 
+import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
 import { CURRENCY, IMoney, IssueStoreCreditRequest, MoneyToDisplayString, StoreCreditType, WDateUtils } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
 import { HOST_API } from "../../config";
 import { useAppSelector } from "../../hooks/useRedux";
 import { IMoneyPropertyComponent } from "./property-components/IMoneyPropertyComponent";
 import { StringPropertyComponent } from "./property-components/StringPropertyComponent";
-import { useSnackbar } from "notistack";
-import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
 
 const DEFAULT_MONEY = { amount: 500, currency: CURRENCY.USD };
-const StoreCreditIssueComponent = () => {
+
+export const StoreCreditIssueComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { getAccessTokenSilently } = useAuth0();
 

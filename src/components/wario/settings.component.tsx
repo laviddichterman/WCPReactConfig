@@ -1,15 +1,15 @@
-import { useState } from 'react';
 import { Card, Grid } from '@mui/material';
+import { useState } from 'react';
 
-import { FulfillmentConfig } from "@wcp/wcpshared";
 import { DialogContainer } from '@wcp/wario-ux-shared';
+import { FulfillmentConfig } from "@wcp/wcpshared";
 import FulfillmentAddContainer from './FulfillmentAddContainer';
-import FulfillmentEditContainer from './FulfillmentEditContainer';
 import FulfillmentDeleteContainer from './FulfillmentDeleteContainer';
+import FulfillmentEditContainer from './FulfillmentEditContainer';
 import FulfillmentTableContainer from './FulfillmentTableContainer';
 
-const SettingsComponent = () => {
-  const [fulfillmentToEdit, setFulfillmentToEdit] = useState<FulfillmentConfig|null>(null);
+export const SettingsComponent = () => {
+  const [fulfillmentToEdit, setFulfillmentToEdit] = useState<FulfillmentConfig | null>(null);
   const [isFulfillmentAddOpen, setIsFulfillmentAddOpen] = useState(false);
   const [isFulfillmentEditOpen, setIsFulfillmentEditOpen] = useState(false);
   const [isFulfillmentDeleteOpen, setIsFulfillmentDeleteOpen] = useState(false);
@@ -22,7 +22,7 @@ const SettingsComponent = () => {
         onClose={() => setIsFulfillmentEditOpen(false)}
         open={isFulfillmentEditOpen}
         innerComponent={
-          fulfillmentToEdit !== null && 
+          fulfillmentToEdit !== null &&
           <FulfillmentEditContainer
             onCloseCallback={() => setIsFulfillmentEditOpen(false)}
             fulfillment={fulfillmentToEdit}
@@ -34,7 +34,7 @@ const SettingsComponent = () => {
         onClose={() => setIsFulfillmentDeleteOpen(false)}
         open={isFulfillmentDeleteOpen}
         innerComponent={
-          fulfillmentToEdit !== null && 
+          fulfillmentToEdit !== null &&
           <FulfillmentDeleteContainer
             onCloseCallback={() => setIsFulfillmentDeleteOpen(false)}
             fulfillment={fulfillmentToEdit}
@@ -67,6 +67,3 @@ const SettingsComponent = () => {
     </>
   );
 }
-
-
-export default SettingsComponent;

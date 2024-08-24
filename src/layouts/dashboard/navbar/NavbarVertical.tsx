@@ -1,25 +1,25 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 // @mui
+import { Box, Drawer, Stack } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import { Box, Stack, Drawer } from '@mui/material';
 // hooks
-import useResponsive from '../../../hooks/useResponsive';
-import useCollapseDrawer from '../../../hooks/useCollapseDrawer';
+import { useCollapseDrawer } from '../../../hooks/useCollapseDrawer';
+import { useResponsive } from '../../../hooks/useResponsive';
 // utils
-import cssStyles from '../../../utils/cssStyles';
+import { cssStyles } from '../../../utils/cssStyles';
 // config
 import { NAVBAR } from '../../../config';
 // components
-import Logo from '../../../components/Logo';
-import Label from '../../../components/Label';
-import Scrollbar from '../../../components/scrollbar/Scrollbar';
-import { NavSectionVertical } from '../../../components/nav-section';
 import PACKAGE from '../../../../package.json';
+import { Label } from '../../../components/Label';
+import { Logo } from '../../../components/Logo';
+import { NavSectionVertical } from '../../../components/nav-section';
+import { Scrollbar } from '../../../components/scrollbar/Scrollbar';
 
 //
+import { CollapseButton } from './CollapseButton';
 import navConfig from './NavConfig';
-import CollapseButton from './CollapseButton';
 
 // ----------------------------------------------------------------------
 

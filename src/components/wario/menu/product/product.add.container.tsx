@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ProductComponent from "./product.component";
-import { HOST_API } from "../../../../config";
 import { CreateProductBatch, CURRENCY, IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
-import { ProductInstanceContainer } from "./instance/product_instance.component";
 import { useSnackbar } from "notistack";
+import { HOST_API } from "../../../../config";
+import { ProductInstanceContainer } from "./instance/product_instance.component";
+import { ProductComponent } from "./product.component";
 
 interface ProductAddContainerProps {
   onCloseCallback: VoidFunction;

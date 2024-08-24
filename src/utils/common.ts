@@ -1,4 +1,4 @@
-import type {Dispatch, SetStateAction} from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 export type ValSetVal<T> = { value: T; setValue: Dispatch<SetStateAction<T>> };
 export type ValField<T, field extends string> = { [K in field]: T; };

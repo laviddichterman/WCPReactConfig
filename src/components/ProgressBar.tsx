@@ -1,8 +1,8 @@
 import NProgress from 'nprogress';
 import { useEffect, useMemo } from 'react';
 // @mui
-import { useTheme } from '@mui/material/styles';
 import { GlobalStyles } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ export function ProgressBarStyle() {
   );
 }
 
-export default function ProgressBar() {
+export function ProgressBar() {
   NProgress.configure({
     showSpinner: false
   });

@@ -2,7 +2,7 @@ import { Theme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-export default function DataGridPro(theme: Theme) {
+export function DataGridPro(theme: Theme) {
   return {
     MuiDataGrid: {
       styleOverrides: {

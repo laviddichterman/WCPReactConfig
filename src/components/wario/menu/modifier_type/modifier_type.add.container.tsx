@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierTypeComponent, { IsValidModifierType, ModifierTypeUiProps } from "./modifier_type.component";
-import { HOST_API } from "../../../../config";
 import { DISPLAY_AS, IOption, IOptionType, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { HOST_API } from "../../../../config";
+import ModifierTypeComponent, { ModifierTypeUiProps } from "./modifier_type.component";
 
 const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const [ordinal, setOrdinal] = useState(0);
   const [name, setName] = useState("");
   const [displayName, setDisplayName] = useState("");

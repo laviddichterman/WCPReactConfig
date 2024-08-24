@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // ----------------------------------------------------------------------
 
-export default function useLocalStorage<ValueType>(key: string, defaultValue: ValueType) {
+export function useLocalStorage<ValueType>(key: string, defaultValue: ValueType) {
   const [value, setValue] = useState(() => {
     const storedValue = localStorage.getItem(key);
 

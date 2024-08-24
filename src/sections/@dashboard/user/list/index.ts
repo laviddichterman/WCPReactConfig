@@ -1,1 +1,1 @@
-export { default as UserTableToolbar } from './UserTableToolbar';
+export { UserTableToolbar } from './UserTableToolbar';

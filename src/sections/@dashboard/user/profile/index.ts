@@ -1,2 +1,2 @@
-export { default as ProfileCover } from './ProfileCover';
+export { ProfileCover } from './ProfileCover';
 

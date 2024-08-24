@@ -1,12 +1,12 @@
+import { AddBox } from "@mui/icons-material";
+import { FormControlLabel, IconButton, Switch, Tooltip } from "@mui/material";
 import { useMemo } from "react";
-import { AddBox} from "@mui/icons-material";
-import ProductTableContainer from "../product/product_table.container";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openCategoryInterstitial, setEnableCategoryTreeView, setHideDisabled } from '../../../../redux/slices/CatalogSlice';
 import { selectProductIdsAfterDisableFilter } from "../../../../redux/store";
-import CategoryTableContainer from "./category_table.container";
 import { ToolbarAction } from "../../table_wrapper.component";
-import { FormControlLabel, IconButton, Switch, Tooltip } from "@mui/material";
+import ProductTableContainer from "../product/product_table.container";
+import CategoryTableContainer from "./category_table.container";
 
 interface CategoryTableContainerProps {
   toolbarActions?: ToolbarAction[];
@@ -14,13 +14,13 @@ interface CategoryTableContainerProps {
 const AllProductsTableContainer = (props: CategoryTableContainerProps) => {
   const productsAfterDisableFilter = useAppSelector(selectProductIdsAfterDisableFilter);
   return <ProductTableContainer
-      title="Product Table View"
-      disableToolbar={false}
-      pagination={true}
-      toolbarActions={props.toolbarActions}
-      product_ids={productsAfterDisableFilter}
-      setPanelsExpandedSize={() => (0)} // no need for the panels expanded size here... i don't think
-    />
+    title="Product Table View"
+    disableToolbar={false}
+    pagination={true}
+    toolbarActions={props.toolbarActions}
+    product_ids={productsAfterDisableFilter}
+    setPanelsExpandedSize={() => (0)} // no need for the panels expanded size here... i don't think
+  />
 }
 
 
@@ -60,8 +60,8 @@ const CatalogTableContainer = () => {
   ], [dispatch, enableCategoryTreeView, hideDisabled]);
 
   return (enableCategoryTreeView ?
-    <CategoryTableContainer toolbarActions={toolbarActions}/> :
-    <AllProductsTableContainer toolbarActions={toolbarActions}/>
+    <CategoryTableContainer toolbarActions={toolbarActions} /> :
+    <AllProductsTableContainer toolbarActions={toolbarActions} />
   );
 };
 

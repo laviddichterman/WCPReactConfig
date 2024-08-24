@@ -1,15 +1,15 @@
-import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-import { HOST_API } from "../../config";
-import { useAppSelector } from "../../hooks/useRedux";
-import KeyValuesContainer, { KeyValuesRowType } from "./keyvalues.container";
 import { IWSettings } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { HOST_API } from "../../config";
+import { useAppSelector } from "../../hooks/useRedux";
+import { KeyValuesContainer, KeyValuesRowType } from "./keyvalues.container";
 
 
-const StoreSettingsComponent = () => {
+export const StoreSettingsComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const settings = useAppSelector(s => s.ws.settings!);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
@@ -54,4 +54,3 @@ const StoreSettingsComponent = () => {
     values={Object.entries(settings.config).map(([key, value]) => ({ key, value }))}
   />;
 };
-export default StoreSettingsComponent;

@@ -1,22 +1,22 @@
-import { Card, CardHeader, CardProps, SxProps, Tab, Avatar, Typography, Box } from "@mui/material";
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { Avatar, Box, Card, CardHeader, CardProps, SxProps, Tab, Typography } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { ComputeServiceTimeDisplayString, DateTimeIntervalBuilder, WDateUtils, WOrderStatus } from "@wcp/wcpshared";
-import { useState } from "react";
-import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { format } from "date-fns";
+import { useState } from "react";
 
-import { getWOrderInstanceById } from "../../../redux/slices/OrdersSlice";
+import { getFulfillmentById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
 import { useAppSelector } from "../../../hooks/useRedux";
+import { getWOrderInstanceById } from "../../../redux/slices/OrdersSlice";
 import { getPrinterGroups } from "../../../redux/slices/PrinterGroupSlice";
+import { RootState } from "../../../redux/store";
+import { ElementActionComponentProps } from "../menu/element.action.component";
 import WOrderCancelComponent from "./WOrderCancelComponent";
 import { WOrderDisplayComponent } from "./WOrderDisplayComponent";
-import WOrderRescheduleComponent from "./WOrderRescheduleComponent";
 import WOrderForceSendComponent from "./WOrderForceSendComponent";
-import { ElementActionComponentProps } from "../menu/element.action.component";
 import WOrderMoveComponent from "./WOrderMoveComponent";
 import WOrderRawDataDisplayComponent from "./WOrderRawDataDisplay";
-import { RootState } from "../../../redux/store";
-import { weakMapCreateSelector, getFulfillmentById } from "@wcp/wario-ux-shared";
+import WOrderRescheduleComponent from "./WOrderRescheduleComponent";
 
 const GetStyleForOrderStatus = (status: WOrderStatus): SxProps => {
   switch (status) {

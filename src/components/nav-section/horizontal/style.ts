@@ -1,8 +1,8 @@
 // @mui
+import { ListItemButton, ListItemButtonProps, Popover } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
-import { Popover, ListItemButton, ListItemButtonProps } from '@mui/material';
 // utils
-import cssStyles from '../../../utils/cssStyles';
+import { cssStyles } from '../../../utils/cssStyles';
 // config
 import { NAVBAR } from '../../../config';
 
@@ -56,9 +56,9 @@ export const ListItemStyle = styled(ListItemButton, {
     // Active item sub
     ...(active &&
       depth !== 1 && {
-        ...activeSubStyle,
-        '&:hover': { ...activeSubStyle },
-      }),
+      ...activeSubStyle,
+      '&:hover': { ...activeSubStyle },
+    }),
     // Sub item
     ...(depth && {
       ...(depth > 1 && {

@@ -1,9 +1,9 @@
 import { forwardRef, ReactNode } from 'react';
 // @mui
+import { Link, LinkProps, Typography, TypographyProps } from '@mui/material';
 import { Variant } from '@mui/material/styles/createTypography';
-import { Typography, TypographyProps, LinkProps, Link } from '@mui/material';
 // utils
-import GetFontValue from '../utils/getFontValue';
+import { GetFontValue } from '../utils/getFontValue';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ interface Props extends IProps {
   variant?: Variant;
 }
 
-const TextMaxLine = forwardRef<HTMLAnchorElement, Props>(
+export const TextMaxLine = forwardRef<HTMLAnchorElement, Props>(
   ({ asLink, variant = 'body1', line = 2, persistent = false, children, sx, ...other }, ref) => {
     const { lineHeight } = GetFontValue(variant);
 
@@ -48,5 +48,3 @@ const TextMaxLine = forwardRef<HTMLAnchorElement, Props>(
     );
   }
 );
-
-export default TextMaxLine;

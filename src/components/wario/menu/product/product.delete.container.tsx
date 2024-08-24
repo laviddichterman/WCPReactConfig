@@ -1,18 +1,18 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ElementDeleteComponent from "../element.delete.component";
-import { HOST_API } from "../../../../config";
 import { useSnackbar } from "notistack";
+import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { selectBaseProductName } from "../../../../redux/store";
+import ElementDeleteComponent from "../element.delete.component";
 
 export interface ProductQuickActionProps {
   product_id: string;
   onCloseCallback: VoidFunction;
 }
 const ProductDeleteContainer = ({ product_id, onCloseCallback }: ProductQuickActionProps) => {
-  const productName = useAppSelector(s=>selectBaseProductName(s, product_id));
+  const productName = useAppSelector(s => selectBaseProductName(s, product_id));
   const { enqueueSnackbar } = useSnackbar();
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();

@@ -1,10 +1,10 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ProductInstanceFunctionComponent from "./product_instance_function.component";
-import { HOST_API } from "../../../../config";
 import { IAbstractExpression, IProductInstanceFunction } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { HOST_API } from "../../../../config";
+import ProductInstanceFunctionComponent from "./product_instance_function.component";
 
 interface ProductInstanceFunctionAddContainerProps {
   onCloseCallback: VoidFunction;

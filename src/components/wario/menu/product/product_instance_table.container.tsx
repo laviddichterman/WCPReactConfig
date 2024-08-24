@@ -1,12 +1,12 @@
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
+import { GridActionsCellItem, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
-import TableWrapperComponent from "../../table_wrapper.component";
+import { TableWrapperComponent } from "../../table_wrapper.component";
 
-import { openProductInstanceDelete, openProductInstanceEdit } from "../../../../redux/slices/CatalogSlice";
-import { weakMapCreateSelector, getProductInstanceById } from "@wcp/wario-ux-shared";
+import { getProductInstanceById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
 import { createStructuredSelector } from "reselect";
+import { openProductInstanceDelete, openProductInstanceEdit } from "../../../../redux/slices/CatalogSlice";
 import { RootState } from "../../../../redux/store";
 
 // type ValueGetterRow = GridValueGetterParams<RowType>;

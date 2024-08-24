@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { Box, Card, CardHeader, Grid, Button, TextField, Paper, Popper, Typography, CardContent, CardActions } from "@mui/material";
-import { GridActionsCellItem, GridColDef, GridRenderCellParams, GridRowParams, GridValueGetter } from "@mui/x-data-grid-premium";
-import TableWrapperComponent from "./table_wrapper.component";
+import { Box, Button, Card, CardActions, CardContent, CardHeader, Grid, Paper, Popper, TextField, Typography } from "@mui/material";
+import { GridActionsCellItem, GridColDef, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
+import React, { useMemo, useState } from "react";
+import { TableWrapperComponent } from "./table_wrapper.component";
 
 function isOverflown(element: any) {
   return element.scrollHeight > element.clientHeight ||
@@ -128,7 +128,7 @@ export type KeyValuesContainerProps<T> = {
 }
 
 
-const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>) {
+export const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>) {
   // localValues keeps track of new and dirty values, everything else we should get from props.values
   const [localValues, setLocalValues] = useState<Record<string, RowTypeNullable<T> | KeyValuesRowType<T>>>({});
   const valuesAsRecord = useMemo(() => props.values.reduce((acc: Record<string, KeyValuesRowType<T>>, x) => ({ ...acc, [x.key]: x }), {}), [props.values]);

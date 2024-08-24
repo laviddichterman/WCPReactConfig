@@ -3,6 +3,5 @@ import { SettingsContext } from '../contexts/SettingsContext';
 
 // ----------------------------------------------------------------------
 
-const useSettings = () => useContext(SettingsContext);
+export const useSettings = () => useContext(SettingsContext);
 
-export default useSettings;

@@ -1,9 +1,9 @@
 // @mui
-import { Grid, Container } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 // hooks
-import useSettings from '../../hooks/useSettings';
+import { useSettings } from '../../hooks/useSettings';
 // components
-import Page from '../../components/Page';
+import { Page } from '../../components/Page';
 // sections
 import React from 'react';
 const StoreCreditIssueComponent = React.lazy(() => import('../../components/wario/store_credit_issue.component'));

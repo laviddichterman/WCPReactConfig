@@ -1,7 +1,7 @@
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
-import SvgIconStyle from '../../../components/SvgIconStyle';
+import { SvgIconStyle } from '../../../components/SvgIconStyle';
 
 // ----------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ const navConfig = [
           // { title: 'edit', path: PATH_DASHBOARD.user.demoEdit },
           // { title: 'account', path: PATH_DASHBOARD.user.account },
         ],
-      },               
+      },
     ],
   }
 ];

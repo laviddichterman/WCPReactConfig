@@ -1,10 +1,10 @@
 import {
-  Grid,
-  TextField,
+  Autocomplete,
   Card,
   CardContent,
-  Autocomplete,
-  CardHeader
+  CardHeader,
+  Grid,
+  TextField
 } from '@mui/material';
 import { getFulfillments } from '@wcp/wario-ux-shared';
 import { IProductModifier } from '@wcp/wcpshared';
@@ -67,10 +67,10 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
                     multiple
                     disabled={props.isProcessing}
                     filterSelectedOptions
-                    options={fulfillments.map(x=>x.id)}
+                    options={fulfillments.map(x => x.id)}
                     value={modifier.serviceDisable}
                     onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
-                    getOptionLabel={(option) => fulfillments.find((v)=>v.id === option)?.displayName ?? "INVALID"}
+                    getOptionLabel={(option) => fulfillments.find((v) => v.id === option)?.displayName ?? "INVALID"}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => <TextField {...params} label="Disabled Services" />}
                   />
