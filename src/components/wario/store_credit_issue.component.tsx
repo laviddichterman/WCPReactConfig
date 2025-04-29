@@ -53,7 +53,7 @@ export const StoreCreditIssueComponent = () => {
           recipientNameFirst: firstName,
           recipientNameLast: lastName
         };
-        const response = await fetch(`${HOST_API}/api/v1/payments/storecredit/discount`, {
+        const response = await fetch(`${HOST_API}/api/v1/payments/storecredit/issue`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
