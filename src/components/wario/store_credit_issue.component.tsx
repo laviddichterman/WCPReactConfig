@@ -12,6 +12,7 @@ import { HOST_API } from "../../config";
 import { useAppSelector } from "../../hooks/useRedux";
 import { IMoneyPropertyComponent } from "./property-components/IMoneyPropertyComponent";
 import { StringPropertyComponent } from "./property-components/StringPropertyComponent";
+import { ToggleBooleanPropertyComponent } from './property-components/ToggleBooleanPropertyComponent';
 
 const DEFAULT_MONEY = { amount: 500, currency: CURRENCY.USD };
 
@@ -22,6 +23,7 @@ export const StoreCreditIssueComponent = () => {
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
   const [amount, setAmount] = useState<IMoney>(DEFAULT_MONEY);
+  const [creditType, setCreditType] = useState(StoreCreditType.DISCOUNT);
   const [addedBy, setAddedBy] = useState("");
   const [reason, setReason] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -46,7 +48,7 @@ export const StoreCreditIssueComponent = () => {
           addedBy,
           reason,
           expiration,
-          creditType: StoreCreditType.DISCOUNT,
+          creditType,
           recipientEmail,
           recipientNameFirst: firstName,
           recipientNameLast: lastName
@@ -59,9 +61,10 @@ export const StoreCreditIssueComponent = () => {
           },
           body: JSON.stringify(body)
         });
-        enqueueSnackbar(`Successfully sent ${firstName} ${lastName} DISCOUNT credit for ${MoneyToDisplayString(amount, true)}.`)
+        enqueueSnackbar(`Successfully sent ${firstName} ${lastName} ${creditType} credit for ${MoneyToDisplayString(amount, true)}.`)
         setAddedBy("");
         setAmount(DEFAULT_MONEY);
+        setCreditType(StoreCreditType.DISCOUNT);
         setReason("");
         setFirstName("");
         setLastName("");
@@ -156,12 +159,21 @@ export const StoreCreditIssueComponent = () => {
           </IconButton>
         </Grid>
 
-        <Grid item xs={9} md={11}>
+        <Grid item xs={6} md={8}>
           <StringPropertyComponent
             disabled={isProcessing}
             label="Reason"
             value={reason}
             setValue={setReason}
+          />
+        </Grid>
+        <Grid item xs={3} md={3}>
+          <ToggleBooleanPropertyComponent
+            disabled={isProcessing}
+            label="Is Discount?"
+            setValue={(x) => setCreditType(x ? StoreCreditType.DISCOUNT : StoreCreditType.MONEY)}
+            value={creditType === StoreCreditType.DISCOUNT}
+            labelPlacement={'end'}
           />
         </Grid>
         <Grid item xs={3} md={1} sx={{ my: 'auto', width: "100%" }}>
