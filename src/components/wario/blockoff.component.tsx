@@ -1,29 +1,29 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
-import { add, format, formatISO, parseISO, startOfDay } from "date-fns";
+import { useAuth0 } from '@auth0/auth0-react';
+import { Done, HighlightOff } from '@mui/icons-material';
 import {
+  Autocomplete,
+  Button,
   Card,
   CardHeader,
   Chip,
   Container,
   Grid,
-  Button,
   IconButton,
   List,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
-  TextField,
-  Autocomplete
-} from '@mui/material'
-import { Done, HighlightOff } from '@mui/icons-material';
+  ListItemText,
+  TextField
+} from '@mui/material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
-import { useAuth0 } from '@auth0/auth0-react';
 import { FulfillmentConfig, GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wcpshared";
+import { add, format, formatISO, parseISO, startOfDay } from "date-fns";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useAppSelector } from "../../hooks/useRedux";
-import { HOST_API } from '../../config';
+import { getFulfillmentById, getFulfillments, SelectDateFnsAdapter, weakMapCreateSelector } from "@wcp/wario-ux-shared";
 import { useSnackbar } from "notistack";
-import { weakMapCreateSelector, getFulfillmentById, getFulfillments, SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
+import { HOST_API } from '../../config';
+import { useAppSelector } from "../../hooks/useRedux";
 import { RootState } from "../../redux/store";
 import { ValSetValNamed } from "../../utils/common";
 
@@ -207,7 +207,7 @@ const DateSelector = ({ selectedDate, selectedServices, setSelectedDate }: { sel
   </LocalizationProvider>)
 }
 
-const BlockOffComp = () => {
+export const BlockOffComp = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const fulfillmentIdsAndNames = useAppSelector(selectFulfillmentIdAndNamesWithOperatingHours);
@@ -380,6 +380,4 @@ const BlockOffComp = () => {
         {fulfillmentIdsAndNames.map((fulfillment) => <FulfillmentBlockOffList fId={fulfillment.id} key={fulfillment.id} isProcessing={isProcessing} setIsProcessing={setIsProcessing} />)}
       </Grid>
     </>;
-}
-
-export default BlockOffComp;
+};

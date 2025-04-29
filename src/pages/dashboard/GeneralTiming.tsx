@@ -5,13 +5,13 @@ import { useSettings } from '../../hooks/useSettings';
 // components
 import { Page } from '../../components/Page';
 // sections
-import BlockOffComp from "../../components/wario/blockoff.component";
-import LeadTimesComp from "../../components/wario/leadtimes.component";
+import { BlockOffComp } from "../../components/wario/blockoff.component";
+import { LeadTimesComp } from "../../components/wario/leadtimes.component";
 import { useAppSelector } from '../../hooks/useRedux';
 
 // ----------------------------------------------------------------------
 
-export default function GeneralTiming() {
+export const GeneralTiming = () => {
   const FULFILLMENTS = useAppSelector(s => s.ws.fulfillments);
 
   const { themeStretch } = useSettings();
@@ -25,7 +25,7 @@ export default function GeneralTiming() {
               <Grid item xs={12} md={12}>
                 <LeadTimesComp />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={12}>
                 <BlockOffComp />
               </Grid>
             </Grid>)}
@@ -33,3 +33,5 @@ export default function GeneralTiming() {
     </Page>
   );
 }
+
+export default GeneralTiming;

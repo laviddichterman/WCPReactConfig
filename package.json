@@ -14,6 +14,7 @@
     "@fullcalendar/react": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
     "@fullcalendar/timeline": "^6.1.17",
+    "@fullcalendar/core": "^6.1.17",
     "@hookform/resolvers": "^3.10.0",
     "@iconify/react": "^5.2.1",
     "@mui/icons-material": "^6.4.11",
@@ -109,7 +110,7 @@
   "description": "TypeScript Restaurant Configuration Dashboard",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "start": "vite --port 3000",
+    "start": "vite --port 3000 --watch",
     "build": "vite build",
     "serve": "vite preview --port 3000",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",

@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { NotistackProvider } from './components/NotistackProvider';
 import { ProgressBarStyle } from './components/ProgressBar';
 import { ScrollToTop } from './components/ScrollToTop';
-import MotionLazyContainer from './components/animate/MotionLazyContainer';
+import { MotionLazy } from './components/animate/MotionLazyContainer';
 import ThemeSettings from './components/settings';
 import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import { queryPrinterGroups } from './redux/slices/PrinterGroupSlice';
@@ -45,7 +45,7 @@ export default function App() {
     }
   }, [getAccessTokenSilently, dispatch, pgQueryState])
   return (
-    <MotionLazyContainer>
+    <MotionLazy>
       <ThemeProvider>
         <ThemeSettings>
           <NotistackProvider>
@@ -55,7 +55,7 @@ export default function App() {
           </NotistackProvider>
         </ThemeSettings>
       </ThemeProvider>
-    </MotionLazyContainer>
+    </MotionLazy>
   );
 }
 

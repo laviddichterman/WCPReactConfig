@@ -1,18 +1,15 @@
-import { LazyMotion, m } from 'framer-motion';
+import { domMax, LazyMotion } from 'framer-motion';
 
 // ----------------------------------------------------------------------
 
-// eslint-disable-next-line import/extensions
-const loadFeatures = () => import('./features.js').then((res) => res.default);
-
-type Props = {
+export type MotionLazyProps = {
   children: React.ReactNode;
 };
 
-export default function MotionLazyContainer({ children }: Props) {
+export function MotionLazy({ children }: MotionLazyProps) {
   return (
-    <LazyMotion strict features={loadFeatures}>
-      <m.div style={{ height: '100%' }}> {children} </m.div>
+    <LazyMotion strict features={domMax}>
+      {children}
     </LazyMotion>
   );
 }

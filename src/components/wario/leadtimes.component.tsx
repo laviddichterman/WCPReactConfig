@@ -1,27 +1,41 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button, Card, CardHeader, Grid } from '@mui/material';
 import { getFulfillments } from '@wcp/wario-ux-shared';
-import { FulfillmentConfig } from '@wcp/wcpshared';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { HOST_API } from '../../config';
 import { useAppSelector } from '../../hooks/useRedux';
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
 
-const GenerateCleanDirtyArray = (fulfillments: FulfillmentConfig[]) => fulfillments.reduce((acc, fulfillment) => ({ ...acc, [fulfillment.id]: false }), {})
 
-const LeadTimesComp = () => {
+export const LeadTimesComp = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { getAccessTokenSilently } = useAuth0();
 
   const FULFILLMENTS = useAppSelector(s => getFulfillments(s.ws.fulfillments));
-  const [dirty, setDirty] = useState<Record<string, boolean>>(GenerateCleanDirtyArray(FULFILLMENTS));
-  const [localLeadTime, setLocalLeadTime] = useState<Record<string, number>>(FULFILLMENTS.reduce((acc, x) => ({ ...acc, [x.id]: x.leadTime }), {}));
+  const [dirty, setDirty] = useState<Record<string, boolean>>({});
+  const [localLeadTime, setLocalLeadTime] = useState<Record<string, number>>({});
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // maintains the state of the dirty array and the localLeadTimes
   useEffect(() => {
-    setLocalLeadTime(Object.entries(localLeadTime).reduce((acc, [key, value]) => ({ ...acc, [key]: dirty[key] ? value : FULFILLMENTS.find(x => x.id === key)?.leadTime ?? 35 }), {}))
-  }, [FULFILLMENTS, dirty, localLeadTime]);
+    // overwrite the local lead time with either the dirty value or the value from the received FULFILLMENTS
+    const newLocalLeadTime = FULFILLMENTS.reduce((acc: Record<string, number>, fulfillment) => {
+      const id = fulfillment.id;
+      const isDirty = Object.hasOwn(dirty, id) && dirty[id] === true && Object.hasOwn(localLeadTime, id);
+      return {
+        ...acc,
+        [fulfillment.id]: isDirty ?
+          localLeadTime[fulfillment.id] : (fulfillment.leadTime ?? 35)
+      }
+    }, {})
+    setDirty(FULFILLMENTS.reduce((acc: Record<string, boolean>, fulfillment) => ({
+      ...acc,
+      [fulfillment.id]: newLocalLeadTime[fulfillment.id] !== fulfillment.leadTime
+    }), {}));
+    setLocalLeadTime(newLocalLeadTime);
+  }, [FULFILLMENTS, setDirty, setLocalLeadTime]);
+
   const leadtimesToUpdate = useMemo(() => Object.entries(localLeadTime).reduce((acc, [key, value]) => dirty[key] ? ({ ...acc, [key]: value }) : acc, {}), [dirty, localLeadTime]);
 
   const onChangeLeadTimes = (fId: string, leadTime: number) => {
@@ -61,35 +75,33 @@ const LeadTimesComp = () => {
     }
   };
   return (
-    <Card>
-      <CardHeader title="Single pizza lead time:" sx={{ mb: 3 }} />
-      <Grid container spacing={2} justifyContent="center">
-        <Grid item spacing={2} container alignItems={'center'} xs={8} md={10}>
-          {Object.values(FULFILLMENTS).map((fulfillment, _, arr) => {
-            const arrLength = arr.length;
-            const isMod2 = arrLength % 2 === 0;
-            const isMod3 = arrLength % 3 === 0;
-            return (
-              <Grid item xs={isMod2 ? 6 : 12} md={isMod2 ? 6 : (isMod3 ? 4 : 12)} key={fulfillment.id} >
-                <IntNumericPropertyComponent
-                  sx={{ ml: 3, mb: 2, mr: 1 }}
-                  min={1}
-                  color={dirty[fulfillment.id] ? 'warning' : 'primary'}
-                  disabled={isProcessing}
-                  label={fulfillment.displayName}
-                  value={dirty[fulfillment.id] ? localLeadTime[fulfillment.id] : fulfillment.leadTime}
-                  setValue={(e: number) => onChangeLeadTimes(fulfillment.id, e)}
-                />
-              </Grid>
-            )
-          }
-          )}
+    <div>
+      <Card>
+        <CardHeader title="Single pizza lead time:" sx={{ mb: 3 }} />
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item spacing={2} container alignItems={'center'} xs={8} md={10}>
+            {Object.values(FULFILLMENTS).map((fulfillment) => {
+              return (
+                <Grid item xs={FULFILLMENTS.length % 2 === 0 ? 6 : 12} md={FULFILLMENTS.length % 2 === 0 ? 6 : (FULFILLMENTS.length % 3 === 0 ? 4 : 12)} key={fulfillment.id} >
+                  <IntNumericPropertyComponent
+                    sx={{ ml: 3, mb: 2, mr: 1 }}
+                    min={1}
+                    color={dirty[fulfillment.id] ? 'warning' : 'primary'}
+                    disabled={isProcessing}
+                    label={fulfillment.displayName}
+                    value={dirty[fulfillment.id] ? localLeadTime[fulfillment.id] : fulfillment.leadTime}
+                    setValue={(e: number) => onChangeLeadTimes(fulfillment.id, e)}
+                  />
+                </Grid>
+              )
+            }
+            )}
+          </Grid>
+          <Grid item xs={4} md={2} sx={{ py: 2 }} >
+            <Button sx={{ mx: 3, px: 1, py: 2 }} disabled={isProcessing || Object.keys(leadtimesToUpdate).length === 0} onClick={onSubmit}>Push Changes</Button>
+          </Grid>
         </Grid>
-        <Grid item xs={4} md={2} sx={{ py: 2 }} >
-          <Button sx={{ mx: 3, px: 1, py: 2 }} disabled={isProcessing || Object.keys(leadtimesToUpdate).length === 0} onClick={onSubmit}>Push Changes</Button>
-        </Grid>
-      </Grid>
-    </Card>
+      </Card>
+    </div>
   );
-}
-export default LeadTimesComp;
+};

@@ -81,11 +81,11 @@ export default function Router() {
 // DASHBOARD
 
 // GENERAL
-const GeneralOrders = Loadable(lazy(() => import('../pages/dashboard/GeneralOrders')));
-const GeneralTiming = Loadable(lazy(() => import('../pages/dashboard/GeneralTiming')));
-const GeneralCredit = Loadable(lazy(() => import('../pages/dashboard/GeneralCredit')));
-const GeneralCatalog = Loadable(lazy(() => import('../pages/dashboard/GeneralCatalog')));
-const GeneralSettings = Loadable(lazy(() => import('../pages/dashboard/GeneralSettings')));
+const GeneralOrders = lazy(() => import('../pages/dashboard/GeneralOrders'));
+const GeneralTiming = lazy(() => import('../pages/dashboard/GeneralTiming'));
+const GeneralCredit = lazy(() => import('../pages/dashboard/GeneralCredit'));
+const GeneralCatalog = lazy(() => import('../pages/dashboard/GeneralCatalog'));
+const GeneralSettings = lazy(() => import('../pages/dashboard/GeneralSettings'));
 
 // USER
 const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));

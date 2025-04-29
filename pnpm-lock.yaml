@@ -20,24 +20,27 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.0
         version: 11.14.0(@emotion/react@11.14.0(@types/react@18.3.20)(react@18.3.1))(@types/react@18.3.20)(react@18.3.1)
+      '@fullcalendar/core':
+        specifier: ^6.1.17
+        version: 6.1.17
       '@fullcalendar/daygrid':
         specifier: ^6.1.17
-        version: 6.1.17(@fullcalendar/core@6.1.15)
+        version: 6.1.17(@fullcalendar/core@6.1.17)
       '@fullcalendar/interaction':
         specifier: ^6.1.17
-        version: 6.1.17(@fullcalendar/core@6.1.15)
+        version: 6.1.17(@fullcalendar/core@6.1.17)
       '@fullcalendar/list':
         specifier: ^6.1.17
-        version: 6.1.17(@fullcalendar/core@6.1.15)
+        version: 6.1.17(@fullcalendar/core@6.1.17)
       '@fullcalendar/react':
         specifier: ^6.1.17
-        version: 6.1.17(@fullcalendar/core@6.1.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 6.1.17(@fullcalendar/core@6.1.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@fullcalendar/timegrid':
         specifier: ^6.1.17
-        version: 6.1.17(@fullcalendar/core@6.1.15)
+        version: 6.1.17(@fullcalendar/core@6.1.17)
       '@fullcalendar/timeline':
         specifier: ^6.1.17
-        version: 6.1.17(@fullcalendar/core@6.1.15)
+        version: 6.1.17(@fullcalendar/core@6.1.17)
       '@hookform/resolvers':
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
@@ -703,8 +706,8 @@ packages:
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
 
-  '@fullcalendar/core@6.1.15':
-    resolution: {integrity: sha512-BuX7o6ALpLb84cMw1FCB9/cSgF4JbVO894cjJZ6kP74jzbUZNjtwffwRdA+Id8rrLjT30d/7TrkW90k4zbXB5Q==}
+  '@fullcalendar/core@6.1.17':
+    resolution: {integrity: sha512-0W7lnIrv18ruJ5zeWBeNZXO8qCWlzxDdp9COFEsZnyNjiEhUVnrW/dPbjRKYpL0edGG0/Lhs0ghp1z/5ekt8ZA==}
 
   '@fullcalendar/daygrid@6.1.17':
     resolution: {integrity: sha512-K7m+pd7oVJ9fW4h7CLDdDGJbc9szJ1xDU1DZ2ag+7oOo1aCNLv44CehzkkknM6r8EYlOOhgaelxQpKAI4glj7A==}
@@ -1201,68 +1204,68 @@ packages:
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
-  '@swc/core-darwin-arm64@1.11.22':
-    resolution: {integrity: sha512-upSiFQfo1TE2QM3+KpBcp5SrOdKKjoc+oUoD1mmBDU2Wv4Bjjv16Z2I5ADvIqMV+b87AhYW+4Qu6iVrQD7j96Q==}
+  '@swc/core-darwin-arm64@1.11.24':
+    resolution: {integrity: sha512-dhtVj0PC1APOF4fl5qT2neGjRLgHAAYfiVP8poJelhzhB/318bO+QCFWAiimcDoyMgpCXOhTp757gnoJJrheWA==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@swc/core-darwin-x64@1.11.22':
-    resolution: {integrity: sha512-8PEuF/gxIMJVK21DjuCOtzdqstn2DqnxVhpAYfXEtm3WmMqLIOIZBypF/xafAozyaHws4aB/5xmz8/7rPsjavw==}
+  '@swc/core-darwin-x64@1.11.24':
+    resolution: {integrity: sha512-H/3cPs8uxcj2Fe3SoLlofN5JG6Ny5bl8DuZ6Yc2wr7gQFBmyBkbZEz+sPVgsID7IXuz7vTP95kMm1VL74SO5AQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [darwin]
 
-  '@swc/core-linux-arm-gnueabihf@1.11.22':
-    resolution: {integrity: sha512-NIPTXvqtn9e7oQHgdaxM9Z/anHoXC3Fg4ZAgw5rSGa1OlnKKupt5sdfJamNggSi+eAtyoFcyfkgqHnfe2u63HA==}
+  '@swc/core-linux-arm-gnueabihf@1.11.24':
+    resolution: {integrity: sha512-PHJgWEpCsLo/NGj+A2lXZ2mgGjsr96ULNW3+T3Bj2KTc8XtMUkE8tmY2Da20ItZOvPNC/69KroU7edyo1Flfbw==}
     engines: {node: '>=10'}
     cpu: [arm]
     os: [linux]
 
-  '@swc/core-linux-arm64-gnu@1.11.22':
-    resolution: {integrity: sha512-xZ+bgS60c5r8kAeYsLNjJJhhQNkXdidQ277pUabSlu5GjR0CkQUPQ+L9hFeHf8DITEqpPBPRiAiiJsWq5eqMBg==}
+  '@swc/core-linux-arm64-gnu@1.11.24':
+    resolution: {integrity: sha512-C2FJb08+n5SD4CYWCTZx1uR88BN41ZieoHvI8A55hfVf2woT8+6ZiBzt74qW2g+ntZ535Jts5VwXAKdu41HpBg==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
 
-  '@swc/core-linux-arm64-musl@1.11.22':
-    resolution: {integrity: sha512-JhrP/q5VqQl2eJR0xKYIkKTPjgf8CRsAmRnjJA2PtZhfQ543YbYvUqxyXSRyBOxdyX8JwzuAxIPEAlKlT7PPuQ==}
+  '@swc/core-linux-arm64-musl@1.11.24':
+    resolution: {integrity: sha512-ypXLIdszRo0re7PNNaXN0+2lD454G8l9LPK/rbfRXnhLWDBPURxzKlLlU/YGd2zP98wPcVooMmegRSNOKfvErw==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
 
-  '@swc/core-linux-x64-gnu@1.11.22':
-    resolution: {integrity: sha512-htmAVL+U01gk9GyziVUP0UWYaUQBgrsiP7Ytf6uDffrySyn/FclUS3MDPocNydqYsOpj3OpNKPxkaHK+F+X5fg==}
+  '@swc/core-linux-x64-gnu@1.11.24':
+    resolution: {integrity: sha512-IM7d+STVZD48zxcgo69L0yYptfhaaE9cMZ+9OoMxirNafhKKXwoZuufol1+alEFKc+Wbwp+aUPe/DeWC/Lh3dg==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
 
-  '@swc/core-linux-x64-musl@1.11.22':
-    resolution: {integrity: sha512-PL0VHbduWPX+ANoyOzr58jBiL2VnD0xGSFwPy7NRZ1Pr6SNWm4jw3x2u6RjLArGhS5EcWp64BSk9ZxqmTV3FEg==}
+  '@swc/core-linux-x64-musl@1.11.24':
+    resolution: {integrity: sha512-DZByJaMVzSfjQKKQn3cqSeqwy6lpMaQDQQ4HPlch9FWtDx/dLcpdIhxssqZXcR2rhaQVIaRQsCqwV6orSDGAGw==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
 
-  '@swc/core-win32-arm64-msvc@1.11.22':
-    resolution: {integrity: sha512-moJvFhhTVGoMeEThtdF7hQog80Q00CS06v5uB+32VRuv+I31+4WPRyGlTWHO+oY4rReNcXut/mlDHPH7p0LdFg==}
+  '@swc/core-win32-arm64-msvc@1.11.24':
+    resolution: {integrity: sha512-Q64Ytn23y9aVDKN5iryFi8mRgyHw3/kyjTjT4qFCa8AEb5sGUuSj//AUZ6c0J7hQKMHlg9do5Etvoe61V98/JQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [win32]
 
-  '@swc/core-win32-ia32-msvc@1.11.22':
-    resolution: {integrity: sha512-/jnsPJJz89F1aKHIb5ScHkwyzBciz2AjEq2m9tDvQdIdVufdJ4SpEDEN9FqsRNRLcBHjtbLs6bnboA+B+pRFXw==}
+  '@swc/core-win32-ia32-msvc@1.11.24':
+    resolution: {integrity: sha512-9pKLIisE/Hh2vJhGIPvSoTK4uBSPxNVyXHmOrtdDot4E1FUUI74Vi8tFdlwNbaj8/vusVnb8xPXsxF1uB0VgiQ==}
     engines: {node: '>=10'}
     cpu: [ia32]
     os: [win32]
 
-  '@swc/core-win32-x64-msvc@1.11.22':
-    resolution: {integrity: sha512-lc93Y8Mku7LCFGqIxJ91coXZp2HeoDcFZSHCL90Wttg5xhk5xVM9uUCP+OdQsSsEixLF34h5DbT9ObzP8rAdRw==}
+  '@swc/core-win32-x64-msvc@1.11.24':
+    resolution: {integrity: sha512-sybnXtOsdB+XvzVFlBVGgRHLqp3yRpHK7CrmpuDKszhj/QhmsaZzY/GHSeALlMtLup13M0gqbcQvsTNlAHTg3w==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
 
-  '@swc/core@1.11.22':
-    resolution: {integrity: sha512-mjPYbqq8XjwqSE0hEPT9CzaJDyxql97LgK4iyvYlwVSQhdN1uK0DBG4eP9PxYzCS2MUGAXB34WFLegdUj5HGpg==}
+  '@swc/core@1.11.24':
+    resolution: {integrity: sha512-MaQEIpfcEMzx3VWWopbofKJvaraqmL6HbLlw2bFZ7qYqYw3rkhM0cQVEgyzbHtTWwCwPMFZSC2DUbhlZgrMfLg==}
     engines: {node: '>=10'}
     peerDependencies:
       '@swc/helpers': '>=0.5.17'
@@ -1907,8 +1910,8 @@ packages:
   duplexer2@0.1.4:
     resolution: {integrity: sha512-asLFVfWWtJ90ZyOUHMqk7/S2w2guQKxUI2itj3d92ADHhxUSbCMGi1f1cBcJ7xM1To+pE/Khbwo1yuNbMEPKeA==}
 
-  electron-to-chromium@1.5.143:
-    resolution: {integrity: sha512-QqklJMOFBMqe46k8iIOwA9l2hz57V2OKMmP5eSWcUvwx+mASAsbU+wkF1pHjn9ZVSBPrsYWr4/W/95y5SwYg2g==}
+  electron-to-chromium@1.5.144:
+    resolution: {integrity: sha512-eJIaMRKeAzxfBSxtjYnoIAw/tdD6VIH6tHBZepZnAbE3Gyqqs5mGN87DvcldPUbVkIljTK8pY0CMcUljP64lfQ==}
 
   emoji-mart@5.6.0:
     resolution: {integrity: sha512-eJp3QRe79pjwa+duv+n7+5YsNhRcMl812EcFVwrnRvYKoNPoQb5qxU8DG6Bgwji0akHdp6D4Ln6tYLG58MFSow==}
@@ -4104,47 +4107,47 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@fullcalendar/core@6.1.15':
+  '@fullcalendar/core@6.1.17':
     dependencies:
       preact: 10.12.1
 
-  '@fullcalendar/daygrid@6.1.17(@fullcalendar/core@6.1.15)':
+  '@fullcalendar/daygrid@6.1.17(@fullcalendar/core@6.1.17)':
     dependencies:
-      '@fullcalendar/core': 6.1.15
+      '@fullcalendar/core': 6.1.17
 
-  '@fullcalendar/interaction@6.1.17(@fullcalendar/core@6.1.15)':
+  '@fullcalendar/interaction@6.1.17(@fullcalendar/core@6.1.17)':
     dependencies:
-      '@fullcalendar/core': 6.1.15
+      '@fullcalendar/core': 6.1.17
 
-  '@fullcalendar/list@6.1.17(@fullcalendar/core@6.1.15)':
+  '@fullcalendar/list@6.1.17(@fullcalendar/core@6.1.17)':
     dependencies:
-      '@fullcalendar/core': 6.1.15
+      '@fullcalendar/core': 6.1.17
 
-  '@fullcalendar/premium-common@6.1.17(@fullcalendar/core@6.1.15)':
+  '@fullcalendar/premium-common@6.1.17(@fullcalendar/core@6.1.17)':
     dependencies:
-      '@fullcalendar/core': 6.1.15
+      '@fullcalendar/core': 6.1.17
 
-  '@fullcalendar/react@6.1.17(@fullcalendar/core@6.1.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@fullcalendar/react@6.1.17(@fullcalendar/core@6.1.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@fullcalendar/core': 6.1.15
+      '@fullcalendar/core': 6.1.17
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@fullcalendar/scrollgrid@6.1.17(@fullcalendar/core@6.1.15)':
+  '@fullcalendar/scrollgrid@6.1.17(@fullcalendar/core@6.1.17)':
     dependencies:
-      '@fullcalendar/core': 6.1.15
-      '@fullcalendar/premium-common': 6.1.17(@fullcalendar/core@6.1.15)
+      '@fullcalendar/core': 6.1.17
+      '@fullcalendar/premium-common': 6.1.17(@fullcalendar/core@6.1.17)
 
-  '@fullcalendar/timegrid@6.1.17(@fullcalendar/core@6.1.15)':
+  '@fullcalendar/timegrid@6.1.17(@fullcalendar/core@6.1.17)':
     dependencies:
-      '@fullcalendar/core': 6.1.15
-      '@fullcalendar/daygrid': 6.1.17(@fullcalendar/core@6.1.15)
+      '@fullcalendar/core': 6.1.17
+      '@fullcalendar/daygrid': 6.1.17(@fullcalendar/core@6.1.17)
 
-  '@fullcalendar/timeline@6.1.17(@fullcalendar/core@6.1.15)':
+  '@fullcalendar/timeline@6.1.17(@fullcalendar/core@6.1.17)':
     dependencies:
-      '@fullcalendar/core': 6.1.15
-      '@fullcalendar/premium-common': 6.1.17(@fullcalendar/core@6.1.15)
-      '@fullcalendar/scrollgrid': 6.1.17(@fullcalendar/core@6.1.15)
+      '@fullcalendar/core': 6.1.17
+      '@fullcalendar/premium-common': 6.1.17(@fullcalendar/core@6.1.17)
+      '@fullcalendar/scrollgrid': 6.1.17(@fullcalendar/core@6.1.17)
 
   '@hookform/resolvers@3.10.0(react-hook-form@7.54.2(react@18.3.1))':
     dependencies:
@@ -4548,51 +4551,51 @@ snapshots:
 
   '@standard-schema/utils@0.3.0': {}
 
-  '@swc/core-darwin-arm64@1.11.22':
+  '@swc/core-darwin-arm64@1.11.24':
     optional: true
 
-  '@swc/core-darwin-x64@1.11.22':
+  '@swc/core-darwin-x64@1.11.24':
     optional: true
 
-  '@swc/core-linux-arm-gnueabihf@1.11.22':
+  '@swc/core-linux-arm-gnueabihf@1.11.24':
     optional: true
 
-  '@swc/core-linux-arm64-gnu@1.11.22':
+  '@swc/core-linux-arm64-gnu@1.11.24':
     optional: true
 
-  '@swc/core-linux-arm64-musl@1.11.22':
+  '@swc/core-linux-arm64-musl@1.11.24':
     optional: true
 
-  '@swc/core-linux-x64-gnu@1.11.22':
+  '@swc/core-linux-x64-gnu@1.11.24':
     optional: true
 
-  '@swc/core-linux-x64-musl@1.11.22':
+  '@swc/core-linux-x64-musl@1.11.24':
     optional: true
 
-  '@swc/core-win32-arm64-msvc@1.11.22':
+  '@swc/core-win32-arm64-msvc@1.11.24':
     optional: true
 
-  '@swc/core-win32-ia32-msvc@1.11.22':
+  '@swc/core-win32-ia32-msvc@1.11.24':
     optional: true
 
-  '@swc/core-win32-x64-msvc@1.11.22':
+  '@swc/core-win32-x64-msvc@1.11.24':
     optional: true
 
-  '@swc/core@1.11.22':
+  '@swc/core@1.11.24':
     dependencies:
       '@swc/counter': 0.1.3
       '@swc/types': 0.1.21
     optionalDependencies:
-      '@swc/core-darwin-arm64': 1.11.22
-      '@swc/core-darwin-x64': 1.11.22
-      '@swc/core-linux-arm-gnueabihf': 1.11.22
-      '@swc/core-linux-arm64-gnu': 1.11.22
-      '@swc/core-linux-arm64-musl': 1.11.22
-      '@swc/core-linux-x64-gnu': 1.11.22
-      '@swc/core-linux-x64-musl': 1.11.22
-      '@swc/core-win32-arm64-msvc': 1.11.22
-      '@swc/core-win32-ia32-msvc': 1.11.22
-      '@swc/core-win32-x64-msvc': 1.11.22
+      '@swc/core-darwin-arm64': 1.11.24
+      '@swc/core-darwin-x64': 1.11.24
+      '@swc/core-linux-arm-gnueabihf': 1.11.24
+      '@swc/core-linux-arm64-gnu': 1.11.24
+      '@swc/core-linux-arm64-musl': 1.11.24
+      '@swc/core-linux-x64-gnu': 1.11.24
+      '@swc/core-linux-x64-musl': 1.11.24
+      '@swc/core-win32-arm64-msvc': 1.11.24
+      '@swc/core-win32-ia32-msvc': 1.11.24
+      '@swc/core-win32-x64-msvc': 1.11.24
 
   '@swc/counter@0.1.3': {}
 
@@ -4835,7 +4838,7 @@ snapshots:
 
   '@vitejs/plugin-react-swc@3.9.0(vite@6.3.3(@types/node@22.15.3))':
     dependencies:
-      '@swc/core': 1.11.22
+      '@swc/core': 1.11.24
       vite: 6.3.3(@types/node@22.15.3)
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -5072,7 +5075,7 @@ snapshots:
   browserslist@4.24.4:
     dependencies:
       caniuse-lite: 1.0.30001715
-      electron-to-chromium: 1.5.143
+      electron-to-chromium: 1.5.144
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.24.4)
 
@@ -5283,7 +5286,7 @@ snapshots:
     dependencies:
       readable-stream: 2.3.8
 
-  electron-to-chromium@1.5.143: {}
+  electron-to-chromium@1.5.144: {}
 
   emoji-mart@5.6.0: {}
 
