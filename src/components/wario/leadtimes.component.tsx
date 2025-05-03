@@ -7,7 +7,6 @@ import { HOST_API } from '../../config';
 import { useAppSelector } from '../../hooks/useRedux';
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
 
-
 export const LeadTimesComp = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { getAccessTokenSilently } = useAuth0();
@@ -65,7 +64,8 @@ export const LeadTimesComp = () => {
               `${FULFILLMENTS.find(x => x.id === key)?.displayName}: ${value} minutes`
             )}
             `)
-          setDirty(GenerateCleanDirtyArray(FULFILLMENTS));
+
+          setDirty(FULFILLMENTS.reduce((acc, fulfillment) => ({ ...acc, [fulfillment.id]: false }), {}));
         }
         setIsProcessing(false);
       } catch (error) {

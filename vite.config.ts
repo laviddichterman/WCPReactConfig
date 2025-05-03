@@ -10,7 +10,7 @@ export default defineConfig(() => {
       rollupOptions: {
         output: {
           manualChunks: {
-            'wcp': ["@wcp/wario-ux-shared", "@wcp/wcpshared"],
+            // 'wcp': ["@wcp/wario-ux-shared", "@wcp/wcpshared"],
           }
         }
       },
