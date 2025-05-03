@@ -1,6 +1,6 @@
 {
   "name": "@wcp/wcp-react-config",
-  "version": "0.4.66",
+  "version": "0.5.0",
   "type": "module",
   "packageManager": "pnpm@9.15.3",
   "dependencies": {
