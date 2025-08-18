@@ -58,7 +58,7 @@ const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: 
             pos: {
               hide: hideFromPos,
               name: posName,
-              skip_customization: posSkipCustomization
+              skip_customization: parent_product.modifiers.length === 0 || posSkipCustomization
             },
             menu: {
               ordinal: menuOrdinal,
@@ -71,7 +71,7 @@ const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: 
             order: {
               ordinal: orderOrdinal,
               hide: orderMenuHide,
-              skip_customization: orderSkipCustomization,
+              skip_customization: parent_product.modifiers.length === 0 || orderSkipCustomization,
               price_display: orderPriceDisplay,
               adornment: orderAdornment,
               suppress_exhaustive_modifier_list: orderSuppressExhaustiveModifierList
