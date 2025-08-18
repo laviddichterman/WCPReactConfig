@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { ProductInstanceActionContainer } from "./product_instance.component";
-import { IProductInstance, ProductModifierEntry, PriceDisplay, KeyValue } from "@wcp/wcpshared";
-import { HOST_API } from "../../../../../config";
-import { useSnackbar } from "notistack";
-import { useAppSelector } from "../../../../../hooks/useRedux";
 import { getProductEntryById } from "@wcp/wario-ux-shared";
+import { IProductInstance, KeyValue, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
+import { useSnackbar } from "notistack";
+import { HOST_API } from "../../../../../config";
+import { useAppSelector } from "../../../../../hooks/useRedux";
+import { ProductInstanceActionContainer } from "./product_instance.component";
 
 interface ProductInstanceAddContainerProps {
   parent_product_id: string;
@@ -15,15 +15,17 @@ interface ProductInstanceAddContainerProps {
 
 const ProductInstanceAddContainer = ({ parent_product_id, onCloseCallback }: ProductInstanceAddContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const parent_product = useAppSelector(s=>getProductEntryById(s.ws.products, parent_product_id)!.product);
+  const parent_product = useAppSelector(s => getProductEntryById(s.ws.products, parent_product_id)!.product);
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");
   const [ordinal, setOrdinal] = useState(0);
   const [modifiers, setModifiers] = useState<ProductModifierEntry[]>([]);
   const [externalIds, setExternalIds] = useState<KeyValue[]>([]);
+  // pos
   const [hideFromPos, setHideFromPos] = useState(false);
   const [posName, setPosName] = useState("");
+  const [posSkipCustomization, setPosSkipCustomization] = useState(true);
   // menu
   const [menuOrdinal, setMenuOrdinal] = useState(0);
   const [menuHide, setMenuHide] = useState(false);
@@ -35,7 +37,7 @@ const ProductInstanceAddContainer = ({ parent_product_id, onCloseCallback }: Pro
   // order
   const [orderOrdinal, setOrderOrdinal] = useState(0);
   const [orderMenuHide, setOrderMenuHide] = useState(false);
-  const [skipCustomization, setSkipCustomization] = useState(true);
+  const [orderSkipCustomization, setOrderSkipCustomization] = useState(true);
   const [orderPriceDisplay, setOrderPriceDisplay] = useState<PriceDisplay>(PriceDisplay.ALWAYS);
   const [orderAdornment, setOrderAdornment] = useState("");
   const [orderSuppressExhaustiveModifierList, setOrderSuppressExhaustiveModifierList] = useState(false);
@@ -55,8 +57,11 @@ const ProductInstanceAddContainer = ({ parent_product_id, onCloseCallback }: Pro
           modifiers,
           externalIDs: externalIds,
           displayFlags: {
-            hideFromPos,
-            posName,
+            pos: {
+              hide: hideFromPos,
+              name: posName,
+              skip_customization: posSkipCustomization
+            },
             menu: {
               ordinal: menuOrdinal,
               hide: menuHide,
@@ -68,7 +73,7 @@ const ProductInstanceAddContainer = ({ parent_product_id, onCloseCallback }: Pro
             order: {
               ordinal: orderOrdinal,
               hide: orderMenuHide,
-              skip_customization: skipCustomization,
+              skip_customization: orderSkipCustomization,
               price_display: orderPriceDisplay,
               adornment: orderAdornment,
               suppress_exhaustive_modifier_list: orderSuppressExhaustiveModifierList
@@ -115,10 +120,13 @@ const ProductInstanceAddContainer = ({ parent_product_id, onCloseCallback }: Pro
       setModifiers={setModifiers}
       externalIds={externalIds}
       setExternalIds={setExternalIds}
+      //pos
       hideFromPos={hideFromPos}
       setHideFromPos={setHideFromPos}
       posName={posName}
       setPosName={setPosName}
+      posSkipCustomization={posSkipCustomization}
+      setPosSkipCustomization={setPosSkipCustomization}
       // menu
       menuOrdinal={menuOrdinal}
       setMenuOrdinal={setMenuOrdinal}
@@ -137,8 +145,8 @@ const ProductInstanceAddContainer = ({ parent_product_id, onCloseCallback }: Pro
       setOrderOrdinal={setOrderOrdinal}
       orderMenuHide={orderMenuHide}
       setOrderMenuHide={setOrderMenuHide}
-      skipCustomization={skipCustomization}
-      setSkipCustomization={setSkipCustomization}
+      orderSkipCustomization={orderSkipCustomization}
+      setOrderSkipCustomization={setOrderSkipCustomization}
       orderPriceDisplay={orderPriceDisplay}
       setOrderPriceDisplay={setOrderPriceDisplay}
       orderAdornment={orderAdornment}

@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { ProductInstanceActionContainer } from "./product_instance.component";
-import { HOST_API } from "../../../../../config";
+import { getProductInstanceById } from "@wcp/wario-ux-shared";
 import { IProductInstance, PriceDisplay } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
-import { getProductInstanceById } from "@wcp/wario-ux-shared";
+import { HOST_API } from "../../../../../config";
 import { useAppSelector } from "../../../../../hooks/useRedux";
 import { selectParentProductEntryFromProductInstanceId } from "../../../../../redux/store";
+import { ProductInstanceActionContainer } from "./product_instance.component";
 
 interface ProductInstanceEditContainerProps {
   product_instance_id: string;
@@ -15,8 +15,8 @@ interface ProductInstanceEditContainerProps {
 }
 
 const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: ProductInstanceEditContainerProps) => {
-  const product_instance = useAppSelector(s=>getProductInstanceById(s.ws.productInstances, product_instance_id)!);
-  const parent_product = useAppSelector(s=>selectParentProductEntryFromProductInstanceId(s, product_instance_id)!.product);
+  const product_instance = useAppSelector(s => getProductInstanceById(s.ws.productInstances, product_instance_id)!);
+  const parent_product = useAppSelector(s => selectParentProductEntryFromProductInstanceId(s, product_instance_id)!.product);
   const { enqueueSnackbar } = useSnackbar();
   const [displayName, setDisplayName] = useState(product_instance.displayName);
   const [description, setDescription] = useState(product_instance.description);
@@ -24,8 +24,8 @@ const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: 
   const [ordinal, setOrdinal] = useState(product_instance.ordinal || 0);
   const [modifiers, setModifiers] = useState(product_instance.modifiers);
   const [externalIds, setExternalIds] = useState(product_instance.externalIDs);
-  const [hideFromPos, setHideFromPos] = useState(product_instance.displayFlags.hideFromPos ?? false);
-  const [posName, setPosName] = useState(product_instance.displayFlags.posName ?? "");
+  const [hideFromPos, setHideFromPos] = useState(product_instance.displayFlags.pos.hide ?? false);
+  const [posName, setPosName] = useState(product_instance.displayFlags.pos.name ?? "");
   const [menuOrdinal, setMenuOrdinal] = useState(product_instance.displayFlags.menu?.ordinal || 0);
   const [menuHide, setMenuHide] = useState(product_instance.displayFlags.menu?.hide ?? false);
   const [menuPriceDisplay, setMenuPriceDisplay] = useState(product_instance.displayFlags.menu.price_display ?? PriceDisplay.ALWAYS);
@@ -34,7 +34,8 @@ const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: 
   const [menuShowModifierOptions, setMenuShowModifierOptions] = useState(product_instance.displayFlags.menu?.show_modifier_options ?? false);
   const [orderOrdinal, setOrderOrdinal] = useState(product_instance.displayFlags.order.ordinal || 0);
   const [orderMenuHide, setOrderMenuHide] = useState(product_instance.displayFlags.order.hide ?? false);
-  const [skipCustomization, setSkipCustomization] = useState(product_instance.displayFlags.order.skip_customization ?? false);
+  const [orderSkipCustomization, setOrderSkipCustomization] = useState(product_instance.displayFlags.order.skip_customization ?? false);
+  const [posSkipCustomization, setPosSkipCustomization] = useState(product_instance.displayFlags.pos.skip_customization ?? false);
   const [orderPriceDisplay, setOrderPriceDisplay] = useState(product_instance.displayFlags.order.price_display ?? PriceDisplay.ALWAYS);
   const [orderAdornment, setOrderAdornment] = useState(product_instance.displayFlags.order.adornment ?? "");
   const [orderSuppressExhaustiveModifierList, setOrderSuppressExhaustiveModifierList] = useState(product_instance.displayFlags.order.suppress_exhaustive_modifier_list ?? false);
@@ -54,8 +55,11 @@ const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: 
           modifiers,
           externalIDs: externalIds,
           displayFlags: {
-            hideFromPos,
-            posName,
+            pos: {
+              hide: hideFromPos,
+              name: posName,
+              skip_customization: posSkipCustomization
+            },
             menu: {
               ordinal: menuOrdinal,
               hide: menuHide,
@@ -67,7 +71,7 @@ const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: 
             order: {
               ordinal: orderOrdinal,
               hide: orderMenuHide,
-              skip_customization: skipCustomization,
+              skip_customization: orderSkipCustomization,
               price_display: orderPriceDisplay,
               adornment: orderAdornment,
               suppress_exhaustive_modifier_list: orderSuppressExhaustiveModifierList
@@ -114,10 +118,13 @@ const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: 
       setModifiers={setModifiers}
       externalIds={externalIds}
       setExternalIds={setExternalIds}
+      // pos
       hideFromPos={hideFromPos}
       setHideFromPos={setHideFromPos}
       posName={posName}
       setPosName={setPosName}
+      posSkipCustomization={posSkipCustomization}
+      setPosSkipCustomization={setPosSkipCustomization}
       // menu
       menuOrdinal={menuOrdinal}
       setMenuOrdinal={setMenuOrdinal}
@@ -136,8 +143,8 @@ const ProductInstanceEditContainer = ({ product_instance_id, onCloseCallback }: 
       setOrderOrdinal={setOrderOrdinal}
       orderMenuHide={orderMenuHide}
       setOrderMenuHide={setOrderMenuHide}
-      skipCustomization={skipCustomization}
-      setSkipCustomization={setSkipCustomization}
+      orderSkipCustomization={orderSkipCustomization}
+      setOrderSkipCustomization={setOrderSkipCustomization}
       orderPriceDisplay={orderPriceDisplay}
       setOrderPriceDisplay={setOrderPriceDisplay}
       orderAdornment={orderAdornment}

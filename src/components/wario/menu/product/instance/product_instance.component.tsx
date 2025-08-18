@@ -1,25 +1,27 @@
 import { useMemo } from "react";
 
-import { Grid, FormControl, FormLabel, Card, CardContent, Checkbox, Radio, RadioGroup, FormGroup, FormControlLabel, useMediaQuery, useTheme } from '@mui/material';
+import { Card, CardContent, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Radio, RadioGroup, useMediaQuery, useTheme } from '@mui/material';
 
-import { ElementActionComponent } from "../../element.action.component";
+import { CreateIProduct, ICatalogModifiers, KeyValue, OptionPlacement, OptionQualifier, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../../../hooks/useRedux";
-import { ICatalogModifiers, CreateIProduct, ProductModifierEntry, OptionPlacement, OptionQualifier, PriceDisplay, KeyValue } from "@wcp/wcpshared";
 import { ValSetValNamed } from "../../../../../utils/common";
-import { ToggleBooleanPropertyComponent } from "../../../property-components/ToggleBooleanPropertyComponent";
+import { ExternalIdsExpansionPanelComponent } from "../../../ExternalIdsExpansionPanelComponent";
 import { IntNumericPropertyComponent } from "../../../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../../../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../../../property-components/StringPropertyComponent";
-import { ExternalIdsExpansionPanelComponent } from "../../../ExternalIdsExpansionPanelComponent";
+import { ToggleBooleanPropertyComponent } from "../../../property-components/ToggleBooleanPropertyComponent";
+import { ElementActionComponent } from "../../element.action.component";
 
 export type ProductInstanceComponentProps =
-ValSetValNamed<string, 'displayName'> & 
+  ValSetValNamed<string, 'displayName'> &
   ValSetValNamed<string, 'description'> &
   ValSetValNamed<string, 'shortcode'> &
   ValSetValNamed<number, 'ordinal'> &
   ValSetValNamed<ProductModifierEntry[], 'modifiers'> &
+  // pos
   ValSetValNamed<boolean, 'hideFromPos'> &
   ValSetValNamed<string, 'posName'> &
+  ValSetValNamed<boolean, 'posSkipCustomization'> &
   // menu
   ValSetValNamed<number, 'menuOrdinal'> &
   ValSetValNamed<boolean, 'menuHide'> &
@@ -30,7 +32,7 @@ ValSetValNamed<string, 'displayName'> &
   // order
   ValSetValNamed<number, 'orderOrdinal'> &
   ValSetValNamed<boolean, 'orderMenuHide'> &
-  ValSetValNamed<boolean, 'skipCustomization'> &
+  ValSetValNamed<boolean, 'orderSkipCustomization'> &
   ValSetValNamed<keyof typeof PriceDisplay, 'orderPriceDisplay'> &
   ValSetValNamed<string, 'orderAdornment'> &
   ValSetValNamed<boolean, 'orderSuppressExhaustiveModifierList'> &
@@ -217,15 +219,24 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
       </Grid>
       <Grid item xs={12} sm={4}>
         <ToggleBooleanPropertyComponent
-          disabled={props.isProcessing}
-          label="Skip Customization"
-          value={props.skipCustomization}
-          setValue={props.setSkipCustomization}
+          disabled={props.parent_product.modifiers.length === 0 || props.isProcessing}
+          label="Skip Customization (Order)"
+          value={props.parent_product.modifiers.length === 0 || props.orderSkipCustomization}
+          setValue={props.setOrderSkipCustomization}
           labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
       {/* universal break */}
-      <Grid item xs={12} sm={4}>
+      <Grid item container xs={12} sm={6}>
+        <StringEnumPropertyComponent
+          disabled={props.isProcessing}
+          label="Order Menu Price Display"
+          value={props.orderPriceDisplay}
+          setValue={props.setOrderPriceDisplay}
+          options={Object.keys(PriceDisplay)}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Hide From POS"
@@ -234,13 +245,13 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
           labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
-      <Grid item container xs={12} sm={8}>
-        <StringEnumPropertyComponent
-          disabled={props.isProcessing}
-          label="Order Menu Price Display"
-          value={props.orderPriceDisplay}
-          setValue={props.setOrderPriceDisplay}
-          options={Object.keys(PriceDisplay)}
+      <Grid item xs={12} sm={3}>
+        <ToggleBooleanPropertyComponent
+          disabled={props.parent_product.modifiers.length === 0 || props.isProcessing}
+          label="Skip Customization (POS)"
+          value={props.parent_product.modifiers.length === 0 || props.posSkipCustomization}
+          setValue={props.setPosSkipCustomization}
+          labelPlacement={useToggleEndLabel ? "end" : "top"}
         />
       </Grid>
       {/* universal break */}
