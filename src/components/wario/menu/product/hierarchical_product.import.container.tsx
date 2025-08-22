@@ -1,19 +1,19 @@
-import { useState, Dispatch, SetStateAction } from "react";
-import { Grid, TextField, Autocomplete } from '@mui/material';
+import { Autocomplete, Grid, TextField } from '@mui/material';
+import { Dispatch, SetStateAction, useState } from "react";
 
-import { ParseResult, unparse } from "papaparse";
+import { useAuth0 } from '@auth0/auth0-react';
 import { CreateIProduct, CreateIProductInstance, IProduct, IProductInstance, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey, UpdateIProduct, UpdateIProductUpdateIProductInstance, UpsertProductBatch } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
-import { useAuth0 } from '@auth0/auth0-react';
+import { ParseResult, unparse } from "papaparse";
 
-import { ElementActionComponent } from "../element.action.component";
+import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
-import { HOST_API } from "../../../../config";
 import { ValSetValNamed } from '../../../../utils/common';
-import ProductModifierComponent from "./ProductModifierComponent";
 import GenericCsvImportComponent from "../../generic_csv_import.component";
 import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
+import { ElementActionComponent } from "../element.action.component";
+import ProductModifierComponent from "./ProductModifierComponent";
 
 interface CSVProduct {
   ID: string;
@@ -322,7 +322,7 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
   const { ID, Description, DisplayName, PosName, Price, Shortname, Disabled, ...others } = prod;
   const externalIds: KeyValue[] = Object.entries(others).filter(([_, value]) => value).map(([key, value]) => ({ key, value }));
   const disabledValue = (/true/i).test(Disabled) ? { start: 1, end: 0 } : null;
-  console.log( { disabledValue, Disabled } );
+  console.log({ disabledValue, Disabled });
   if (ID) {
     const [productId, productInstanceId] = ID.split('/');
     return {
@@ -362,8 +362,11 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
         shortcode: Shortname,
         modifiers: [],
         displayFlags: {
-          hideFromPos: false,
-          posName: PosName,
+          pos: {
+            hide: false,
+            name: PosName,
+            skip_customization: true,
+          },
           menu: {
             adornment: "",
             hide: false,
@@ -414,8 +417,11 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
       description: Description || "",
       externalIDs: externalIds,
       displayFlags: {
-        hideFromPos: false,
-        posName: PosName,
+        pos: {
+          hide: false,
+          name: PosName,
+          skip_customization: true,
+        },
         menu: {
           adornment: "",
           hide: false,
@@ -479,10 +485,10 @@ const ResponseBodyToCSVProducts = (responseBody: BatchUpsertProductResponse): CS
   return responseBody.flatMap((r) => r.instances.map((i) => ({
     ID: `${r.product.id}/${i.id}`,
     Disabled: r.product.disabled && r.product.disabled.start > r.product.disabled.end ? "TRUE" : "FALSE",
-    Categories: i.externalIDs.filter(x=>x.key === 'Categories').map(x=>x.value).join(','),
+    Categories: i.externalIDs.filter(x => x.key === 'Categories').map(x => x.value).join(','),
     DisplayName: i.displayName,
     Description: i.description,
-    PosName: i.displayFlags.posName,
+    PosName: i.displayFlags.pos.name,
     Shortname: i.shortcode,
     Price: (r.product.price.amount / 100).toFixed(2),
     ...i.externalIDs.reduce((acc, curr) => (curr.key.startsWith("SQID") ? acc : { ...acc, [curr.key]: curr.value }), {})

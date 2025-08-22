@@ -19,8 +19,11 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   const [ordinal, setOrdinal] = useState(0);
   const [piModifiers, setPiModifiers] = useState<ProductModifierEntry[]>([]);
   const [piExternalIds, setPiExternalIds] = useState<KeyValue[]>([]);
+
+  //pos
   const [hideFromPos, setHideFromPos] = useState(false);
   const [posName, setPosName] = useState("");
+  const [posSkipCustomization, setPosSkipCustomization] = useState(true);
 
   // menu
   const [menuOrdinal, setMenuOrdinal] = useState(0);
@@ -33,7 +36,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
   // order
   const [orderOrdinal, setOrderOrdinal] = useState(0);
   const [orderMenuHide, setOrderMenuHide] = useState(false);
-  const [skipCustomization, setSkipCustomization] = useState(true);
+  const [orderSkipCustomization, setOrderSkipCustomization] = useState(true);
   const [orderPriceDisplay, setOrderPriceDisplay] = useState<PriceDisplay>(PriceDisplay.ALWAYS);
   const [orderAdornment, setOrderAdornment] = useState("");
   const [orderSuppressExhaustiveModifierList, setOrderSuppressExhaustiveModifierList] = useState(false);
@@ -73,8 +76,11 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
             modifiers: piModifiers,
             externalIDs: piExternalIds,
             displayFlags: {
-              hideFromPos,
-              posName,
+              pos: {
+                hide: hideFromPos,
+                name: posName,
+                skip_customization: modifiers.length === 0 || posSkipCustomization
+              },
               menu: {
                 ordinal: menuOrdinal,
                 hide: menuHide,
@@ -86,7 +92,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
               order: {
                 ordinal: orderOrdinal,
                 hide: orderMenuHide,
-                skip_customization: skipCustomization,
+                skip_customization: modifiers.length === 0 || orderSkipCustomization,
                 price_display: orderPriceDisplay,
                 adornment: orderAdornment,
                 suppress_exhaustive_modifier_list: orderSuppressExhaustiveModifierList
@@ -219,11 +225,13 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
 
           modifiers={piModifiers}
           setModifiers={setPiModifiers}
-
+          // pos
           hideFromPos={hideFromPos}
           setHideFromPos={setHideFromPos}
           posName={posName}
           setPosName={setPosName}
+          posSkipCustomization={posSkipCustomization}
+          setPosSkipCustomization={setPosSkipCustomization}
           // menu
           menuOrdinal={menuOrdinal}
           setMenuOrdinal={setMenuOrdinal}
@@ -242,8 +250,8 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
           setOrderOrdinal={setOrderOrdinal}
           orderMenuHide={orderMenuHide}
           setOrderMenuHide={setOrderMenuHide}
-          skipCustomization={skipCustomization}
-          setSkipCustomization={setSkipCustomization}
+          orderSkipCustomization={orderSkipCustomization}
+          setOrderSkipCustomization={setOrderSkipCustomization}
           orderPriceDisplay={orderPriceDisplay}
           setOrderPriceDisplay={setOrderPriceDisplay}
           orderAdornment={orderAdornment}

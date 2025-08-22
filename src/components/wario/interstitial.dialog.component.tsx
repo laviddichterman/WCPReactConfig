@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import { Avatar, List, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
 import { DialogContainer, IDialogContainer } from '@wcp/wario-ux-shared';
 import React from 'react';
 
@@ -43,14 +43,14 @@ export default function InterstitialDialog(props: InterstitialDialogProps) {
         innerComponent={(
           <List>
             {options.map((option) => (
-              <ListItem button onClick={(e) => handleListItemClick(e, option.cb)} key={option.title}>
+              <ListItemButton onClick={(e) => handleListItemClick(e, option.cb)} key={option.title}>
                 <ListItemAvatar>
                   <Avatar>
                     <AddIcon />
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={option.title} />
-              </ListItem>
+              </ListItemButton>
             ))}
           </List>
         )}

@@ -128,8 +128,11 @@ const ProductImportContainer = ({ onCloseCallback }: { onCloseCallback: VoidFunc
           description: Description || "",
           externalIDs: externalIds,
           displayFlags: {
-            hideFromPos: false,
-            posName: "",
+            pos: {
+              hide: false,
+              name: "",
+              skip_customization: true
+            },
             menu: {
               adornment: "",
               hide: false,

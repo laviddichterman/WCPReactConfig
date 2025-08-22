@@ -48,8 +48,9 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
   const [piOrdinals, setPiOrdinal] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].ordinal || 0))));
   const [piModifierss, setPiModifiers] = useIndexedState(useState(productEntry.instances.map(pi => allProductInstances[pi].modifiers)));
   const [piExteralIdss, setPiExternalIds] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].externalIDs ?? {}))));
-  const [piHideFromPoses, setPiHideFromPos] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.hideFromPos ?? false))));
-  const [piPosNames, setPiPosNames] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.posName ?? ""))));
+  const [piHideFromPoses, setPiHideFromPos] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.pos.hide ?? false))));
+  const [piPosNames, setPiPosNames] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.pos.name ?? ""))));
+  const [piPosSkipCustomizations, setPiPosSkipCustomization] = useIndexedState(useState(productEntry.instances.map(pi => allProductInstances[pi].displayFlags.pos.skip_customization ?? false)));
   const [piMenuOrdinals, setPiMenuOrdinal] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.menu?.ordinal || 0))));
   const [piMenuHides, setPiMenuHide] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.menu?.hide ?? false))));
   const [piMenuPriceDisplays, setPiMenuPriceDisplay] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.menu?.price_display ?? "IF_COMPLETE"))));
@@ -58,7 +59,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
   const [piMenuShowModifierOptionss, setPiMenuShowModifierOptions] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.menu.show_modifier_options ?? false))));
   const [piOrderOrdinals, setPiOrderOrdinal] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.order.ordinal || 0))));
   const [piOrderMenuHides, setPiOrderMenuHide] = useIndexedState(useState(productEntry.instances.map(pi => (allProductInstances[pi].displayFlags.order.hide ?? false))));
-  const [piSkipCustomizations, setPiSkipCustomization] = useIndexedState(useState(productEntry.instances.map(pi => allProductInstances[pi].displayFlags.order.skip_customization ?? false)));
+  const [piOrderSkipCustomizations, setPiOrderSkipCustomization] = useIndexedState(useState(productEntry.instances.map(pi => allProductInstances[pi].displayFlags.order.skip_customization ?? false)));
   const [piOrderPriceDisplays, setPiOrderPriceDisplay] = useIndexedState(useState(productEntry.instances.map(pi => allProductInstances[pi].displayFlags.order.price_display ?? "IF_COMPLETE")));
   const [piOrderAdornments, setPiOrderAdornment] = useIndexedState(useState(productEntry.instances.map(pi => allProductInstances[pi].displayFlags.order.adornment ?? "")));
   const [piOrderSuppressExhaustiveModifierLists, setPiOrderSuppressExhaustiveModifierList] = useIndexedState(useState(productEntry.instances.map(pi => allProductInstances[pi].displayFlags.order.suppress_exhaustive_modifier_list ?? false)));
@@ -139,11 +140,13 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
             setExternalIds={setPiExternalIds(i)}
             modifiers={piModifierss[i]}
             setModifiers={setPiModifiers(i)}
-
+            //pos
             hideFromPos={piHideFromPoses[i]}
             setHideFromPos={setPiHideFromPos(i)}
             posName={piPosNames[i]}
             setPosName={setPiPosNames(i)}
+            posSkipCustomization={piPosSkipCustomizations[i]}
+            setPosSkipCustomization={setPiPosSkipCustomization(i)}
             // menu
             menuOrdinal={piMenuOrdinals[i]}
             setMenuOrdinal={setPiMenuOrdinal(i)}
@@ -162,8 +165,8 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
             setOrderOrdinal={setPiOrderOrdinal(i)}
             orderMenuHide={piOrderMenuHides[i]}
             setOrderMenuHide={setPiOrderMenuHide(i)}
-            skipCustomization={piSkipCustomizations[i]}
-            setSkipCustomization={setPiSkipCustomization(i)}
+            orderSkipCustomization={piOrderSkipCustomizations[i]}
+            setOrderSkipCustomization={setPiOrderSkipCustomization(i)}
             orderPriceDisplay={piOrderPriceDisplays[i]}
             setOrderPriceDisplay={setPiOrderPriceDisplay(i)}
             orderAdornment={piOrderAdornments[i]}
@@ -173,7 +176,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
           />
         </Grid>
       </AccordionDetails>
-    </Accordion>), [isProcessing, copyPIFlags, indexOfBase, setIndexOfBase, expandedPanels, piDescriptions, piDisplayNames, piExteralIdss, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piSkipCustomizations, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiExternalIds, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiSkipCustomization, bakeDifferentialMax, bakeMax, disabled, externalIds, flavorMax, is3p, modifiers, orderGuideSuggestionFunctions, orderGuideWarningFunctions, parentCategories, price, printerGroup, serviceDisable, showNameOfBaseProduct, singularNoun, piHideFromPoses, setPiHideFromPos, piPosNames, setPiPosNames, availability, timing])
+    </Accordion>), [isProcessing, copyPIFlags, indexOfBase, setIndexOfBase, expandedPanels, piDescriptions, piDisplayNames, piExteralIdss, piMenuAdornments, piMenuHides, piMenuOrdinals, piMenuPriceDisplays, piMenuShowModifierOptionss, piMenuSuppressExhaustiveModifierLists, piModifierss, piOrderAdornments, piOrderMenuHides, piOrderOrdinals, piOrderPriceDisplays, piOrderSuppressExhaustiveModifierLists, piOrdinals, piShortcodes, piOrderSkipCustomizations, setCopyPIFlag, setExpandedPanel, setPiDescription, setPiDisplayName, setPiExternalIds, setPiMenuAdornment, setPiMenuHide, setPiMenuOrdinal, setPiMenuPriceDisplay, setPiMenuShowModifierOptions, setPiMenuSuppressExhaustiveModifierList, setPiModifiers, setPiOrderAdornment, setPiOrderMenuHide, setPiOrderOrdinal, setPiOrderPriceDisplay, setPiOrderSuppressExhaustiveModifierList, setPiOrdinal, setPiShortcode, setPiOrderSkipCustomization, bakeDifferentialMax, bakeMax, disabled, externalIds, flavorMax, is3p, modifiers, orderGuideSuggestionFunctions, orderGuideWarningFunctions, parentCategories, price, printerGroup, serviceDisable, showNameOfBaseProduct, singularNoun, piHideFromPoses, setPiHideFromPos, piPosNames, setPiPosNames, availability, timing, piPosSkipCustomizations, setPiPosSkipCustomization])
 
   const getUncommittedProductInstanceForIndex = (i: number) => ({
     displayName: piDisplayNames[i],
@@ -183,8 +186,11 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
     modifiers: piModifierss[i],
     externalIDs: piExteralIdss[i],
     displayFlags: {
-      hideFromPos: piHideFromPoses[i],
-      posName: piPosNames[i],
+      pos: {
+        name: piPosNames[i],
+        hide: piHideFromPoses[i],
+        skip_customization: modifiers.length === 0 || piPosSkipCustomizations[i],
+      },
       menu: {
         ordinal: piMenuOrdinals[i],
         hide: piMenuHides[i],
@@ -196,7 +202,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
       order: {
         ordinal: piOrderOrdinals[i],
         hide: piOrderMenuHides[i],
-        skip_customization: piSkipCustomizations[i],
+        skip_customization: modifiers.length === 0 || piOrderSkipCustomizations[i],
         price_display: piOrderPriceDisplays[i],
         adornment: piOrderAdornments[i],
         suppress_exhaustive_modifier_list: piOrderSuppressExhaustiveModifierLists[i]
