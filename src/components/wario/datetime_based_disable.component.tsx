@@ -1,18 +1,21 @@
-import { endOfDay, getTime } from 'date-fns'
+import type { IWInterval } from "@wcp/wcpshared";
+import type { ValSetVal } from "src/utils/common";
+
+import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
+import { endOfDay, getTime } from 'date-fns';
+
 import { Grid } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { IWInterval } from "@wcp/wcpshared";
+
 import { useAppSelector } from "../../hooks/useRedux";
-import { ValSetVal } from "src/utils/common";
 import { ToggleBooleanPropertyComponent } from "./property-components/ToggleBooleanPropertyComponent";
-import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
 
 export type DatetimeBasedDisableComponentProps = {
   disabled: boolean;
 } & ValSetVal<IWInterval | null>;
 
-export const IsDisableValueValid = (value: IWInterval | null) => 
-  value === null || (value.start === 1 && value.end === 0) || (value.start <= value.end); 
+export const IsDisableValueValid = (value: IWInterval | null) =>
+  value === null || (value.start === 1 && value.end === 0) || (value.start <= value.end);
 
 const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps) => {
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
@@ -28,7 +31,7 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <ToggleBooleanPropertyComponent
           disabled={props.disabled}
           label="Enabled"
@@ -38,13 +41,13 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
         />
       </Grid>
       {props.value !== null &&
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ToggleBooleanPropertyComponent
             disabled={props.disabled}
             label="Blanket Disable"
             value={props.value.start > props.value.end}
-            setValue={(isBlanket) => props.setValue(isBlanket ? 
-              { start: 1, end: 0 } : 
+            setValue={(isBlanket) => props.setValue(isBlanket ?
+              { start: 1, end: 0 } :
               { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) })}
             labelPlacement='end'
           />
@@ -52,9 +55,9 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
       }
       {(props.value !== null && (props.value.start <= props.value.end)) &&
         <LocalizationProvider dateAdapter={DateAdapter}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <DateTimePicker
-              label={"Disabled Start"}
+              label="Disabled Start"
               disablePast
               value={props.value.start}
               onChange={(date) => date !== null && updateDisabledStart(date)}
@@ -62,9 +65,9 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
               slotProps={{ textField: { fullWidth: true } }}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <DateTimePicker
-              label={"Disabled End"}
+              label="Disabled End"
               disablePast
               minDateTime={props.value.start}
               value={props.value.end}

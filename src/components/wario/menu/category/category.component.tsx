@@ -39,7 +39,11 @@ const CategoryComponent = (props: CategoryComponentProps) => {
       confirmText={props.confirmText}
       body={
         <>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Category Name"
@@ -47,7 +51,11 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               setValue={props.setName}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
             <Autocomplete
               options={props.categoryIds}
               value={props.parent}
@@ -59,7 +67,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               )}
             />
           </Grid>
-          <Grid item xs={9}>
+          <Grid size={9}>
             <TextField
               multiline
               fullWidth
@@ -70,7 +78,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               onChange={(e) => props.setDescription(e.target.value)}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid size={3}>
             <IntNumericPropertyComponent
               disabled={props.isProcessing}
               label="Ordinal"
@@ -78,7 +86,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               setValue={props.setOrdinal}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TextField
               multiline
               fullWidth
@@ -89,7 +97,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               onChange={(e) => props.setSubheading(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TextField
               multiline
               rows={props.footnotes ? 4 : 1}
@@ -100,7 +108,11 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               onChange={(e) => props.setFootnotes(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
           <StringPropertyComponent
               disabled={props.isProcessing}
               label="Call Line Name"
@@ -108,7 +120,11 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               setValue={props.setCallLineName}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
             <Autocomplete
               multiple
               fullWidth
@@ -123,7 +139,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />
           </Grid>
-          <Grid container item xs={6}>
+          <Grid container size={6}>
             <StringEnumPropertyComponent
               disabled={props.isProcessing}
               label="Call Line Display"
@@ -132,7 +148,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               options={Object.keys(CALL_LINE_DISPLAY)}
             />
           </Grid>
-          <Grid container item xs={6}>
+          <Grid container size={6}>
             <StringEnumPropertyComponent
               disabled={props.isProcessing}
               label="Nested Display"

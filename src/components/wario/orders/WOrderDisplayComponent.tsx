@@ -17,16 +17,18 @@ export const WOrderDisplayComponent = ({ orderId, callConfirm, onCloseCallback }
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const order = useAppSelector(s => getWOrderInstanceById(s.orders.orders, orderId))!;
 
-  return <ElementActionComponent
-    onCloseCallback={onCloseCallback}
-    onConfirmClick={() => callConfirm(order.id)}
-    isProcessing={orderSliceState === 'PENDING'}
-    disableConfirmOn={order.status !== WOrderStatus.OPEN}
-    confirmText={"Confirm!"}
-    body={<Grid item xs={12}>
-      <WOrderServiceInfoTableContainer order={order} />
-      <WOrderCheckoutCartContainer order={order} hideProductDescriptions />
-    </Grid>
-    }
-  />
+  return (
+    <ElementActionComponent
+      onCloseCallback={onCloseCallback}
+      onConfirmClick={() => callConfirm(order.id)}
+      isProcessing={orderSliceState === 'PENDING'}
+      disableConfirmOn={order.status !== WOrderStatus.OPEN}
+      confirmText={"Confirm!"}
+      body={<Grid size={12}>
+        <WOrderServiceInfoTableContainer order={order} />
+        <WOrderCheckoutCartContainer order={order} hideProductDescriptions />
+      </Grid>
+      }
+    />
+  );
 }

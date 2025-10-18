@@ -26,37 +26,39 @@ const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
     }
   }
 
-  return (<ElementActionComponent
-    onCloseCallback={props.onCloseCallback}
-    onConfirmClick={submitToWario}
-    isProcessing={orderSliceState === 'PENDING'}
-    disableConfirmOn={orderSliceState === 'PENDING' || !confirmCheckbox}
-    confirmText={'Process Order Cancelation'}
-    body={<>
-      <Grid item xs={12}>
-        <TextField
-          multiline
-          fullWidth
-          minRows={cancelationReason.split('\n').length + 1}
-          label="CUSTOMER FACING (they will read this) cancelation reason (optional)"
-          type="text"
-          value={cancelationReason}
-          onChange={(e) => setCancelationReason(e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <ToggleBooleanPropertyComponent
-          disabled={orderSliceState === 'PENDING'}
-          label="Cancellation is permanent, confirm this is understood before proceeding"
-          setValue={setConfirmCheckbox}
-          value={confirmCheckbox}
-          labelPlacement={"end"}
-        />
+  return (
+    <ElementActionComponent
+      onCloseCallback={props.onCloseCallback}
+      onConfirmClick={submitToWario}
+      isProcessing={orderSliceState === 'PENDING'}
+      disableConfirmOn={orderSliceState === 'PENDING' || !confirmCheckbox}
+      confirmText={'Process Order Cancelation'}
+      body={<>
+        <Grid size={12}>
+          <TextField
+            multiline
+            fullWidth
+            minRows={cancelationReason.split('\n').length + 1}
+            label="CUSTOMER FACING (they will read this) cancelation reason (optional)"
+            type="text"
+            value={cancelationReason}
+            onChange={(e) => setCancelationReason(e.target.value)}
+          />
+        </Grid>
+        <Grid size={12}>
+          <ToggleBooleanPropertyComponent
+            disabled={orderSliceState === 'PENDING'}
+            label="Cancellation is permanent, confirm this is understood before proceeding"
+            setValue={setConfirmCheckbox}
+            value={confirmCheckbox}
+            labelPlacement={"end"}
+          />
 
-      </Grid>
-    </>
-    }
-  />)
+        </Grid>
+      </>
+      }
+    />
+  );
 };
 
 export default WOrderCancelComponent;

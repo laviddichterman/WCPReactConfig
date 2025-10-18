@@ -27,7 +27,7 @@ const ProductInstanceFunctionComponent = ({
     disableConfirmOn={functionName.length === 0 || expression === null || isProcessing}
     body={
       <>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TextField
             label="Function Name"
             type="text"
@@ -37,7 +37,7 @@ const ProductInstanceFunctionComponent = ({
             onChange={(e) => setFunctionName(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <AbstractExpressionFunctionalContainer
             value={expression}
             setValue={setExpression}

@@ -30,7 +30,7 @@ export default function SettingLayout() {
           const isVertical = layout === 'vertical';
 
           return (
-            <Grid key={layout} item xs={6}>
+            <Grid key={layout} size={6}>
               <BoxStyle
                 sx={{
                   ...(isSelected && {

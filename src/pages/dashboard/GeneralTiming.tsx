@@ -22,10 +22,18 @@ export const GeneralTiming = () => {
         {!FULFILLMENTS || Object.keys(FULFILLMENTS).length === 0 ? "Please add some fulfillment configuration first" :
           (
             <Grid container spacing={3}>
-              <Grid item xs={12} md={12}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 12
+                }}>
                 <LeadTimesComp />
               </Grid>
-              <Grid item xs={12} md={12}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 12
+                }}>
                 <BlockOffComp />
               </Grid>
             </Grid>)}

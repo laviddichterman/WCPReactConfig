@@ -1,7 +1,10 @@
-import { m } from 'framer-motion';
-import { forwardRef } from 'react';
 // @mui
-import { Box, IconButton, IconButtonProps } from '@mui/material';
+import type { IconButtonProps } from '@mui/material';
+
+import { m } from 'motion/react';
+import { forwardRef } from 'react';
+
+import { Box, IconButton } from '@mui/material';
 
 // ----------------------------------------------------------------------
 

@@ -156,7 +156,7 @@ export const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>
         <CardContent>
           {props.canAdd &&
             <Grid container spacing={3} justifyContent="center">
-              <Grid item xs={4}>
+              <Grid size={4}>
                 <TextField
                   label="Key"
                   type="text"
@@ -165,7 +165,7 @@ export const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>
                   value={newkey}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <TextField
                   fullWidth
                   label="Value"
@@ -175,7 +175,7 @@ export const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>
                   onChange={e => setNewvalue(e.target.value)}
                 />
               </Grid>
-              <Grid item xs={2}>
+              <Grid size={2}>
                 <Button disabled={props.isProcessing || newkey === "" || newvalue === null} onClick={onAddNewKeyValuePair}>Add</Button>
               </Grid>
             </Grid>

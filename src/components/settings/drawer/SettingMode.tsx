@@ -31,7 +31,7 @@ export default function SettingMode() {
           const isSelected = themeMode === mode;
 
           return (
-            <Grid key={mode} item xs={6}>
+            <Grid key={mode} size={6}>
               <BoxStyle
                 sx={{
                   bgcolor: mode === 'light' ? 'common.white' : 'grey.800',

@@ -28,7 +28,11 @@ const PrinterGroupComponent = (props: PrinterGroupComponentProps) => {
       confirmText={props.confirmText}
       body={
         <>
-          <Grid item xs={12} sm={4}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 4
+            }}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Name"
@@ -36,7 +40,11 @@ const PrinterGroupComponent = (props: PrinterGroupComponentProps) => {
               setValue={props.setName}
             />
           </Grid>
-          <Grid item xs={6} sm={4}>
+          <Grid
+            size={{
+              xs: 6,
+              sm: 4
+            }}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Single Item Per Ticket"
@@ -45,7 +53,11 @@ const PrinterGroupComponent = (props: PrinterGroupComponentProps) => {
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={6} sm={4}>
+          <Grid
+            size={{
+              xs: 6,
+              sm: 4
+            }}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Is Expo Printer"
@@ -54,7 +66,7 @@ const PrinterGroupComponent = (props: PrinterGroupComponentProps) => {
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ExternalIdsExpansionPanelComponent
               title='External IDs'
               disabled={props.isProcessing}

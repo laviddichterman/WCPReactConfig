@@ -70,10 +70,10 @@ const ModifierTypeCopyContainer = ({ modifierTypeId, onCloseCallback }: Modifier
     <Accordion sx={{ p: 2 }} key={i} expanded={expandedPanels[i] && copyOpFlags[i]} onChange={(e, ex) => setExpandedPanel(i)(ex)}  >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Grid container>
-          <Grid item xs>
+          <Grid size="grow">
             <Typography sx={{ ml: 4 }}>{opDisplayName[i]}</Typography>
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={2}>
             <FormControlLabel sx={{ float: "right" }} control={
               <Switch
                 checked={copyOpFlags[i]}

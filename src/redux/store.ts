@@ -1,7 +1,10 @@
-import { EventInput } from '@fullcalendar/core';
+import type { EventInput } from '@fullcalendar/core';
+import type { CoreCartEntry, WCPProductV2Dto, WOrderInstance } from '@wcp/wcpshared';
+
 import { configureStore, createSelector } from '@reduxjs/toolkit';
 import { getCategoryEntryById, getFulfillmentById, getProductEntries, getProductInstanceById, lruMemoizeOptionsWithSize, SelectBaseProductNameByProductId, SelectCatalogSelectors, selectGroupedAndOrderedCart, SelectParentProductEntryFromProductInstanceId, weakMapCreateSelector } from '@wcp/wario-ux-shared';
-import { CoreCartEntry, CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WCPProductV2Dto, WDateUtils, WOrderInstance, WOrderStatus } from '@wcp/wcpshared';
+import { CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WDateUtils, WOrderStatus } from '@wcp/wcpshared';
+
 import { rootReducer } from './rootReducer';
 import { getWOrderInstances } from './slices/OrdersSlice';
 //import { SocketAuthMiddleware } from './slices/SocketAuthMiddleware';
@@ -13,9 +16,7 @@ export type AppDispatch = typeof store.dispatch;
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat([SocketIoMiddleware /*, SocketAuthMiddleware*/])
-  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([SocketIoMiddleware /*, SocketAuthMiddleware*/]),
 });
 
 export const selectCoreCartWProduct = weakMapCreateSelector(

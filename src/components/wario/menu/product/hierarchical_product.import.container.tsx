@@ -55,7 +55,7 @@ const HierarchicalProductImportComponent = (props: HierarchicalProductImportComp
       {...props}
       body={
         <>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Autocomplete
               multiple
               filterSelectedOptions
@@ -69,7 +69,7 @@ const HierarchicalProductImportComponent = (props: HierarchicalProductImportComp
               )}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Autocomplete
               filterSelectedOptions
               options={Object.keys(printerGroups)}
@@ -80,7 +80,7 @@ const HierarchicalProductImportComponent = (props: HierarchicalProductImportComp
               renderInput={(params) => <TextField {...params} label="Printer Group" />}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Create Missing Categories"
@@ -89,7 +89,7 @@ const HierarchicalProductImportComponent = (props: HierarchicalProductImportComp
               labelPlacement={'end'}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Download CSV"
@@ -98,10 +98,10 @@ const HierarchicalProductImportComponent = (props: HierarchicalProductImportComp
               labelPlacement={'end'}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={props.setModifiers} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <GenericCsvImportComponent onAccepted={(data: ParseResult<CSVProduct>) => props.setFileData(data.data)} />
           </Grid>
         </>}

@@ -54,7 +54,7 @@ const ModifierOptionEnableContainer = ({ modifier_option_id, onCloseCallback }: 
       disableConfirmOn={isProcessing}
       confirmText="Confirm"
       body={
-        <Grid item xs={12}>
+        <Grid size={12}>
           Are you sure you'd like to enable {modifier_option.displayName}?
         </Grid>
       }

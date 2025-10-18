@@ -47,7 +47,11 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
       confirmText={'Update'}
       body={
         <>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
             <LocalizationProvider dateAdapter={DateAdapter}>
               <StaticDatePicker
                 displayStaticWrapperAs="desktop"
@@ -63,7 +67,11 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
                 }} />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
             <Autocomplete
               sx={{ m: 'auto', maxWidth: 200 }}
               disableClearable

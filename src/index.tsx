@@ -1,13 +1,10 @@
 // i18n
 import './locales/i18n';
-
 // highlight
 import './utils/highlight';
-
 // slick-carousel
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
-
 // lazy image
 import 'react-lazy-load-image-component/src/effects/black-and-white.css';
 import 'react-lazy-load-image-component/src/effects/blur.css';
@@ -18,16 +15,15 @@ import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
-// redux
-import { store } from './redux/store';
-// contexts
-import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
-import { SettingsProvider } from './contexts/SettingsContext';
 
 //
 import App from './App';
-
 import { AUTH0_API } from './config';
+import { store } from './redux/store';
+// redux
+import { SettingsProvider } from './contexts/SettingsContext';
+// contexts
+import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
 
 const Auth0ProviderWithRedirectCallback = ({ children }: { children?: React.ReactNode; }) => {
   const navigate = useNavigate();

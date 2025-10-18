@@ -27,13 +27,17 @@ export default function GeneralCatalog() {
       <CategoryDialoguesContainer />
       <ModifierDialoguesContainer />
       <Container maxWidth={themeStretch ? false : 'xl'}>
-        <Grid item xs={12} md={12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 12
+          }}>
           <Grid container justifyContent="center" spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <CatalogTableContainer />
             </Grid>
             {orphanedProductIds.length > 0 && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <ProductTableContainer
                   disableToolbar={false}
                   title={"Products without a category"}
@@ -43,13 +47,13 @@ export default function GeneralCatalog() {
                 />
               </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ModifierTypeTableContainer />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ProductInstanceFunctionTableContainer />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <PrinterGroupTableContainer />
             </Grid>
           </Grid>

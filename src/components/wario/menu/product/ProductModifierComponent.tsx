@@ -29,7 +29,7 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
 
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Autocomplete
           multiple
           disabled={props.isProcessing}
@@ -43,12 +43,17 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
         />
       </Grid>
       {props.modifiers.map((modifier, idx) => (
-        <Grid item xs={12} md={props.modifiers.length - 1 === idx && props.modifiers.length % 2 === 1 ? 12 : 6} key={idx}>
+        <Grid
+          key={idx}
+          size={{
+            xs: 12,
+            md: props.modifiers.length - 1 === idx && props.modifiers.length % 2 === 1 ? 12 : 6
+          }}>
           <Card>
             <CardHeader title={`Modifier Details: ${catalog.modifiers[modifier.mtid].modifierType.name}`} />
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Autocomplete
                     fullWidth
                     disabled={props.isProcessing}
@@ -61,7 +66,7 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
                     renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Autocomplete
                     fullWidth
                     multiple

@@ -1,13 +1,15 @@
+import type { SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wario-shared';
+import type { QrcodeErrorCallback, QrcodeSuccessCallback } from 'html5-qrcode/core';
+
+import { CURRENCY, MoneyToDisplayString } from '@wcp/wario-shared';
 import { DialogContainer } from "@wcp/wario-ux-shared";
-import { CURRENCY, MoneyToDisplayString, SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wcpshared';
+import { Html5Qrcode, Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
+import { uniqueId } from 'lodash';
 import { useSnackbar } from 'notistack';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 import { ErrorOutline, PhotoCamera } from "@mui/icons-material";
 import { Button, Card, CardHeader, Divider, Grid, IconButton, List, ListItem, Typography } from '@mui/material';
-import { Html5Qrcode, Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
-import { QrcodeErrorCallback, QrcodeSuccessCallback } from 'html5-qrcode/core';
-import { uniqueId } from 'lodash';
-import { useEffect, useLayoutEffect, useState } from 'react';
 
 import { HOST_API } from "../../config";
 import { IMoneyPropertyComponent } from './property-components/IMoneyPropertyComponent';
@@ -144,7 +146,7 @@ const StoreCreditValidateAndSpendComponent = () => {
   };
   const scanHTML = hasCamera ? (<>
     <DialogContainer
-      title={"Scan Store Credit Code"}
+      title="Scan Store Credit Code"
       onClose={() => {
         setScanCode(false);
       }}
@@ -153,7 +155,11 @@ const StoreCreditValidateAndSpendComponent = () => {
         <QrCodeScanner show={scanCode} onSuccess={onScanned} onFailure={onScannedFail} />
       }
     />
-    <Grid item xs={2} md={1}>
+    <Grid
+      size={{
+        xs: 2,
+        md: 1
+      }}>
       <IconButton
         color="primary"
         component="span"
@@ -166,10 +172,14 @@ const StoreCreditValidateAndSpendComponent = () => {
 
   return (
     <Card>
-      <CardHeader title={"Redeem Store Credit"} subheader={"Tool to debit store credit with instructions"} />
+      <CardHeader title="Redeem Store Credit" subheader="Tool to debit store credit with instructions" />
       <Divider sx={{ my: 2 }} />
       <Grid container padding={2} spacing={2} justifyContent="center" alignItems="center">
-        <Grid item xs={hasCamera ? 10 : 12} md={hasCamera ? 8 : 9}>
+        <Grid
+          size={{
+            xs: hasCamera ? 10 : 12,
+            md: hasCamera ? 8 : 9
+          }}>
           <StringPropertyComponent
             disabled={isProcessing || (validationResponse !== null && validationResponse.valid)}
             label="Credit Code"
@@ -178,7 +188,11 @@ const StoreCreditValidateAndSpendComponent = () => {
           />
         </Grid>
         {scanHTML}
-        <Grid item xs={12} md={3}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 3
+          }}>
           {validationResponse !== null ? (
             <Button fullWidth onClick={clearLookup} disabled={isProcessing}>
               Clear
@@ -192,7 +206,7 @@ const StoreCreditValidateAndSpendComponent = () => {
 
         {validationResponse !== null ? (
           !validationResponse.valid ?
-            (<Grid item xs={12}>
+            (<Grid size={12}>
               <ErrorOutline />
               FAILED TO FIND
               <ErrorOutline />
@@ -200,7 +214,7 @@ const StoreCreditValidateAndSpendComponent = () => {
               This generally means the code was mis-entered, has expired, or was already redeemed.
             </Grid>) : (
               <>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Typography variant="h5">
                     Found a credit code of type {validationResponse.credit_type}{" "}
                     with balance{" "}
@@ -256,7 +270,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     </List>
                   )}
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <IMoneyPropertyComponent
                     disabled={isProcessing || debitResponse !== null}
                     label="Amount to debit"
@@ -266,7 +280,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     setValue={setAmount}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <StringPropertyComponent
                     disabled={isProcessing || debitResponse !== null}
                     label="Debited by"
@@ -274,7 +288,7 @@ const StoreCreditValidateAndSpendComponent = () => {
                     setValue={setProcessedBy}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Button
                     onClick={processDebit}
                     disabled={
@@ -292,13 +306,13 @@ const StoreCreditValidateAndSpendComponent = () => {
             )) : ("")}
         {debitResponse !== null ? (
           debitResponse.success ? (
-            <Grid item xs={12}>
+            <Grid size={12}>
               Successfully debited {MoneyToDisplayString(amount, true)}.
               Balance remaining:{" "}
               {MoneyToDisplayString(debitResponse.balance, true)}
             </Grid>
           ) : (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ErrorOutline />
               FAILED TO DEBIT
               <ErrorOutline />

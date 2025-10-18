@@ -133,7 +133,14 @@ const FulfillmentBlockOffList = (props: FulfillmentBlockOffListProps) => {
       props.setIsProcessing(false);
     }
   }
-  return fulfillmentBlockOffArray.length > 0 ? <Grid key={props.fId} sx={{ mx: 'auto' }} item xs={12} md={Math.min(Math.max(Math.floor(12 / filteredFulfillments.length), 6), 6)} lg={Math.min(Math.max(Math.floor(12 / filteredFulfillments.length), 4), 4)}>
+  return fulfillmentBlockOffArray.length > 0 ? <Grid
+    key={props.fId}
+    sx={{ mx: 'auto' }}
+    size={{
+      xs: 12,
+      md: Math.min(Math.max(Math.floor(12 / filteredFulfillments.length), 6), 6),
+      lg: Math.min(Math.max(Math.floor(12 / filteredFulfillments.length), 4), 4)
+    }}>
     <Card>
       <CardHeader title={`${fulfillmentName} Blocked-Off Intervals`} />
       <List component="nav">
@@ -166,7 +173,7 @@ const FulfillmentBlockOffList = (props: FulfillmentBlockOffListProps) => {
         ))}
       </List>
     </Card>
-  </Grid> : <></>
+  </Grid> : <></>;
 }
 
 export const selectNextAvailableServiceDate = weakMapCreateSelector(
@@ -314,14 +321,14 @@ export const BlockOffComp = () => {
 
   return fulfillmentIdsAndNames.length === 0 ? <div>Fulfillments need operating hours for this page to be useful</div> :
     <>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Card>
           <CardHeader title="Add Blocked-Off Time:" sx={{ mb: 3 }} />
           <Grid container>
-            <Grid item container xs={12} sx={{ mx: 6 }}>
+            <Grid container sx={{ mx: 6 }} size={12}>
               {
                 fulfillmentIdsAndNames.map((x) => (
-                  <Grid item xs={Math.floor(12 / fulfillmentIdsAndNames.length)} key={x.id}>
+                  <Grid key={x.id} size={Math.floor(12 / fulfillmentIdsAndNames.length)}>
                     <ServiceSelectionCheckbox
                       service_name={x.name}
                       selected={selectedServices.indexOf(x.id) !== -1}
@@ -331,11 +338,27 @@ export const BlockOffComp = () => {
                 ))
               }
             </Grid>
-            <Grid item xs={12} sm={7} >
+            <Grid
+              size={{
+                xs: 12,
+                sm: 7
+              }}>
               <DateSelector selectedDate={selectedDate} selectedServices={selectedServices} setSelectedDate={handleSetSelectedDate} />
             </Grid>
-            <Grid container spacing={2} sx={{ my: 'auto', px: 1, pb: 1 }} item xs={12} sm={5}>
-              <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
+            <Grid
+              container
+              spacing={2}
+              sx={{ my: 'auto', px: 1, pb: 1 }}
+              size={{
+                xs: 12,
+                sm: 5
+              }}>
+              <Grid
+                sx={{ py: 2, mx: 'auto', alignContent: "center" }}
+                size={{
+                  xs: 5,
+                  sm: 12
+                }}>
                 <Autocomplete
                   sx={{ m: 'auto', maxWidth: 200 }}
                   disableClearable
@@ -351,7 +374,12 @@ export const BlockOffComp = () => {
                   />}
                 />
               </Grid>
-              <Grid item xs={5} sm={12} sx={{ py: 2, mx: 'auto', alignContent: "center" }}>
+              <Grid
+                sx={{ py: 2, mx: 'auto', alignContent: "center" }}
+                size={{
+                  xs: 5,
+                  sm: 12
+                }}>
                 <Autocomplete
                   sx={{ m: 'auto', maxWidth: 200 }}
                   disableClearable
@@ -367,7 +395,12 @@ export const BlockOffComp = () => {
                   />}
                 />
               </Grid>
-              <Grid item xs={2} sm={12} sx={{ mx: 'auto', py: 2, alignContent: "center" }}>
+              <Grid
+                sx={{ mx: 'auto', py: 2, alignContent: "center" }}
+                size={{
+                  xs: 2,
+                  sm: 12
+                }}>
                 <Button sx={{ m: 'auto', width: '100%', height: '100%' }} onClick={() => postBlockedOff()} disabled={!canPostBlockedOff || isProcessing}>
                   Add
                 </Button>
@@ -376,7 +409,7 @@ export const BlockOffComp = () => {
           </Grid>
         </Card>
       </Grid>
-      <Grid item container sx={{ py: 3 }} spacing={3}>
+      <Grid container sx={{ py: 3 }} spacing={3}>
         {fulfillmentIdsAndNames.map((fulfillment) => <FulfillmentBlockOffList fId={fulfillment.id} key={fulfillment.id} isProcessing={isProcessing} setIsProcessing={setIsProcessing} />)}
       </Grid>
     </>;

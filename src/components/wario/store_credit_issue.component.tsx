@@ -87,7 +87,11 @@ export const StoreCreditIssueComponent = () => {
       />
       <Divider />
       <Grid sx={{ p: 1 }} container spacing={1.5} justifyContent="center">
-        <Grid item xs={5} md={3}>
+        <Grid
+          size={{
+            xs: 5,
+            md: 3
+          }}>
           <StringPropertyComponent
             disabled={isProcessing}
             label="First Name"
@@ -95,7 +99,11 @@ export const StoreCreditIssueComponent = () => {
             setValue={setFirstName}
           />
         </Grid>
-        <Grid item xs={7} md={3}>
+        <Grid
+          size={{
+            xs: 7,
+            md: 3
+          }}>
           <StringPropertyComponent
             disabled={isProcessing}
             label="Last Name"
@@ -103,7 +111,11 @@ export const StoreCreditIssueComponent = () => {
             setValue={setLastName}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <StringPropertyComponent
             disabled={isProcessing}
             label="Customer E-mail"
@@ -112,7 +124,11 @@ export const StoreCreditIssueComponent = () => {
             setValue={setRecipientEmail}
           />
         </Grid>
-        <Grid item xs={4} md={2}>
+        <Grid
+          size={{
+            xs: 4,
+            md: 2
+          }}>
           <IMoneyPropertyComponent
             disabled={isProcessing}
             label="Dollar Amount"
@@ -122,7 +138,11 @@ export const StoreCreditIssueComponent = () => {
             setValue={setAmount}
           />
         </Grid>
-        <Grid item xs={8} md={4}>
+        <Grid
+          size={{
+            xs: 8,
+            md: 4
+          }}>
           <StringPropertyComponent
             disabled={isProcessing}
             label="Added by"
@@ -130,7 +150,11 @@ export const StoreCreditIssueComponent = () => {
             setValue={setAddedBy}
           />
         </Grid>
-        <Grid item xs={10} md={5}>
+        <Grid
+          size={{
+            xs: 10,
+            md: 5
+          }}>
           <LocalizationProvider dateAdapter={DateAdapter}>
             <DatePicker
               sx={{ height: '10%' }}
@@ -147,7 +171,12 @@ export const StoreCreditIssueComponent = () => {
               }} />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={2} md={1} sx={{ my: 'auto' }}>
+        <Grid
+          sx={{ my: 'auto' }}
+          size={{
+            xs: 2,
+            md: 1
+          }}>
           <IconButton
             sx={{ m: 'auto' }}
             edge="start"
@@ -159,7 +188,11 @@ export const StoreCreditIssueComponent = () => {
           </IconButton>
         </Grid>
 
-        <Grid item xs={6} md={8}>
+        <Grid
+          size={{
+            xs: 6,
+            md: 8
+          }}>
           <StringPropertyComponent
             disabled={isProcessing}
             label="Reason"
@@ -167,7 +200,11 @@ export const StoreCreditIssueComponent = () => {
             setValue={setReason}
           />
         </Grid>
-        <Grid item xs={3} md={3}>
+        <Grid
+          size={{
+            xs: 3,
+            md: 3
+          }}>
           <ToggleBooleanPropertyComponent
             disabled={isProcessing}
             label="Is Discount?"
@@ -176,7 +213,12 @@ export const StoreCreditIssueComponent = () => {
             labelPlacement={'end'}
           />
         </Grid>
-        <Grid item xs={3} md={1} sx={{ my: 'auto', width: "100%" }}>
+        <Grid
+          sx={{ my: 'auto', width: "100%" }}
+          size={{
+            xs: 3,
+            md: 1
+          }}>
           <Button
             sx={{ m: 'auto', width: "100%" }}
             onClick={handleSubmit}

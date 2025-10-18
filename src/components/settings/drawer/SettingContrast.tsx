@@ -31,7 +31,7 @@ export default function SettingContrast() {
           const isSelected = themeContrast === contrast;
 
           return (
-            <Grid key={contrast} item xs={6}>
+            <Grid key={contrast} size={6}>
               <BoxStyle
                 sx={{
                   ...(isSelected && {

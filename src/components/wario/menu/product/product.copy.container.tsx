@@ -72,10 +72,10 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
     <Accordion sx={{ p: 2 }} key={i} expanded={expandedPanels[i] && copyPIFlags[i]} onChange={(e, ex) => setExpandedPanel(i)(ex)}  >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Grid container>
-          <Grid item xs>
+          <Grid size="grow">
             <Typography sx={{ ml: 4 }}>{piDisplayNames[i]}</Typography>
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={2}>
             <FormControlLabel sx={{ float: "right" }} control={
               <Switch
                 disabled={indexOfBase === i}
@@ -87,7 +87,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
               label="Copy"
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={2}>
             <FormControlLabel sx={{ float: "right" }} control={
               <Switch
                 disabled={!copyPIFlags[i] || indexOfBase === i}

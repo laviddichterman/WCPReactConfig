@@ -54,7 +54,7 @@ export const SettingsComponent = () => {
       />
       <Card>
         <Grid container justifyContent="center">
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FulfillmentTableContainer
               setIsFulfillmentAddOpen={setIsFulfillmentAddOpen}
               setIsFulfillmentDeleteOpen={setIsFulfillmentDeleteOpen}

@@ -24,38 +24,40 @@ const WOrderMoveComponent = (props: WOrderMoveComponentProps) => {
     }
   }
 
-  return (<ElementActionComponent
-      onCloseCallback={props.onCloseCallback}
-      onConfirmClick={submitToWario}
-      isProcessing={orderSliceState === 'PENDING'}
-      disableConfirmOn={orderSliceState === 'PENDING' || destination.length < 2}
-      confirmText={'Send Move Ticket'}
-      body={
-<>
-        <Grid item xs={12}>
-        <TextField
-        fullWidth
-        label="Destination"
-        type="text"
-        value={destination}
-        onChange={(e) => setDestination(e.target.value)}
-      />
-      </Grid>
-      <Grid item xs={12}>
-      <TextField
-          multiline
+  return (
+    <ElementActionComponent
+        onCloseCallback={props.onCloseCallback}
+        onConfirmClick={submitToWario}
+        isProcessing={orderSliceState === 'PENDING'}
+        disableConfirmOn={orderSliceState === 'PENDING' || destination.length < 2}
+        confirmText={'Send Move Ticket'}
+        body={
+  <>
+          <Grid size={12}>
+          <TextField
           fullWidth
-          minRows={additionalMessage.split('\n').length + 1}
-          label="Additional message to expo"
+          label="Destination"
           type="text"
-          value={additionalMessage}
-          onChange={(e) => setAdditionalMessage(e.target.value)}
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
         />
-      </Grid>
-      </>
-      
-      }
-    />)
+        </Grid>
+        <Grid size={12}>
+        <TextField
+            multiline
+            fullWidth
+            minRows={additionalMessage.split('\n').length + 1}
+            label="Additional message to expo"
+            type="text"
+            value={additionalMessage}
+            onChange={(e) => setAdditionalMessage(e.target.value)}
+          />
+        </Grid>
+        </>
+        
+        }
+      />
+  );
 };
 
 export default WOrderMoveComponent;

@@ -21,20 +21,20 @@ function GenericCsvImportComponent<T>({ onAccepted }: CSVReaderProps<T>) {
         getRemoveFileProps,
       }: any) => (
         <Grid container>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <Button variant="contained" {...getRootProps()} color="primary">
               Browse for CSV
             </Button>
           </Grid>
-          <Grid item xs={5}>
+          <Grid size={5}>
             {acceptedFile && acceptedFile.name}
           </Grid>
-          <Grid item xs={3}>
+          <Grid size={3}>
             <Button disabled={!acceptedFile} variant="contained" {...getRemoveFileProps()} color="primary">
               Remove
             </Button>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ProgressBar />
           </Grid>
         </Grid>

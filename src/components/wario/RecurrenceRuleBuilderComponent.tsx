@@ -84,7 +84,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
     <Accordion sx={{ p: 2 }} expanded={isExpanded} onChange={(_e, ex) => setIsExpanded(ex)}  >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Grid container>
-          <Grid item xs>
+          <Grid size="grow">
             <Typography sx={{ ml: 4 }}>
               {(props.value !== null && props.availabilityIsValid ?
                 (currentRRule ?
@@ -94,7 +94,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                 "Availability is not valid")}
             </Typography>
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={2}>
             <FormControlLabel sx={{ float: "right" }} control={
               <IconButton edge="end" size="small" disabled={props.disabled} aria-label="delete" onClick={() => props.setValue(null)}></IconButton>
             }
@@ -106,7 +106,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
       <AccordionDetails>
         <LocalizationProvider dateAdapter={DateAdapter}>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <ToggleBooleanPropertyComponent
                 disabled={props.disabled}
                 label="Use Recurrence Rule"
@@ -116,7 +116,12 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
             </Grid>
             {useRRule ? (
               <>
-                <Grid container item xs={6} sm={4}>
+                <Grid
+                  container
+                  size={{
+                    xs: 6,
+                    sm: 4
+                  }}>
                   <MappingEnumPropertyComponent
                     disabled={props.disabled}
                     label="Frequency"
@@ -126,7 +131,11 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                   />
                 </Grid>
 
-                <Grid item xs={6} sm={4}>
+                <Grid
+                  size={{
+                    xs: 6,
+                    sm: 4
+                  }}>
                   <CheckedNumericInput
                     label="Count"
                     type="number"
@@ -137,7 +146,11 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     parseFunction={(v) => v !== null && v ? parseInt(v) : null}
                     allowEmpty={true} />
                 </Grid>
-                <Grid item xs={6} sm={4}>
+                <Grid
+                  size={{
+                    xs: 6,
+                    sm: 4
+                  }}>
                   <IntNumericPropertyComponent
                     disabled={props.disabled}
                     label="Interval"
@@ -145,7 +158,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     setValue={setRInterval}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <Autocomplete
                     multiple
                     filterSelectedOptions
@@ -157,7 +170,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     renderInput={(params) => <TextField {...params} label="By Weekday" />}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <Autocomplete
                     multiple
                     filterSelectedOptions
@@ -169,7 +182,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     renderInput={(params) => <TextField {...params} label="By Month" />}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <TimePicker
                     slotProps={{ textField: { fullWidth: true } }}
                     label="From Time"
@@ -179,7 +192,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                   // localeText={ { toolbarTitle: "From Time"}}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <TimePicker
                     slotProps={{ textField: { fullWidth: true } }}
                     label="Until Time"
@@ -195,9 +208,9 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
               </>
             ) : (
               // show a from and to date-time picker similar to disable 
-              <>
-                <Grid item xs={6}></Grid>
-                <Grid item xs={6}>
+              (<>
+                <Grid size={6}></Grid>
+                <Grid size={6}>
                   <DateTimePicker
                     slotProps={{ textField: { fullWidth: true } }}
                     disabled={props.disabled}
@@ -207,7 +220,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     format="MMM dd, y hh:mm a"
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <DateTimePicker
                     disabled={props.disabled}
                     slotProps={{ textField: { fullWidth: true } }}
@@ -218,7 +231,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     format="MMM dd, y hh:mm a"
                   />
                 </Grid>
-              </>
+              </>)
             )}
 
           </Grid>

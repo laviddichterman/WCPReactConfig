@@ -27,10 +27,10 @@ export default function GeneralOrders() {
     <Page title="Order Management">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <OrderManagerComponent handleConfirmOrder={handleConfirmOrder} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <OrderCalendar selectOrderById={setSelectedOrderId} />
           </Grid>
         </Grid>

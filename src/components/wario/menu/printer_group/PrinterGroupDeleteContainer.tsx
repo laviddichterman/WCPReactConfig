@@ -72,10 +72,10 @@ const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterG
       confirmText={"Confirm"}
       body={
         <>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Warning /> Are you sure you'd like to delete {printerGroup.name}? Note this cannot be undone.
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <ToggleBooleanPropertyComponent
               disabled={isProcessing}
               label="Reassign"
@@ -84,7 +84,7 @@ const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterG
               labelPlacement='end'
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Autocomplete
               filterSelectedOptions
               disabled={isProcessing || !reassign}

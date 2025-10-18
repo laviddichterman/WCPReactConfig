@@ -31,7 +31,7 @@ export default function SettingDirection() {
           const isSelected = themeDirection === direction;
 
           return (
-            <Grid key={direction} item xs={6}>
+            <Grid key={direction} size={6}>
               <BoxStyle
                 sx={{
                   ...(isSelected && {

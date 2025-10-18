@@ -18,7 +18,7 @@ const ElementDeleteComponent = ({
     confirmText="Confirm"
     body={
       <>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Warning /> Are you sure you'd like to delete {name}? Note this cannot be undone.
         </Grid>
         {additionalBody}

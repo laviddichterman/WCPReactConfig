@@ -50,7 +50,7 @@ const CategoryDeleteContainer = ({ categoryId, onCloseCallback }: CategoryEditPr
       name={categoryName}
       isProcessing={isProcessing}
       additionalBody={
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ToggleBooleanPropertyComponent
             disabled={isProcessing}
             label="Delete Contained Products"

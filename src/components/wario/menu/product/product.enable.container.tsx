@@ -56,7 +56,7 @@ const ProductEnableContainer = ({ product_id, onCloseCallback }: ProductQuickAct
       disableConfirmOn={isProcessing}
       confirmText="Confirm"
       body={
-        <Grid item xs={12}>
+        <Grid size={12}>
           Are you sure you'd like to enable {productName}?
         </Grid>
       }

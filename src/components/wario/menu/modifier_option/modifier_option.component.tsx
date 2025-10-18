@@ -58,7 +58,11 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
   }
   return (
     <>
-      <Grid item xs={12} md={6}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6
+        }}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Display Name"
@@ -66,7 +70,11 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setDisplayName}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6
+        }}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Description"
@@ -74,7 +82,11 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setDescription}
         />
       </Grid>
-      <Grid item xs={12} sm={4}>
+      <Grid
+        size={{
+          xs: 12,
+          sm: 4
+        }}>
         <StringPropertyComponent
           disabled={props.isProcessing}
           label="Short Code"
@@ -82,7 +94,11 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setShortcode}
         />
       </Grid>
-      <Grid item xs={6} sm={4}>
+      <Grid
+        size={{
+          xs: 6,
+          sm: 4
+        }}>
         <IMoneyPropertyComponent
           disabled={props.isProcessing}
           label="Price"
@@ -90,7 +106,11 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setPrice}
         />
       </Grid>
-      <Grid item xs={6} sm={4}>
+      <Grid
+        size={{
+          xs: 6,
+          sm: 4
+        }}>
         <IntNumericPropertyComponent
           disabled={props.isProcessing}
           label="Ordinal"
@@ -98,7 +118,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setOrdinal}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid size={4}>
         <FloatNumericPropertyComponent
           disabled={props.isProcessing}
           label="Flavor Factor"
@@ -106,7 +126,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setFlavorFactor}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid size={4}>
         <FloatNumericPropertyComponent
           disabled={props.isProcessing}
           label="Bake Max"
@@ -114,7 +134,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setBakeFactor}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid size={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing || props.modifierType.max_selected === 1}
           label="Can Split"
@@ -123,7 +143,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid size={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Allow Heavy"
@@ -132,7 +152,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid size={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Allow Lite"
@@ -141,7 +161,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid size={4}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing || props.modifierType.max_selected === 1}
           label="Allow OTS"
@@ -150,7 +170,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Autocomplete
           fullWidth
           options={Object.keys(productInstanceFunctions)}
@@ -161,7 +181,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Omit from shortname"
@@ -170,7 +190,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <ToggleBooleanPropertyComponent
           disabled={props.isProcessing}
           label="Omit from name"
@@ -179,7 +199,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           labelPlacement='end'
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ExternalIdsExpansionPanelComponent
           title='External IDs'
           disabled={props.isProcessing}
@@ -187,7 +207,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setExternalIds}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <AvailabilityListBuilderComponent
           availabilityIsValid={props.availabilityIsValid}
           setAvailabilityIsValid={props.setAvailabilityIsValid}
@@ -196,7 +216,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           setValue={props.setAvailability}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <DatetimeBasedDisableComponent
           disabled={props.isProcessing}
           value={props.disabled}
@@ -204,7 +224,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
         />
       </Grid>
     </>
-  )
+  );
 }
 
 export const ModifierOptionComponent = (props: ModifierOptionComponentProps) => {

@@ -72,7 +72,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
       confirmText={props.confirmText}
       body={
         <>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Autocomplete
               multiple
               filterSelectedOptions
@@ -84,7 +84,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               renderInput={(params) => <TextField {...params} label="Categories" />}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Autocomplete
               filterSelectedOptions
               options={Object.keys(printerGroups)}
@@ -96,7 +96,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
             />
           </Grid>
           {/* universal break */}
-          <Grid item xs={6}>
+          <Grid size={6}>
             <IMoneyPropertyComponent
               disabled={props.isProcessing}
               label="Price"
@@ -104,7 +104,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               setValue={props.setPrice}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <StringPropertyComponent
               disabled={props.isProcessing}
               label="Singular Noun"
@@ -112,7 +112,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               setValue={props.setSingularNoun}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ExternalIdsExpansionPanelComponent
               title='External IDs'
               disabled={props.isProcessing}
@@ -121,7 +121,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
             />
           </Grid>
           {/* universal break */}
-          <Grid item xs={4}>
+          <Grid size={4}>
             <FloatNumericPropertyComponent
               disabled={props.isProcessing}
               label="Flavor Max"
@@ -129,7 +129,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               setValue={props.setFlavorMax}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <FloatNumericPropertyComponent
               disabled={props.isProcessing}
               label="Bake Max"
@@ -137,7 +137,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               setValue={props.setBakeMax}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <FloatNumericPropertyComponent
               disabled={props.isProcessing}
               label="Bake Differential Max"
@@ -146,7 +146,11 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
             />
           </Grid>
           {/* universal break */}
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <Autocomplete
               multiple
               filterSelectedOptions
@@ -159,7 +163,11 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               renderInput={(params) => <TextField {...params} label="Order Guide Suggestion Functions" />}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <Autocomplete
               multiple
               filterSelectedOptions
@@ -172,7 +180,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               renderInput={(params) => <TextField {...params} label="Order Guide Warning Functions" />}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Autocomplete
               multiple
               filterSelectedOptions
@@ -186,7 +194,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid size={3}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing}
               label="Is 3rd Party"
@@ -195,7 +203,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               labelPlacement={'end'}
             />
           </Grid>
-          <Grid item xs={9}>
+          <Grid size={9}>
             <ToggleBooleanPropertyComponent
               disabled={props.isProcessing || props.modifiers.length === 0}
               label="Show Name of Base Product Instead of Component Modifiers"
@@ -205,10 +213,10 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={handleSetModifiers} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <AvailabilityListBuilderComponent
               availabilityIsValid={availabilityIsValid}
               setAvailabilityIsValid={setAvailabilityIsValid}
@@ -217,14 +225,14 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               setValue={props.setAvailability}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <PrepTimingPropertyComponent
               disabled={props.isProcessing}
               value={props.timing}
               setValue={props.setTiming}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <DatetimeBasedDisableComponent
               disabled={props.isProcessing}
               value={props.disabled}

@@ -18,10 +18,10 @@ export default function GeneralCredit() {
     <Page title="Store Credit Issuance and Redemption">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={6}>
-          <Grid item xs={12} >
+          <Grid size={12}>
             <StoreCreditIssueComponent />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <StoreCreditValidateAndSpendComponent />
           </Grid>
 

@@ -2,9 +2,9 @@ import { Box, Button, DialogActions, DialogContent, Grid, LinearProgress } from 
 import React from "react";
 
 const GenerateActionsHtmlFromList = (actions: React.ReactNode[]) => actions.length === 0 ? "" :
-  (<Grid container justifyContent="flex-end" item xs={12}>
+  (<Grid container justifyContent="flex-end" size={12}>
     {actions.map((action, idx) => (
-      <Grid item key={idx}>
+      <Grid key={idx}>
         {action}
       </Grid>
     ))}

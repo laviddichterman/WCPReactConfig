@@ -32,7 +32,7 @@ export default function SettingColorPresets() {
           const isSelected = themeColorPresets === colorName;
 
           return (
-            <Grid key={colorName} item xs={4}>
+            <Grid key={colorName} size={4}>
               <BoxStyle
                 sx={{
                   ...(isSelected && {

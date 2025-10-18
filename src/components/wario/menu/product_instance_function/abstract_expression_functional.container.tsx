@@ -1,10 +1,16 @@
-import { Autocomplete, Card, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, List, ListItem, Radio, RadioGroup, Switch, TextField } from "@mui/material";
+import type { IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, ProductMetadataExpression } from "@wcp/wcpshared";
+import type { Dispatch, SetStateAction } from "react";
+
 import { getModifierOptionById, getModifierTypeEntryById } from "@wcp/wario-ux-shared";
-import { ConstLiteralDiscriminator, IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, LogicalFunctionOperator, MetadataField, OptionPlacement, OptionQualifier, PRODUCT_LOCATION, ProductInstanceFunctionType, ProductMetadataExpression, WFunctional } from "@wcp/wcpshared";
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { ConstLiteralDiscriminator, LogicalFunctionOperator, MetadataField, OptionPlacement, OptionQualifier, PRODUCT_LOCATION, ProductInstanceFunctionType, WFunctional } from "@wcp/wcpshared";
+import React, { useEffect, useMemo, useState } from "react";
+
+import { Autocomplete, Card, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, List, ListItem, Radio, RadioGroup, Switch, TextField } from "@mui/material";
+
 import { useAppSelector } from "../../../../hooks/useRedux";
-import type { ValSetVal } from "../../../../utils/common";
 import { CheckedNumericInput } from "../../CheckedNumericTextInput";
+
+import type { ValSetVal } from "../../../../utils/common";
 
 export interface DiscriminatedFunctionalComponentProps<T> {
   expression_types: Record<string, React.ReactNode>;
@@ -65,12 +71,12 @@ const AbstractExpressionFunctionalComponent = ({
   </div>
 );
 
-let ConstLiteralFunctionalComponent: ({ value, setValue }: ValSetVal<IConstLiteralExpression | null>) => JSX.Element;
-let LogicalFunctionalComponent: ({ value, setValue }: ValSetVal<ILogicalExpression<IAbstractExpression> | null>) => JSX.Element;
-let IfElseFunctionalComponent: ({ value, setValue }: ValSetVal<IIfElseExpression<IAbstractExpression> | null>) => JSX.Element;
-let ModifierPlacementFunctionalComponent: ({ value, setValue }: ValSetVal<IModifierPlacementExpression | null>) => JSX.Element;
-let HasAnyOfModifierTypeFunctionalComponent: ({ value, setValue }: ValSetVal<IHasAnyOfModifierExpression | null>) => JSX.Element;
-let ProductMetadataFunctionalComponent: ({ value, setValue }: ValSetVal<ProductMetadataExpression | null>) => JSX.Element;
+let ConstLiteralFunctionalComponent: ({ value, setValue }: ValSetVal<IConstLiteralExpression | null>) => React.JSX.Element;
+let LogicalFunctionalComponent: ({ value, setValue }: ValSetVal<ILogicalExpression<IAbstractExpression> | null>) => React.JSX.Element;
+let IfElseFunctionalComponent: ({ value, setValue }: ValSetVal<IIfElseExpression<IAbstractExpression> | null>) => React.JSX.Element;
+let ModifierPlacementFunctionalComponent: ({ value, setValue }: ValSetVal<IModifierPlacementExpression | null>) => React.JSX.Element;
+let HasAnyOfModifierTypeFunctionalComponent: ({ value, setValue }: ValSetVal<IHasAnyOfModifierExpression | null>) => React.JSX.Element;
+let ProductMetadataFunctionalComponent: ({ value, setValue }: ValSetVal<ProductMetadataExpression | null>) => React.JSX.Element;
 
 const AbstractExpressionFunctionalContainer = ({
   value,
@@ -82,7 +88,7 @@ const AbstractExpressionFunctionalContainer = ({
   const [expr, setExpr] = useState<IAbstractExpression['expr'] | null>(value?.expr ?? null);
   useEffect(() => {
     if (discriminator !== null && expr !== null) {
-      setValue({ discriminator: discriminator, expr: expr } as IAbstractExpression);
+      setValue({ discriminator, expr } as IAbstractExpression);
     }
   }, [discriminator, expr, setValue]);
   const updateDiscriminator = (val: ProductInstanceFunctionType) => {
@@ -291,7 +297,7 @@ HasAnyOfModifierTypeFunctionalComponent = ({
   }, [modifier, setValue]);
   return (
     <Grid container>
-      <Grid item>
+      <Grid>
         <Autocomplete
           style={{ width: 200 }}
           options={Object.keys(modifier_types)}
@@ -324,7 +330,7 @@ ModifierPlacementFunctionalComponent = ({
   }, [modifier, modifierOption, setValue]);
   return (
     <Grid container>
-      <Grid item>
+      <Grid>
         <Autocomplete
           style={{ width: 200 }}
           options={Object.keys(catalog.modifiers)}
@@ -335,9 +341,8 @@ ModifierPlacementFunctionalComponent = ({
           renderInput={(params) => <TextField {...params} label="Modifier" />}
         />
       </Grid>
-
       {modifier !== null && catalog.modifiers[modifier].options.length && (
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Autocomplete
             style={{ width: 200 }}
             options={Object.keys(modifierOptionsForType)}
@@ -366,7 +371,7 @@ ProductMetadataFunctionalComponent = ({
   }, [fieldValue, locationValue, setValue]);
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <FormControl component="fieldset">
           <FormLabel>Field Value</FormLabel>
           <RadioGroup
@@ -387,7 +392,7 @@ ProductMetadataFunctionalComponent = ({
           </RadioGroup>
         </FormControl>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <FormControl component="fieldset">
           <FormLabel>Location</FormLabel>
           <RadioGroup
@@ -482,7 +487,7 @@ const ConstStringLiteralComponent = ({ value, setValue }: ValSetVal<string | nul
   }
   return <TextField
     label="Literal Value"
-    type={'text'}
+    type="text"
     value={dirty ? local_value : (value ?? "")}
     size="small"
     fullWidth
@@ -501,7 +506,7 @@ const ConstNumberLiteralComponent = ({ value, setValue }: ValSetVal<number | nul
   value={value || ""}
   onChange={(e: number | null) => setValue(e)}
   parseFunction={(e) => parseFloat(e === null ? "0" : e)}
-  allowEmpty={true} />;
+  allowEmpty />;
 
 const ConstModifierPlacementLiteralComponent = function ({ value, setValue }: ValSetVal<number | null>) {
   return (
@@ -571,7 +576,7 @@ ConstLiteralFunctionalComponent = ({
   const [innerValue, setInnerValue] = useState<IConstLiteralExpression['value'] | null>(value?.value ?? null);
   useEffect(() => {
     if (discriminator !== null && innerValue !== null) {
-      setValue({ discriminator: discriminator, value: innerValue } as IConstLiteralExpression);
+      setValue({ discriminator, value: innerValue } as IConstLiteralExpression);
     }
   }, [discriminator, innerValue, setValue]);
   const updateDiscriminator = (val: ConstLiteralDiscriminator) => {
