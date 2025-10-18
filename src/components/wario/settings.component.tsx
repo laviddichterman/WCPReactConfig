@@ -1,8 +1,8 @@
 import { Card, Grid } from '@mui/material';
 import { useState } from 'react';
 
+import { FulfillmentConfig } from "@wcp/wario-shared";
 import { DialogContainer } from '@wcp/wario-ux-shared';
-import { FulfillmentConfig } from "@wcp/wcpshared";
 import FulfillmentAddContainer from './FulfillmentAddContainer';
 import FulfillmentDeleteContainer from './FulfillmentDeleteContainer';
 import FulfillmentEditContainer from './FulfillmentEditContainer';

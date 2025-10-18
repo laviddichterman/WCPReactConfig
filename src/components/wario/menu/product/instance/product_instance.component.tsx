@@ -1,16 +1,19 @@
+import type { CreateIProduct, ICatalogModifiers, KeyValue, ProductModifierEntry } from "@wcp/wario-shared";
+
+import { OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wario-shared";
 import { useMemo } from "react";
 
 import { Card, CardContent, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Radio, RadioGroup, useMediaQuery, useTheme } from '@mui/material';
 
-import { CreateIProduct, ICatalogModifiers, KeyValue, OptionPlacement, OptionQualifier, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../../../hooks/useRedux";
-import { ValSetValNamed } from "../../../../../utils/common";
 import { ExternalIdsExpansionPanelComponent } from "../../../ExternalIdsExpansionPanelComponent";
 import { IntNumericPropertyComponent } from "../../../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../../../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../../../property-components/StringPropertyComponent";
 import { ToggleBooleanPropertyComponent } from "../../../property-components/ToggleBooleanPropertyComponent";
 import { ElementActionComponent } from "../../element.action.component";
+
+import type { ValSetValNamed } from "../../../../../utils/common";
 
 export type ProductInstanceComponentProps =
   ValSetValNamed<string, 'displayName'> &
@@ -403,24 +406,22 @@ const normalizeModifiersAndOptions = (
   parent_product: CreateIProduct,
   modifier_types_map: ICatalogModifiers,
   minimizedModifiers: ProductModifierEntry[]
-): ProductModifierEntry[] => {
-  return parent_product.modifiers.map(
-    (modifier_entry) => {
-      const modEntry = minimizedModifiers.find(x => x.modifierTypeId === modifier_entry.mtid);
-      const modOptions = modEntry ? modEntry.options : [];
-      return {
-        modifierTypeId: modifier_entry.mtid,
-        options: modifier_types_map[modifier_entry.mtid].options.map((option) => {
-          const foundOptionState = modOptions.find(x => x.optionId === option);
-          return {
-            optionId: option,
-            placement: foundOptionState ? foundOptionState.placement : OptionPlacement.NONE,
-            qualifier: foundOptionState ? foundOptionState.qualifier : OptionQualifier.REGULAR
-          }
-        })
-      };
-    });
-};
+): ProductModifierEntry[] => parent_product.modifiers.map(
+  (modifier_entry) => {
+    const modEntry = minimizedModifiers.find(x => x.modifierTypeId === modifier_entry.mtid);
+    const modOptions = modEntry ? modEntry.options : [];
+    return {
+      modifierTypeId: modifier_entry.mtid,
+      options: modifier_types_map[modifier_entry.mtid].options.map((option) => {
+        const foundOptionState = modOptions.find(x => x.optionId === option);
+        return {
+          optionId: option,
+          placement: foundOptionState ? foundOptionState.placement : OptionPlacement.NONE,
+          qualifier: foundOptionState ? foundOptionState.qualifier : OptionQualifier.REGULAR
+        }
+      })
+    };
+  });
 
 const minimizeModifiers = (normalized_modifiers: ProductModifierEntry[]): ProductModifierEntry[] =>
   normalized_modifiers.reduce((acc, modifier) => {

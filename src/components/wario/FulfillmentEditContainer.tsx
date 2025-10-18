@@ -1,15 +1,15 @@
-import { useState } from "react";
 import type { Polygon } from 'geojson';
+import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { HOST_API } from "../../config";
-import { FulfillmentConfig } from "@wcp/wcpshared";
-import FulfillmentComponent from "./FulfillmentComponent";
+import { FulfillmentConfig } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
+import { HOST_API } from "../../config";
+import FulfillmentComponent from "./FulfillmentComponent";
 
 const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillment: FulfillmentConfig; onCloseCallback: VoidFunction }) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const [ordinal, setOrdinal] = useState(fulfillment.ordinal);
   const [displayName, setDisplayName] = useState(fulfillment.displayName);
   const [shortcode, setShortcode] = useState(fulfillment.shortcode);

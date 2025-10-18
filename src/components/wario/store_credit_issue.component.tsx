@@ -5,8 +5,8 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { addDays, parseISO } from "date-fns";
 import { useState } from "react";
 
+import { CURRENCY, IMoney, IssueStoreCreditRequest, MoneyToDisplayString, StoreCreditType, WDateUtils } from "@wcp/wario-shared";
 import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
-import { CURRENCY, IMoney, IssueStoreCreditRequest, MoneyToDisplayString, StoreCreditType, WDateUtils } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { HOST_API } from "../../config";
 import { useAppSelector } from "../../hooks/useRedux";

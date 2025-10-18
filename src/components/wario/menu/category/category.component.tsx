@@ -1,12 +1,16 @@
-import { Grid, TextField, Autocomplete } from "@mui/material";
-import { ElementActionComponent, ElementActionComponentProps } from "../element.action.component";
-import { useAppSelector } from "../../../../hooks/useRedux";
+import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wario-shared";
 import { getCategoryEntryById, getFulfillments } from "@wcp/wario-ux-shared";
-import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wcpshared";
-import { StringEnumPropertyComponent } from "../../property-components/StringEnumPropertyComponent";
+
+import { Autocomplete, Grid, TextField } from "@mui/material";
+
+import { useAppSelector } from "../../../../hooks/useRedux";
 import { IntNumericPropertyComponent } from "../../property-components/IntNumericPropertyComponent";
-import { ValSetValNamed } from "../../../../utils/common";
+import { StringEnumPropertyComponent } from "../../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
+import { ElementActionComponent } from "../element.action.component";
+
+import type { ValSetValNamed } from "../../../../utils/common";
+import type { ElementActionComponentProps } from "../element.action.component";
 
 export interface CategoryEditProps {
   categoryId: string;
@@ -113,7 +117,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               xs: 12,
               sm: 6
             }}>
-          <StringPropertyComponent
+            <StringPropertyComponent
               disabled={props.isProcessing}
               label="Call Line Name"
               value={props.callLineName}
@@ -129,12 +133,12 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               multiple
               fullWidth
               filterSelectedOptions
-              options={fulfillments.map(x=>x.id)}
+              options={fulfillments.map(x => x.id)}
               value={props.serviceDisable.map((x) => String(x))}
               onChange={(_, v) => {
                 props.setServiceDisable(v);
               }}
-              getOptionLabel={(option) => fulfillments.find((v)=>v.id === option)?.displayName ?? "INVALID"}
+              getOptionLabel={(option) => fulfillments.find((v) => v.id === option)?.displayName ?? "INVALID"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Disabled Services" />}
             />

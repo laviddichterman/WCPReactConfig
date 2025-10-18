@@ -1,14 +1,19 @@
-import { Grid, FormControlLabel, Radio, RadioGroup, FormControl, FormLabel } from "@mui/material";
-import { ElementActionComponent } from "../element.action.component";
+import type { KeyValue } from "@wcp/wario-shared";
+
+import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
+import { snakeCase, startCase } from 'lodash';
+
+import { FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from "@mui/material";
+
 import { CheckedNumericInput } from "../../CheckedNumericTextInput";
-import { DISPLAY_AS, KeyValue, MODIFIER_CLASS } from "@wcp/wcpshared";
-import { startCase, snakeCase } from 'lodash';
-import { ValSetValNamed } from "../../../../utils/common";
 import { ExternalIdsExpansionPanelComponent } from "../../ExternalIdsExpansionPanelComponent";
-import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
-import { StringEnumPropertyComponent } from "../../property-components/StringEnumPropertyComponent";
-import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
 import { IntNumericPropertyComponent } from "../../property-components/IntNumericPropertyComponent";
+import { StringEnumPropertyComponent } from "../../property-components/StringEnumPropertyComponent";
+import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
+import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
+import { ElementActionComponent } from "../element.action.component";
+
+import type { ValSetValNamed } from "../../../../utils/common";
 
 export interface ModifierTypeUiProps {
   onCloseCallback: VoidFunction;
@@ -108,7 +113,7 @@ export const ModifierTypeContainer = (props: ModifierTypeContainerProps) => {
           disabled={props.isProcessing}
           onChange={(e) => handleSetMaxSelected(e)}
           parseFunction={(v) => v !== null && v ? parseInt(v) : null}
-          allowEmpty={true} />
+          allowEmpty />
       </Grid>
       <Grid size={6}>
         <ToggleBooleanPropertyComponent
@@ -232,22 +237,20 @@ export type ModifierTypeComponentProps = ModifierTypeContainerProps & {
   children?: React.ReactNode;
 };
 
-export const ModifierTypeComponent = (props: ModifierTypeComponentProps & ModifierTypeUiProps) => {
-  return (
-    <ElementActionComponent
-      onCloseCallback={props.onCloseCallback}
-      onConfirmClick={props.onConfirmClick}
-      isProcessing={props.isProcessing}
-      disableConfirmOn={props.disableConfirm || !IsValidModifierType(props) || props.isProcessing}
-      confirmText={props.confirmText}
-      body={
-        <>
-          <ModifierTypeContainer {...props} />
-          {props.children}
-        </>
-      }
-    />
-  );
-};
+export const ModifierTypeComponent = (props: ModifierTypeComponentProps & ModifierTypeUiProps) => (
+  <ElementActionComponent
+    onCloseCallback={props.onCloseCallback}
+    onConfirmClick={props.onConfirmClick}
+    isProcessing={props.isProcessing}
+    disableConfirmOn={props.disableConfirm || !IsValidModifierType(props) || props.isProcessing}
+    confirmText={props.confirmText}
+    body={
+      <>
+        <ModifierTypeContainer {...props} />
+        {props.children}
+      </>
+    }
+  />
+);
 
 export default ModifierTypeComponent;

@@ -1,8 +1,8 @@
-import { Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
-import { IWInterval, KeyValue } from "@wcp/wcpshared";
-import { ValSetVal } from "src/utils/common";
-import React, { useState } from 'react';
 import { ExpandMore } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
+import { IWInterval, KeyValue } from "@wcp/wario-shared";
+import React, { useState } from 'react';
+import { ValSetVal } from "src/utils/common";
 import KeyValuesContainer from './keyvalues.container';
 
 export type ExternalIdsExpansionPanelProps = {
@@ -22,15 +22,15 @@ export const ExternalIdsExpansionPanelComponent = (props: ExternalIdsExpansionPa
         <Typography sx={{ ml: 4 }}>{props.title}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-          <KeyValuesContainer
-            //title={props.title}
-            values={props.value}
-            setValues={props.setValue} 
-            isProcessing={props.disabled}  
-            canAdd
-            canEdit
-            canRemove          
-          />
+        <KeyValuesContainer
+          //title={props.title}
+          values={props.value}
+          setValues={props.setValue}
+          isProcessing={props.disabled}
+          canAdd
+          canEdit
+          canRemove
+        />
       </AccordionDetails>
     </Accordion>
 

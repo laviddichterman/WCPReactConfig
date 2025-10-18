@@ -1,7 +1,7 @@
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Avatar, Box, Card, CardHeader, CardProps, SxProps, Tab, Typography } from "@mui/material";
 import { red } from "@mui/material/colors";
-import { ComputeServiceTimeDisplayString, DateTimeIntervalBuilder, WDateUtils, WOrderStatus } from "@wcp/wcpshared";
+import { ComputeServiceTimeDisplayString, DateTimeIntervalBuilder, WDateUtils, WOrderStatus } from "@wcp/wario-shared";
 import { format } from "date-fns";
 import { useState } from "react";
 

@@ -1,17 +1,23 @@
+import type { GridRenderCellParams, GridRowId, GridRowParams } from "@mui/x-data-grid-premium";
+import type { Dispatch, SetStateAction } from "react";
+
+import { DISABLE_REASON, DisableDataCheck } from '@wcp/wario-shared';
+import { getModifierTypeEntryById, getProductEntryById, getProductInstanceById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
+import { format } from 'date-fns';
+import { useCallback, useState } from "react";
+
 import { AddBox, BedtimeOff, Cancel, CheckCircle, DeleteOutline, Edit, LibraryAdd } from "@mui/icons-material";
 import { Tooltip } from '@mui/material';
-import { GridActionsCellItem, GridRenderCellParams, GridRowId, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
-import { DISABLE_REASON, DisableDataCheck } from '@wcp/wcpshared';
-import { format } from 'date-fns';
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
-import { getPrinterGroupById } from '../../../../redux/slices/PrinterGroupSlice';
-import { TableWrapperComponent, ToolbarAction } from "../../table_wrapper.component";
+import { GridActionsCellItem, useGridApiRef } from "@mui/x-data-grid-premium";
 
-import { getModifierTypeEntryById, getProductEntryById, getProductInstanceById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openProductClassCopy, openProductClassDelete, openProductClassDisable, openProductClassDisableUntilEod, openProductClassEdit, openProductClassEnable, openProductInstanceAdd } from "../../../../redux/slices/CatalogSlice";
-import { RootState } from "../../../../redux/store";
+import { getPrinterGroupById } from '../../../../redux/slices/PrinterGroupSlice';
+import { TableWrapperComponent } from "../../table_wrapper.component";
 import ProductInstanceTableContainer from "./product_instance_table.container";
+
+import type { RootState } from "../../../../redux/store";
+import type { ToolbarAction } from "../../table_wrapper.component";
 
 type RowType = { id: string; disableData: ReturnType<typeof DisableDataCheck>; name: string }
 
@@ -38,13 +44,11 @@ const selectRows = weakMapCreateSelector(
   (s: RootState, _: string[]) => s.ws.productInstances,
   (s: RootState, _: string[]) => s.ws.currentTime,
   (_: RootState, pids: string[]) => pids,
-  (products, productInstances, currentTime, pids) => {
-    return pids.map(x => {
-      const productEntry = getProductEntryById(products, x);
-      const name = getProductInstanceById(productInstances, productEntry.product.baseProductId)?.displayName ?? "UNDEFINED";
-      return { id: x, disableData: DisableDataCheck(productEntry.product.disabled, [], currentTime), name }
-    })
-  }
+  (products, productInstances, currentTime, pids) => pids.map(x => {
+    const productEntry = getProductEntryById(products, x);
+    const name = getProductInstanceById(productInstances, productEntry.product.baseProductId)?.displayName ?? "UNDEFINED";
+    return { id: x, disableData: DisableDataCheck(productEntry.product.disabled, [], currentTime), name }
+  })
 );
 
 const selectProductModifierList = weakMapCreateSelector(
@@ -64,9 +68,7 @@ const ProductModifierList = (params: GridRenderCellParams<RowType>) => {
 const selectProductPrinterName = weakMapCreateSelector(
   (s: RootState, pid: string) => getProductEntryById(s.ws.products, pid),
   (s: RootState, _: string) => s.printerGroup.printerGroups,
-  (product, printerGroups) => {
-    return product.product.printerGroup ? getPrinterGroupById(printerGroups, product.product.printerGroup)?.name ?? "" : ""
-  }
+  (product, printerGroups) => product.product.printerGroup ? getPrinterGroupById(printerGroups, product.product.printerGroup)?.name ?? "" : ""
 );
 
 const ProductPrinterGroupName = (params: GridRenderCellParams<RowType>) => {
@@ -76,9 +78,7 @@ const ProductPrinterGroupName = (params: GridRenderCellParams<RowType>) => {
 
 const selectProductPrice = weakMapCreateSelector(
   (s: RootState, pid: string) => getProductEntryById(s.ws.products, pid),
-  (product) => {
-    return `$${Number(product.product.price.amount / 100).toFixed(2)}`;
-  }
+  (product) => `$${Number(product.product.price.amount / 100).toFixed(2)}`
 );
 
 const ProductPrice = (params: GridRenderCellParams<RowType>) => {

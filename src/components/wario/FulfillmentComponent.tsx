@@ -1,28 +1,28 @@
-import React, { useMemo, useState } from 'react';
-import type { Polygon } from 'geojson';
 import { format, setDay } from 'date-fns';
+import type { Polygon } from 'geojson';
+import React, { useMemo, useState } from 'react';
 
 import {
-  Grid,
-  TextField,
-  Card,
   Autocomplete,
   Button,
+  Card,
   CardHeader,
-  Stack,
   Chip,
   Divider,
+  Grid,
+  Stack,
+  TextField,
   Typography
 } from '@mui/material';
-import { ElementActionComponent } from './menu/element.action.component';
-import { DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wcpshared';
+import { DateIntervalsEntries, DayOfTheWeek, FulfillmentType, IWInterval, OperatingHourSpecification, WDateUtils } from '@wcp/wario-shared';
 import { useAppSelector } from '../../hooks/useRedux';
-import { CheckedNumericInput } from './CheckedNumericTextInput';
 import { ValSetValNamed } from '../../utils/common';
-import { StringPropertyComponent } from './property-components/StringPropertyComponent';
+import { CheckedNumericInput } from './CheckedNumericTextInput';
+import { ElementActionComponent } from './menu/element.action.component';
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
-import { ToggleBooleanPropertyComponent } from './property-components/ToggleBooleanPropertyComponent';
 import { StringEnumPropertyComponent } from './property-components/StringEnumPropertyComponent';
+import { StringPropertyComponent } from './property-components/StringPropertyComponent';
+import { ToggleBooleanPropertyComponent } from './property-components/ToggleBooleanPropertyComponent';
 
 
 export interface OperatingHoursIntervalFormProps {
@@ -90,7 +90,7 @@ const OperatingHoursIntervalForm = ({
           />}
         />
       </Grid>
-      <Grid sx={{m: 'auto'}} size={2}>
+      <Grid sx={{ m: 'auto' }} size={2}>
         <Button
           disabled={start === null || end === null || disabled}
           onClick={() => onSubmitHandler()}>Add</Button>
@@ -118,7 +118,7 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
   return (
     <Card>
       <CardHeader title={props.label} />
-      <Divider sx={{m:1}} />
+      <Divider sx={{ m: 1 }} />
       <Grid container spacing={2} justifyContent={'center'}>
         {Object.keys(props.operatingHours).filter(x => x !== "_id").map((key, day: DayOfTheWeek) =>
           <React.Fragment key={day}>
@@ -135,12 +135,12 @@ const OperatingHoursComponent = function (props: IntervalsComponentBaseProps & V
                 xs: 12,
                 sm: 8
               }}>
-                {props.operatingHours[day].map((interval, j) => (
-                  <Stack direction='row' key={j} sx={{m:1}} spacing={2}>
-                    <Chip label={`${WDateUtils.MinutesToPrintTime(interval.start)} - ${WDateUtils.MinutesToPrintTime(interval.end)}`}
-                      onDelete={() => onRemoveOperatingHours(day, interval)} />
-                  </Stack>
-                ))}
+              {props.operatingHours[day].map((interval, j) => (
+                <Stack direction='row' key={j} sx={{ m: 1 }} spacing={2}>
+                  <Chip label={`${WDateUtils.MinutesToPrintTime(interval.start)} - ${WDateUtils.MinutesToPrintTime(interval.end)}`}
+                    onDelete={() => onRemoveOperatingHours(day, interval)} />
+                </Stack>
+              ))}
             </Grid>
             <Grid size={12}>
               <OperatingHoursIntervalForm
@@ -278,7 +278,7 @@ const FulfillmentComponent = (props: FulfillmentComponentProps) => {
               label="Service Terms (Each line a new bullet point)"
               type="text"
               value={props.terms.join('\n')}
-              onChange={(e) => props.setTerms(e.target.value.trim().split('\n').filter(x=>x.length > 0))}
+              onChange={(e) => props.setTerms(e.target.value.trim().split('\n').filter(x => x.length > 0))}
             />
           </Grid>
           { /* universal break */}

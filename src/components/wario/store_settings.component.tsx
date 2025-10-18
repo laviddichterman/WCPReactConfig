@@ -1,5 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { IWSettings } from "@wcp/wcpshared";
+import { IWSettings } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { HOST_API } from "../../config";

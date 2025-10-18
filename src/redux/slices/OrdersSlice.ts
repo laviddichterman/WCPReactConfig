@@ -1,5 +1,5 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { FulfillmentTime, ResponseSuccess, WOrderInstance } from "@wcp/wcpshared";
+import { FulfillmentTime, ResponseSuccess, WOrderInstance } from "@wcp/wario-shared";
 import { enqueueSnackbar } from 'notistack';
 import { axiosInstance } from "../../utils/axios";
 import { uuidv4 } from "../../utils/uuidv4";

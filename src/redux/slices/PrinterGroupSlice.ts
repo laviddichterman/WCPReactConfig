@@ -1,5 +1,5 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { PrinterGroup } from "@wcp/wcpshared";
+import { PrinterGroup } from "@wcp/wario-shared";
 import { axiosInstance } from "../../utils/axios";
 export const PrinterGroupAdapter = createEntityAdapter<PrinterGroup>();
 export const { selectAll: getPrinterGroups, selectById: getPrinterGroupById, selectIds: getPrinterGroupIds } =

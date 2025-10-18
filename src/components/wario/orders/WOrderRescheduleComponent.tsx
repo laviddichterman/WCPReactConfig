@@ -3,15 +3,15 @@ import { useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 
-import { WDateUtils } from "@wcp/wcpshared";
-import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 import { Autocomplete, Grid, TextField } from "@mui/material";
+import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
+import { WDateUtils } from "@wcp/wario-shared";
+import { getFulfillmentById, SelectDateFnsAdapter, weakMapCreateSelector } from "@wcp/wario-ux-shared";
 import { addDays, parseISO, startOfDay } from "date-fns";
 import { range } from 'lodash';
-import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
 import { getWOrderInstanceById, rescheduleOrder } from "../../../redux/slices/OrdersSlice";
-import { weakMapCreateSelector, getFulfillmentById, SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
 import { RootState } from "../../../redux/store";
+import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 
 const selectFulfillmentForOrderId = weakMapCreateSelector(
   (s: RootState, _oId: string) => s.ws.fulfillments,
@@ -24,7 +24,7 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
   const order = useAppSelector(s => getWOrderInstanceById(s.orders.orders, props.orderId))!;
-  const fulfillmentTimeStep = useAppSelector(s=>selectFulfillmentForOrderId(s, props.orderId).timeStep);
+  const fulfillmentTimeStep = useAppSelector(s => selectFulfillmentForOrderId(s, props.orderId).timeStep);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const minDay = useAppSelector(s => startOfDay(s.ws.currentTime));
   const DateAdapter = useAppSelector(s => SelectDateFnsAdapter(s));
@@ -57,7 +57,7 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
                 displayStaticWrapperAs="desktop"
                 openTo="day"
                 minDate={minDay}
-                maxDate={addDays(minDay, 60 )}
+                maxDate={addDays(minDay, 60)}
                 value={parseISO(selectedDate)}
                 onChange={(date) => setSelectedDate(WDateUtils.formatISODate(date!))}
                 slotProps={{

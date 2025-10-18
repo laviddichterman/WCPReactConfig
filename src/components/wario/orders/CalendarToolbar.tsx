@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles';
 // hooks
 import { useResponsive } from '../../../hooks/useResponsive';
 // components
-import { WDateUtils } from '@wcp/wcpshared';
+import { WDateUtils } from '@wcp/wario-shared';
 import { format } from 'date-fns';
 import { Iconify } from '../../../components/Iconify';
 import { CalendarView } from './CalendarStyle';

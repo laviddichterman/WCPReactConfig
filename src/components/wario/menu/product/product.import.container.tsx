@@ -2,7 +2,7 @@ import { Autocomplete, Grid, TextField } from '@mui/material';
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { CreateProductBatch, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wcpshared";
+import { CreateProductBatch, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
 import { ParseResult } from "papaparse";
 

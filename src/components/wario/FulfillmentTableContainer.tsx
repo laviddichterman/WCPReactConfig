@@ -4,8 +4,8 @@ import { Dispatch, SetStateAction } from "react";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
 import { GridActionsCellItem, useGridApiRef } from "@mui/x-data-grid-premium";
+import { FulfillmentConfig } from "@wcp/wario-shared";
 import { getFulfillments } from "@wcp/wario-ux-shared";
-import { FulfillmentConfig } from "@wcp/wcpshared";
 import { useAppSelector } from "../../hooks/useRedux";
 import { TableWrapperComponent } from "./table_wrapper.component";
 

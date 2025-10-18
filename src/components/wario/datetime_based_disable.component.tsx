@@ -1,4 +1,4 @@
-import type { IWInterval } from "@wcp/wcpshared";
+import type { IWInterval } from "@wcp/wario-shared";
 import type { ValSetVal } from "src/utils/common";
 
 import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';

@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { WOrderStatus } from "@wcp/wcpshared";
+import { WOrderStatus } from "@wcp/wario-shared";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { getWOrderInstanceById } from "../../../redux/slices/OrdersSlice";
 import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";

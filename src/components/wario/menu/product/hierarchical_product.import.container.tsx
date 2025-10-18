@@ -1,19 +1,24 @@
-import { Autocomplete, Grid, TextField } from '@mui/material';
-import { Dispatch, SetStateAction, useState } from "react";
+import type { CreateIProduct, CreateIProductInstance, IProduct, IProductInstance, IProductModifier, KeyValue, UpdateIProduct, UpdateIProductUpdateIProductInstance, UpsertProductBatch } from "@wcp/wario-shared";
+import type { ParseResult } from "papaparse";
+import type { Dispatch, SetStateAction } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { CreateIProduct, CreateIProductInstance, IProduct, IProductInstance, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey, UpdateIProduct, UpdateIProductUpdateIProductInstance, UpsertProductBatch } from "@wcp/wcpshared";
+import { PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
-import { ParseResult, unparse } from "papaparse";
+import { unparse } from "papaparse";
+import { useState } from "react";
+
+import { Autocomplete, Grid, TextField } from '@mui/material';
 
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
-import { ValSetValNamed } from '../../../../utils/common';
 import GenericCsvImportComponent from "../../generic_csv_import.component";
 import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
 import { ElementActionComponent } from "../element.action.component";
 import ProductModifierComponent from "./ProductModifierComponent";
+
+import type { ValSetValNamed } from '../../../../utils/common';
 
 interface CSVProduct {
   ID: string;
@@ -86,7 +91,7 @@ const HierarchicalProductImportComponent = (props: HierarchicalProductImportComp
               label="Create Missing Categories"
               setValue={props.setCreateCategories}
               value={props.createCategories}
-              labelPlacement={'end'}
+              labelPlacement="end"
             />
           </Grid>
           <Grid size={6}>
@@ -95,7 +100,7 @@ const HierarchicalProductImportComponent = (props: HierarchicalProductImportComp
               label="Download CSV"
               setValue={props.setDownloadCsv}
               value={props.downloadCsv}
-              labelPlacement={'end'}
+              labelPlacement="end"
             />
           </Grid>
           <Grid size={12}>
@@ -358,7 +363,7 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
         displayName: DisplayName,
         description: Description || "",
         externalIDs: externalIds,
-        ordinal: ordinal,
+        ordinal,
         shortcode: Shortname,
         modifiers: [],
         displayFlags: {
@@ -370,13 +375,13 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
           menu: {
             adornment: "",
             hide: false,
-            ordinal: ordinal,
+            ordinal,
             show_modifier_options: false,
             price_display: PriceDisplay.ALWAYS,
             suppress_exhaustive_modifier_list: false
           },
           order: {
-            ordinal: ordinal,
+            ordinal,
             adornment: '',
             hide: false,
             price_display: PriceDisplay.ALWAYS,
@@ -425,13 +430,13 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
         menu: {
           adornment: "",
           hide: false,
-          ordinal: ordinal,
+          ordinal,
           show_modifier_options: false,
           price_display: PriceDisplay.ALWAYS,
           suppress_exhaustive_modifier_list: false
         },
         order: {
-          ordinal: ordinal,
+          ordinal,
           adornment: '',
           hide: false,
           price_display: PriceDisplay.ALWAYS,
@@ -439,7 +444,7 @@ function CSVProductToProduct(prod: CSVProduct, ordinal: number, singularNoun: st
           suppress_exhaustive_modifier_list: false
         },
       },
-      ordinal: ordinal,
+      ordinal,
       shortcode: Shortname,
     } as CreateIProductInstance]
   } as UpsertProductBatch;
@@ -481,19 +486,17 @@ type BatchUpsertProductResponse = {
   instances: IProductInstance[];
 }[];
 
-const ResponseBodyToCSVProducts = (responseBody: BatchUpsertProductResponse): CSVProduct[] => {
-  return responseBody.flatMap((r) => r.instances.map((i) => ({
-    ID: `${r.product.id}/${i.id}`,
-    Disabled: r.product.disabled && r.product.disabled.start > r.product.disabled.end ? "TRUE" : "FALSE",
-    Categories: i.externalIDs.filter(x => x.key === 'Categories').map(x => x.value).join(','),
-    DisplayName: i.displayName,
-    Description: i.description,
-    PosName: i.displayFlags.pos.name,
-    Shortname: i.shortcode,
-    Price: (r.product.price.amount / 100).toFixed(2),
-    ...i.externalIDs.reduce((acc, curr) => (curr.key.startsWith("SQID") ? acc : { ...acc, [curr.key]: curr.value }), {})
-  })));
-};
+const ResponseBodyToCSVProducts = (responseBody: BatchUpsertProductResponse): CSVProduct[] => responseBody.flatMap((r) => r.instances.map((i) => ({
+  ID: `${r.product.id}/${i.id}`,
+  Disabled: r.product.disabled && r.product.disabled.start > r.product.disabled.end ? "TRUE" : "FALSE",
+  Categories: i.externalIDs.filter(x => x.key === 'Categories').map(x => x.value).join(','),
+  DisplayName: i.displayName,
+  Description: i.description,
+  PosName: i.displayFlags.pos.name,
+  Shortname: i.shortcode,
+  Price: (r.product.price.amount / 100).toFixed(2),
+  ...i.externalIDs.reduce((acc, curr) => (curr.key.startsWith("SQID") ? acc : { ...acc, [curr.key]: curr.value }), {})
+})));
 
 /**
  * 

@@ -1,16 +1,19 @@
-import { useCallback, useState } from "react";
+import type { IOption, IOptionType } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography, Switch, FormControlLabel } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
-import { ModifierTypeComponent } from "./modifier_type.component";
-import { ModifierOptionContainer } from "../modifier_option/modifier_option.component";
-import { HOST_API } from "../../../../config";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import { DISPLAY_AS, IOption, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
+import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
 import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 import { useSnackbar } from "notistack";
+import { useCallback, useState } from "react";
+
+import { ExpandMore } from "@mui/icons-material";
+import { Accordion, AccordionDetails, AccordionSummary, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
+
+import { HOST_API } from "../../../../config";
+import { useAppSelector } from "../../../../hooks/useRedux";
 import { useIndexedState } from "../../../../utils/common";
+import { ModifierOptionContainer } from "../modifier_option/modifier_option.component";
+import { ModifierTypeComponent } from "./modifier_type.component";
 
 export interface ModifierTypeCopyContainerProps {
   modifierTypeId: string;
@@ -18,8 +21,8 @@ export interface ModifierTypeCopyContainerProps {
 };
 const ModifierTypeCopyContainer = ({ modifierTypeId, onCloseCallback }: ModifierTypeCopyContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifierTypeEntry = useAppSelector(s=>getModifierTypeEntryById(s.ws.modifierEntries, modifierTypeId)!);
-  const allOptions = useAppSelector(s=>s.ws.catalog!.options);
+  const modifierTypeEntry = useAppSelector(s => getModifierTypeEntryById(s.ws.modifierEntries, modifierTypeId)!);
+  const allOptions = useAppSelector(s => s.ws.catalog!.options);
 
   const [ordinal, setOrdinal] = useState(modifierTypeEntry.modifierType.ordinal);
   const [name, setName] = useState(modifierTypeEntry.modifierType.name);

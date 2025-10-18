@@ -16,7 +16,7 @@ import {
   TextField
 } from '@mui/material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
-import { FulfillmentConfig, GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wcpshared";
+import { FulfillmentConfig, GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wario-shared";
 import { add, format, formatISO, parseISO, startOfDay } from "date-fns";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 

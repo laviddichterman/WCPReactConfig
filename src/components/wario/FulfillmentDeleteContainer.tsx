@@ -1,10 +1,10 @@
 import { useState } from "react";
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { FulfillmentConfig } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
-import { FulfillmentConfig } from "@wcp/wcpshared";
-import ElementDeleteComponent from "./menu/element.delete.component";
 import { HOST_API } from "../../config";
+import ElementDeleteComponent from "./menu/element.delete.component";
 
 export interface FulfillmentQuickActionProps {
   fulfillment: FulfillmentConfig;
@@ -12,7 +12,7 @@ export interface FulfillmentQuickActionProps {
 }
 const FulfillmentDeleteContainer = ({ fulfillment, onCloseCallback }: FulfillmentQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 

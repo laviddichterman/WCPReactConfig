@@ -1,10 +1,13 @@
+import type { GridRowParams } from "@mui/x-data-grid-premium";
+import type { PrinterGroup } from "@wcp/wario-shared";
+
+import { DialogContainer } from "@wcp/wario-ux-shared";
 import React, { useState } from "react";
 
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
-import { GridActionsCellItem, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
-import { DialogContainer } from "@wcp/wario-ux-shared";
-import { PrinterGroup } from "@wcp/wcpshared";
+import { GridActionsCellItem, useGridApiRef } from "@mui/x-data-grid-premium";
+
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from "../../../../redux/slices/PrinterGroupSlice";
 import { TableWrapperComponent } from "../../table_wrapper.component";
@@ -65,8 +68,8 @@ const PrinterGroupTableContainer = () => {
         disableToolbar={false}
       />
       <DialogContainer
-        maxWidth={"xl"}
-        title={"Add Printer Group"}
+        maxWidth="xl"
+        title="Add Printer Group"
         onClose={() => setIsPrinterGroupAddOpen(false)}
         open={isPrinterGroupAddOpen}
         innerComponent={
@@ -76,8 +79,8 @@ const PrinterGroupTableContainer = () => {
         }
       />
       <DialogContainer
-        maxWidth={"xl"}
-        title={"Edit Printer Group"}
+        maxWidth="xl"
+        title="Edit Printer Group"
         onClose={() => setIsPrinterGroupEditOpen(false)}
         open={isPrinterGroupEditOpen}
         innerComponent={
@@ -89,7 +92,7 @@ const PrinterGroupTableContainer = () => {
         }
       />
       <DialogContainer
-        title={"Delete Printer Group"}
+        title="Delete Printer Group"
         onClose={() => {
           setIsPrinterGroupDeleteOpen(false);
         }}

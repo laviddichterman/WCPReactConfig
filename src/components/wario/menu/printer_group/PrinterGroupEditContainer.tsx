@@ -1,12 +1,15 @@
-import { useState } from "react";
+import type { PrinterGroup } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { PrinterGroup } from "@wcp/wcpshared";
-import PrinterGroupComponent, { PrinterGroupEditProps } from "./PrinterGroupComponent";
-import { HOST_API } from "../../../../config";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+
+import { HOST_API } from "../../../../config";
 import { useAppDispatch } from "../../../../hooks/useRedux";
 import { queryPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
+import PrinterGroupComponent from "./PrinterGroupComponent";
+
+import type { PrinterGroupEditProps } from "./PrinterGroupComponent";
 
 const PrinterGroupEditContainer = ({ printerGroup, onCloseCallback }: PrinterGroupEditProps) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -23,7 +26,7 @@ const PrinterGroupEditContainer = ({ printerGroup, onCloseCallback }: PrinterGro
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
-        const body : Omit<PrinterGroup, "id"> = {
+        const body: Omit<PrinterGroup, "id"> = {
           name,
           externalIDs: externalIds,
           isExpo,

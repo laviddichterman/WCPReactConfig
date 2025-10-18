@@ -1,5 +1,5 @@
 import { Autocomplete, Grid, TextField } from "@mui/material";
-import { IMoney, IOptionType, IRecurringInterval, IWInterval, KeyValue, RecordProductInstanceFunctions } from "@wcp/wcpshared";
+import { IMoney, IOptionType, IRecurringInterval, IWInterval, KeyValue, RecordProductInstanceFunctions } from "@wcp/wario-shared";
 
 import { useState } from "react";
 import { useAppSelector } from '../../../../hooks/useRedux';

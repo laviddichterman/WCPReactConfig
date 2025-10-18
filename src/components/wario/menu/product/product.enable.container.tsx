@@ -1,16 +1,18 @@
-import { useState } from "react";
+import type { IProduct } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { Grid } from "@mui/material";
-import { HOST_API } from "../../../../config";
-import { ElementActionComponent } from "../element.action.component";
-
 import { getProductEntryById } from "@wcp/wario-ux-shared";
-import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+
+import { Grid } from "@mui/material";
+
+import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { selectBaseProductName } from "../../../../redux/store";
-import { ProductQuickActionProps } from './product.delete.container';
+import { ElementActionComponent } from "../element.action.component";
+
+import type { ProductQuickActionProps } from './product.delete.container';
 
 const ProductEnableContainer = ({ product_id, onCloseCallback }: ProductQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();

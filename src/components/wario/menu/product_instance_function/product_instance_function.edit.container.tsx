@@ -4,8 +4,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { HOST_API } from "../../../../config";
 import ProductInstanceFunctionComponent from "./product_instance_function.component";
 
+import { IProductInstanceFunction } from "@wcp/wario-shared";
 import { getProductInstanceFunctionById } from "@wcp/wario-ux-shared";
-import { IProductInstanceFunction } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { ProductInstanceFunctionQuickActionProps } from './product_instance_function.delete.container';

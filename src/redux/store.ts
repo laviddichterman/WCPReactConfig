@@ -1,9 +1,9 @@
 import type { EventInput } from '@fullcalendar/core';
-import type { CoreCartEntry, WCPProductV2Dto, WOrderInstance } from '@wcp/wcpshared';
+import type { CoreCartEntry, WCPProductV2Dto, WOrderInstance } from '@wcp/wario-shared';
 
 import { configureStore, createSelector } from '@reduxjs/toolkit';
+import { CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WDateUtils, WOrderStatus } from '@wcp/wario-shared';
 import { getCategoryEntryById, getFulfillmentById, getProductEntries, getProductInstanceById, lruMemoizeOptionsWithSize, SelectBaseProductNameByProductId, SelectCatalogSelectors, selectGroupedAndOrderedCart, SelectParentProductEntryFromProductInstanceId, weakMapCreateSelector } from '@wcp/wario-ux-shared';
-import { CreateProductWithMetadataFromV2Dto, DateTimeIntervalBuilder, EventTitleStringBuilder, RebuildAndSortCart, WDateUtils, WOrderStatus } from '@wcp/wcpshared';
 
 import { rootReducer } from './rootReducer';
 import { getWOrderInstances } from './slices/OrdersSlice';

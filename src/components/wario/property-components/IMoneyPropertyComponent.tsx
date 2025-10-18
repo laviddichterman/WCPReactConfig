@@ -1,4 +1,4 @@
-import { IMoney, RoundToTwoDecimalPlaces } from "@wcp/wcpshared";
+import { IMoney, RoundToTwoDecimalPlaces } from "@wcp/wario-shared";
 import { ValSetVal } from "../../../utils/common";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 

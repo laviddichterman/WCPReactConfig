@@ -1,8 +1,8 @@
 import { ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, FormControlLabel, Grid, IconButton, TextField, Typography } from "@mui/material";
 import { DateTimePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+import { IRecurringInterval, IWInterval, WDateUtils } from "@wcp/wario-shared";
 import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
-import { IRecurringInterval, IWInterval, WDateUtils } from "@wcp/wcpshared";
 import { differenceInMinutes, format, isValid, setDay, setMilliseconds, setMinutes, setMonth, setSeconds, startOfDay, toDate } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
 import { Frequency, RRule, Weekday } from 'rrule';

@@ -3,8 +3,8 @@ import { Dispatch, SetStateAction } from "react";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
 import { GridActionsCellItem } from "@mui/x-data-grid-premium";
+import { OrderFunctional, OrderInstanceFunction } from "@wcp/wario-shared";
 import { getModifierOptionById, getModifierTypeEntryById, getOrderInstanceFunctions } from "@wcp/wario-ux-shared";
-import { OrderFunctional, OrderInstanceFunction } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { TableWrapperComponent } from "../table_wrapper.component";
 interface OIFTableContainerProps {

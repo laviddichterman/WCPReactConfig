@@ -1,12 +1,13 @@
-import { useState } from "react";
+import type { KeyValue, PrinterGroup } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import PrinterGroupComponent from "./PrinterGroupComponent";
-import { HOST_API } from "../../../../config";
-import { KeyValue, PrinterGroup } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+
+import { HOST_API } from "../../../../config";
 import { useAppDispatch } from "../../../../hooks/useRedux";
 import { queryPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
+import PrinterGroupComponent from "./PrinterGroupComponent";
 
 export interface PrinterGroupAddContainerProps {
   onCloseCallback: VoidFunction;
@@ -27,7 +28,7 @@ const PrinterGroupAddContainer = ({ onCloseCallback }: PrinterGroupAddContainerP
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
-        const body : Omit<PrinterGroup, "id"> = {
+        const body: Omit<PrinterGroup, "id"> = {
           name,
           externalIDs: externalIds,
           isExpo,

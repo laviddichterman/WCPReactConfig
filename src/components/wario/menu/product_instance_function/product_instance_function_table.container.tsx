@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
 import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
+import { IAbstractExpression, IProductInstanceFunction, WFunctional } from "@wcp/wario-shared";
 import { DialogContainer, getModifierOptionById, getModifierTypeEntryById, getProductInstanceFunctions } from "@wcp/wario-ux-shared";
-import { IAbstractExpression, IProductInstanceFunction, WFunctional } from "@wcp/wcpshared";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { TableWrapperComponent } from "../../table_wrapper.component";
 interface PIFTableContainerProps {

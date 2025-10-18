@@ -6,8 +6,8 @@ import {
   Grid,
   TextField
 } from '@mui/material';
+import { IProductModifier } from '@wcp/wario-shared';
 import { getFulfillments } from '@wcp/wario-ux-shared';
-import { IProductModifier } from '@wcp/wcpshared';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { ValSetValNamed } from '../../../../utils/common';
 

@@ -1,14 +1,17 @@
+import type { IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming } from '@wcp/wario-shared';
+
+import { ReduceArrayToMapByKey } from '@wcp/wario-shared';
+import { getFulfillments } from '@wcp/wario-ux-shared';
+import React, { useState } from 'react';
+
 import {
   Autocomplete,
   Grid,
   TextField,
 } from '@mui/material';
-import { getFulfillments } from '@wcp/wario-ux-shared';
-import { IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, ReduceArrayToMapByKey } from '@wcp/wcpshared';
-import React, { useState } from 'react';
+
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
-import { ValSetValNamed } from '../../../../utils/common';
 import AvailabilityListBuilderComponent from '../../AvailabilityListBuilderComponent';
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../../datetime_based_disable.component';
 import { ExternalIdsExpansionPanelComponent } from '../../ExternalIdsExpansionPanelComponent';
@@ -19,6 +22,8 @@ import { StringPropertyComponent } from '../../property-components/StringPropert
 import { ToggleBooleanPropertyComponent } from '../../property-components/ToggleBooleanPropertyComponent';
 import { ElementActionComponent } from '../element.action.component';
 import ProductModifierComponent from "./ProductModifierComponent";
+
+import type { ValSetValNamed } from '../../../../utils/common';
 
 
 type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
@@ -200,7 +205,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               label="Is 3rd Party"
               setValue={props.setIs3p}
               value={props.is3p}
-              labelPlacement={'end'}
+              labelPlacement="end"
             />
           </Grid>
           <Grid size={9}>

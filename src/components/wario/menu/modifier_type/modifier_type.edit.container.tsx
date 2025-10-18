@@ -1,16 +1,20 @@
-import { useState } from "react";
+import type { IOptionType } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import ModifierTypeComponent, { ModifierTypeModifyUiProps } from "./modifier_type.component";
-import { HOST_API } from "../../../../config";
-import { DISPLAY_AS, IOptionType, MODIFIER_CLASS } from "@wcp/wcpshared";
-import { useSnackbar } from "notistack";
-import { useAppSelector } from "../../../../hooks/useRedux";
+import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
 import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+
+import { HOST_API } from "../../../../config";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import ModifierTypeComponent from "./modifier_type.component";
+
+import type { ModifierTypeModifyUiProps } from "./modifier_type.component";
 
 const ModifierTypeEditContainer = ({ modifier_type_id, onCloseCallback }: ModifierTypeModifyUiProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifier_type = useAppSelector(s=> getModifierTypeEntryById(s.ws.modifierEntries, modifier_type_id)!.modifierType);
+  const modifier_type = useAppSelector(s => getModifierTypeEntryById(s.ws.modifierEntries, modifier_type_id)!.modifierType);
   const [ordinal, setOrdinal] = useState(modifier_type.ordinal);
   const [name, setName] = useState(modifier_type.name);
   const [displayName, setDisplayName] = useState(modifier_type.displayName ?? "");

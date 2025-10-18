@@ -1,8 +1,10 @@
-import { useState } from "react";
+import type { CreateProductBatch, IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, ProductModifierEntry } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { CreateProductBatch, CURRENCY, IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, PriceDisplay, ProductModifierEntry } from "@wcp/wcpshared";
+import { CURRENCY, PriceDisplay } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+
 import { HOST_API } from "../../../../config";
 import { ProductInstanceContainer } from "./instance/product_instance.component";
 import { ProductComponent } from "./product.component";
@@ -120,7 +122,7 @@ const ProductAddContainer = ({ onCloseCallback }: ProductAddContainerProps) => {
             },
             category_ids: parentCategories,
             printerGroup,
-            modifiers: modifiers,
+            modifiers,
           }
         };
         const response = await fetch(`${HOST_API}/api/v1/menu/product/`, {

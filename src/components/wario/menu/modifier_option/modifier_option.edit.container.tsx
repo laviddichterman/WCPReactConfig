@@ -1,12 +1,13 @@
-import { useState } from "react";
+import type { IOption } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { ModifierOptionComponent } from "./modifier_option.component";
-import { HOST_API } from "../../../../config";
-import { IOption } from "@wcp/wcpshared";
-import { useSnackbar } from "notistack";
-import { useAppSelector } from "../../../../hooks/useRedux";
 import { getModifierOptionById, getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+
+import { HOST_API } from "../../../../config";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { ModifierOptionComponent } from "./modifier_option.component";
 
 interface ModifierOptionEditContainerProps {
   modifier_option_id: string;
@@ -14,8 +15,8 @@ interface ModifierOptionEditContainerProps {
 }
 const ModifierOptionEditContainer = ({ modifier_option_id, onCloseCallback }: ModifierOptionEditContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifier_option = useAppSelector(s=> getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
-  const modifierTypeEntry = useAppSelector(s=>getModifierTypeEntryById(s.ws.modifierEntries, getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!.modifierTypeId)!);
+  const modifier_option = useAppSelector(s => getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
+  const modifierTypeEntry = useAppSelector(s => getModifierTypeEntryById(s.ws.modifierEntries, getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!.modifierTypeId)!);
   const [displayName, setDisplayName] = useState(modifier_option.displayName);
   const [description, setDescription] = useState(modifier_option.description);
   const [shortcode, setShortcode] = useState(modifier_option.shortcode);
@@ -41,28 +42,28 @@ const ModifierOptionEditContainer = ({ modifier_option_id, onCloseCallback }: Mo
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
-        const body : Omit<IOption, "id" | "modifierTypeId"> = {
-            displayName,
-            description,
-            shortcode,
-            disabled,
-            availability,
-            price,
-            ordinal,
-            enable: enableFunction ? enableFunction : null,
-            metadata: {
-              flavor_factor: flavorFactor,
-              bake_factor: bakeFactor,
-              can_split: canSplit,
-              allowHeavy,
-              allowLite,
-              allowOTS
-            },
-            externalIDs: externalIds,
-            displayFlags: {
-              omit_from_shortname: omitFromShortname,
-              omit_from_name: omitFromName
-            }
+        const body: Omit<IOption, "id" | "modifierTypeId"> = {
+          displayName,
+          description,
+          shortcode,
+          disabled,
+          availability,
+          price,
+          ordinal,
+          enable: enableFunction ? enableFunction : null,
+          metadata: {
+            flavor_factor: flavorFactor,
+            bake_factor: bakeFactor,
+            can_split: canSplit,
+            allowHeavy,
+            allowLite,
+            allowOTS
+          },
+          externalIDs: externalIds,
+          displayFlags: {
+            omit_from_shortname: omitFromShortname,
+            omit_from_name: omitFromName
+          }
         }
         const response = await fetch(`${HOST_API}/api/v1/menu/option/${modifier_option.modifierTypeId}/${modifier_option.id}`, {
           method: "PATCH",

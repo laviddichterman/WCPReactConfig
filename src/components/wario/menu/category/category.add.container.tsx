@@ -1,11 +1,13 @@
-import { useState } from "react";
+import type { ICategory } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { HOST_API } from "../../../../config";
-import { CALL_LINE_DISPLAY, CategoryDisplay, ICategory } from "@wcp/wcpshared";
-import { useAppSelector } from "../../../../hooks/useRedux";
+import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wario-shared";
 import { getCategoryEntryIds } from "@wcp/wario-ux-shared";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+
+import { HOST_API } from "../../../../config";
+import { useAppSelector } from "../../../../hooks/useRedux";
 import CategoryComponent from "./category.component";
 
 export interface CategoryAddContainerProps {
@@ -14,7 +16,7 @@ export interface CategoryAddContainerProps {
 
 const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const categoryIds = useAppSelector(s => getCategoryEntryIds(s.ws.categories));
   const [description, setDescription] = useState("");
   const [subheading, setSubheading] = useState("");
@@ -34,7 +36,7 @@ const CategoryAddContainer = ({ onCloseCallback }: CategoryAddContainerProps) =>
       setIsProcessing(true);
       try {
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
-        const body : Omit<ICategory, "id"> = {
+        const body: Omit<ICategory, "id"> = {
           description,
           subheading,
           footnotes,

@@ -1,16 +1,18 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import { ReduceArrayToMapByKey } from "@wcp/wario-shared";
+import { useSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import { HOST_API } from "../../../../config";
-import { PrinterGroupEditProps } from "./PrinterGroupComponent";
-import { useSnackbar } from "notistack";
-import { ElementActionComponent } from "../element.action.component";
 import { Warning } from "@mui/icons-material";
 import { Autocomplete, Grid, TextField } from "@mui/material";
-import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
-import { getPrinterGroups, queryPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
-import { ReduceArrayToMapByKey } from "@wcp/wcpshared";
+
+import { HOST_API } from "../../../../config";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
+import { getPrinterGroups, queryPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
+import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
+import { ElementActionComponent } from "../element.action.component";
+
+import type { PrinterGroupEditProps } from "./PrinterGroupComponent";
 
 
 const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterGroupEditProps) => {
@@ -18,7 +20,7 @@ const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterG
   const dispatch = useAppDispatch();
   const printerGroups = useAppSelector(s => ReduceArrayToMapByKey(getPrinterGroups(s.printerGroup.printerGroups), 'id'));
   const [reassign, setReassign] = useState(true);
-  const [destinationPrinterGroup, setDestinationPrinterGroup] = useState<string|null>(null);
+  const [destinationPrinterGroup, setDestinationPrinterGroup] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const disableConfirmOn = useMemo(() => isProcessing || (reassign && destinationPrinterGroup === null) || (!reassign && destinationPrinterGroup !== null) || destinationPrinterGroup === printerGroup.id, [printerGroup.id, isProcessing, destinationPrinterGroup, reassign])
   const { getAccessTokenSilently } = useAuth0();
@@ -67,9 +69,9 @@ const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterG
     <ElementActionComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deletePrinterGroup}
-      isProcessing={isProcessing} 
+      isProcessing={isProcessing}
       disableConfirmOn={disableConfirmOn}
-      confirmText={"Confirm"}
+      confirmText="Confirm"
       body={
         <>
           <Grid size={12}>
@@ -88,7 +90,7 @@ const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterG
             <Autocomplete
               filterSelectedOptions
               disabled={isProcessing || !reassign}
-              options={Object.keys(printerGroups).filter(p=> p!==printerGroup.id)}
+              options={Object.keys(printerGroups).filter(p => p !== printerGroup.id)}
               value={destinationPrinterGroup}
               onChange={(e, v) => setDestinationPrinterGroup(v)}
               getOptionLabel={(pgId) => printerGroups[pgId].name ?? "Undefined"}

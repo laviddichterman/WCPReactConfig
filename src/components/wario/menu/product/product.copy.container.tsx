@@ -1,11 +1,13 @@
-import { useCallback, useState } from "react";
+import type { CreateProductBatch } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { getProductEntryById } from "@wcp/wario-ux-shared";
+import { useSnackbar } from "notistack";
+import { useCallback, useState } from "react";
+
 import { ExpandMore } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
-import { getProductEntryById } from "@wcp/wario-ux-shared";
-import { CreateProductBatch } from "@wcp/wcpshared";
-import { useSnackbar } from "notistack";
+
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { useIndexedState } from "../../../../utils/common";
@@ -216,7 +218,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
         const token = await getAccessTokenSilently({ authorizationParams: { scope: "write:catalog" } });
         const productCopyBody: CreateProductBatch = {
           product: {
-            price: price,
+            price,
             serviceDisable,
             externalIDs: externalIds,
             displayFlags: {
@@ -233,7 +235,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
             },
             category_ids: parentCategories,
             printerGroup,
-            modifiers: modifiers,
+            modifiers,
             disabled,
             availability,
             timing

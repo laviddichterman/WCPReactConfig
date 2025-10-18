@@ -1,9 +1,11 @@
-import { useState } from "react";
+import type { IProductInstance } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { PriceDisplay } from "@wcp/wario-shared";
 import { getProductInstanceById } from "@wcp/wario-ux-shared";
-import { IProductInstance, PriceDisplay } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+
 import { HOST_API } from "../../../../../config";
 import { useAppSelector } from "../../../../../hooks/useRedux";
 import { selectParentProductEntryFromProductInstanceId } from "../../../../../redux/store";

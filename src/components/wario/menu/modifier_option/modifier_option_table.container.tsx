@@ -1,8 +1,13 @@
+import type { GridRowParams } from "@mui/x-data-grid-premium";
+import type { IMoney, IOption, IOptionType, IWInterval } from '@wcp/wario-shared';
+
+import { DISABLE_REASON, DisableDataCheck } from '@wcp/wario-shared';
+import { format } from 'date-fns';
+
 import { BedtimeOff, Cancel, CheckCircle, DeleteOutline, Edit } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
-import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
-import { DISABLE_REASON, DisableDataCheck, IMoney, IOption, IOptionType, IWInterval } from '@wcp/wcpshared';
-import { format } from 'date-fns';
+import { GridActionsCellItem } from "@mui/x-data-grid-premium";
+
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openModifierOptionDelete, openModifierOptionDisable, openModifierOptionDisableUntilEod, openModifierOptionEdit, openModifierOptionEnable } from "../../../../redux/slices/CatalogSlice";
 import { TableWrapperComponent } from "../../table_wrapper.component";
@@ -75,7 +80,7 @@ const ModifierOptionTableContainer = ({
         { headerName: "Can Split?", field: "metadata.can_split" },
         { headerName: "EnableFxn", field: "enable", valueGetter: (v: string) => v ? productInstanceFunctions[v].name : "" },
         // we pass null instead of actually passing the availability because we want to make a decision based on just the .disabled value
-        // eslint-disable-next-line no-nested-ternary 
+
         { headerName: "Disabled", field: "disabled", valueGetter: (v: IWInterval | null) => (v !== null && DisableDataCheck(v, [], CURRENT_TIME).enable !== DISABLE_REASON.ENABLED ? (v.start > v.end ? "True" : `${format(v.start, "MMMM dd, y hh:mm a")} to ${format(v.end, "MMMM dd, y hh:mm a")}`) : "False") },
       ]}
       getRowId={(row) => row._id}

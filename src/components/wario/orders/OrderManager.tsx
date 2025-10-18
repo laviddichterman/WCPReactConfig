@@ -5,7 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { CheckCircleOutline } from "@mui/icons-material";
 import { Box, Button, Card, Tooltip, Typography } from "@mui/material";
 import { GridActionsCellItem, GridRenderCellParams, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
-import { WDateUtils, WOrderInstance } from "@wcp/wcpshared";
+import { WDateUtils, WOrderInstance } from "@wcp/wario-shared";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { pollOpenOrders, unlockOrders } from "../../../redux/slices/OrdersSlice";
 import { TableWrapperComponent } from "../table_wrapper.component";

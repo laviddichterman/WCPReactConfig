@@ -1,8 +1,9 @@
-import { useState } from "react";
+import type { IProduct } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { IProduct } from "@wcp/wcpshared";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+
 import { HOST_API } from "../../../../config";
 import ElementDeleteComponent from "../element.delete.component";
 
@@ -45,7 +46,7 @@ const BatchProductDeleteContainer = ({ products, onCloseCallback }: ProductQuick
     <ElementDeleteComponent
       onCloseCallback={onCloseCallback}
       onConfirmClick={deleteProduct}
-      name={"Batch Products"}
+      name="Batch Products"
       isProcessing={isProcessing}
     />
   );

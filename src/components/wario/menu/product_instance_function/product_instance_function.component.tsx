@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 import { Grid, TextField } from "@mui/material";
-import { IAbstractExpression } from "@wcp/wcpshared";
+import { IAbstractExpression } from "@wcp/wario-shared";
 import { ElementActionComponent, ElementActionComponentProps } from "../element.action.component";
 import AbstractExpressionFunctionalContainer from './abstract_expression_functional.container';
 

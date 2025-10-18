@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { PrepTiming } from "@wcp/wcpshared";
+import { PrepTiming } from "@wcp/wario-shared";
 import { useState } from 'react';
 import { ValSetVal } from "../../utils/common";
 import { FloatNumericPropertyComponent } from './property-components/FloatNumericPropertyComponent';
