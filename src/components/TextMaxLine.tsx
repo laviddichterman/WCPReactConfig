@@ -1,7 +1,12 @@
-import { forwardRef, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 // @mui
-import { Link, LinkProps, Typography, TypographyProps } from '@mui/material';
-import { Variant } from '@mui/material/styles/createTypography';
+import type { LinkProps, TypographyProps } from '@mui/material';
+import type { TypographyVariant } from '@mui/material/styles/createTypography';
+
+import { forwardRef } from 'react';
+
+import { Link, Typography } from '@mui/material';
+
 // utils
 import { GetFontValue } from '../utils/getFontValue';
 
@@ -14,7 +19,7 @@ interface Props extends IProps {
   asLink?: boolean;
   persistent?: boolean;
   children: ReactNode;
-  variant?: Variant;
+  variant?: TypographyVariant;
 }
 
 export const TextMaxLine = forwardRef<HTMLAnchorElement, Props>(

@@ -1,106 +1,116 @@
-// @types
-import { VariantsType } from '../types';
-//
-import { varTranEnter, varTranExit } from './transition';
+import type { Transition, Variants } from 'motion/react';
+
+import { transitionEnter, transitionExit } from './transition';
 
 // ----------------------------------------------------------------------
 
-export const varBounce = (props?: VariantsType) => {
-  const durationIn = props?.durationIn;
-  const durationOut = props?.durationOut;
-  const easeIn = props?.easeIn;
-  const easeOut = props?.easeOut;
+type Direction =
+  | 'in'
+  | 'inUp'
+  | 'inDown'
+  | 'inLeft'
+  | 'inRight'
+  | 'out'
+  | 'outUp'
+  | 'outDown'
+  | 'outLeft'
+  | 'outRight';
 
-  return {
-    // IN
+type Options = {
+  distance?: number;
+  transition?: Transition;
+};
+
+export const varBounce = (direction: Direction, options?: Options): Variants => {
+  const distance = options?.distance || 720;
+
+  const variants: Record<Direction, Variants> = {
+    /**** In ****/
     in: {
       initial: {},
       animate: {
         scale: [0.3, 1.1, 0.9, 1.03, 0.97, 1],
         opacity: [0, 1, 1, 1, 1, 1],
-        transition: varTranEnter({ durationIn, easeIn }),
-      },
-      exit: {
-        scale: [0.9, 1.1, 0.3],
-        opacity: [1, 1, 0],
+        transition: transitionEnter(options?.transition),
       },
     },
     inUp: {
       initial: {},
       animate: {
-        y: [720, -24, 12, -4, 0],
+        y: [distance, -24, 12, -4, 0],
         scaleY: [4, 0.9, 0.95, 0.985, 1],
         opacity: [0, 1, 1, 1, 1],
-        transition: { ...varTranEnter({ durationIn, easeIn }) },
-      },
-      exit: {
-        y: [12, -24, 720],
-        scaleY: [0.985, 0.9, 3],
-        opacity: [1, 1, 0],
-        transition: varTranExit({ durationOut, easeOut }),
+        transition: { ...transitionEnter(options?.transition) },
       },
     },
     inDown: {
       initial: {},
       animate: {
-        y: [-720, 24, -12, 4, 0],
+        y: [-distance, 24, -12, 4, 0],
         scaleY: [4, 0.9, 0.95, 0.985, 1],
         opacity: [0, 1, 1, 1, 1],
-        transition: varTranEnter({ durationIn, easeIn }),
-      },
-      exit: {
-        y: [-12, 24, -720],
-        scaleY: [0.985, 0.9, 3],
-        opacity: [1, 1, 0],
-        transition: varTranExit({ durationOut, easeOut }),
+        transition: transitionEnter(options?.transition),
       },
     },
     inLeft: {
       initial: {},
       animate: {
-        x: [-720, 24, -12, 4, 0],
+        x: [-distance, 24, -12, 4, 0],
         scaleX: [3, 1, 0.98, 0.995, 1],
         opacity: [0, 1, 1, 1, 1],
-        transition: varTranEnter({ durationIn, easeIn }),
-      },
-      exit: {
-        x: [0, 24, -720],
-        scaleX: [1, 0.9, 2],
-        opacity: [1, 1, 0],
-        transition: varTranExit({ durationOut, easeOut }),
+        transition: transitionEnter(options?.transition),
       },
     },
     inRight: {
       initial: {},
       animate: {
-        x: [720, -24, 12, -4, 0],
+        x: [distance, -24, 12, -4, 0],
         scaleX: [3, 1, 0.98, 0.995, 1],
         opacity: [0, 1, 1, 1, 1],
-        transition: varTranEnter({ durationIn, easeIn }),
-      },
-      exit: {
-        x: [0, -24, 720],
-        scaleX: [1, 0.9, 2],
-        opacity: [1, 1, 0],
-        transition: varTranExit({ durationOut, easeOut }),
+        transition: transitionEnter(options?.transition),
       },
     },
-
-    // OUT
+    /**** Out ****/
     out: {
-      animate: { scale: [0.9, 1.1, 0.3], opacity: [1, 1, 0] },
+      animate: {
+        scale: [0.9, 1.1, 0.3],
+        opacity: [1, 1, 0],
+        transition: transitionExit(options?.transition),
+      },
     },
     outUp: {
-      animate: { y: [-12, 24, -720], scaleY: [0.985, 0.9, 3], opacity: [1, 1, 0] },
+      animate: {
+        y: [-12, 24, -distance],
+        scaleY: [0.985, 0.9, 3],
+        opacity: [1, 1, 0],
+        transition: transitionExit(options?.transition),
+      },
     },
     outDown: {
-      animate: { y: [12, -24, 720], scaleY: [0.985, 0.9, 3], opacity: [1, 1, 0] },
+      animate: {
+        y: [12, -24, distance],
+        scaleY: [0.985, 0.9, 3],
+        opacity: [1, 1, 0],
+        transition: transitionExit(options?.transition),
+      },
     },
     outLeft: {
-      animate: { x: [0, 24, -720], scaleX: [1, 0.9, 2], opacity: [1, 1, 0] },
+      animate: {
+        x: [0, 24, -distance],
+        scaleX: [1, 0.9, 2],
+        opacity: [1, 1, 0],
+        transition: transitionExit(options?.transition),
+      },
     },
     outRight: {
-      animate: { x: [0, -24, 720], scaleX: [1, 0.9, 2], opacity: [1, 1, 0] },
+      animate: {
+        x: [0, -24, distance],
+        scaleX: [1, 0.9, 2],
+        opacity: [1, 1, 0],
+        transition: transitionExit(options?.transition),
+      },
     },
   };
+
+  return variants[direction];
 };

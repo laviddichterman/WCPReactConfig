@@ -28,13 +28,13 @@ export default function Page404() {
     <Page title="404 Page Not Found">
       <Container component={MotionContainer}>
         <ContentStyle sx={{ textAlign: 'center', alignItems: 'center' }}>
-          <m.div variants={varBounce().in}>
+          <m.div variants={varBounce("in")}>
             <Typography variant="h3" paragraph>
               Sorry, page not found!
             </Typography>
           </m.div>
 
-          <m.div variants={varBounce().in}>
+          <m.div variants={varBounce("in")}>
             <Typography sx={{ color: 'text.secondary' }}>
               Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL?
               Be sure to check your spelling.

@@ -1,4 +1,4 @@
-import type { IProductInstance, KeyValue, ProductModifierEntry } from "@wcp/wario`shared";
+import type { IProductInstance, KeyValue, ProductModifierEntry } from "@wcp/wario-shared";
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { PriceDisplay } from "@wcp/wario-shared";

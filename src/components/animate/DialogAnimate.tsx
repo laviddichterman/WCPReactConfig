@@ -35,12 +35,11 @@ export default function DialogAnimate({
             <Box
               component={m.div}
               {...(variants ||
-                varFade({
+                varFade("inUp", {
                   distance: 120,
-                  durationIn: 0.32,
-                  durationOut: 0.24,
-                  easeIn: 'easeInOut',
-                }).inUp)}
+                  transitionIn: { duration: 0.32, ease: 'easeOut' },
+                  transitionOut: { duration: 0.24, ease: 'easeIn' },
+                }))}
               sx={{
                 width: '100%',
                 height: '100%',

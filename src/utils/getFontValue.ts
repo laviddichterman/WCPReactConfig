@@ -1,12 +1,14 @@
+import type { TypographyVariant } from '@mui/material/styles/createTypography';
+
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Variant } from '@mui/material/styles/createTypography';
+
 // hooks
 import { useResponsive } from '../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
-export function GetFontValue(variant: Variant) {
+export function GetFontValue(variant: TypographyVariant) {
   const theme = useTheme();
 
   const breakpoints = useWidth();
@@ -67,7 +69,6 @@ function useWidth() {
   const keys = [...theme.breakpoints.keys].reverse();
 
   return (
-    // @ts-ignore not sure what is this
     (keys.reduce((output, key) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const matches = useResponsive('up', key);

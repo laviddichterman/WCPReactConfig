@@ -1,28 +1,25 @@
+import type { Transition, Variants } from 'motion/react';
+
 // ----------------------------------------------------------------------
 
-export type Props = {
-  staggerIn?: number;
-  delayIn?: number;
-  staggerOut?: number;
+type Options = {
+  transitionIn?: Transition;
+  transitionOut?: Transition;
 };
 
-export const varContainer = (props?: Props) => {
-  const staggerIn = props?.staggerIn || 0.05;
-  const delayIn = props?.staggerIn || 0.05;
-  const staggerOut = props?.staggerIn || 0.05;
-
-  return {
-    animate: {
-      transition: {
-        staggerChildren: staggerIn,
-        delayChildren: delayIn,
-      },
+export const varContainer = (props?: Options): Variants => ({
+  animate: {
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.05,
+      ...props?.transitionIn,
     },
-    exit: {
-      transition: {
-        staggerChildren: staggerOut,
-        staggerDirection: -1,
-      },
+  },
+  exit: {
+    transition: {
+      staggerChildren: 0.05,
+      staggerDirection: -1,
+      ...props?.transitionOut,
     },
-  };
-};
+  },
+});

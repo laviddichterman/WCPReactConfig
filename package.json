@@ -116,6 +116,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src",
     "clear-all": "rm -rf build node_modules",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "deploy:prodwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.windycitypie.com/",
     "deploy:devwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wdev.windycitypie.com/",
     "deploy:stagingwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wstaging.windycitypie.com/"

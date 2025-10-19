@@ -28,13 +28,13 @@ export default function Page403() {
     <Page title="403 Forbidden">
       <Container component={MotionContainer}>
         <ContentStyle sx={{ textAlign: 'center', alignItems: 'center' }}>
-          <m.div variants={varBounce().in}>
+          <m.div variants={varBounce("in")}>
             <Typography variant="h3" paragraph>
               No permission
             </Typography>
           </m.div>
 
-          <m.div variants={varBounce().in}>
+          <m.div variants={varBounce("in")}>
             <Typography sx={{ color: 'text.secondary' }}>
               The page you're trying access has restricted access.
               <br />

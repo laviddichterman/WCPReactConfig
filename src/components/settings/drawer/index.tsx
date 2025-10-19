@@ -72,16 +72,16 @@ export default function SettingsDrawer() {
 
   const varSidebar =
     themeDirection !== 'rtl'
-      ? varFade({
+      ? varFade("inRight", {
         distance: NAVBAR.BASE_WIDTH,
-        durationIn: 0.32,
-        durationOut: 0.32,
-      }).inRight
-      : varFade({
+        transitionIn: { duration: 0.32 },
+        transitionOut: { duration: 0.32 },
+      })
+      : varFade("inLeft", {
         distance: NAVBAR.BASE_WIDTH,
-        durationIn: 0.32,
-        durationOut: 0.32,
-      }).inLeft;
+        transitionIn: { duration: 0.32 },
+        transitionOut: { duration: 0.32 },
+      });
 
   useEffect(() => {
     if (open) {

@@ -28,13 +28,13 @@ export default function Page500() {
     <Page title="500 Internal Server Error">
       <Container component={MotionContainer}>
         <ContentStyle sx={{ textAlign: 'center', alignItems: 'center' }}>
-          <m.div variants={varBounce().in}>
+          <m.div variants={varBounce("in")}>
             <Typography variant="h3" paragraph>
               500 Internal Server Error
             </Typography>
           </m.div>
 
-          <m.div variants={varBounce().in}>
+          <m.div variants={varBounce("in")}>
             <Typography sx={{ color: 'text.secondary' }}>
               There was an error, please try again later.
             </Typography>
