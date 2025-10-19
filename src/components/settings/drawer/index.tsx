@@ -1,20 +1,13 @@
-import { AnimatePresence, m } from 'framer-motion';
+import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useState } from 'react';
+
+import { alpha, styled } from '@mui/material/styles';
 // @mui
 import { Backdrop, Divider, IconButton, Stack, Typography } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
-// hooks
-import { useSettings } from '../../../hooks/useSettings';
-// utils
-import { cssStyles } from '../../../utils/cssStyles';
-// config
-import { NAVBAR, defaultSettings } from '../../../config';
+
 //
 import { varFade } from '../../animate';
 import { Iconify } from '../../Iconify';
-import { Scrollbar } from '../../scrollbar/Scrollbar';
-//
-import SettingColorPresets from './SettingColorPresets';
 import SettingContrast from './SettingContrast';
 import SettingDirection from './SettingDirection';
 import SettingFullscreen from './SettingFullscreen';
@@ -22,6 +15,15 @@ import SettingLayout from './SettingLayout';
 import SettingMode from './SettingMode';
 import SettingStretch from './SettingStretch';
 import ToggleButton from './ToggleButton';
+// utils
+import { cssStyles } from '../../../utils/cssStyles';
+import { Scrollbar } from '../../scrollbar/Scrollbar';
+//
+import SettingColorPresets from './SettingColorPresets';
+// hooks
+import { useSettings } from '../../../hooks/useSettings';
+// config
+import { NAVBAR, defaultSettings } from '../../../config';
 
 // ----------------------------------------------------------------------
 
@@ -109,66 +111,64 @@ export default function SettingsDrawer() {
 
       <AnimatePresence>
         {open && (
-          <>
-            <RootStyle {...varSidebar}>
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ py: 2, pr: 1, pl: 2.5 }}
-              >
-                <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-                  Settings
-                </Typography>
+          <RootStyle {...varSidebar}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{ py: 2, pr: 1, pl: 2.5 }}
+            >
+              <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+                Settings
+              </Typography>
 
-                <IconButton onClick={onResetSetting}>
-                  <Iconify icon={'ic:round-refresh'} width={20} height={20} />
-                </IconButton>
+              <IconButton onClick={onResetSetting}>
+                <Iconify icon="ic:round-refresh" width={20} height={20} />
+              </IconButton>
 
-                <IconButton onClick={handleClose}>
-                  <Iconify icon={'eva:close-fill'} width={20} height={20} />
-                </IconButton>
-              </Stack>
+              <IconButton onClick={handleClose}>
+                <Iconify icon="eva:close-fill" width={20} height={20} />
+              </IconButton>
+            </Stack>
 
-              <Divider sx={{ borderStyle: 'dashed' }} />
+            <Divider sx={{ borderStyle: 'dashed' }} />
 
-              <Scrollbar sx={{ flexGrow: 1 }}>
-                <Stack spacing={3} sx={{ p: 3 }}>
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Mode</Typography>
-                    <SettingMode />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Contrast</Typography>
-                    <SettingContrast />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Direction</Typography>
-                    <SettingDirection />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Layout</Typography>
-                    <SettingLayout />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Presets</Typography>
-                    <SettingColorPresets />
-                  </Stack>
-
-                  <Stack spacing={1.5}>
-                    <Typography variant="subtitle2">Stretch</Typography>
-                    <SettingStretch />
-                  </Stack>
-
-                  <SettingFullscreen />
+            <Scrollbar sx={{ flexGrow: 1 }}>
+              <Stack spacing={3} sx={{ p: 3 }}>
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2">Mode</Typography>
+                  <SettingMode />
                 </Stack>
-              </Scrollbar>
-            </RootStyle>
-          </>
+
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2">Contrast</Typography>
+                  <SettingContrast />
+                </Stack>
+
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2">Direction</Typography>
+                  <SettingDirection />
+                </Stack>
+
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2">Layout</Typography>
+                  <SettingLayout />
+                </Stack>
+
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2">Presets</Typography>
+                  <SettingColorPresets />
+                </Stack>
+
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2">Stretch</Typography>
+                  <SettingStretch />
+                </Stack>
+
+                <SettingFullscreen />
+              </Stack>
+            </Scrollbar>
+          </RootStyle>
         )}
       </AnimatePresence>
     </>

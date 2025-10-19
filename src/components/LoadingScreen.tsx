@@ -1,7 +1,11 @@
-import { m } from 'framer-motion';
 // @mui
-import { Box, SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
+
+import { m } from 'motion/react';
+
+import { Box } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
+
 //
 import { Logo } from './Logo';
 import { ProgressBar } from './ProgressBar';

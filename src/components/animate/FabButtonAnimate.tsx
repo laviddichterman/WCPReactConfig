@@ -1,7 +1,10 @@
-import { m } from 'framer-motion';
-import { forwardRef } from 'react';
 // @mui
-import { Box, Fab, FabProps, SxProps } from '@mui/material';
+import type { FabProps, SxProps } from '@mui/material';
+
+import { m } from 'motion/react';
+import { forwardRef } from 'react';
+
+import { Box, Fab } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
