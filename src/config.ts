@@ -1,9 +1,11 @@
-// @mui
-import { enUS, esES } from '@mui/material/locale';
-import { SettingsValueProps } from './components/settings/type';
 // routes
 import { LicenseInfo } from '@mui/x-license';
+// @mui
+import { enUS, esES } from '@mui/material/locale';
+
 import { PATH_DASHBOARD } from './routes/paths';
+
+import type { SettingsValueProps } from './components/settings/type';
 // API
 // ----------------------------------------------------------------------
 
@@ -19,8 +21,6 @@ export const AUTH0_API = {
 export const SOCKETIO = {
   ns: import.meta.env.VITE_SOCKETIO_NS,
 }
-
-export const MAPBOX_API = import.meta.env.VITE_MAPBOX_API;
 
 LicenseInfo.setLicenseKey(import.meta.env.VITE_MUI_KEY);
 
