@@ -1,8 +1,7 @@
-// @mui
-import type { DialogProps } from '@mui/material';
-
 import { AnimatePresence, m } from 'motion/react';
 
+// @mui
+import type { DialogProps } from '@mui/material';
 import { Box, Dialog, Paper } from '@mui/material';
 
 //

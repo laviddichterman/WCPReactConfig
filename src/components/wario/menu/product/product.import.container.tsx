@@ -1,16 +1,18 @@
-import { Autocomplete, Grid, TextField } from '@mui/material';
-import { Dispatch, SetStateAction, useState } from "react";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { CreateProductBatch, IProductModifier, KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
-import { ParseResult } from "papaparse";
+import { type ParseResult } from "papaparse";
+import { type Dispatch, type SetStateAction, useState } from "react";
+
+import { Autocomplete, Grid, TextField } from '@mui/material';
+
+import { type CreateProductBatch, type IProductModifier, type KeyValue, PriceDisplay, ReduceArrayToMapByKey } from "@wcp/wario-shared";
 
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
-import { ValSetValNamed } from '../../../../utils/common';
+import { type ValSetValNamed } from '../../../../utils/common';
 import GenericCsvImportComponent from "../../generic_csv_import.component";
+
 import { ElementActionComponent } from "./../element.action.component";
 import ProductModifierComponent from "./ProductModifierComponent";
 
@@ -49,7 +51,7 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
               filterSelectedOptions
               options={Object.keys(categories)}
               value={props.parentCategories.filter((x) => x)}
-              onChange={(e, v) => props.setParentCategories(v)}
+              onChange={(e, v) => { props.setParentCategories(v); }}
               getOptionLabel={(option) => categories[option].category.name}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => (
@@ -62,7 +64,7 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
               filterSelectedOptions
               options={Object.keys(printerGroups)}
               value={props.printerGroup}
-              onChange={(e, v) => props.setPrinterGroup(v)}
+              onChange={(e, v) => { props.setPrinterGroup(v); }}
               getOptionLabel={(pgId) => printerGroups[pgId].name ?? "Undefined"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Printer Group" />}
@@ -72,7 +74,7 @@ const ProductImportComponent = (props: ProductImportComponentProps) => {
             <ProductModifierComponent isProcessing={props.isProcessing} modifiers={props.modifiers} setModifiers={props.setModifiers} />
           </Grid>
           <Grid size={12}>
-            <GenericCsvImportComponent onAccepted={(data: ParseResult<CSVProduct>) => props.setFileData(data.data)} />
+            <GenericCsvImportComponent onAccepted={(data: ParseResult<CSVProduct>) => { props.setFileData(data.data); }} />
           </Grid>
         </>}
     />

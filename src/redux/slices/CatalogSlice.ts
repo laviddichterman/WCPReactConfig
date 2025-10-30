@@ -1,5 +1,6 @@
-import { GridRowId } from "@mui/x-data-grid-premium";
-import { createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice, type EntityState, type PayloadAction } from "@reduxjs/toolkit";
+
+import { type GridRowId } from "@mui/x-data-grid-premium";
 
 type CatalogDialog = 'NONE' |
   'CategoryInterstitial' | 'CategoryAdd' | 'CategoryEdit' | 'CategoryDelete' |

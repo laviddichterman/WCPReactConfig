@@ -1,6 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
+
 // @mui
-import { ThemeProvider, createTheme, useTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+
 // hooks
 import { useLocales } from '../../hooks/useLocales';
 

@@ -1,5 +1,6 @@
-import { TextField, TextFieldProps } from "@mui/material";
-import { ValSetVal } from "../../../utils/common";
+import { TextField, type TextFieldProps } from "@mui/material";
+
+import { type ValSetVal } from "../../../utils/common";
 
 export type StringPropertyComponentProps = {
   sx?: TextFieldProps['sx'];
@@ -17,6 +18,6 @@ export function StringPropertyComponent(props: StringPropertyComponentProps) {
       fullWidth
       disabled={props.disabled}
       value={props.value}
-      onChange={(e) => props.setValue(e.target.value)}
+      onChange={(e) => { props.setValue(e.target.value); }}
     />)
 }

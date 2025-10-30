@@ -1,7 +1,3 @@
-import type { IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming } from '@wcp/wario-shared';
-
-import { ReduceArrayToMapByKey } from '@wcp/wario-shared';
-import { getFulfillments } from '@wcp/wario-ux-shared';
 import React, { useState } from 'react';
 
 import {
@@ -10,8 +6,13 @@ import {
   TextField,
 } from '@mui/material';
 
+import type { IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming } from '@wcp/wario-shared';
+import { ReduceArrayToMapByKey } from '@wcp/wario-shared';
+import { getFulfillments } from '@wcp/wario-ux-shared';
+
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { getPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
+import type { ValSetValNamed } from '../../../../utils/common';
 import AvailabilityListBuilderComponent from '../../AvailabilityListBuilderComponent';
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from '../../datetime_based_disable.component';
 import { ExternalIdsExpansionPanelComponent } from '../../ExternalIdsExpansionPanelComponent';
@@ -21,9 +22,8 @@ import { IMoneyPropertyComponent } from '../../property-components/IMoneyPropert
 import { StringPropertyComponent } from '../../property-components/StringPropertyComponent';
 import { ToggleBooleanPropertyComponent } from '../../property-components/ToggleBooleanPropertyComponent';
 import { ElementActionComponent } from '../element.action.component';
-import ProductModifierComponent from "./ProductModifierComponent";
 
-import type { ValSetValNamed } from '../../../../utils/common';
+import ProductModifierComponent from "./ProductModifierComponent";
 
 
 type ProductComponentPropsModeSpecific = (ValSetValNamed<string, 'baseProductId'> & { isEdit: true }) | ({ isEdit: false });
@@ -83,7 +83,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               filterSelectedOptions
               options={Object.keys(catalog.categories)}
               value={props.parentCategories}
-              onChange={(e, v) => props.setParentCategories(v)}
+              onChange={(e, v) => { props.setParentCategories(v); }}
               getOptionLabel={(option) => catalog.categories[option].category.name}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Categories" />}
@@ -94,7 +94,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               filterSelectedOptions
               options={Object.keys(printerGroups)}
               value={props.printerGroup}
-              onChange={(e, v) => props.setPrinterGroup(v)}
+              onChange={(e, v) => { props.setPrinterGroup(v); }}
               getOptionLabel={(pgId) => printerGroups[pgId]?.name ?? "Undefined"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Printer Group" />}
@@ -162,7 +162,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               fullWidth
               options={Object.keys(catalog.productInstanceFunctions)}
               value={props.orderGuideSuggestionFunctions}
-              onChange={(_, v) => props.setOrderGuideSuggestionFunctions(v)}
+              onChange={(_, v) => { props.setOrderGuideSuggestionFunctions(v); }}
               getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Order Guide Suggestion Functions" />}
@@ -179,7 +179,7 @@ export const ProductComponent = (props: ProductComponentPropsModeSpecific & Prod
               fullWidth
               options={Object.keys(catalog.productInstanceFunctions)}
               value={props.orderGuideWarningFunctions}
-              onChange={(_, v) => props.setOrderGuideWarningFunctions(v)}
+              onChange={(_, v) => { props.setOrderGuideWarningFunctions(v); }}
               getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Order Guide Warning Functions" />}

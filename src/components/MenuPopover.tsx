@@ -1,5 +1,5 @@
 // @mui
-import { Popover, PopoverProps } from '@mui/material';
+import { Popover, type PopoverProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------

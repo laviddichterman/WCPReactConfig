@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 // @mui
-import { List, Collapse, Link } from '@mui/material';
-//
-import { NavListProps } from '../type';
-import NavItem from './NavItem';
+import { Collapse, Link, List } from '@mui/material';
+
 import { getActive, isExternalLink } from '..';
+//
+import { type NavListProps } from '../type';
+
+import NavItem from './NavItem';
 
 // ----------------------------------------------------------------------
 

@@ -1,8 +1,11 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { KeyValue } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+
+import { type KeyValue } from "@wcp/wario-shared";
+
 import { HOST_API } from "../../config";
+
 import KeyValuesContainer from "./keyvalues.container";
 
 export const KeyValuesComponent = () => {

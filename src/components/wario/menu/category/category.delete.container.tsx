@@ -1,18 +1,21 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import ElementDeleteComponent from "../element.delete.component";
-import { HOST_API } from "../../../../config";
-import { CategoryEditProps } from "./category.component";
-import { useSnackbar } from "notistack";
 import { Grid } from "@mui/material";
-import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
-import { useAppSelector } from "../../../../hooks/useRedux";
+
 import { getCategoryEntryById } from "@wcp/wario-ux-shared";
+
+import { HOST_API } from "../../../../config";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
+import ElementDeleteComponent from "../element.delete.component";
+
+import { type CategoryEditProps } from "./category.component";
 
 const CategoryDeleteContainer = ({ categoryId, onCloseCallback }: CategoryEditProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const categoryName = useAppSelector(s=> getCategoryEntryById(s.ws.categories, categoryId)!.category.name);
+  const categoryName = useAppSelector(s=> getCategoryEntryById(s.ws.categories, categoryId).category.name);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const [ deleteContainedProducts, setDeleteContainedProducts ] = useState(false);

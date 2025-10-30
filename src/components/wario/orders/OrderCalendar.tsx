@@ -1,4 +1,4 @@
-import { EventClickArg } from '@fullcalendar/core';
+import { type EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import FullCalendar from '@fullcalendar/react'; // => request placed at the top
@@ -6,16 +6,18 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import timelinePlugin from '@fullcalendar/timeline';
 //
 import { useEffect, useRef, useState } from 'react';
+
 // @mui
 import { Card } from '@mui/material';
 
-// hooks
-import { useResponsive } from '../../../hooks/useResponsive';
-// components
-import CalendarStyle, { CalendarView } from './CalendarStyle';
 // sections
 import { useAppSelector } from '../../../hooks/useRedux';
+// hooks
+import { useResponsive } from '../../../hooks/useResponsive';
 import { selectOrdersAsEvents } from '../../../redux/store';
+
+// components
+import CalendarStyle, { type CalendarView } from './CalendarStyle';
 import CalendarToolbar from './CalendarToolbar';
 
 // ----------------------------------------------------------------------

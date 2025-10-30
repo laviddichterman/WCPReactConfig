@@ -1,19 +1,18 @@
-import type { CreateIProduct, ICatalogModifiers, KeyValue, ProductModifierEntry } from "@wcp/wario-shared";
-
-import { OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wario-shared";
 import { useMemo } from "react";
 
 import { Card, CardContent, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Radio, RadioGroup, useMediaQuery, useTheme } from '@mui/material';
 
+import type { CreateIProduct, ICatalogModifiers, KeyValue, ProductModifierEntry } from "@wcp/wario-shared";
+import { OptionPlacement, OptionQualifier, PriceDisplay } from "@wcp/wario-shared";
+
 import { useAppSelector } from "../../../../../hooks/useRedux";
+import type { ValSetValNamed } from "../../../../../utils/common";
 import { ExternalIdsExpansionPanelComponent } from "../../../ExternalIdsExpansionPanelComponent";
 import { IntNumericPropertyComponent } from "../../../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../../../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../../../property-components/StringPropertyComponent";
 import { ToggleBooleanPropertyComponent } from "../../../property-components/ToggleBooleanPropertyComponent";
 import { ElementActionComponent } from "../../element.action.component";
-
-import type { ValSetValNamed } from "../../../../../utils/common";
 
 export type ProductInstanceComponentProps =
   ValSetValNamed<string, 'displayName'> &
@@ -359,7 +358,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
                         value={props.modifiers.find(x => x.modifierTypeId === mtid)!.options.findIndex(
                           (o) => o.placement === OptionPlacement.WHOLE
                         )}
-                        onChange={(e) => handleRadioChange(mtid, parseInt(e.target.value))}
+                        onChange={(e) => { handleRadioChange(mtid, parseInt(e.target.value)); }}
                       >
                         {mt_options.map((oId, oidx) => (
                           <FormControlLabel
@@ -380,7 +379,7 @@ const ProductInstanceComponent = (props: ProductInstanceComponentProps) => {
                                 checked={
                                   props.modifiers.find(x => x.modifierTypeId === mtid)!.options[oidx].placement === OptionPlacement.WHOLE
                                 }
-                                onChange={() => handleToggle(mtid, oidx)}
+                                onChange={() => { handleToggle(mtid, oidx); }}
                                 disableRipple
                                 inputProps={{ "aria-labelledby": String(oidx) }}
                               />

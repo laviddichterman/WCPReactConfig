@@ -1,23 +1,25 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { DialogContainer, getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+
+import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { closeDialogue } from '../../../redux/slices/CatalogSlice';
-import ModifierOptionEditContainer from "./modifier_option/modifier_option.edit.container";
-import ModifierOptionDisableUntilEodContainer from "./modifier_option/modifier_option.disable_until_eod.container";
-import ModifierOptionDisableContainer from "./modifier_option/modifier_option.disable.container";
-import ModifierOptionEnableContainer from "./modifier_option/modifier_option.enable.container";
-import ModifierOptionDeleteContainer from "./modifier_option/modifier_option.delete.container";
-import ModifierTypeDeleteContainer from "./modifier_type/modifier_type.delete.container";
-import ModifierTypeCopyContainer from "./modifier_type/modifier_type.copy.container";
-import ModifierTypeEditContainer from "./modifier_type/modifier_type.edit.container";
-import ModifierTypeAddContainer from "./modifier_type/modifier_type.add.container";
+
 import ModifierOptionAddContainer from "./modifier_option/modifier_option.add.container";
+import ModifierOptionDeleteContainer from "./modifier_option/modifier_option.delete.container";
+import ModifierOptionDisableContainer from "./modifier_option/modifier_option.disable.container";
+import ModifierOptionDisableUntilEodContainer from "./modifier_option/modifier_option.disable_until_eod.container";
+import ModifierOptionEditContainer from "./modifier_option/modifier_option.edit.container";
+import ModifierOptionEnableContainer from "./modifier_option/modifier_option.enable.container";
+import ModifierTypeAddContainer from "./modifier_type/modifier_type.add.container";
+import ModifierTypeCopyContainer from "./modifier_type/modifier_type.copy.container";
+import ModifierTypeDeleteContainer from "./modifier_type/modifier_type.delete.container";
+import ModifierTypeEditContainer from "./modifier_type/modifier_type.edit.container";
 
 const ModifierDialoguesContainer = () => {
   const dispatch = useAppDispatch();
   const dialogueState = useAppSelector(s => s.catalog.dialogueState);
   const modifierOptionId = useAppSelector(s => s.catalog.selectedModifierOptionId);
   const modifierTypeId = useAppSelector(s => s.catalog.selectedModifierTypeId);
-  const modifierTypeName = useAppSelector(s=> s.catalog.selectedModifierTypeId !== null ? getModifierTypeEntryById(s.ws.modifierEntries, s.catalog.selectedModifierTypeId)!.modifierType.name : "");
+  const modifierTypeName = useAppSelector(s=> s.catalog.selectedModifierTypeId !== null ? getModifierTypeEntryById(s.ws.modifierEntries, s.catalog.selectedModifierTypeId).modifierType.name : "");
   return (
     <>
       <DialogContainer

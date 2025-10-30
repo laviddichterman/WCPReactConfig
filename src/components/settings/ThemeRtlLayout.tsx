@@ -1,9 +1,10 @@
-import { useEffect, ReactNode } from 'react';
-// rtl
-import rtlPlugin from 'stylis-plugin-rtl';
 // emotion
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
+import { type ReactNode, useEffect } from 'react';
+// rtl
+import rtlPlugin from 'stylis-plugin-rtl';
+
 // @mui
 import { useTheme } from '@mui/material/styles';
 

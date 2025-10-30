@@ -1,4 +1,8 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { add, format, formatISO, parseISO, startOfDay } from "date-fns";
+import { useSnackbar } from "notistack";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
 import { Done, HighlightOff } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -16,16 +20,14 @@ import {
   TextField
 } from '@mui/material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
-import { FulfillmentConfig, GetNextAvailableServiceDate, IWInterval, PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wario-shared";
-import { add, format, formatISO, parseISO, startOfDay } from "date-fns";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
 
+import { type FulfillmentConfig, GetNextAvailableServiceDate, type IWInterval, type PostBlockedOffToFulfillmentsRequest, WDateUtils } from "@wcp/wario-shared";
 import { getFulfillmentById, getFulfillments, SelectDateFnsAdapter, weakMapCreateSelector } from "@wcp/wario-ux-shared";
-import { useSnackbar } from "notistack";
+
 import { HOST_API } from '../../config';
 import { useAppSelector } from "../../hooks/useRedux";
-import { RootState } from "../../redux/store";
-import { ValSetValNamed } from "../../utils/common";
+import { type RootState } from "../../redux/store";
+import { type ValSetValNamed } from "../../utils/common";
 
 const TrimOptionsBeforeDisabled = function <T extends { disabled: boolean; }>(opts: T[]) {
   const idx = opts.findIndex((elt: T) => elt.disabled);
@@ -50,8 +52,8 @@ const ServiceSelectionCheckbox = (props: ServiceSelectionCheckboxProps) => {
     <Chip
       label={service_name}
       clickable
-      onDelete={(e) => onChange(e)}
-      onClick={(e) => onChange(e)}
+      onDelete={(e) => { onChange(e); }}
+      onClick={(e) => { onChange(e); }}
       color={selected ? "primary" : "default"}
       deleteIcon={selected ? <Done /> : <HighlightOff />}
     />
@@ -209,7 +211,7 @@ const DateSelector = ({ selectedDate, selectedServices, setSelectedDate }: { sel
       maxDate={add(minDate, { days: 60 })}
       shouldDisableDate={e => getOptionsForDate(WDateUtils.formatISODate(e)).length === 0}
       value={selectedDate ? parseISO(selectedDate) : null}
-      onChange={(date) => handleSetSelectedDate(date)}
+      onChange={(date) => { handleSetSelectedDate(date); }}
     />
   </LocalizationProvider>)
 }
@@ -234,7 +236,7 @@ export const BlockOffComp = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 
-  const handleSetSelectedDate = useCallback((date: string | null) => setSelectedDate(date || nextAvailableDate?.selectedDate || null), [setSelectedDate, nextAvailableDate])
+  const handleSetSelectedDate = useCallback((date: string | null) => { setSelectedDate(date || nextAvailableDate?.selectedDate || null); }, [setSelectedDate, nextAvailableDate])
 
   useEffect(() => {
     if (selectedServices.length === 0 && fulfillmentIdsAndNames.length > 0) {
@@ -332,7 +334,7 @@ export const BlockOffComp = () => {
                     <ServiceSelectionCheckbox
                       service_name={x.name}
                       selected={selectedServices.indexOf(x.id) !== -1}
-                      onChange={() => onChangeServiceSelection(x.id)}
+                      onChange={() => { onChangeServiceSelection(x.id); }}
                     />
                   </Grid>
                 ))
@@ -368,7 +370,7 @@ export const BlockOffComp = () => {
                   getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
                   // @ts-ignore
                   value={startTime}
-                  onChange={(_, v) => setStartTime(v)}
+                  onChange={(_, v) => { setStartTime(v); }}
                   disabled={selectedDate === null}
                   renderInput={(params) => <TextField {...params} label={"Start"}
                   />}
@@ -389,7 +391,7 @@ export const BlockOffComp = () => {
                   getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
                   // @ts-ignore
                   value={endTime}
-                  onChange={(_, v) => setEndTime(v)}
+                  onChange={(_, v) => { setEndTime(v); }}
                   disabled={selectedDate === null || startTime === null}
                   renderInput={(params) => <TextField  {...params} label={"End"}
                   />}

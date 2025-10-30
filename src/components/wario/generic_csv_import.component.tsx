@@ -1,7 +1,7 @@
-import { Grid, Button } from '@mui/material';
-
+import { type ParseResult } from "papaparse";
 import { useCSVReader } from 'react-papaparse';
-import { ParseResult } from "papaparse";
+
+import { Button, Grid } from '@mui/material';
 
 interface CSVReaderProps<T> { 
   onAccepted: (data: ParseResult<T>) => void;

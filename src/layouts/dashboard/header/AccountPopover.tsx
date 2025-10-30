@@ -1,18 +1,20 @@
+// components
+import { useAuth0 } from '@auth0/auth0-react';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
 // @mui
 import { Box, Divider, MenuItem, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-// routes
-import { PATH_AUTH, PATH_DASHBOARD } from '../../../routes/paths';
-// hooks
-import { useIsMountedRef } from '../../../hooks/useIsMountedRef';
-// components
-import { useAuth0 } from '@auth0/auth0-react';
+
+import { IconButtonAnimate } from '../../../components/animate';
 import { MenuPopover } from '../../../components/MenuPopover';
 import { MyAvatar } from '../../../components/MyAvatar';
-import { IconButtonAnimate } from '../../../components/animate';
+// hooks
+import { useIsMountedRef } from '../../../hooks/useIsMountedRef';
+// routes
+import { PATH_AUTH, PATH_DASHBOARD } from '../../../routes/paths';
 
 // ----------------------------------------------------------------------
 

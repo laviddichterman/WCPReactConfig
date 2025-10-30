@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
-
 import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect, useState } from "react";
 
 import { CheckCircleOutline } from "@mui/icons-material";
 import { Box, Button, Card, Tooltip, Typography } from "@mui/material";
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
-import { WDateUtils, WOrderInstance } from "@wcp/wario-shared";
+import { GridActionsCellItem, type GridRenderCellParams, type GridRowParams, useGridApiRef } from "@mui/x-data-grid-premium";
+
+import { WDateUtils, type WOrderInstance } from "@wcp/wario-shared";
+import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";
+
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { pollOpenOrders, unlockOrders } from "../../../redux/slices/OrdersSlice";
+import { selectEventTitleStringForOrder, selectOrdersNeedingAttention } from "../../../redux/store";
 import { TableWrapperComponent } from "../table_wrapper.component";
 
-import { FullScreenPulsingContainer } from "@wcp/wario-ux-shared";
-import { selectEventTitleStringForOrder, selectOrdersNeedingAttention } from "../../../redux/store";
 import { WOrderComponentCard } from "./WOrderComponentCard";
 
 export interface OrderManagerComponentProps {
@@ -59,7 +60,7 @@ export const OrderManagerComponent = ({ handleConfirmOrder }: OrderManagerCompon
     }
     pollForOrders();
     const timer = setInterval(pollForOrders, 30000);
-    return () => clearInterval(timer);
+    return () => { clearInterval(timer); };
   }, [currentTime])
 
   const callUnlockOrders = async () => {
@@ -68,7 +69,7 @@ export const OrderManagerComponent = ({ handleConfirmOrder }: OrderManagerCompon
   }
 
   if (hasNewOrder) {
-    return <Box onClick={() => suppressNotice()}><FullScreenPulsingContainer children={<Typography variant='h3'>{orders.length} new order{orders.length > 1 ? 's' : ""}</Typography>} /></Box>;
+    return <Box onClick={() => { suppressNotice(); }}><FullScreenPulsingContainer children={<Typography variant='h3'>{orders.length} new order{orders.length > 1 ? 's' : ""}</Typography>} /></Box>;
   }
   return (
     <Card>
@@ -91,12 +92,12 @@ export const OrderManagerComponent = ({ handleConfirmOrder }: OrderManagerCompon
                 icon={<Tooltip title="Confirm Order"><CheckCircleOutline /></Tooltip>}
                 label="Confirm Order"
                 disabled={orderSliceState === 'PENDING'}
-                onClick={() => handleConfirmOrder(params.row.id)}
+                onClick={() => { handleConfirmOrder(params.row.id); }}
                 key={`CONFIRM${params.row.id}`} />
             ]
           },
         ]}
-        onRowClick={(params) => apiRef.current.toggleDetailPanel(params.id)}
+        onRowClick={(params) => { apiRef.current.toggleDetailPanel(params.id); }}
         getDetailPanelContent={(params) => <WOrderComponentCard orderId={params.row.id} handleConfirmOrder={handleConfirmOrder} onCloseCallback={null} />}
         rows={orders}
       />

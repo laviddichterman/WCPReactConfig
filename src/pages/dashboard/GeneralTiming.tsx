@@ -1,13 +1,14 @@
 // @mui
 import { Container, Grid } from '@mui/material';
-// hooks
-import { useSettings } from '../../hooks/useSettings';
+
 // components
 import { Page } from '../../components/Page';
 // sections
 import { BlockOffComp } from "../../components/wario/blockoff.component";
 import { LeadTimesComp } from "../../components/wario/leadtimes.component";
 import { useAppSelector } from '../../hooks/useRedux';
+// hooks
+import { useSettings } from '../../hooks/useSettings';
 
 // ----------------------------------------------------------------------
 

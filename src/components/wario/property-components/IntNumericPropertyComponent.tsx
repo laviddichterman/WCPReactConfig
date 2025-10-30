@@ -1,5 +1,5 @@
-import { ValSetVal } from "../../../utils/common";
-import { CheckedNumericInput, ICheckedNumericInput } from "../CheckedNumericTextInput";
+import { type ValSetVal } from "../../../utils/common";
+import { CheckedNumericInput, type ICheckedNumericInput } from "../CheckedNumericTextInput";
 
 export type IntNumericPropertyComponentProps = {
   min?: number;
@@ -21,7 +21,7 @@ export function IntNumericPropertyComponent(props: IntNumericPropertyComponentPr
     inputProps={{ inputMode: 'numeric', min: props.min ?? 0, max: props.max ?? 43200, pattern: '[0-9]*', step: props.step ?? 1 }}
     value={props.value}
     disabled={props.disabled}
-    onChange={(e) => props.setValue(e)}
+    onChange={(e) => { props.setValue(e); }}
     parseFunction={parseInt}
     allowEmpty={false} />);
 }

@@ -1,6 +1,8 @@
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
+
 // @mui
 import { alpha, createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+
 // hooks
 import { useSettings } from '../../hooks/useSettings';
 //

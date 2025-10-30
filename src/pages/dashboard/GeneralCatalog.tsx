@@ -1,7 +1,6 @@
 // @mui
 import { Container, Grid } from '@mui/material';
-// hooks
-import { useSettings } from '../../hooks/useSettings';
+
 // components
 import { Page } from '../../components/Page';
 import CatalogTableContainer from '../../components/wario/menu/category/catalog_table.container';
@@ -12,6 +11,8 @@ import PrinterGroupTableContainer from '../../components/wario/menu/printer_grou
 import ProductTableContainer from '../../components/wario/menu/product/product_table.container';
 import ProductInstanceFunctionTableContainer from '../../components/wario/menu/product_instance_function/product_instance_function_table.container';
 import { useAppSelector } from '../../hooks/useRedux';
+// hooks
+import { useSettings } from '../../hooks/useSettings';
 import { selectOrphanedProductIds } from '../../redux/store';
 
 export default function GeneralCatalog() {

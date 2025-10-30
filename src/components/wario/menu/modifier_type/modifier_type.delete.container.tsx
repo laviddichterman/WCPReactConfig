@@ -1,16 +1,18 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import ElementDeleteComponent from "../element.delete.component";
-import { HOST_API } from "../../../../config";
-import { ModifierTypeModifyUiProps } from "./modifier_type.component";
-import { useSnackbar } from "notistack";
-import { useAppSelector } from "../../../../hooks/useRedux";
 import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+
+import { HOST_API } from "../../../../config";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import ElementDeleteComponent from "../element.delete.component";
+
+import { type ModifierTypeModifyUiProps } from "./modifier_type.component";
 
 const ModifierTypeDeleteContainer = ({ modifier_type_id, onCloseCallback }: ModifierTypeModifyUiProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifier_type = useAppSelector(s=> getModifierTypeEntryById(s.ws.modifierEntries, modifier_type_id)!.modifierType);
+  const modifier_type = useAppSelector(s=> getModifierTypeEntryById(s.ws.modifierEntries, modifier_type_id).modifierType);
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
 

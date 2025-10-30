@@ -1,11 +1,10 @@
-// routes
-import { LicenseInfo } from '@mui/x-license';
 // @mui
 import { enUS, esES } from '@mui/material/locale';
-
-import { PATH_DASHBOARD } from './routes/paths';
+// routes
+import { LicenseInfo } from '@mui/x-license';
 
 import type { SettingsValueProps } from './components/settings/type';
+import { PATH_DASHBOARD } from './routes/paths';
 // API
 // ----------------------------------------------------------------------
 

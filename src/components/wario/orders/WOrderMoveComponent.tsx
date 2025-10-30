@@ -1,12 +1,11 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
-
-import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 import { Grid, TextField } from "@mui/material";
 
+import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { moveOrder } from "../../../redux/slices/OrdersSlice";
+import { ElementActionComponent, type ElementActionComponentProps } from "../menu/element.action.component";
 
 type WOrderMoveComponentProps = { orderId: string; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderMoveComponent = (props: WOrderMoveComponentProps) => {
@@ -39,7 +38,7 @@ const WOrderMoveComponent = (props: WOrderMoveComponentProps) => {
           label="Destination"
           type="text"
           value={destination}
-          onChange={(e) => setDestination(e.target.value)}
+          onChange={(e) => { setDestination(e.target.value); }}
         />
         </Grid>
         <Grid size={12}>
@@ -50,7 +49,7 @@ const WOrderMoveComponent = (props: WOrderMoveComponentProps) => {
             label="Additional message to expo"
             type="text"
             value={additionalMessage}
-            onChange={(e) => setAdditionalMessage(e.target.value)}
+            onChange={(e) => { setAdditionalMessage(e.target.value); }}
           />
         </Grid>
         </>

@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { useSettings } from './useSettings';
+
 // config
 import { allLangs, defaultLang } from '../config';
+
+import { useSettings } from './useSettings';
 
 // ----------------------------------------------------------------------
 

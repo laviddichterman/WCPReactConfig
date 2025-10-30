@@ -1,16 +1,17 @@
-import { ElementType, Suspense, lazy } from 'react';
+// components
+import { useAuth0 } from '@auth0/auth0-react';
+import { type ElementType, lazy, Suspense } from 'react';
 import { Navigate, useLocation, useRoutes } from 'react-router-dom';
+
+import { LoadingScreen } from '../components/LoadingScreen';
+// config
+import { PATH_AFTER_LOGIN } from '../config';
+// guards
+import GuestGuard from '../guards/GuestGuard';
 // layouts
 import DashboardLayout from '../layouts/dashboard';
 import { MainLayout } from '../layouts/home';
 import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
-// guards
-import GuestGuard from '../guards/GuestGuard';
-// config
-import { PATH_AFTER_LOGIN } from '../config';
-// components
-import { useAuth0 } from '@auth0/auth0-react';
-import { LoadingScreen } from '../components/LoadingScreen';
 
 // ----------------------------------------------------------------------
 

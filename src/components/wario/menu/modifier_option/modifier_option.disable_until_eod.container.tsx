@@ -1,12 +1,12 @@
-import type { IOption } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { getModifierOptionById } from "@wcp/wario-ux-shared";
 import { endOfDay, getTime } from 'date-fns';
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
 import { Grid } from "@mui/material";
+
+import type { IOption } from "@wcp/wario-shared";
+import { getModifierOptionById } from "@wcp/wario-ux-shared";
 
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
@@ -16,7 +16,7 @@ import type { ModifierOptionQuickActionProps } from "./modifier_option.delete.co
 
 const ModifierOptionDisableUntilEodContainer = ({ modifier_option_id, onCloseCallback }: ModifierOptionQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifier_option = useAppSelector(s => getModifierOptionById(s.ws.modifierOptions, modifier_option_id)!);
+  const modifier_option = useAppSelector(s => getModifierOptionById(s.ws.modifierOptions, modifier_option_id));
   const [isProcessing, setIsProcessing] = useState(false);
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
   const { getAccessTokenSilently } = useAuth0();

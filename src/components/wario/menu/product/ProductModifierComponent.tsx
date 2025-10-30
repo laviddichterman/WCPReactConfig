@@ -6,10 +6,12 @@ import {
   Grid,
   TextField
 } from '@mui/material';
-import { IProductModifier } from '@wcp/wario-shared';
+
+import { type IProductModifier } from '@wcp/wario-shared';
 import { getFulfillments } from '@wcp/wario-ux-shared';
+
 import { useAppSelector } from '../../../../hooks/useRedux';
-import { ValSetValNamed } from '../../../../utils/common';
+import { type ValSetValNamed } from '../../../../utils/common';
 
 
 type ProductModifierComponentProps = {
@@ -21,7 +23,7 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
   const fulfillments = useAppSelector(s => getFulfillments(s.ws.fulfillments));
 
   const handleSetModifiers = (mods: string[]) => {
-    const oldModsAsRecord = props.modifiers.reduce((acc, m) => ({ ...acc, [m.mtid]: m }), {} as Record<string, IProductModifier>)
+    const oldModsAsRecord = props.modifiers.reduce<Record<string, IProductModifier>>((acc, m) => ({ ...acc, [m.mtid]: m }), {})
     const sorted: IProductModifier[] = mods.sort((a, b) => catalog.modifiers[a].modifierType.ordinal - catalog.modifiers[b].modifierType.ordinal)
       .map(x => ({ mtid: x, serviceDisable: oldModsAsRecord[x]?.serviceDisable ?? [], enable: oldModsAsRecord[x]?.enable ?? null }));
     props.setModifiers(sorted);
@@ -36,7 +38,7 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
           filterSelectedOptions
           options={Object.keys(catalog.modifiers)}
           value={props.modifiers.map(x => x.mtid)}
-          onChange={(e, v) => handleSetModifiers(v)}
+          onChange={(e, v) => { handleSetModifiers(v); }}
           getOptionLabel={(option) => catalog.modifiers[option].modifierType.name ?? 'CORRUPT DATA'}
           isOptionEqualToValue={(o, v) => o === v}
           renderInput={(params) => <TextField {...params} label="Modifiers" />}
@@ -60,7 +62,7 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
                     options={Object.keys(catalog.productInstanceFunctions)}
                     value={modifier.enable}
                     // this makes a copy of the modifiers array with the updated enable function value
-                    onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } }))}
+                    onChange={(_, v) => { props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, enable: v } })); }}
                     getOptionLabel={(option) => catalog.productInstanceFunctions[option].name ?? 'CORRUPT DATA'}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => <TextField {...params} label="Enable Function Name" />}
@@ -74,7 +76,7 @@ const ProductModifierComponent = (props: ProductModifierComponentProps) => {
                     filterSelectedOptions
                     options={fulfillments.map(x => x.id)}
                     value={modifier.serviceDisable}
-                    onChange={(_, v) => props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } }))}
+                    onChange={(_, v) => { props.setModifiers(Object.assign([], props.modifiers, { [idx]: { ...modifier, serviceDisable: v } })); }}
                     getOptionLabel={(option) => fulfillments.find((v) => v.id === option)?.displayName ?? "INVALID"}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => <TextField {...params} label="Disabled Services" />}

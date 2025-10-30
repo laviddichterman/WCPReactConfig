@@ -1,9 +1,11 @@
 import { memo } from 'react';
+
 // @mui
 import { Box } from '@mui/material';
+
 //
 import { StyledRootScrollbar, StyledScrollbar } from './styles';
-import { ScrollbarProps } from './types';
+import { type ScrollbarProps } from './types';
 
 // ----------------------------------------------------------------------
 

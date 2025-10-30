@@ -1,5 +1,6 @@
 import NProgress from 'nprogress';
 import { useEffect, useMemo } from 'react';
+
 // @mui
 import { GlobalStyles } from '@mui/material';
 import { useTheme } from '@mui/material/styles';

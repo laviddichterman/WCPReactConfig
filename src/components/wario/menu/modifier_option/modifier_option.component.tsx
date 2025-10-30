@@ -1,9 +1,11 @@
-import { Autocomplete, Grid, TextField } from "@mui/material";
-import { IMoney, IOptionType, IRecurringInterval, IWInterval, KeyValue, RecordProductInstanceFunctions } from "@wcp/wario-shared";
-
 import { useState } from "react";
+
+import { Autocomplete, Grid, TextField } from "@mui/material";
+
+import { type IMoney, type IOptionType, type IRecurringInterval, type IWInterval, type KeyValue, type RecordProductInstanceFunctions } from "@wcp/wario-shared";
+
 import { useAppSelector } from '../../../../hooks/useRedux';
-import { ValSetValNamed } from "../../../../utils/common";
+import { type ValSetValNamed } from "../../../../utils/common";
 import AvailabilityListBuilderComponent from "../../AvailabilityListBuilderComponent";
 import DatetimeBasedDisableComponent, { IsDisableValueValid } from "../../datetime_based_disable.component";
 import { ExternalIdsExpansionPanelComponent } from "../../ExternalIdsExpansionPanelComponent";
@@ -175,7 +177,7 @@ export const ModifierOptionContainer = (props: ModifierOptionContainerProps & Va
           fullWidth
           options={Object.keys(productInstanceFunctions)}
           value={props.enableFunction}
-          onChange={(e, v) => props.setEnableFunction(v)}
+          onChange={(e, v) => { props.setEnableFunction(v); }}
           getOptionLabel={(option) => productInstanceFunctions[option].name ?? "CORRUPT DATA"}
           isOptionEqualToValue={(o, v) => o === v}
           renderInput={(params) => <TextField {...params} label="Enable Function Name" />}

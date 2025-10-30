@@ -1,4 +1,5 @@
-import { ReactNode, createContext, useEffect, useState } from 'react';
+import { createContext, type ReactNode, useEffect, useState } from 'react';
+
 // hooks
 import { useResponsive } from '../hooks/useResponsive';
 

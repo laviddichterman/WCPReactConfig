@@ -1,18 +1,20 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import { ICategory } from "@wcp/wario-shared";
+import { type ICategory } from "@wcp/wario-shared";
 import { getCategoryEntryById, getCategoryEntryIds } from "@wcp/wario-ux-shared";
-import { useSnackbar } from "notistack";
+
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import CategoryComponent, { CategoryEditProps } from "./category.component";
+
+import CategoryComponent, { type CategoryEditProps } from "./category.component";
 
 const CategoryEditContainer = ({ categoryId, onCloseCallback }: CategoryEditProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const categoryIds = useAppSelector(s => getCategoryEntryIds(s.ws.categories));
-  const category = useAppSelector(s => getCategoryEntryById(s.ws.categories, categoryId)!.category);
+  const category = useAppSelector(s => getCategoryEntryById(s.ws.categories, categoryId).category);
   const [description, setDescription] = useState(category.description);
   const [name, setName] = useState(category.name);
   const [subheading, setSubheading] = useState(category.subheading);

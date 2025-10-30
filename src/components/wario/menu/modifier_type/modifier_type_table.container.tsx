@@ -1,11 +1,11 @@
-import type { GridRowParams } from "@mui/x-data-grid-premium";
-import type { CatalogModifierEntry } from "@wcp/wario-shared";
-
 import { useCallback } from "react";
 
 import { AddBox, DeleteOutline, Edit, LibraryAdd } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
+import type { GridRowParams } from "@mui/x-data-grid-premium";
 import { GridActionsCellItem, useGridApiRef } from "@mui/x-data-grid-premium";
+
+import type { CatalogModifierEntry } from "@wcp/wario-shared";
 
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openModifierOptionAdd, openModifierTypeAdd, openModifierTypeCopy, openModifierTypeDelete, openModifierTypeEdit } from "../../../../redux/slices/CatalogSlice";
@@ -71,7 +71,7 @@ const ModifierTypeTableContainer = () => {
       elt: <Tooltip key="ADDNEW" title="Add Modifier Type"><IconButton onClick={() => dispatch(openModifierTypeAdd())}><AddBox /></IconButton></Tooltip>
     }]}
     rows={Object.values(modifiers)}
-    onRowClick={(params) => apiRef.current.toggleDetailPanel(params.id)}
+    onRowClick={(params) => { apiRef.current.toggleDetailPanel(params.id); }}
     getDetailPanelContent={getDetailPanelContent}
     getDetailPanelHeight={getDetailPanelHeight}
     disableToolbar={false}

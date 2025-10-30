@@ -1,14 +1,17 @@
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
+
 // @mui
 import { CssBaseline } from '@mui/material';
 import {
   createTheme,
   ThemeProvider as MUIThemeProvider,
   StyledEngineProvider,
-  ThemeOptions,
+  type ThemeOptions,
 } from '@mui/material/styles';
+
 // hooks
 import { useSettings } from '../hooks/useSettings';
+
 //
 import breakpoints from './breakpoints';
 import componentsOverride from './overrides';

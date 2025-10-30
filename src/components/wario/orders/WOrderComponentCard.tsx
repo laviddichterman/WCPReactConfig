@@ -1,16 +1,19 @@
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Avatar, Box, Card, CardHeader, CardProps, SxProps, Tab, Typography } from "@mui/material";
-import { red } from "@mui/material/colors";
-import { ComputeServiceTimeDisplayString, DateTimeIntervalBuilder, WDateUtils, WOrderStatus } from "@wcp/wario-shared";
 import { format } from "date-fns";
 import { useState } from "react";
 
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { Avatar, Box, Card, CardHeader, type CardProps, type SxProps, Tab, Typography } from "@mui/material";
+import { red } from "@mui/material/colors";
+
+import { ComputeServiceTimeDisplayString, DateTimeIntervalBuilder, WDateUtils, WOrderStatus } from "@wcp/wario-shared";
 import { getFulfillmentById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
+
 import { useAppSelector } from "../../../hooks/useRedux";
 import { getWOrderInstanceById } from "../../../redux/slices/OrdersSlice";
 import { getPrinterGroups } from "../../../redux/slices/PrinterGroupSlice";
-import { RootState } from "../../../redux/store";
-import { ElementActionComponentProps } from "../menu/element.action.component";
+import { type RootState } from "../../../redux/store";
+import { type ElementActionComponentProps } from "../menu/element.action.component";
+
 import WOrderCancelComponent from "./WOrderCancelComponent";
 import { WOrderDisplayComponent } from "./WOrderDisplayComponent";
 import WOrderForceSendComponent from "./WOrderForceSendComponent";
@@ -53,9 +56,9 @@ const selectOrderSubheader = weakMapCreateSelector(
 
 export const WOrderComponentCard = ({ orderId, onCloseCallback, handleConfirmOrder, ...other }: WOrderComponentCardProps) => {
   const hasExpoPrinter = useAppSelector(s => getPrinterGroups(s.printerGroup.printerGroups).filter(x => x.isExpo).length > 0);
-  const orderStatus = useAppSelector(s => getWOrderInstanceById(s.orders.orders, orderId)!.status);
+  const orderStatus = useAppSelector(s => getWOrderInstanceById(s.orders.orders, orderId).status);
   const orderTitle = useAppSelector(s => {
-    const constumerInfo = getWOrderInstanceById(s.orders.orders, orderId)!.customerInfo;
+    const constumerInfo = getWOrderInstanceById(s.orders.orders, orderId).customerInfo;
     return `${constumerInfo.givenName} ${constumerInfo.familyName}`;
   });
   const orderSubheader = useAppSelector(s => selectOrderSubheader(s, orderId));
@@ -76,7 +79,7 @@ export const WOrderComponentCard = ({ orderId, onCloseCallback, handleConfirmOrd
           TabIndicatorProps={{ hidden: true }}
           scrollButtons={false}
           centered
-          onChange={(_, v) => setMode(v)}
+          onChange={(_, v) => { setMode(v); }}
           aria-label={`order tab navigation`}
         >
           <Tab wrapped key={'info'} label={<Typography variant='h6'>Information</Typography>} value={'info'} />

@@ -1,6 +1,6 @@
-import { m } from 'motion/react';
 // components
 import { useAuth0 } from '@auth0/auth0-react';
+import { m } from 'motion/react';
 
 // @mui
 import { Container, Typography } from '@mui/material';

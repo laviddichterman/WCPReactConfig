@@ -1,13 +1,14 @@
-import type { ICategory } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wario-shared";
-import { getCategoryEntryIds } from "@wcp/wario-ux-shared";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
+import type { ICategory } from "@wcp/wario-shared";
+import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wario-shared";
+import { getCategoryEntryIds } from "@wcp/wario-ux-shared";
+
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
+
 import CategoryComponent from "./category.component";
 
 export interface CategoryAddContainerProps {

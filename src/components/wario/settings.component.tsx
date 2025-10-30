@@ -1,8 +1,10 @@
-import { Card, Grid } from '@mui/material';
 import { useState } from 'react';
 
-import { FulfillmentConfig } from "@wcp/wario-shared";
+import { Card, Grid } from '@mui/material';
+
+import { type FulfillmentConfig } from "@wcp/wario-shared";
 import { DialogContainer } from '@wcp/wario-ux-shared';
+
 import FulfillmentAddContainer from './FulfillmentAddContainer';
 import FulfillmentDeleteContainer from './FulfillmentDeleteContainer';
 import FulfillmentEditContainer from './FulfillmentEditContainer';
@@ -19,24 +21,24 @@ export const SettingsComponent = () => {
       <DialogContainer
         maxWidth={"xl"}
         title={"Edit Fulfillment"}
-        onClose={() => setIsFulfillmentEditOpen(false)}
+        onClose={() => { setIsFulfillmentEditOpen(false); }}
         open={isFulfillmentEditOpen}
         innerComponent={
           fulfillmentToEdit !== null &&
           <FulfillmentEditContainer
-            onCloseCallback={() => setIsFulfillmentEditOpen(false)}
+            onCloseCallback={() => { setIsFulfillmentEditOpen(false); }}
             fulfillment={fulfillmentToEdit}
           />
         }
       />
       <DialogContainer
         title={"Delete Fulfillment"}
-        onClose={() => setIsFulfillmentDeleteOpen(false)}
+        onClose={() => { setIsFulfillmentDeleteOpen(false); }}
         open={isFulfillmentDeleteOpen}
         innerComponent={
           fulfillmentToEdit !== null &&
           <FulfillmentDeleteContainer
-            onCloseCallback={() => setIsFulfillmentDeleteOpen(false)}
+            onCloseCallback={() => { setIsFulfillmentDeleteOpen(false); }}
             fulfillment={fulfillmentToEdit}
           />
         }
@@ -44,11 +46,11 @@ export const SettingsComponent = () => {
       <DialogContainer
         maxWidth={"xl"}
         title={"Add Fulfillment"}
-        onClose={() => setIsFulfillmentAddOpen(false)}
+        onClose={() => { setIsFulfillmentAddOpen(false); }}
         open={isFulfillmentAddOpen}
         innerComponent={
           <FulfillmentAddContainer
-            onCloseCallback={() => setIsFulfillmentAddOpen(false)}
+            onCloseCallback={() => { setIsFulfillmentAddOpen(false); }}
           />
         }
       />

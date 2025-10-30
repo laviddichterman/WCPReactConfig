@@ -1,24 +1,25 @@
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+
 // @mui
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
 // hooks
 import { IsSocketDataLoaded } from '@wcp/wario-ux-shared';
-import { useSettings } from '../../hooks/useSettings';
 
-import { useCollapseDrawer } from '../../hooks/useCollapseDrawer';
-import { useResponsive } from '../../hooks/useResponsive';
 // config
 import PACKAGE from '../../../package.json';
-import { HEADER, NAVBAR } from '../../config';
-
 //
 import { Label } from '../../components/Label';
-
-import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { LoadingScreen } from '../../components/LoadingScreen';
+import { HEADER, NAVBAR } from '../../config';
+import { useCollapseDrawer } from '../../hooks/useCollapseDrawer';
 import { useAppSelector } from '../../hooks/useRedux';
+import { useResponsive } from '../../hooks/useResponsive';
+import { useSettings } from '../../hooks/useSettings';
+
 import { DashboardHeader } from './header';
 import { NavbarHorizontal } from './navbar/NavbarHorizontal';
 import NavbarVertical from './navbar/NavbarVertical';
@@ -72,12 +73,12 @@ function DashboardLayout() {
   if (verticalLayout) {
     return (
       <>
-        <DashboardHeader onOpenSidebar={() => setOpen(true)} verticalLayout={verticalLayout} />
+        <DashboardHeader onOpenSidebar={() => { setOpen(true); }} verticalLayout={verticalLayout} />
 
         {isDesktop ? (
           <NavbarHorizontal />
         ) : (
-          <NavbarVertical isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+          <NavbarVertical isOpenSidebar={open} onCloseSidebar={() => { setOpen(false); }} />
         )}
 
         <Box
@@ -111,9 +112,9 @@ function DashboardLayout() {
         minHeight: { md: 1 },
       }}
     >
-      <DashboardHeader isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} />
+      <DashboardHeader isCollapse={isCollapse} onOpenSidebar={() => { setOpen(true); }} />
 
-      <NavbarVertical isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+      <NavbarVertical isOpenSidebar={open} onCloseSidebar={() => { setOpen(false); }} />
 
       <MainStyle collapseClick={collapseClick}>
         <Outlet />

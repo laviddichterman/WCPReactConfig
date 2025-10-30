@@ -1,10 +1,11 @@
-import type { KeyValue } from "@wcp/wario-shared";
-
-import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
 import { snakeCase, startCase } from 'lodash';
 
 import { FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from "@mui/material";
 
+import type { KeyValue } from "@wcp/wario-shared";
+import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
+
+import type { ValSetValNamed } from "../../../../utils/common";
 import { CheckedNumericInput } from "../../CheckedNumericTextInput";
 import { ExternalIdsExpansionPanelComponent } from "../../ExternalIdsExpansionPanelComponent";
 import { IntNumericPropertyComponent } from "../../property-components/IntNumericPropertyComponent";
@@ -12,8 +13,6 @@ import { StringEnumPropertyComponent } from "../../property-components/StringEnu
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
 import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
 import { ElementActionComponent } from "../element.action.component";
-
-import type { ValSetValNamed } from "../../../../utils/common";
 
 export interface ModifierTypeUiProps {
   onCloseCallback: VoidFunction;
@@ -111,7 +110,7 @@ export const ModifierTypeContainer = (props: ModifierTypeContainerProps) => {
           inputProps={{ inputMode: 'numeric', min: props.minSelected, pattern: '[0-9]*', step: 1 }}
           value={props.maxSelected}
           disabled={props.isProcessing}
-          onChange={(e) => handleSetMaxSelected(e)}
+          onChange={(e) => { handleSetMaxSelected(e); }}
           parseFunction={(v) => v !== null && v ? parseInt(v) : null}
           allowEmpty />
       </Grid>
@@ -163,7 +162,7 @@ export const ModifierTypeContainer = (props: ModifierTypeContainerProps) => {
             name="empty-display-as"
             row
             value={props.emptyDisplayAs}
-            onChange={(e) => props.setEmptyDisplayAs(e.target.value as keyof typeof DISPLAY_AS)}
+            onChange={(e) => { props.setEmptyDisplayAs(e.target.value as keyof typeof DISPLAY_AS); }}
           >
             {Object.keys(DISPLAY_AS).map((opt, i) =>
               <FormControlLabel

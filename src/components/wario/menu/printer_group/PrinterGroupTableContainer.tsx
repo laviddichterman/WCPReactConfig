@@ -1,12 +1,12 @@
-import type { GridRowParams } from "@mui/x-data-grid-premium";
-import type { PrinterGroup } from "@wcp/wario-shared";
-
-import { DialogContainer } from "@wcp/wario-ux-shared";
 import React, { useState } from "react";
 
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
+import type { GridRowParams } from "@mui/x-data-grid-premium";
 import { GridActionsCellItem, useGridApiRef } from "@mui/x-data-grid-premium";
+
+import type { PrinterGroup } from "@wcp/wario-shared";
+import { DialogContainer } from "@wcp/wario-ux-shared";
 
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { getPrinterGroups } from "../../../../redux/slices/PrinterGroupSlice";
@@ -61,7 +61,7 @@ const PrinterGroupTableContainer = () => {
         ]}
         toolbarActions={[{
           size: 1,
-          elt: <Tooltip key="ADDNEW" title="Add Printer Group"><IconButton onClick={() => setIsPrinterGroupAddOpen(true)}><AddBox /></IconButton></Tooltip>
+          elt: <Tooltip key="ADDNEW" title="Add Printer Group"><IconButton onClick={() => { setIsPrinterGroupAddOpen(true); }}><AddBox /></IconButton></Tooltip>
         }]}
         rows={Object.values(printerGroups)}
         getRowId={(row: PrinterGroup) => row.id}
@@ -70,23 +70,23 @@ const PrinterGroupTableContainer = () => {
       <DialogContainer
         maxWidth="xl"
         title="Add Printer Group"
-        onClose={() => setIsPrinterGroupAddOpen(false)}
+        onClose={() => { setIsPrinterGroupAddOpen(false); }}
         open={isPrinterGroupAddOpen}
         innerComponent={
           <PrinterGroupAddContainer
-            onCloseCallback={() => setIsPrinterGroupAddOpen(false)}
+            onCloseCallback={() => { setIsPrinterGroupAddOpen(false); }}
           />
         }
       />
       <DialogContainer
         maxWidth="xl"
         title="Edit Printer Group"
-        onClose={() => setIsPrinterGroupEditOpen(false)}
+        onClose={() => { setIsPrinterGroupEditOpen(false); }}
         open={isPrinterGroupEditOpen}
         innerComponent={
           printerGroupToEdit !== null &&
           <PrinterGroupEditContainer
-            onCloseCallback={() => setIsPrinterGroupEditOpen(false)}
+            onCloseCallback={() => { setIsPrinterGroupEditOpen(false); }}
             printerGroup={printerGroupToEdit}
           />
         }

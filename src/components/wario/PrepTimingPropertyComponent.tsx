@@ -1,7 +1,11 @@
-import { Grid } from "@mui/material";
-import { PrepTiming } from "@wcp/wario-shared";
 import { useState } from 'react';
-import { ValSetVal } from "../../utils/common";
+
+import { Grid } from "@mui/material";
+
+import { type PrepTiming } from "@wcp/wario-shared";
+
+import { type ValSetVal } from "../../utils/common";
+
 import { FloatNumericPropertyComponent } from './property-components/FloatNumericPropertyComponent';
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
 import { ToggleBooleanPropertyComponent } from "./property-components/ToggleBooleanPropertyComponent";
@@ -33,7 +37,7 @@ const PrepTimingPropertyComponent = (props: PrepTimingPropertyComponentProps) =>
           setValue={handleSpecifyTiming}
         />
       </Grid>
-      {specifyTiming === true && props.value && (
+      {specifyTiming && props.value && (
         <>
           <Grid size={6}>
             <IntNumericPropertyComponent

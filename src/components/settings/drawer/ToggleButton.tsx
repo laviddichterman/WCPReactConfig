@@ -1,11 +1,12 @@
 // @mui
 import { Tooltip } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
+
 // utils
 import { cssStyles } from '../../../utils/cssStyles';
+import { IconButtonAnimate } from '../../animate';
 //
 import { Iconify } from '../../Iconify';
-import { IconButtonAnimate } from '../../animate';
 
 // ----------------------------------------------------------------------
 

@@ -1,10 +1,14 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { Button, Card, CardHeader, Grid } from '@mui/material';
-import { getFulfillments } from '@wcp/wario-ux-shared';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
+
+import { Button, Card, CardHeader, Grid } from '@mui/material';
+
+import { getFulfillments } from '@wcp/wario-ux-shared';
+
 import { HOST_API } from '../../config';
 import { useAppSelector } from '../../hooks/useRedux';
+
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
 
 export const LeadTimesComp = () => {
@@ -21,7 +25,7 @@ export const LeadTimesComp = () => {
     // overwrite the local lead time with either the dirty value or the value from the received FULFILLMENTS
     const newLocalLeadTime = FULFILLMENTS.reduce((acc: Record<string, number>, fulfillment) => {
       const id = fulfillment.id;
-      const isDirty = Object.hasOwn(dirty, id) && dirty[id] === true && Object.hasOwn(localLeadTime, id);
+      const isDirty = Object.hasOwn(dirty, id) && dirty[id] && Object.hasOwn(localLeadTime, id);
       return {
         ...acc,
         [fulfillment.id]: isDirty ?
@@ -102,7 +106,7 @@ export const LeadTimesComp = () => {
                     disabled={isProcessing}
                     label={fulfillment.displayName}
                     value={dirty[fulfillment.id] ? localLeadTime[fulfillment.id] : fulfillment.leadTime}
-                    setValue={(e: number) => onChangeLeadTimes(fulfillment.id, e)}
+                    setValue={(e: number) => { onChangeLeadTimes(fulfillment.id, e); }}
                   />
                 </Grid>
               );

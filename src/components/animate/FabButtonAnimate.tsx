@@ -1,9 +1,8 @@
-// @mui
-import type { FabProps, SxProps } from '@mui/material';
-
 import { m } from 'motion/react';
 import { forwardRef } from 'react';
 
+// @mui
+import type { FabProps, SxProps } from '@mui/material';
 import { Box, Fab } from '@mui/material';
 
 // ----------------------------------------------------------------------

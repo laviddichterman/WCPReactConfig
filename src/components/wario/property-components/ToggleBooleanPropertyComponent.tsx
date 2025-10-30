@@ -1,5 +1,6 @@
-import { Box, FormControlLabel, FormControlLabelProps, Switch, SwitchProps } from "@mui/material";
-import { ValSetVal } from "../../../utils/common";
+import { Box, FormControlLabel, type FormControlLabelProps, Switch, type SwitchProps } from "@mui/material";
+
+import { type ValSetVal } from "../../../utils/common";
 
 export type ToggleBooleanPropertyComponentProps = {
   sx?: SwitchProps['sx'];
@@ -20,7 +21,7 @@ export function ToggleBooleanPropertyComponent(props: ToggleBooleanPropertyCompo
         disabled={props.disabled}
         checked={props.value}
         onChange={(e) =>
-          props.setValue(e.target.checked)
+          { props.setValue(e.target.checked); }
         }
         name={props.label}
       />

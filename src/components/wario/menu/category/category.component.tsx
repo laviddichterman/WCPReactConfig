@@ -1,15 +1,14 @@
+import { Autocomplete, Grid, TextField } from "@mui/material";
+
 import { CALL_LINE_DISPLAY, CategoryDisplay } from "@wcp/wario-shared";
 import { getCategoryEntryById, getFulfillments } from "@wcp/wario-ux-shared";
 
-import { Autocomplete, Grid, TextField } from "@mui/material";
-
 import { useAppSelector } from "../../../../hooks/useRedux";
+import type { ValSetValNamed } from "../../../../utils/common";
 import { IntNumericPropertyComponent } from "../../property-components/IntNumericPropertyComponent";
 import { StringEnumPropertyComponent } from "../../property-components/StringEnumPropertyComponent";
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
 import { ElementActionComponent } from "../element.action.component";
-
-import type { ValSetValNamed } from "../../../../utils/common";
 import type { ElementActionComponentProps } from "../element.action.component";
 
 export interface CategoryEditProps {
@@ -63,7 +62,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
             <Autocomplete
               options={props.categoryIds}
               value={props.parent}
-              onChange={(_, v) => props.setParent(v !== null ? String(v) : null)}
+              onChange={(_, v) => { props.setParent(v !== null ? String(v) : null); }}
               getOptionLabel={(o) => selectCategoryById(o)?.category.name ?? "Undefined"}
               isOptionEqualToValue={(o, v) => o === v}
               renderInput={(params) => (
@@ -79,7 +78,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               label="Category Description (Optional, HTML allowed)"
               type="text"
               value={props.description}
-              onChange={(e) => props.setDescription(e.target.value)}
+              onChange={(e) => { props.setDescription(e.target.value); }}
             />
           </Grid>
           <Grid size={3}>
@@ -98,7 +97,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               label="Subheading (Optional, HTML allowed)"
               type="text"
               value={props.subheading}
-              onChange={(e) => props.setSubheading(e.target.value)}
+              onChange={(e) => { props.setSubheading(e.target.value); }}
             />
           </Grid>
           <Grid size={12}>
@@ -109,7 +108,7 @@ const CategoryComponent = (props: CategoryComponentProps) => {
               label="Footnotes (Optional, HTML allowed)"
               type="text"
               value={props.footnotes}
-              onChange={(e) => props.setFootnotes(e.target.value)}
+              onChange={(e) => { props.setFootnotes(e.target.value); }}
             />
           </Grid>
           <Grid

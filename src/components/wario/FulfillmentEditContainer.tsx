@@ -1,10 +1,12 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import type { Polygon } from 'geojson';
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import { FulfillmentConfig } from "@wcp/wario-shared";
-import { useSnackbar } from "notistack";
+import { type FulfillmentConfig } from "@wcp/wario-shared";
+
 import { HOST_API } from "../../config";
+
 import FulfillmentComponent from "./FulfillmentComponent";
 
 const FulfillmentEditContainer = ({ fulfillment, onCloseCallback }: { fulfillment: FulfillmentConfig; onCloseCallback: VoidFunction }) => {

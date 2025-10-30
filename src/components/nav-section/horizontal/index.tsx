@@ -1,8 +1,11 @@
 import { memo } from 'react';
+
 // @mui
 import { Stack } from '@mui/material';
+
 //
-import { NavSectionProps } from '../type';
+import { type NavSectionProps } from '../type';
+
 import NavList from './NavList';
 
 // ----------------------------------------------------------------------

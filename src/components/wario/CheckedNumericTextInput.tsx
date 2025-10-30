@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { InputBaseComponentProps, TextField, TextFieldProps } from '@mui/material';
+
+import { type InputBaseComponentProps, TextField, type TextFieldProps } from '@mui/material';
 
 // TODO: centralize this in a shared react repo
 

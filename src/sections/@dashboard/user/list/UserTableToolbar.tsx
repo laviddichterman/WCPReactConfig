@@ -1,4 +1,5 @@
 import { InputAdornment, MenuItem, Stack, TextField } from '@mui/material';
+
 // components
 import { Iconify } from '../../../../components/Iconify';
 
@@ -57,7 +58,7 @@ export function UserTableToolbar({
       <TextField
         fullWidth
         value={filterName}
-        onChange={(event) => onFilterName(event.target.value)}
+        onChange={(event) => { onFilterName(event.target.value); }}
         placeholder="Search user..."
         InputProps={{
           startAdornment: (

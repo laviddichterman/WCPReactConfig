@@ -19,11 +19,11 @@ import { BrowserRouter, useNavigate } from 'react-router-dom';
 //
 import App from './App';
 import { AUTH0_API } from './config';
-import { store } from './redux/store';
-// redux
-import { SettingsProvider } from './contexts/SettingsContext';
 // contexts
 import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
+// redux
+import { SettingsProvider } from './contexts/SettingsContext';
+import { store } from './redux/store';
 
 const Auth0ProviderWithRedirectCallback = ({ children }: { children?: React.ReactNode; }) => {
   const navigate = useNavigate();

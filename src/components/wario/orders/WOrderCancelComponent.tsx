@@ -1,12 +1,11 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
-
 import { Grid, TextField } from "@mui/material";
-import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
 
+import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { cancelOrder } from "../../../redux/slices/OrdersSlice";
+import { ElementActionComponent, type ElementActionComponentProps } from "../menu/element.action.component";
 import { ToggleBooleanPropertyComponent } from "../property-components/ToggleBooleanPropertyComponent";
 
 type WOrderCancelComponentProps = { orderId: string; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
@@ -42,7 +41,7 @@ const WOrderCancelComponent = (props: WOrderCancelComponentProps) => {
             label="CUSTOMER FACING (they will read this) cancelation reason (optional)"
             type="text"
             value={cancelationReason}
-            onChange={(e) => setCancelationReason(e.target.value)}
+            onChange={(e) => { setCancelationReason(e.target.value); }}
           />
         </Grid>
         <Grid size={12}>

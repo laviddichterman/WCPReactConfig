@@ -1,12 +1,12 @@
-import type { GridRowParams } from "@mui/x-data-grid-premium";
-import type { IMoney, IOption, IOptionType, IWInterval } from '@wcp/wario-shared';
-
-import { DISABLE_REASON, DisableDataCheck } from '@wcp/wario-shared';
 import { format } from 'date-fns';
 
 import { BedtimeOff, Cancel, CheckCircle, DeleteOutline, Edit } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
+import type { GridRowParams } from "@mui/x-data-grid-premium";
 import { GridActionsCellItem } from "@mui/x-data-grid-premium";
+
+import type { IMoney, IOption, IOptionType, IWInterval } from '@wcp/wario-shared';
+import { DISABLE_REASON, DisableDataCheck } from '@wcp/wario-shared';
 
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openModifierOptionDelete, openModifierOptionDisable, openModifierOptionDisableUntilEod, openModifierOptionEdit, openModifierOptionEnable } from "../../../../redux/slices/CatalogSlice";
@@ -23,7 +23,7 @@ const ModifierOptionTableContainer = ({
   const modifier_types_map = useAppSelector(s => s.ws.catalog!.modifiers);
   const modifierOptionsMap = useAppSelector(s => s.ws.catalog!.options);
   const CURRENT_TIME = useAppSelector(s => s.ws.currentTime);
-  const productInstanceFunctions = useAppSelector(s => s.ws.catalog!.productInstanceFunctions!);
+  const productInstanceFunctions = useAppSelector(s => s.ws.catalog!.productInstanceFunctions);
 
   return (
     <TableWrapperComponent

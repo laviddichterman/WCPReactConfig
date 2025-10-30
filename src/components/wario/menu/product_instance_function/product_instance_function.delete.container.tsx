@@ -1,11 +1,12 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import ElementDeleteComponent from "../element.delete.component";
+import { getProductInstanceFunctionById } from "@wcp/wario-ux-shared";
+
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { getProductInstanceFunctionById } from "@wcp/wario-ux-shared";
-import { useSnackbar } from "notistack";
+import ElementDeleteComponent from "../element.delete.component";
 
 export interface ProductInstanceFunctionQuickActionProps {
   pifId: string;

@@ -1,17 +1,18 @@
-import { useState } from "react";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
+import { addDays, parseISO, startOfDay } from "date-fns";
+import { range } from 'lodash';
+import { useState } from "react";
 
 import { Autocomplete, Grid, TextField } from "@mui/material";
 import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
+
 import { WDateUtils } from "@wcp/wario-shared";
 import { getFulfillmentById, SelectDateFnsAdapter, weakMapCreateSelector } from "@wcp/wario-ux-shared";
-import { addDays, parseISO, startOfDay } from "date-fns";
-import { range } from 'lodash';
+
+import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { getWOrderInstanceById, rescheduleOrder } from "../../../redux/slices/OrdersSlice";
-import { RootState } from "../../../redux/store";
-import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
+import { type RootState } from "../../../redux/store";
+import { ElementActionComponent, type ElementActionComponentProps } from "../menu/element.action.component";
 
 const selectFulfillmentForOrderId = weakMapCreateSelector(
   (s: RootState, _oId: string) => s.ws.fulfillments,
@@ -23,7 +24,7 @@ type WOrderRescheduleComponentProps = { orderId: string; onCloseCallback: Elemen
 const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useAppDispatch();
-  const order = useAppSelector(s => getWOrderInstanceById(s.orders.orders, props.orderId))!;
+  const order = useAppSelector(s => getWOrderInstanceById(s.orders.orders, props.orderId));
   const fulfillmentTimeStep = useAppSelector(s => selectFulfillmentForOrderId(s, props.orderId).timeStep);
   const orderSliceState = useAppSelector(s => s.orders.requestStatus)
   const minDay = useAppSelector(s => startOfDay(s.ws.currentTime));
@@ -59,7 +60,7 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
                 minDate={minDay}
                 maxDate={addDays(minDay, 60)}
                 value={parseISO(selectedDate)}
-                onChange={(date) => setSelectedDate(WDateUtils.formatISODate(date!))}
+                onChange={(date) => { setSelectedDate(WDateUtils.formatISODate(date!)); }}
                 slotProps={{
                   toolbar: {
                     hidden: true,
@@ -80,7 +81,7 @@ const WOrderRescheduleComponent = (props: WOrderRescheduleComponentProps) => {
               isOptionEqualToValue={(o, v) => o === v}
               getOptionLabel={x => x !== null ? WDateUtils.MinutesToPrintTime(x) : ""}
               value={selectedTime}
-              onChange={(_, v) => setSelectedTime(v)}
+              onChange={(_, v) => { setSelectedTime(v); }}
               disabled={selectedDate === null}
               renderInput={(params) => <TextField {...params} label={"Time"}
               />}

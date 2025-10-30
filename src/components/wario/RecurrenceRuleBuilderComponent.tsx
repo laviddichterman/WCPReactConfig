@@ -1,13 +1,17 @@
-import { ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, FormControlLabel, Grid, IconButton, TextField, Typography } from "@mui/material";
-import { DateTimePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
-import { IRecurringInterval, IWInterval, WDateUtils } from "@wcp/wario-shared";
-import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
 import { differenceInMinutes, format, isValid, setDay, setMilliseconds, setMinutes, setMonth, setSeconds, startOfDay, toDate } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
 import { Frequency, RRule, Weekday } from 'rrule';
+
+import { ExpandMore } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, FormControlLabel, Grid, IconButton, TextField, Typography } from "@mui/material";
+import { DateTimePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+
+import { type IRecurringInterval, type IWInterval, WDateUtils } from "@wcp/wario-shared";
+import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
+
 import { useAppSelector } from '../../hooks/useRedux';
-import { ValSetVal, ValSetValNamed } from "../../utils/common";
+import { type ValSetVal, type ValSetValNamed } from "../../utils/common";
+
 import { CheckedNumericInput } from './CheckedNumericTextInput';
 import { IntNumericPropertyComponent } from './property-components/IntNumericPropertyComponent';
 import { MappingEnumPropertyComponent } from './property-components/MappingEnumPropertyComponent';
@@ -72,16 +76,16 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
   }, [localInterval, currentRRule, useRRule, setAvailabilityIsValid, setValue]);
 
   const handleSetUseRRule = (newValue: boolean) => {
-    if (useRRule === true && newValue === false) {
+    if (useRRule && !newValue) {
       setLocalInterval({ start: -1, end: -1 });
     }
-    else if (useRRule === false && newValue === true) {
+    else if (!useRRule && newValue) {
       setLocalInterval({ start: 0, end: 1439 });
     }
     setUseRRule(newValue);
   }
   return (
-    <Accordion sx={{ p: 2 }} expanded={isExpanded} onChange={(_e, ex) => setIsExpanded(ex)}  >
+    <Accordion sx={{ p: 2 }} expanded={isExpanded} onChange={(_e, ex) => { setIsExpanded(ex); }}  >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Grid container>
           <Grid size="grow">
@@ -96,7 +100,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
           </Grid>
           <Grid size={2}>
             <FormControlLabel sx={{ float: "right" }} control={
-              <IconButton edge="end" size="small" disabled={props.disabled} aria-label="delete" onClick={() => props.setValue(null)}></IconButton>
+              <IconButton edge="end" size="small" disabled={props.disabled} aria-label="delete" onClick={() => { props.setValue(null); }}></IconButton>
             }
               label="Delete"
             />
@@ -142,7 +146,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     inputProps={{ inputMode: 'numeric', min: 1, pattern: '[0-9]*', step: 1 }}
                     value={count}
                     disabled={props.disabled}
-                    onChange={(e) => setCount(e)}
+                    onChange={(e) => { setCount(e); }}
                     parseFunction={(v) => v !== null && v ? parseInt(v) : null}
                     allowEmpty={true} />
                 </Grid>
@@ -164,7 +168,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     filterSelectedOptions
                     options={[RRule.MO, RRule.TU, RRule.WE, RRule.TH, RRule.FR, RRule.SA, RRule.SU,]}
                     value={byWeekDay}
-                    onChange={(_, v: Weekday[]) => setByWeekDay(v.sort((a, b) => a.getJsWeekday() - b.getJsWeekday()))}
+                    onChange={(_, v: Weekday[]) => { setByWeekDay(v.sort((a, b) => a.getJsWeekday() - b.getJsWeekday())); }}
                     getOptionLabel={(option) => format(setDay(Date.now(), option.getJsWeekday()), 'EEEE')}
                     isOptionEqualToValue={(option, value) => option.weekday === value.weekday}
                     renderInput={(params) => <TextField {...params} label="By Weekday" />}
@@ -176,7 +180,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     filterSelectedOptions
                     options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
                     value={byMonth}
-                    onChange={(_, v: number[]) => setByMonth(v.sort())}
+                    onChange={(_, v: number[]) => { setByMonth(v.sort()); }}
                     getOptionLabel={(option) => format(setMonth(Date.now(), option - 1), 'MMM')}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => <TextField {...params} label="By Month" />}
@@ -216,7 +220,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     disabled={props.disabled}
                     label={"Start"}
                     value={localInterval.start > 0 ? toDate(localInterval.start) : null}
-                    onChange={(date: Date) => setLocalInterval({ start: date && date.valueOf() > 0 ? setMilliseconds(setSeconds(date, 0), 0).valueOf() : -1, end: localInterval.end })}
+                    onChange={(date: Date) => { setLocalInterval({ start: date && date.valueOf() > 0 ? setMilliseconds(setSeconds(date, 0), 0).valueOf() : -1, end: localInterval.end }); }}
                     format="MMM dd, y hh:mm a"
                   />
                 </Grid>
@@ -227,7 +231,7 @@ const RecurrenceRuleBuilderComponent = (props: RecurrenceRuleBuilderComponentPro
                     label={"End"}
                     minDateTime={localInterval.start > 0 ? toDate(localInterval.start) : null}
                     value={localInterval.end > 0 ? toDate(localInterval.end) : null}
-                    onChange={(date: Date) => setLocalInterval({ start: localInterval.start, end: date && date.valueOf() > 0 ? setMilliseconds(setSeconds(date, 0), 0).valueOf() : -1 })}
+                    onChange={(date: Date) => { setLocalInterval({ start: localInterval.start, end: date && date.valueOf() > 0 ? setMilliseconds(setSeconds(date, 0), 0).valueOf() : -1 }); }}
                     format="MMM dd, y hh:mm a"
                   />
                 </Grid>

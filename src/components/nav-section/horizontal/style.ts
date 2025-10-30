@@ -1,10 +1,11 @@
 // @mui
-import { ListItemButton, ListItemButtonProps, Popover } from '@mui/material';
+import { ListItemButton, type ListItemButtonProps, Popover } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
-// utils
-import { cssStyles } from '../../../utils/cssStyles';
+
 // config
 import { NAVBAR } from '../../../config';
+// utils
+import { cssStyles } from '../../../utils/cssStyles';
 
 // ----------------------------------------------------------------------
 

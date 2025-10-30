@@ -1,10 +1,11 @@
-import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
-// routes
-import { PATH_DASHBOARD } from '../routes/paths';
 // components
 import { useAuth0 } from '@auth0/auth0-react';
+import { type ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
+
 import { LoadingScreen } from '../components/LoadingScreen';
+// routes
+import { PATH_DASHBOARD } from '../routes/paths';
 
 // ----------------------------------------------------------------------
 

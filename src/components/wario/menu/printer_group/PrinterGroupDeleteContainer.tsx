@@ -1,10 +1,11 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { ReduceArrayToMapByKey } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 
 import { Warning } from "@mui/icons-material";
 import { Autocomplete, Grid, TextField } from "@mui/material";
+
+import { ReduceArrayToMapByKey } from "@wcp/wario-shared";
 
 import { HOST_API } from "../../../../config";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
@@ -92,7 +93,7 @@ const PrinterGroupDeleteContainer = ({ printerGroup, onCloseCallback }: PrinterG
               disabled={isProcessing || !reassign}
               options={Object.keys(printerGroups).filter(p => p !== printerGroup.id)}
               value={destinationPrinterGroup}
-              onChange={(e, v) => setDestinationPrinterGroup(v)}
+              onChange={(e, v) => { setDestinationPrinterGroup(v); }}
               getOptionLabel={(pgId) => printerGroups[pgId].name ?? "Undefined"}
               isOptionEqualToValue={(option, value) => option === value}
               renderInput={(params) => <TextField {...params} label="Printer Group" />}

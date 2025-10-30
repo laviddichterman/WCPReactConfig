@@ -1,13 +1,13 @@
-import type { IOption, IOptionType, KeyValue } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { HOST_API } from "../../../../config";
-import ModifierTypeComponent from "./modifier_type.component";
+import type { IOption, IOptionType, KeyValue } from "@wcp/wario-shared";
+import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
 
+import { HOST_API } from "../../../../config";
+
+import ModifierTypeComponent from "./modifier_type.component";
 import type { ModifierTypeUiProps } from "./modifier_type.component";
 
 const ModifierTypeAddContainer = ({ onCloseCallback }: ModifierTypeUiProps) => {

@@ -1,6 +1,8 @@
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
 import { kebabCase, snakeCase, startCase } from "lodash";
-import { ValSetVal } from "../../../utils/common";
+
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
+
+import { type ValSetVal } from "../../../utils/common";
 
 export type StringEnumPropertyComponentProps<TEnum> = {
   options: (keyof TEnum)[];
@@ -16,7 +18,7 @@ export function StringEnumPropertyComponent<T>(props: StringEnumPropertyComponen
       name={kebabCase(props.label)}
       row
       value={props.value}
-      onChange={(e) => props.setValue(e.target.value as keyof T)}
+      onChange={(e) => { props.setValue(e.target.value as keyof T); }}
     >
       {props.options.map((opt, i) =>
         <FormControlLabel

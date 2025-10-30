@@ -1,21 +1,23 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+
 // @mui
 import { Box, Drawer, Stack } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-// hooks
-import { useCollapseDrawer } from '../../../hooks/useCollapseDrawer';
-import { useResponsive } from '../../../hooks/useResponsive';
-// utils
-import { cssStyles } from '../../../utils/cssStyles';
-// config
-import { NAVBAR } from '../../../config';
+
 // components
 import PACKAGE from '../../../../package.json';
 import { Label } from '../../../components/Label';
 import { Logo } from '../../../components/Logo';
 import { NavSectionVertical } from '../../../components/nav-section';
 import { Scrollbar } from '../../../components/scrollbar/Scrollbar';
+// config
+import { NAVBAR } from '../../../config';
+// hooks
+import { useCollapseDrawer } from '../../../hooks/useCollapseDrawer';
+import { useResponsive } from '../../../hooks/useResponsive';
+// utils
+import { cssStyles } from '../../../utils/cssStyles';
 
 //
 import { CollapseButton } from './CollapseButton';

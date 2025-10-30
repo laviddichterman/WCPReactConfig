@@ -1,9 +1,8 @@
 import { useAuth0 } from '@auth0/auth0-react';
+
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
-
-import { ElementActionComponent, ElementActionComponentProps } from "../menu/element.action.component";
-
 import { forceSendOrder } from "../../../redux/slices/OrdersSlice";
+import { ElementActionComponent, type ElementActionComponentProps } from "../menu/element.action.component";
 
 type WOrderForceSendComponentProps = { orderId: string; onCloseCallback: ElementActionComponentProps['onCloseCallback'] };
 const WOrderForceSendComponent = (props: WOrderForceSendComponentProps) => {

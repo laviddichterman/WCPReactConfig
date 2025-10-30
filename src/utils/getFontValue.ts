@@ -1,7 +1,6 @@
-import type { TypographyVariant } from '@mui/material/styles/createTypography';
-
 // @mui
 import { useTheme } from '@mui/material/styles';
+import type { TypographyVariant } from '@mui/material/styles/createTypography';
 
 // hooks
 import { useResponsive } from '../hooks/useResponsive';

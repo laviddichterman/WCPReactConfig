@@ -1,8 +1,11 @@
-import { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 
 import { Grid, TextField } from "@mui/material";
-import { IAbstractExpression } from "@wcp/wario-shared";
-import { ElementActionComponent, ElementActionComponentProps } from "../element.action.component";
+
+import { type IAbstractExpression } from "@wcp/wario-shared";
+
+import { ElementActionComponent, type ElementActionComponentProps } from "../element.action.component";
+
 import AbstractExpressionFunctionalContainer from './abstract_expression_functional.container';
 
 export interface ProductInstanceFunctionComponentProps {
@@ -34,7 +37,7 @@ const ProductInstanceFunctionComponent = ({
             inputProps={{ size: 40 }}
             value={functionName}
             size="small"
-            onChange={(e) => setFunctionName(e.target.value)}
+            onChange={(e) => { setFunctionName(e.target.value); }}
           />
         </Grid>
         <Grid size={12}>

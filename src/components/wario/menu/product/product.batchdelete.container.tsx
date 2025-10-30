@@ -1,8 +1,8 @@
-import type { IProduct } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
 import { useSnackbar } from "notistack";
 import { useState } from "react";
+
+import type { IProduct } from "@wcp/wario-shared";
 
 import { HOST_API } from "../../../../config";
 import ElementDeleteComponent from "../element.delete.component";

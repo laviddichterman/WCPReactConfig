@@ -1,10 +1,12 @@
-import { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
 import { GridActionsCellItem } from "@mui/x-data-grid-premium";
-import { OrderFunctional, OrderInstanceFunction } from "@wcp/wario-shared";
+
+import { OrderFunctional, type OrderInstanceFunction } from "@wcp/wario-shared";
 import { getModifierOptionById, getModifierTypeEntryById, getOrderInstanceFunctions } from "@wcp/wario-ux-shared";
+
 import { useAppSelector } from "../../../hooks/useRedux";
 import { TableWrapperComponent } from "../table_wrapper.component";
 interface OIFTableContainerProps {
@@ -37,7 +39,7 @@ const OrderInstanceFunctionTableContainer = (props: OIFTableContainerProps) => {
       toolbarActions={[{
         size: 1,
         elt:
-          <Tooltip key="AddNew" title="Add Order Function"><IconButton onClick={() => props.setIsOrderInstanceFunctionAddOpen(true)}><AddBox /></IconButton></Tooltip>
+          <Tooltip key="AddNew" title="Add Order Function"><IconButton onClick={() => { props.setIsOrderInstanceFunctionAddOpen(true); }}><AddBox /></IconButton></Tooltip>
       }]}
       rows={Object.values(catalog.orderInstanceFunctions)}
       getRowId={(row: OrderInstanceFunction) => row.id}

@@ -1,18 +1,19 @@
-import type { IOption, IOptionType } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
-import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 import { useSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 
 import { ExpandMore } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
 
+import type { IOption, IOptionType } from "@wcp/wario-shared";
+import { DISPLAY_AS, MODIFIER_CLASS } from "@wcp/wario-shared";
+import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { useIndexedState } from "../../../../utils/common";
 import { ModifierOptionContainer } from "../modifier_option/modifier_option.component";
+
 import { ModifierTypeComponent } from "./modifier_type.component";
 
 export interface ModifierTypeCopyContainerProps {
@@ -21,7 +22,7 @@ export interface ModifierTypeCopyContainerProps {
 };
 const ModifierTypeCopyContainer = ({ modifierTypeId, onCloseCallback }: ModifierTypeCopyContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifierTypeEntry = useAppSelector(s => getModifierTypeEntryById(s.ws.modifierEntries, modifierTypeId)!);
+  const modifierTypeEntry = useAppSelector(s => getModifierTypeEntryById(s.ws.modifierEntries, modifierTypeId));
   const allOptions = useAppSelector(s => s.ws.catalog!.options);
 
   const [ordinal, setOrdinal] = useState(modifierTypeEntry.modifierType.ordinal);
@@ -70,7 +71,7 @@ const ModifierTypeCopyContainer = ({ modifierTypeId, onCloseCallback }: Modifier
   const { getAccessTokenSilently } = useAuth0();
 
   const getModifierOptionEditor = useCallback((i: number) => (
-    <Accordion sx={{ p: 2 }} key={i} expanded={expandedPanels[i] && copyOpFlags[i]} onChange={(e, ex) => setExpandedPanel(i)(ex)}  >
+    <Accordion sx={{ p: 2 }} key={i} expanded={expandedPanels[i] && copyOpFlags[i]} onChange={(e, ex) => { setExpandedPanel(i)(ex); }}  >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Grid container>
           <Grid size="grow">
@@ -80,7 +81,7 @@ const ModifierTypeCopyContainer = ({ modifierTypeId, onCloseCallback }: Modifier
             <FormControlLabel sx={{ float: "right" }} control={
               <Switch
                 checked={copyOpFlags[i]}
-                onChange={(e) => setCopyOpFlag(i)(e.target.checked)}
+                onChange={(e) => { setCopyOpFlag(i)(e.target.checked); }}
                 name="Copy"
               />
             }

@@ -1,6 +1,5 @@
-import type { LinkProps } from 'react-router';
-
 import { forwardRef } from 'react';
+import type { LinkProps } from 'react-router';
 import { Link } from 'react-router';
 
 // ----------------------------------------------------------------------

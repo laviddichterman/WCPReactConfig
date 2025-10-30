@@ -1,6 +1,8 @@
-import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { FulfillmentTime, ResponseSuccess, WOrderInstance } from "@wcp/wario-shared";
+import { createAsyncThunk, createEntityAdapter, createSlice, type EntityState, type PayloadAction } from "@reduxjs/toolkit";
 import { enqueueSnackbar } from 'notistack';
+
+import { type FulfillmentTime, type ResponseSuccess, type WOrderInstance } from "@wcp/wario-shared";
+
 import { axiosInstance } from "../../utils/axios";
 import { uuidv4 } from "../../utils/uuidv4";
 // import { parseISO, subDays } from "date-fns";
@@ -215,7 +217,7 @@ const OrdersSlice = createSlice({
       })
       .addCase(confirmOrder.fulfilled, (state, action) => {
         enqueueSnackbar(`Confirmed order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName}.`);
-        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
+        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result);
         state.requestStatus = 'IDLE';
       })
       .addCase(confirmOrder.pending, (state) => {
@@ -227,7 +229,7 @@ const OrdersSlice = createSlice({
       })
       .addCase(cancelOrder.fulfilled, (state, action) => {
         enqueueSnackbar(`Canceled order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName}.`);
-        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
+        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result);
         state.requestStatus = 'IDLE';
       })
       .addCase(cancelOrder.pending, (state) => {
@@ -239,7 +241,7 @@ const OrdersSlice = createSlice({
       })
       .addCase(rescheduleOrder.fulfilled, (state, action) => {
         enqueueSnackbar(`Rescheduled order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName}.`);
-        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
+        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result);
         state.requestStatus = 'IDLE';
       })
       .addCase(rescheduleOrder.pending, (state) => {
@@ -251,7 +253,7 @@ const OrdersSlice = createSlice({
       })
       .addCase(moveOrder.fulfilled, (state, action) => {
         enqueueSnackbar(`Moved order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName} to ${action.meta.arg.destination}.`);
-        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
+        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result);
         state.requestStatus = 'IDLE';
       })
       .addCase(moveOrder.pending, (state) => {
@@ -274,7 +276,7 @@ const OrdersSlice = createSlice({
       })
       .addCase(forceSendOrder.fulfilled, (state, action) => {
         enqueueSnackbar(`Sent order for ${action.payload.result.customerInfo.givenName} ${action.payload.result.customerInfo.familyName}.`);
-        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result!);
+        WOrderInstanceAdapter.upsertOne(state.orders, action.payload.result);
         state.requestStatus = 'IDLE';
       })
       .addCase(forceSendOrder.pending, (state) => {

@@ -1,12 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 // @mui
 import { Link } from '@mui/material';
-//
-import { NavListProps } from '../type';
-import { PaperStyle } from './style';
-import NavItem from './NavItem';
+
 import { getActive, isExternalLink } from '..';
+//
+import { type NavListProps } from '../type';
+
+import NavItem from './NavItem';
+import { PaperStyle } from './style';
 
 // ----------------------------------------------------------------------
 

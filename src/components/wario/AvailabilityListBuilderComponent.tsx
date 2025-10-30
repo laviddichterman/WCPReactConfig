@@ -1,8 +1,11 @@
-import { Button } from "@mui/material";
-import { IRecurringInterval } from "@wcp/wario-shared";
-import { useIndexedState, ValSetVal, ValSetValNamed } from "../../utils/common";
-
 import { useEffect, useState } from 'react';
+
+import { Button } from "@mui/material";
+
+import { type IRecurringInterval } from "@wcp/wario-shared";
+
+import { useIndexedState, type ValSetVal, type ValSetValNamed } from "../../utils/common";
+
 import RecurrenceRuleBuilderComponent from './RecurrenceRuleBuilderComponent';
 
 export type AvailabilityListBuilderComponentProps =
@@ -30,11 +33,11 @@ const AvailabilityListBuilderComponent = (props: AvailabilityListBuilderComponen
           props.setValue(newAvailability);
         }}
           disabled={props.disabled}
-          setAvailabilityIsValid={(v: boolean) => setAvailabilitiesAreValid(i)(v)}
+          setAvailabilityIsValid={(v: boolean) => { setAvailabilitiesAreValid(i)(v); }}
           availabilityIsValid={availabilitiesAreValid[i]} />
       })}
       <Button
-        onClick={() => props.setValue([...props.value, { interval: { start: -1, end: -1 }, rrule: "" }])}
+        onClick={() => { props.setValue([...props.value, { interval: { start: -1, end: -1 }, rrule: "" }]); }}
         disabled={props.disabled || !props.availabilityIsValid}>
         {`Add Availability`}
       </Button>

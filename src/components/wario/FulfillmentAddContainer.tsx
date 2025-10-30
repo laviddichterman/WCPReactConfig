@@ -1,11 +1,12 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import type { Polygon } from 'geojson';
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import { useSnackbar } from "notistack";
+import { type DateIntervalsEntries, DayOfTheWeek, type FulfillmentConfig, FulfillmentType, type OperatingHourSpecification } from "@wcp/wario-shared";
 
-import { DateIntervalsEntries, DayOfTheWeek, FulfillmentConfig, FulfillmentType, OperatingHourSpecification } from "@wcp/wario-shared";
 import { HOST_API } from "../../config";
+
 import FulfillmentComponent from "./FulfillmentComponent";
 const EmptyOperatingHours: OperatingHourSpecification = {
   [DayOfTheWeek.SUNDAY]: [],

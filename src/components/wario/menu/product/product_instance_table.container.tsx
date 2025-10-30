@@ -1,13 +1,15 @@
+import { createStructuredSelector } from "reselect";
+
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import Tooltip from '@mui/material/Tooltip';
-import { GridActionsCellItem, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
-import { TableWrapperComponent } from "../../table_wrapper.component";
+import { GridActionsCellItem, type GridRenderCellParams, type GridRowParams } from "@mui/x-data-grid-premium";
 
 import { getProductInstanceById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
-import { createStructuredSelector } from "reselect";
+
+import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openProductInstanceDelete, openProductInstanceEdit } from "../../../../redux/slices/CatalogSlice";
-import { RootState } from "../../../../redux/store";
+import { type RootState } from "../../../../redux/store";
+import { TableWrapperComponent } from "../../table_wrapper.component";
 
 // type ValueGetterRow = GridValueGetterParams<RowType>;
 interface RowType { id: string; base: boolean; };
@@ -75,7 +77,7 @@ const ProductInstanceTableContainer = ({
             />,
             <GridActionsCellItem
               key={`DEL${params.row.id}`}
-              disabled={params.row.base === true}
+              disabled={params.row.base}
               icon={<Tooltip title="Delete Product Instance"><DeleteOutline /></Tooltip>}
               label="Delete Product Instance"
               onClick={() => dispatch(openProductInstanceDelete(params.row.id))}

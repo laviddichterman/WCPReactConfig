@@ -1,13 +1,14 @@
+import React from "react";
+
 import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {
-  DataGridPremium, DataGridPremiumProps,
+  DataGridPremium, type DataGridPremiumProps,
   GridToolbarContainer,
-  GridToolbarProps,
+  type GridToolbarProps,
   GridToolbarQuickFilter,
-  ToolbarPropsOverrides
+  type ToolbarPropsOverrides
 } from '@mui/x-data-grid-premium';
-import React from "react";
 
 export interface ToolbarAction {
   size: number; elt: React.ReactNode;
@@ -65,7 +66,7 @@ export const TableWrapperComponent = ({
       toolbar: {
         title,
         actions: toolbarActions || [],
-        showQuickFilter: enableSearch === true,
+        showQuickFilter: enableSearch,
         quickFilterProps: enableSearch ? { debounceMs: 500 } : undefined,
       },
     }}

@@ -1,8 +1,7 @@
-// @mui
-import type { SxProps } from '@mui/material';
-
 import { m } from 'motion/react';
 
+// @mui
+import type { SxProps } from '@mui/material';
 import { Box } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 

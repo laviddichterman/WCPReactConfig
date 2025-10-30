@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 // @mui
 import {
   Box,
@@ -9,15 +10,16 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-// hooks
-import { useSettings } from '../../hooks/useSettings';
-// routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+
 // components
 import { HeaderBreadcrumbs } from '../../components/HeaderBreadcrumbs';
 import { Page } from '../../components/Page';
 // guards
 import RoleBasedGuard from '../../guards/RoleBasedGuard';
+// hooks
+import { useSettings } from '../../hooks/useSettings';
+// routes
+import { PATH_DASHBOARD } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 

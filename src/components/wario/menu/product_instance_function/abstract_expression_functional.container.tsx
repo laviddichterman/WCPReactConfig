@@ -1,16 +1,15 @@
-import type { IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, ProductMetadataExpression } from "@wcp/wario-shared";
 import type { Dispatch, SetStateAction } from "react";
-
-import { ConstLiteralDiscriminator, LogicalFunctionOperator, MetadataField, OptionPlacement, OptionQualifier, PRODUCT_LOCATION, ProductInstanceFunctionType, WFunctional } from "@wcp/wario-shared";
-import { getModifierOptionById, getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { Autocomplete, Card, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, List, ListItem, Radio, RadioGroup, Switch, TextField } from "@mui/material";
 
-import { useAppSelector } from "../../../../hooks/useRedux";
-import { CheckedNumericInput } from "../../CheckedNumericTextInput";
+import type { IAbstractExpression, IConstLiteralExpression, IHasAnyOfModifierExpression, IIfElseExpression, ILogicalExpression, IModifierPlacementExpression, IOption, ProductMetadataExpression } from "@wcp/wario-shared";
+import { ConstLiteralDiscriminator, LogicalFunctionOperator, MetadataField, OptionPlacement, OptionQualifier, PRODUCT_LOCATION, ProductInstanceFunctionType, WFunctional } from "@wcp/wario-shared";
+import { getModifierOptionById, getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 
+import { useAppSelector } from "../../../../hooks/useRedux";
 import type { ValSetVal } from "../../../../utils/common";
+import { CheckedNumericInput } from "../../CheckedNumericTextInput";
 
 export interface DiscriminatedFunctionalComponentProps<T> {
   expression_types: Record<string, React.ReactNode>;
@@ -45,7 +44,7 @@ const AbstractExpressionFunctionalComponent = ({
                 name="Expression Type"
                 row
                 value={discriminator}
-                onChange={(e) => setDiscriminator(ProductInstanceFunctionType[e.target.value as keyof typeof ProductInstanceFunctionType])}
+                onChange={(e) => { setDiscriminator(ProductInstanceFunctionType[e.target.value as keyof typeof ProductInstanceFunctionType]); }}
               >
                 {Object.keys(ProductInstanceFunctionType).map((val, idx) => (
                   <FormControlLabel
@@ -181,7 +180,7 @@ LogicalFunctionalComponent = ({
                   name="Operator"
                   row
                   value={operator}
-                  onChange={(_, value) => updateOperator(value)}
+                  onChange={(_, value) => { updateOperator(value); }}
                 >
                   {Object.keys(LogicalFunctionOperator).map((val, idx) => (
                     <FormControlLabel
@@ -302,7 +301,7 @@ HasAnyOfModifierTypeFunctionalComponent = ({
           style={{ width: 200 }}
           options={Object.keys(modifier_types)}
           value={modifier}
-          onChange={(_, v) => setModifier(v)}
+          onChange={(_, v) => { setModifier(v); }}
           getOptionLabel={(o) => modifier_types[o].modifierType.name ?? "CORRUPTED DATA"}
           isOptionEqualToValue={(o, v) => o === v}
           renderInput={(params) => <TextField {...params} label="Modifier" />}
@@ -335,7 +334,7 @@ ModifierPlacementFunctionalComponent = ({
           style={{ width: 200 }}
           options={Object.keys(catalog.modifiers)}
           value={modifier}
-          onChange={(e, v) => setModifier(v)}
+          onChange={(e, v) => { setModifier(v); }}
           getOptionLabel={(o) => catalog.modifiers[o].modifierType.name ?? "CORRUPTED DATA"}
           isOptionEqualToValue={(o, v) => o === v}
           renderInput={(params) => <TextField {...params} label="Modifier" />}
@@ -347,7 +346,7 @@ ModifierPlacementFunctionalComponent = ({
             style={{ width: 200 }}
             options={Object.keys(modifierOptionsForType)}
             value={modifierOption}
-            onChange={(_, v) => setModifierOption(v)}
+            onChange={(_, v) => { setModifierOption(v); }}
             getOptionLabel={(o) => modifierOptionsForType[o].displayName ?? "CORRUPT DATA"}
             isOptionEqualToValue={(o, v) => o === v}
             renderInput={(params) => <TextField {...params} label="Option" />}
@@ -379,7 +378,7 @@ ProductMetadataFunctionalComponent = ({
             name="Field Value"
             row
             value={fieldValue}
-            onChange={(_, value) => setFieldValue(value as unknown as MetadataField)}
+            onChange={(_, value) => { setFieldValue(value as unknown as MetadataField); }}
           >
             {[MetadataField.FLAVOR, MetadataField.WEIGHT].map((val, idx) => (
               <FormControlLabel
@@ -400,7 +399,7 @@ ProductMetadataFunctionalComponent = ({
             name="Location"
             row
             value={locationValue}
-            onChange={(_, value) => setLocationValue(value as unknown as PRODUCT_LOCATION)}
+            onChange={(_, value) => { setLocationValue(value as unknown as PRODUCT_LOCATION); }}
           >
             {[PRODUCT_LOCATION.LEFT, PRODUCT_LOCATION.RIGHT].map((val, idx) => (
               <FormControlLabel
@@ -441,7 +440,7 @@ const ConstLiteralFunctionalComponentInner = ({
               name="Literal Type"
               row
               value={discriminator}
-              onChange={(e) => setDiscriminator(ConstLiteralDiscriminator[e.target.value as keyof typeof ConstLiteralDiscriminator])}
+              onChange={(e) => { setDiscriminator(ConstLiteralDiscriminator[e.target.value as keyof typeof ConstLiteralDiscriminator]); }}
             >
               {Object.keys(ConstLiteralDiscriminator).map((val, idx) => (
                 <FormControlLabel
@@ -491,8 +490,8 @@ const ConstStringLiteralComponent = ({ value, setValue }: ValSetVal<string | nul
     value={dirty ? local_value : (value ?? "")}
     size="small"
     fullWidth
-    onChange={(e) => onChangeLocal(e)}
-    onBlur={() => onFinishChangingLocal()}
+    onChange={(e) => { onChangeLocal(e); }}
+    onBlur={() => { onFinishChangingLocal(); }}
   />
 };
 
@@ -504,7 +503,7 @@ const ConstNumberLiteralComponent = ({ value, setValue }: ValSetVal<number | nul
   inputProps={{ inputMode: 'decimal', pattern: '[0-9]+([.,][0-9]+)?' }}
   // @ts-ignore
   value={value || ""}
-  onChange={(e: number | null) => setValue(e)}
+  onChange={(e: number | null) => { setValue(e); }}
   parseFunction={(e) => parseFloat(e === null ? "0" : e)}
   allowEmpty />;
 
@@ -517,7 +516,7 @@ const ConstModifierPlacementLiteralComponent = function ({ value, setValue }: Va
         name="Placement Value"
         row
         value={value}
-        onChange={(e) => setValue(parseInt(e.target.value as keyof typeof OptionPlacement))}
+        onChange={(e) => { setValue(parseInt(e.target.value as keyof typeof OptionPlacement)); }}
       >
         {[OptionPlacement.NONE, OptionPlacement.LEFT, OptionPlacement.RIGHT, OptionPlacement.WHOLE].map((val, idx) => (
           <FormControlLabel
@@ -540,7 +539,7 @@ const ConstModifierQualifierLiteralComponent = function ({ value, setValue }: Va
         name="Qualifier Value"
         row
         value={value}
-        onChange={(e) => setValue(parseInt(e.target.value as keyof typeof OptionQualifier))}
+        onChange={(e) => { setValue(parseInt(e.target.value as keyof typeof OptionQualifier)); }}
       >
         {[OptionQualifier.REGULAR, OptionQualifier.HEAVY, OptionQualifier.LITE, OptionQualifier.OTS].map((val, idx) => (
           <FormControlLabel
@@ -560,7 +559,7 @@ const ConstBooleanLiteralComponent = function ({ value, setValue }: ValSetVal<bo
       control={
         <Switch
           checked={value || false}
-          onChange={e => setValue(e.target.checked)}
+          onChange={e => { setValue(e.target.checked); }}
           name="Boolean Literal"
         />
       }

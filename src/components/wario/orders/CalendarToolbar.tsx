@@ -1,14 +1,18 @@
+import { format } from 'date-fns';
+
 // @mui
 import { Button, IconButton, Stack, ToggleButton, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
+// components
+import { WDateUtils } from '@wcp/wario-shared';
+
+import { Iconify } from '../../../components/Iconify';
 // utils
 // hooks
 import { useResponsive } from '../../../hooks/useResponsive';
-// components
-import { WDateUtils } from '@wcp/wario-shared';
-import { format } from 'date-fns';
-import { Iconify } from '../../../components/Iconify';
-import { CalendarView } from './CalendarStyle';
+
+import { type CalendarView } from './CalendarStyle';
 
 // ----------------------------------------------------------------------
 
@@ -60,7 +64,7 @@ export default function CalendarToolbar({
               <ToggleButton
                 value={view}
                 selected={viewOption.value === view}
-                onChange={() => onChangeView(viewOption.value)}
+                onChange={() => { onChangeView(viewOption.value); }}
                 sx={{ width: 32, height: 32, padding: 0, border: 0 }}
               >
                 <Iconify icon={viewOption.icon} width={20} height={20} />

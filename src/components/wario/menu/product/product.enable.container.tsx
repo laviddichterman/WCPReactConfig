@@ -1,11 +1,11 @@
-import type { IProduct } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { getProductEntryById } from "@wcp/wario-ux-shared";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
 import { Grid } from "@mui/material";
+
+import type { IProduct } from "@wcp/wario-shared";
+import { getProductEntryById } from "@wcp/wario-ux-shared";
 
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
@@ -17,7 +17,7 @@ import type { ProductQuickActionProps } from './product.delete.container';
 const ProductEnableContainer = ({ product_id, onCloseCallback }: ProductQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const productName = useAppSelector(s => selectBaseProductName(s, product_id));
-  const product = useAppSelector(s => getProductEntryById(s.ws.products, product_id)!.product);
+  const product = useAppSelector(s => getProductEntryById(s.ws.products, product_id).product);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const { getAccessTokenSilently } = useAuth0();

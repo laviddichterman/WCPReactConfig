@@ -1,15 +1,18 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { addDays, parseISO } from "date-fns";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Button, Card, CardHeader, Divider, Grid, IconButton } from "@mui/material";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { addDays, parseISO } from "date-fns";
-import { useState } from "react";
 
-import { CURRENCY, IMoney, IssueStoreCreditRequest, MoneyToDisplayString, StoreCreditType, WDateUtils } from "@wcp/wario-shared";
+import { CURRENCY, type IMoney, type IssueStoreCreditRequest, MoneyToDisplayString, StoreCreditType, WDateUtils } from "@wcp/wario-shared";
 import { SelectDateFnsAdapter } from "@wcp/wario-ux-shared";
-import { useSnackbar } from "notistack";
+
 import { HOST_API } from "../../config";
 import { useAppSelector } from "../../hooks/useRedux";
+
 import { IMoneyPropertyComponent } from "./property-components/IMoneyPropertyComponent";
 import { StringPropertyComponent } from "./property-components/StringPropertyComponent";
 import { ToggleBooleanPropertyComponent } from './property-components/ToggleBooleanPropertyComponent';
@@ -182,7 +185,7 @@ export const StoreCreditIssueComponent = () => {
             edge="start"
             size="medium"
             aria-label="delete"
-            onClick={() => setExpiration(null)}
+            onClick={() => { setExpiration(null); }}
           >
             <HighlightOffIcon />
           </IconButton>
@@ -208,7 +211,7 @@ export const StoreCreditIssueComponent = () => {
           <ToggleBooleanPropertyComponent
             disabled={isProcessing}
             label="Is Discount?"
-            setValue={(x) => setCreditType(x ? StoreCreditType.DISCOUNT : StoreCreditType.MONEY)}
+            setValue={(x) => { setCreditType(x ? StoreCreditType.DISCOUNT : StoreCreditType.MONEY); }}
             value={creditType === StoreCreditType.DISCOUNT}
             labelPlacement={'end'}
           />

@@ -1,17 +1,18 @@
 // @mui
 import {
   ListItemButton,
-  ListItemButtonProps,
+  type ListItemButtonProps,
   ListItemIcon,
   ListItemText,
-  ListItemTextProps,
+  type ListItemTextProps,
   ListSubheader,
 } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
-// utils
-import { cssStyles } from '../../../utils/cssStyles';
+
 // config
 import { ICON, NAVBAR } from '../../../config';
+// utils
+import { cssStyles } from '../../../utils/cssStyles';
 
 // ----------------------------------------------------------------------
 

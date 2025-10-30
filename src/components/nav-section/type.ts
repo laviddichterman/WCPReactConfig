@@ -1,5 +1,6 @@
-import { ReactElement } from 'react';
-import { BoxProps } from '@mui/material';
+import { type ReactElement } from 'react';
+
+import { type BoxProps } from '@mui/material';
 
 // ----------------------------------------------------------------------
 

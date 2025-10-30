@@ -1,11 +1,13 @@
+// components
+import { useAuth0 } from '@auth0/auth0-react';
+
 // @mui
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
+import { MyAvatar } from '../../../../components/MyAvatar';
 // utils
 import { cssStyles } from '../../../../utils/cssStyles';
-// components
-import { useAuth0 } from '@auth0/auth0-react';
-import { MyAvatar } from '../../../../components/MyAvatar';
 
 // ----------------------------------------------------------------------
 

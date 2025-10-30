@@ -1,7 +1,9 @@
+import React, { useMemo, useState } from "react";
+
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Grid, Paper, Popper, TextField, Typography } from "@mui/material";
-import { GridActionsCellItem, GridColDef, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid-premium";
-import React, { useMemo, useState } from "react";
+import { GridActionsCellItem, type GridColDef, type GridRenderCellParams, type GridRowParams } from "@mui/x-data-grid-premium";
+
 import { TableWrapperComponent } from "./table_wrapper.component";
 
 function isOverflown(element: any) {
@@ -139,7 +141,7 @@ export const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>
 
 
   const onAddNewKeyValuePair = () => {
-    const newLocalValues = { ...localValues, [newkey]: { key: newkey, value: newvalue! } as KeyValuesRowType<T> };
+    const newLocalValues = { ...localValues, [newkey]: { key: newkey, value: newvalue } as KeyValuesRowType<T> };
     setLocalValues(newLocalValues);
     if (props.setValues) {
       // @ts-ignore
@@ -161,7 +163,7 @@ export const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>
                   label="Key"
                   type="text"
                   size="small"
-                  onChange={e => setNewkey(e.target.value)}
+                  onChange={e => { setNewkey(e.target.value); }}
                   value={newkey}
                 />
               </Grid>
@@ -172,7 +174,7 @@ export const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>
                   type="text"
                   value={newvalue}
                   size="small"
-                  onChange={e => setNewvalue(e.target.value)}
+                  onChange={e => { setNewvalue(e.target.value); }}
                 />
               </Grid>
               <Grid size={2}>
@@ -216,7 +218,7 @@ export const KeyValuesContainer = function <T>(props: KeyValuesContainerProps<T>
           </div>
         </CardContent>
         {props.onSubmit && <CardActions>
-          <Button disabled={props.isProcessing} onClick={() => props.onSubmit!(mergedValues)}>PUSH CHANGES</Button>
+          <Button disabled={props.isProcessing} onClick={() => { props.onSubmit!(mergedValues); }}>PUSH CHANGES</Button>
         </CardActions>}
       </Card>
     </div>

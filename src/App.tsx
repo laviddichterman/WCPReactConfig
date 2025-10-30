@@ -1,19 +1,20 @@
-import { useEffect } from 'react';
 // components
 import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect } from 'react';
+
 import { startConnection } from '@wcp/wario-ux-shared';
 
-import { ScrollToTop } from './components/ScrollToTop';
-import ThemeSettings from './components/settings';
-import Router from './routes';
-import ThemeProvider from './theme';
-// routes
-import { ProgressBarStyle } from './components/ProgressBar';
-import { useAppDispatch, useAppSelector } from './hooks/useRedux';
+import { MotionLazy } from './components/animate/MotionLazyContainer';
 // theme
 import { NotistackProvider } from './components/NotistackProvider';
-import { MotionLazy } from './components/animate/MotionLazyContainer';
+// routes
+import { ProgressBarStyle } from './components/ProgressBar';
+import { ScrollToTop } from './components/ScrollToTop';
+import ThemeSettings from './components/settings';
+import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import { queryPrinterGroups } from './redux/slices/PrinterGroupSlice';
+import Router from './routes';
+import ThemeProvider from './theme';
 
 
 /*

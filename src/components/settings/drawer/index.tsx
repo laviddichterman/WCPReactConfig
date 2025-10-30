@@ -1,13 +1,23 @@
 import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useState } from 'react';
 
-import { alpha, styled } from '@mui/material/styles';
 // @mui
 import { Backdrop, Divider, IconButton, Stack, Typography } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 
+// config
+import { defaultSettings, NAVBAR } from '../../../config';
+// hooks
+import { useSettings } from '../../../hooks/useSettings';
+// utils
+import { cssStyles } from '../../../utils/cssStyles';
 //
 import { varFade } from '../../animate';
 import { Iconify } from '../../Iconify';
+import { Scrollbar } from '../../scrollbar/Scrollbar';
+
+//
+import SettingColorPresets from './SettingColorPresets';
 import SettingContrast from './SettingContrast';
 import SettingDirection from './SettingDirection';
 import SettingFullscreen from './SettingFullscreen';
@@ -15,15 +25,6 @@ import SettingLayout from './SettingLayout';
 import SettingMode from './SettingMode';
 import SettingStretch from './SettingStretch';
 import ToggleButton from './ToggleButton';
-// utils
-import { cssStyles } from '../../../utils/cssStyles';
-import { Scrollbar } from '../../scrollbar/Scrollbar';
-//
-import SettingColorPresets from './SettingColorPresets';
-// hooks
-import { useSettings } from '../../../hooks/useSettings';
-// config
-import { NAVBAR, defaultSettings } from '../../../config';
 
 // ----------------------------------------------------------------------
 

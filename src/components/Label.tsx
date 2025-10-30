@@ -1,8 +1,9 @@
 // @mui
-import { Box, BoxProps } from '@mui/material';
-import { alpha, styled, Theme, useTheme } from '@mui/material/styles';
+import { Box, type BoxProps } from '@mui/material';
+import { alpha, styled, type Theme, useTheme } from '@mui/material/styles';
+
 // theme
-import { ColorSchema } from '../theme/palette';
+import { type ColorSchema } from '../theme/palette';
 
 // ----------------------------------------------------------------------
 

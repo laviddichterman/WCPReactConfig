@@ -1,11 +1,14 @@
+import { useMemo } from "react";
+
 import { AddBox } from "@mui/icons-material";
 import { FormControlLabel, IconButton, Switch, Tooltip } from "@mui/material";
-import { useMemo } from "react";
+
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openCategoryInterstitial, setEnableCategoryTreeView, setHideDisabled } from '../../../../redux/slices/CatalogSlice';
 import { selectProductIdsAfterDisableFilter } from "../../../../redux/store";
-import { ToolbarAction } from "../../table_wrapper.component";
+import { type ToolbarAction } from "../../table_wrapper.component";
 import ProductTableContainer from "../product/product_table.container";
+
 import CategoryTableContainer from "./category_table.container";
 
 interface CategoryTableContainerProps {

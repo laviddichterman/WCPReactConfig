@@ -1,5 +1,6 @@
-import { Box, Button, DialogActions, DialogContent, Grid, LinearProgress } from '@mui/material';
 import React from "react";
+
+import { Box, Button, DialogActions, DialogContent, Grid, LinearProgress } from '@mui/material';
 
 const GenerateActionsHtmlFromList = (actions: React.ReactNode[]) => actions.length === 0 ? "" :
   (<Grid container justifyContent="flex-end" size={12}>

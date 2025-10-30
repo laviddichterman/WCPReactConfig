@@ -1,9 +1,5 @@
-import type { SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wario-shared';
-import type { QrcodeErrorCallback, QrcodeSuccessCallback } from 'html5-qrcode/core';
-
-import { CURRENCY, MoneyToDisplayString } from '@wcp/wario-shared';
-import { DialogContainer } from "@wcp/wario-ux-shared";
 import { Html5Qrcode, Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
+import type { QrcodeErrorCallback, QrcodeSuccessCallback } from 'html5-qrcode/core';
 import { uniqueId } from 'lodash';
 import { useSnackbar } from 'notistack';
 import { useEffect, useLayoutEffect, useState } from 'react';
@@ -11,7 +7,12 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 import { ErrorOutline, PhotoCamera } from "@mui/icons-material";
 import { Button, Card, CardHeader, Divider, Grid, IconButton, List, ListItem, Typography } from '@mui/material';
 
+import type { SpendCreditResponse, ValidateAndLockCreditResponse, ValidateLockAndSpendRequest } from '@wcp/wario-shared';
+import { CURRENCY, MoneyToDisplayString } from '@wcp/wario-shared';
+import { DialogContainer } from "@wcp/wario-ux-shared";
+
 import { HOST_API } from "../../config";
+
 import { IMoneyPropertyComponent } from './property-components/IMoneyPropertyComponent';
 import { StringPropertyComponent } from './property-components/StringPropertyComponent';
 
@@ -115,7 +116,7 @@ const StoreCreditValidateAndSpendComponent = () => {
   };
 
   const processDebit = async () => {
-    if (!isProcessing && validationResponse !== null && validationResponse.valid === true) {
+    if (!isProcessing && validationResponse !== null && validationResponse.valid) {
       setIsProcessing(true);
       try {
         const body: ValidateLockAndSpendRequest = {
@@ -163,7 +164,7 @@ const StoreCreditValidateAndSpendComponent = () => {
       <IconButton
         color="primary"
         component="span"
-        onClick={() => setScanCode(true)}
+        onClick={() => { setScanCode(true); }}
         disabled={isProcessing || (validationResponse !== null && validationResponse.valid)}
         size="large">
         <PhotoCamera />

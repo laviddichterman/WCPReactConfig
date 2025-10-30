@@ -1,10 +1,13 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { IWSettings } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
+
+import { type IWSettings } from "@wcp/wario-shared";
+
 import { HOST_API } from "../../config";
 import { useAppSelector } from "../../hooks/useRedux";
-import { KeyValuesContainer, KeyValuesRowType } from "./keyvalues.container";
+
+import { KeyValuesContainer, type KeyValuesRowType } from "./keyvalues.container";
 
 
 export const StoreSettingsComponent = () => {

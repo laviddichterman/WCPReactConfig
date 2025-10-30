@@ -1,16 +1,19 @@
-import { IconifyIcon } from '@iconify/react';
-import { SnackbarKey, SnackbarProvider } from 'notistack';
-import { ReactNode, useRef } from 'react';
+import { type IconifyIcon } from '@iconify/react';
+import { type SnackbarKey, SnackbarProvider } from 'notistack';
+import { type ReactNode, useRef } from 'react';
+
 // @mui
 import { Box, GlobalStyles } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+
 // hooks
 import { useSettings } from '../hooks/useSettings';
 // theme
-import { ColorSchema } from '../theme/palette';
+import { type ColorSchema } from '../theme/palette';
+
+import { IconButtonAnimate } from './animate';
 //
 import { Iconify } from './Iconify';
-import { IconButtonAnimate } from './animate';
 
 // ----------------------------------------------------------------------
 

@@ -1,15 +1,18 @@
 import { forwardRef } from 'react';
+
 // @mui
-import { Box, ListItemButtonProps, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
-// hooks
-import { useLocales } from '../../../hooks/useLocales';
-// guards
-import RoleBasedGuard from '../../../guards/RoleBasedGuard';
+import { Box, type ListItemButtonProps, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+
 // config
 import { ICON } from '../../../config';
+// guards
+import RoleBasedGuard from '../../../guards/RoleBasedGuard';
+// hooks
+import { useLocales } from '../../../hooks/useLocales';
 //
 import { Iconify } from '../../Iconify';
-import { NavItemProps } from '../type';
+import { type NavItemProps } from '../type';
+
 import { ListItemStyle } from './style';
 
 // ----------------------------------------------------------------------

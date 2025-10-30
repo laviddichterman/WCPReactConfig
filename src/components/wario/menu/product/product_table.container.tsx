@@ -1,23 +1,23 @@
-import type { GridRenderCellParams, GridRowId, GridRowParams } from "@mui/x-data-grid-premium";
-import type { Dispatch, SetStateAction } from "react";
-
-import { DISABLE_REASON, DisableDataCheck } from '@wcp/wario-shared';
-import { getModifierTypeEntryById, getProductEntryById, getProductInstanceById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
 import { format } from 'date-fns';
+import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useState } from "react";
 
 import { AddBox, BedtimeOff, Cancel, CheckCircle, DeleteOutline, Edit, LibraryAdd } from "@mui/icons-material";
 import { Tooltip } from '@mui/material';
+import type { GridRenderCellParams, GridRowId, GridRowParams } from "@mui/x-data-grid-premium";
 import { GridActionsCellItem, useGridApiRef } from "@mui/x-data-grid-premium";
+
+import { DISABLE_REASON, DisableDataCheck } from '@wcp/wario-shared';
+import { getModifierTypeEntryById, getProductEntryById, getProductInstanceById, weakMapCreateSelector } from "@wcp/wario-ux-shared";
 
 import { useAppDispatch, useAppSelector } from "../../../../hooks/useRedux";
 import { openProductClassCopy, openProductClassDelete, openProductClassDisable, openProductClassDisableUntilEod, openProductClassEdit, openProductClassEnable, openProductInstanceAdd } from "../../../../redux/slices/CatalogSlice";
 import { getPrinterGroupById } from '../../../../redux/slices/PrinterGroupSlice';
-import { TableWrapperComponent } from "../../table_wrapper.component";
-import ProductInstanceTableContainer from "./product_instance_table.container";
-
 import type { RootState } from "../../../../redux/store";
+import { TableWrapperComponent } from "../../table_wrapper.component";
 import type { ToolbarAction } from "../../table_wrapper.component";
+
+import ProductInstanceTableContainer from "./product_instance_table.container";
 
 type RowType = { id: string; disableData: ReturnType<typeof DisableDataCheck>; name: string }
 
@@ -208,7 +208,7 @@ const ProductTableContainer = ({
         getDetailPanelHeight={() => 'auto'}
         onDetailPanelExpandedRowIdsChange={handleDetailPanelExpandedRowIdsChange}
         // rowThreshold={0}
-        onRowClick={(params) => handleToggleDetailPanel(params.id)}
+        onRowClick={(params) => { handleToggleDetailPanel(params.id); }}
         detailPanelExpandedRowIds={expandedRowIds}
       />
     </div>

@@ -1,9 +1,10 @@
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+
 // @mui
 import {
   Box,
-  BreadcrumbsProps,
+  type BreadcrumbsProps,
   Link,
   Breadcrumbs as MUIBreadcrumbs,
   Typography,

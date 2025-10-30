@@ -1,6 +1,7 @@
-import { AvatarProps, Avatar as MUIAvatar } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import { forwardRef } from 'react';
+
+import { type AvatarProps, Avatar as MUIAvatar } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 

@@ -1,13 +1,14 @@
-import type { IMoney, IOption, IRecurringInterval, KeyValue } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { CURRENCY } from "@wcp/wario-shared";
-import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
+import type { IMoney, IOption, IRecurringInterval, KeyValue } from "@wcp/wario-shared";
+import { CURRENCY } from "@wcp/wario-shared";
+import { getModifierTypeEntryById } from "@wcp/wario-ux-shared";
+
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
+
 import { ModifierOptionComponent } from "./modifier_option.component";
 
 export interface ModifierOptionUiContainerProps {
@@ -17,7 +18,7 @@ export interface ModifierOptionUiContainerProps {
 
 const ModifierOptionAddContainer = ({ modifierTypeId, onCloseCallback }: ModifierOptionUiContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const modifierType = useAppSelector(s => getModifierTypeEntryById(s.ws.modifierEntries, modifierTypeId)!.modifierType);
+  const modifierType = useAppSelector(s => getModifierTypeEntryById(s.ws.modifierEntries, modifierTypeId).modifierType);
   const [displayName, setDisplayName] = useState("");
   const [description, setDescription] = useState("");
   const [shortcode, setShortcode] = useState("");

@@ -1,20 +1,21 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import { HOST_API } from "../../../../config";
-import ProductInstanceFunctionComponent from "./product_instance_function.component";
-
-import { IProductInstanceFunction } from "@wcp/wario-shared";
+import { type IProductInstanceFunction } from "@wcp/wario-shared";
 import { getProductInstanceFunctionById } from "@wcp/wario-ux-shared";
-import { useSnackbar } from "notistack";
+
+import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
-import { ProductInstanceFunctionQuickActionProps } from './product_instance_function.delete.container';
+
+import ProductInstanceFunctionComponent from "./product_instance_function.component";
+import { type ProductInstanceFunctionQuickActionProps } from './product_instance_function.delete.container';
 
 const ProductInstanceFunctionEditContainer = ({ pifId, onCloseCallback }: ProductInstanceFunctionQuickActionProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   // todo: look into the assertion of truthy, maybe the caller of this container should process the selection and confirm non-falsy?
-  const productInstanceFunction = useAppSelector(s => getProductInstanceFunctionById(s.ws.productInstanceFunctions, pifId)!)
+  const productInstanceFunction = useAppSelector(s => getProductInstanceFunctionById(s.ws.productInstanceFunctions, pifId))
 
   const [functionName, setFunctionName] = useState(productInstanceFunction.name);
   const [expression, setExpression] = useState(productInstanceFunction.expression);

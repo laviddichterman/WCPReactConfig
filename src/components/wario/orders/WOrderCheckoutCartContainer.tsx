@@ -1,6 +1,8 @@
-import { ComputeCartSubTotal, ComputeTaxAmount, ComputeTipBasis, ComputeTipValue, DateTimeIntervalBuilder, WOrderInstance } from "@wcp/wario-shared";
-import { getFulfillmentById, SelectCatalogSelectors, SelectTaxRate, WCheckoutCartComponent } from '@wcp/wario-ux-shared';
 import { useMemo } from "react";
+
+import { ComputeCartSubTotal, ComputeTaxAmount, ComputeTipBasis, ComputeTipValue, DateTimeIntervalBuilder, type WOrderInstance } from "@wcp/wario-shared";
+import { getFulfillmentById, SelectCatalogSelectors, SelectTaxRate, WCheckoutCartComponent } from '@wcp/wario-ux-shared';
+
 import { useAppSelector } from "../../../hooks/useRedux";
 import { selectFullGroupedCartInfo } from "../../../redux/store";
 

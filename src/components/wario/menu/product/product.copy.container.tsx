@@ -1,16 +1,17 @@
-import type { CreateProductBatch } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { getProductEntryById } from "@wcp/wario-ux-shared";
 import { useSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 
 import { ExpandMore } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
 
+import type { CreateProductBatch } from "@wcp/wario-shared";
+import { getProductEntryById } from "@wcp/wario-ux-shared";
+
 import { HOST_API } from "../../../../config";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { useIndexedState } from "../../../../utils/common";
+
 import { ProductInstanceContainer } from "./instance/product_instance.component";
 import { ProductComponent } from "./product.component";
 
@@ -20,7 +21,7 @@ export interface ProductCopyContainerProps {
 };
 const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContainerProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const productEntry = useAppSelector(s => getProductEntryById(s.ws.products, product_id)!);
+  const productEntry = useAppSelector(s => getProductEntryById(s.ws.products, product_id));
   const allProductInstances = useAppSelector(s => s.ws.catalog!.productInstances);
   const [price, setPrice] = useState(productEntry.product.price);
   const [availability, setAvailability] = useState(productEntry.product.availability ?? []);
@@ -71,7 +72,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
   const { getAccessTokenSilently } = useAuth0();
 
   const getProductInstanceEditor = useCallback((i: number) => (
-    <Accordion sx={{ p: 2 }} key={i} expanded={expandedPanels[i] && copyPIFlags[i]} onChange={(e, ex) => setExpandedPanel(i)(ex)}  >
+    <Accordion sx={{ p: 2 }} key={i} expanded={expandedPanels[i] && copyPIFlags[i]} onChange={(e, ex) => { setExpandedPanel(i)(ex); }}  >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Grid container>
           <Grid size="grow">
@@ -82,7 +83,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
               <Switch
                 disabled={indexOfBase === i}
                 checked={copyPIFlags[i]}
-                onChange={(e) => setCopyPIFlag(i)(e.target.checked)}
+                onChange={(e) => { setCopyPIFlag(i)(e.target.checked); }}
                 name="Copy"
               />
             }
@@ -94,7 +95,7 @@ const ProductCopyContainer = ({ product_id, onCloseCallback }: ProductCopyContai
               <Switch
                 disabled={!copyPIFlags[i] || indexOfBase === i}
                 checked={indexOfBase === i}
-                onChange={(e) => setIndexOfBase(i)}
+                onChange={(e) => { setIndexOfBase(i); }}
                 name="Base Product"
               />
             }

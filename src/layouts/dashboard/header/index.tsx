@@ -1,19 +1,20 @@
 // @mui
 import { AppBar, Box, Stack, Toolbar } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
+// components
+import PACKAGE from '../../../../package.json';
+import { IconButtonAnimate } from '../../../components/animate';
+import { Iconify } from '../../../components/Iconify';
+import { Label } from '../../../components/Label';
+import { Logo } from '../../../components/Logo';
+// config
+import { HEADER, NAVBAR } from '../../../config';
 // hooks
 import { useOffSetTop } from '../../../hooks/useOffSetTop';
 import { useResponsive } from '../../../hooks/useResponsive';
 // utils
 import { cssStyles } from '../../../utils/cssStyles';
-// config
-import { HEADER, NAVBAR } from '../../../config';
-// components
-import PACKAGE from '../../../../package.json';
-import { Iconify } from '../../../components/Iconify';
-import { Label } from '../../../components/Label';
-import { Logo } from '../../../components/Logo';
-import { IconButtonAnimate } from '../../../components/animate';
 
 //
 import { AccountPopover } from './AccountPopover';

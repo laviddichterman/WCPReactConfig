@@ -1,8 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
+
 // @mui
 import { Box, Link, Typography } from '@mui/material';
+
 //
-import { Breadcrumbs, Props as BreadcrumbsProps } from './Breadcrumbs';
+import { Breadcrumbs, type Props as BreadcrumbsProps } from './Breadcrumbs';
 
 // ----------------------------------------------------------------------
 

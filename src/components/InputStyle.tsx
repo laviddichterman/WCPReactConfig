@@ -1,5 +1,5 @@
 // @mui
-import { OutlinedInputProps, TextField } from '@mui/material';
+import { type OutlinedInputProps, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------

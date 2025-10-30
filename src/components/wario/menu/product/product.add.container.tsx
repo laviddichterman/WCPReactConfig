@@ -1,11 +1,12 @@
-import type { CreateProductBatch, IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, ProductModifierEntry } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { CURRENCY, PriceDisplay } from "@wcp/wario-shared";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
+import type { CreateProductBatch, IMoney, IProductModifier, IRecurringInterval, IWInterval, KeyValue, PrepTiming, ProductModifierEntry } from "@wcp/wario-shared";
+import { CURRENCY, PriceDisplay } from "@wcp/wario-shared";
+
 import { HOST_API } from "../../../../config";
+
 import { ProductInstanceContainer } from "./instance/product_instance.component";
 import { ProductComponent } from "./product.component";
 

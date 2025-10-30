@@ -1,12 +1,14 @@
 import { useState } from 'react';
+
 // @mui
 import { MenuItem, Stack } from '@mui/material';
-// hooks
-import { useLocales } from '../../../hooks/useLocales';
+
+import { IconButtonAnimate } from '../../../components/animate';
 // components
 import { Image } from '../../../components/Image';
 import { MenuPopover } from '../../../components/MenuPopover';
-import { IconButtonAnimate } from '../../../components/animate';
+// hooks
+import { useLocales } from '../../../hooks/useLocales';
 
 // ----------------------------------------------------------------------
 
@@ -57,7 +59,7 @@ export function LanguagePopover() {
             <MenuItem
               key={option.value}
               selected={option.value === currentLang.value}
-              onClick={() => handleChangeLang(option.value)}
+              onClick={() => { handleChangeLang(option.value); }}
             >
               <Image
                 disabledEffect

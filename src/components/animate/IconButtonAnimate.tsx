@@ -1,9 +1,8 @@
-// @mui
-import type { IconButtonProps } from '@mui/material';
-
 import { m } from 'motion/react';
 import { forwardRef } from 'react';
 
+// @mui
+import type { IconButtonProps } from '@mui/material';
 import { Box, IconButton } from '@mui/material';
 
 // ----------------------------------------------------------------------

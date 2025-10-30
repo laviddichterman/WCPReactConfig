@@ -1,7 +1,9 @@
+import { type ReactNode } from "react";
+
 import { Warning } from "@mui/icons-material";
 import { Grid } from "@mui/material";
-import { ReactNode } from "react";
-import { ElementActionComponent, ElementActionComponentProps } from "./element.action.component";
+
+import { ElementActionComponent, type ElementActionComponentProps } from "./element.action.component";
 
 const ElementDeleteComponent = ({
   name,

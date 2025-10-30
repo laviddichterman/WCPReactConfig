@@ -1,13 +1,15 @@
 // @mui
-import { Box, ListItemButtonProps, Tooltip } from '@mui/material';
-// hooks
-import { useLocales } from '../../../hooks/useLocales';
+import { Box, type ListItemButtonProps, Tooltip } from '@mui/material';
+
 // guards
 import RoleBasedGuard from '../../../guards/RoleBasedGuard';
+// hooks
+import { useLocales } from '../../../hooks/useLocales';
 //
 import { Iconify } from '../../Iconify';
 //
-import { NavItemProps } from '../type';
+import { type NavItemProps } from '../type';
+
 import { ListItemIconStyle, ListItemStyle, ListItemTextStyle } from './style';
 
 // ----------------------------------------------------------------------

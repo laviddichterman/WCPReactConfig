@@ -1,8 +1,10 @@
 import { DialogContainer } from "@wcp/wario-ux-shared";
+
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { closeDialogue, openCategoryAdd, openHierarchicalProductImport, openProductClassAdd, openProductImport } from '../../../redux/slices/CatalogSlice';
 import { selectBaseProductName } from "../../../redux/store";
 import InterstitialDialog from "../interstitial.dialog.component";
+
 import CategoryAddContainer from "./category/category.add.container";
 import CategoryDeleteContainer from "./category/category.delete.container";
 import CategoryEditContainer from "./category/category.edit.container";

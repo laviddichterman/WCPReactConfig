@@ -1,4 +1,5 @@
-import { Theme } from '@mui/material/styles';
+import { type Theme } from '@mui/material/styles';
+
 //
 import { Accordion } from './Accordion';
 import { Alert } from './Alert';

@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
-import { GridActionsCellItem, GridRowParams } from "@mui/x-data-grid-premium";
-import { IAbstractExpression, IProductInstanceFunction, WFunctional } from "@wcp/wario-shared";
+import { GridActionsCellItem, type GridRowParams } from "@mui/x-data-grid-premium";
+
+import { type IAbstractExpression, type IProductInstanceFunction, WFunctional } from "@wcp/wario-shared";
 import { DialogContainer, getModifierOptionById, getModifierTypeEntryById, getProductInstanceFunctions } from "@wcp/wario-ux-shared";
+
 import { useAppSelector } from "../../../../hooks/useRedux";
 import { TableWrapperComponent } from "../../table_wrapper.component";
 interface PIFTableContainerProps {
@@ -38,7 +40,7 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
         toolbarActions={[{
           size: 1,
           elt:
-            <Tooltip key="AddNew" title="Add Product Function"><IconButton onClick={() => setIsProductInstanceFunctionAddOpen(true)}><AddBox /></IconButton></Tooltip>
+            <Tooltip key="AddNew" title="Add Product Function"><IconButton onClick={() => { setIsProductInstanceFunctionAddOpen(true); }}><AddBox /></IconButton></Tooltip>
         }]}
         rows={productInstanceFunctions}
         getRowId={(row: IProductInstanceFunction) => row.id}
@@ -69,23 +71,23 @@ const ProductInstanceFunctionTableContainer = (props: PIFTableContainerProps) =>
       <DialogContainer
         maxWidth={"xl"}
         title={"Add Product Instance Function"}
-        onClose={() => setIsProductInstanceFunctionAddOpen(false)}
+        onClose={() => { setIsProductInstanceFunctionAddOpen(false); }}
         open={isProductInstanceFunctionAddOpen}
         innerComponent={
           <ProductInstanceFunctionAddContainer
-            onCloseCallback={() => setIsProductInstanceFunctionAddOpen(false)}
+            onCloseCallback={() => { setIsProductInstanceFunctionAddOpen(false); }}
           />
         }
       />
       <DialogContainer
         maxWidth={"xl"}
         title={"Edit Product Instance Function"}
-        onClose={() => setIsProductInstanceFunctionEditOpen(false)}
+        onClose={() => { setIsProductInstanceFunctionEditOpen(false); }}
         open={isProductInstanceFunctionEditOpen}
         innerComponent={
           pifIdToEdit !== null &&
           <ProductInstanceFunctionEditContainer
-            onCloseCallback={() => setIsProductInstanceFunctionEditOpen(false)}
+            onCloseCallback={() => { setIsProductInstanceFunctionEditOpen(false); }}
             pifId={pifIdToEdit}
           />
         }

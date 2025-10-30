@@ -1,13 +1,12 @@
-import type { KeyValue, PrinterGroup } from "@wcp/wario-shared";
-
 import { Grid } from "@mui/material";
 
+import type { KeyValue, PrinterGroup } from "@wcp/wario-shared";
+
+import type { ValSetValNamed } from "../../../../utils/common";
 import ExternalIdsExpansionPanelComponent from "../../ExternalIdsExpansionPanelComponent";
 import { StringPropertyComponent } from "../../property-components/StringPropertyComponent";
 import { ToggleBooleanPropertyComponent } from "../../property-components/ToggleBooleanPropertyComponent";
 import { ElementActionComponent } from "../element.action.component";
-
-import type { ValSetValNamed } from "../../../../utils/common";
 import type { ElementActionComponentProps } from "../element.action.component";
 
 export interface PrinterGroupEditProps {

@@ -1,9 +1,8 @@
-// @mui
-import type { BoxProps } from '@mui/material';
 import type { MotionProps } from 'motion/react';
-
 import { m } from 'motion/react';
 
+// @mui
+import type { BoxProps } from '@mui/material';
 import { Box } from '@mui/material';
 
 //

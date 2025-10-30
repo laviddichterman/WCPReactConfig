@@ -1,12 +1,13 @@
-import type { KeyValue, PrinterGroup } from "@wcp/wario-shared";
-
 import { useAuth0 } from '@auth0/auth0-react';
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
+import type { KeyValue, PrinterGroup } from "@wcp/wario-shared";
+
 import { HOST_API } from "../../../../config";
 import { useAppDispatch } from "../../../../hooks/useRedux";
 import { queryPrinterGroups } from '../../../../redux/slices/PrinterGroupSlice';
+
 import PrinterGroupComponent from "./PrinterGroupComponent";
 
 export interface PrinterGroupAddContainerProps {

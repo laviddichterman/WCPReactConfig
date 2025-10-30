@@ -1,6 +1,8 @@
 import { Link as RouterLink } from 'react-router-dom';
+
 // @mui
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+
 import { LogoSVG } from '@wcp/wario-ux-shared';
 
 // ----------------------------------------------------------------------

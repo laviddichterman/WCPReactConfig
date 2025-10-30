@@ -1,13 +1,15 @@
-import type { IWInterval } from "@wcp/wario-shared";
-import type { ValSetVal } from "src/utils/common";
-
-import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
 import { endOfDay, getTime } from 'date-fns';
 
 import { Grid } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 
+import type { IWInterval } from "@wcp/wario-shared";
+import { SelectDateFnsAdapter } from '@wcp/wario-ux-shared';
+
+import type { ValSetVal } from "src/utils/common";
+
 import { useAppSelector } from "../../hooks/useRedux";
+
 import { ToggleBooleanPropertyComponent } from "./property-components/ToggleBooleanPropertyComponent";
 
 export type DatetimeBasedDisableComponentProps = {
@@ -36,7 +38,7 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
           disabled={props.disabled}
           label="Enabled"
           value={props.value === null}
-          setValue={(enable) => props.setValue(enable ? null : { start: 1, end: 0 })}
+          setValue={(enable) => { props.setValue(enable ? null : { start: 1, end: 0 }); }}
           labelPlacement='end'
         />
       </Grid>
@@ -46,9 +48,9 @@ const DatetimeBasedDisableComponent = (props: DatetimeBasedDisableComponentProps
             disabled={props.disabled}
             label="Blanket Disable"
             value={props.value.start > props.value.end}
-            setValue={(isBlanket) => props.setValue(isBlanket ?
+            setValue={(isBlanket) => { props.setValue(isBlanket ?
               { start: 1, end: 0 } :
-              { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) })}
+              { start: CURRENT_TIME, end: getTime(endOfDay(CURRENT_TIME)) }); }}
             labelPlacement='end'
           />
         </Grid>

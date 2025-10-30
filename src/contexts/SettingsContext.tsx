@@ -1,19 +1,20 @@
-import { createContext, ReactNode, useEffect } from 'react';
+import { createContext, type ReactNode, useEffect } from 'react';
+
+// @type
+import {
+  type SettingsContextProps,
+  type ThemeColorPresets,
+  type ThemeContrast,
+  type ThemeDirection,
+  type ThemeLayout,
+  type ThemeMode,
+} from '../components/settings/type';
+// config
+import { defaultSettings } from '../config';
 // hooks
 import { useLocalStorage } from '../hooks/useLocalStorage';
 // utils
 import { colorPresets, defaultPreset, getColorPresets } from '../utils/getColorPresets';
-// config
-import { defaultSettings } from '../config';
-// @type
-import {
-  SettingsContextProps,
-  ThemeColorPresets,
-  ThemeContrast,
-  ThemeDirection,
-  ThemeLayout,
-  ThemeMode,
-} from '../components/settings/type';
 
 // ----------------------------------------------------------------------
 

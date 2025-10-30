@@ -1,9 +1,11 @@
 // @mui
 import { Box, List } from '@mui/material';
+
 // hooks
 import { useLocales } from '../../../hooks/useLocales';
 //
-import { NavSectionProps } from '../type';
+import { type NavSectionProps } from '../type';
+
 import NavList from './NavList';
 import { ListSubheaderStyle } from './style';
 

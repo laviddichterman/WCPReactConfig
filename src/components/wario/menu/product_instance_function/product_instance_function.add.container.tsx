@@ -1,9 +1,11 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import { useAuth0 } from '@auth0/auth0-react';
-import { IAbstractExpression, IProductInstanceFunction } from "@wcp/wario-shared";
-import { useSnackbar } from "notistack";
+import { type IAbstractExpression, type IProductInstanceFunction } from "@wcp/wario-shared";
+
 import { HOST_API } from "../../../../config";
+
 import ProductInstanceFunctionComponent from "./product_instance_function.component";
 
 interface ProductInstanceFunctionAddContainerProps {

@@ -1,4 +1,4 @@
-import { ValSetVal } from "../../../utils/common";
+import { type ValSetVal } from "../../../utils/common";
 import { CheckedNumericInput } from "../CheckedNumericTextInput";
 
 export type FloatNumericPropertyComponentProps = {
@@ -17,7 +17,7 @@ export function FloatNumericPropertyComponent(props: FloatNumericPropertyCompone
     inputProps={{ inputMode: 'decimal', min: props.min ?? 0, max: props.max ?? 99999, pattern: '[0-9]+([.,][0-9]+)?', step: props.step ?? 1 }}
     value={props.value}
     disabled={props.disabled}
-    onChange={(e) => props.setValue(e)}
+    onChange={(e) => { props.setValue(e); }}
     parseFunction={parseFloat}
     allowEmpty={false} />);
 }

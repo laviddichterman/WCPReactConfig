@@ -1,12 +1,15 @@
-import { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 
 // import { GridActionsCellItem } from "@mui/x-data-grid";
 import { AddBox, DeleteOutline, Edit } from "@mui/icons-material";
 import { IconButton, Tooltip } from '@mui/material';
 import { GridActionsCellItem, useGridApiRef } from "@mui/x-data-grid-premium";
-import { FulfillmentConfig } from "@wcp/wario-shared";
+
+import { type FulfillmentConfig } from "@wcp/wario-shared";
 import { getFulfillments } from "@wcp/wario-ux-shared";
+
 import { useAppSelector } from "../../hooks/useRedux";
+
 import { TableWrapperComponent } from "./table_wrapper.component";
 
 export interface FulfillmentTableContainerProps {
@@ -63,7 +66,7 @@ const FulfillmentTableContainer = ({
       ]}
       toolbarActions={[{
         size: 1,
-        elt: <Tooltip key="ADDNEW" title="Add Fulfillment"><IconButton onClick={() => setIsFulfillmentAddOpen(true)}><AddBox /></IconButton></Tooltip>
+        elt: <Tooltip key="ADDNEW" title="Add Fulfillment"><IconButton onClick={() => { setIsFulfillmentAddOpen(true); }}><AddBox /></IconButton></Tooltip>
       }]}
       rows={fulfillments}
       disableRowSelectionOnClick

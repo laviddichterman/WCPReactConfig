@@ -1,11 +1,10 @@
 import type { ReactNode } from 'react';
-// @mui
-import type { LinkProps, TypographyProps } from '@mui/material';
-import type { TypographyVariant } from '@mui/material/styles/createTypography';
-
 import { forwardRef } from 'react';
 
+// @mui
+import type { LinkProps, TypographyProps } from '@mui/material';
 import { Link, Typography } from '@mui/material';
+import type { TypographyVariant } from '@mui/material/styles/createTypography';
 
 // utils
 import { GetFontValue } from '../utils/getFontValue';
