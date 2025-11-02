@@ -1,5 +1,4 @@
 import { forwardRef, type ReactNode } from 'react';
-import { Helmet } from 'react-helmet-async';
 
 // @mui
 import { Box, type BoxProps } from '@mui/material';
@@ -13,10 +12,8 @@ interface Props extends BoxProps {
 }
 export const Page = forwardRef<HTMLDivElement, Props>(({ children, title = '', meta, ...other }, ref) => (
   <>
-    <Helmet>
-      <title>{`${title} | WARIO Backend`}</title>
-      {meta}
-    </Helmet>
+    <title>{`${title} | WARIO Backend`}</title>
+    {meta}
 
     <Box ref={ref} {...other}>
       {children}

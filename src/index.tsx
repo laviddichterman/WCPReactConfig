@@ -12,7 +12,6 @@ import 'react-lazy-load-image-component/src/effects/opacity.css';
 
 import { Auth0Provider } from '@auth0/auth0-react';
 import ReactDOM from 'react-dom/client';
-import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
 
@@ -52,21 +51,15 @@ const Auth0ProviderWithRedirectCallback = ({ children }: { children?: React.Reac
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
-
-  <HelmetProvider>
-
-    <BrowserRouter>
-      <Auth0ProviderWithRedirectCallback>
-        <ReduxProvider store={store}>
-          <SettingsProvider>
-            <CollapseDrawerProvider>
-              <App />
-            </CollapseDrawerProvider>
-          </SettingsProvider>
-        </ReduxProvider>
-      </Auth0ProviderWithRedirectCallback>
-    </BrowserRouter>
-
-  </HelmetProvider>
-
+  <BrowserRouter>
+    <Auth0ProviderWithRedirectCallback>
+      <ReduxProvider store={store}>
+        <SettingsProvider>
+          <CollapseDrawerProvider>
+            <App />
+          </CollapseDrawerProvider>
+        </SettingsProvider>
+      </ReduxProvider>
+    </Auth0ProviderWithRedirectCallback>
+  </BrowserRouter>
 );

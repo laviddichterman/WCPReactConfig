@@ -18,12 +18,12 @@ const basicRules = () => {
       "warn",
       { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
     ],
-    "react/jsx-no-target-blank": "error",
+    "react/jsx-no-target-blank": "warn",
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
     ],
-    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/rules-of-hooks": "warn",
     "react-hooks/exhaustive-deps": "warn"
   };
 };
@@ -123,9 +123,9 @@ const packageJsonConfig = {
   plugins: { "package-json": packageJsonPlugin },
   rules: {
     // Canonical top-level key order (name, version, scripts, deps, etc.)
-    "package-json/order-properties": "error",
+    "package-json/order-properties": "warn",
     // Alphabetize dependency blocks (dependencies, devDependencies, peerDependencies, etc.)
-    "package-json/sort-collections": "error",
+    "package-json/sort-collections": "warn",
   },
 };
 

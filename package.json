@@ -1,8 +1,51 @@
 {
   "name": "@wcp/wcp-react-config",
   "version": "0.5.2",
+  "description": "TypeScript Restaurant Configuration Dashboard",
+  "homepage": "https://wario.windycitypie.com",
+  "bugs": {
+    "url": "https://github.com/laviddichterman/WCPReactConfig/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laviddichterman/WCPReactConfig.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Dave Lichterman",
   "type": "module",
-  "packageManager": "pnpm@9.15.3",
+  "scripts": {
+    "build": "vite build",
+    "clear-all": "rm -rf build node_modules",
+    "deploy:devwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wdev.windycitypie.com/",
+    "deploy:prodwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.windycitypie.com/",
+    "deploy:stagingwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wstaging.windycitypie.com/",
+    "dev": "vite",
+    "preinstall": "npx only-allow pnpm",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
+    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src",
+    "serve": "vite preview --port 3000",
+    "start": "vite --port 3000 --open",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "plugin:react-hooks/recommended"
+    ]
+  },
   "dependencies": {
     "@auth0/auth0-react": "^2.8.0",
     "@emotion/cache": "^11.14.0",
@@ -57,6 +100,7 @@
     "react-papaparse": "^4.4.0",
     "react-redux": "^9.2.0",
     "react-router": "^7.9.5",
+    "react-router-dom": "^7.9.5",
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "rehype-raw": "^7.0.0",
@@ -105,48 +149,5 @@
     "vite": "^7.1.12",
     "vite-plugin-checker": "^0.11.0"
   },
-  "author": "Dave Lichterman",
-  "description": "TypeScript Restaurant Configuration Dashboard",
-  "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "dev": "vite",
-    "build": "vite build",
-    "start": "vite --port 3000 --open",
-    "serve": "vite preview --port 3000",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
-    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src",
-    "clear-all": "rm -rf build node_modules",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "deploy:prodwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wario.windycitypie.com/",
-    "deploy:devwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wdev.windycitypie.com/",
-    "deploy:stagingwcp": "rsync -avzhe ssh --progress ./build/* lavid@wario.windycitypie.com:/var/www/wstaging.windycitypie.com/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/laviddichterman/WCPReactConfig.git"
-  },
-  "license": "GPL-3.0-or-later",
-  "bugs": {
-    "url": "https://github.com/laviddichterman/WCPReactConfig/issues"
-  },
-  "homepage": "https://wario.windycitypie.com",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest",
-      "plugin:react-hooks/recommended"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd"
 }

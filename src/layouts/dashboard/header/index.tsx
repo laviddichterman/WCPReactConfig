@@ -3,7 +3,6 @@ import { AppBar, Box, Stack, Toolbar } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 // components
-import PACKAGE from '../../../../package.json';
 import { IconButtonAnimate } from '../../../components/animate';
 import { Iconify } from '../../../components/Iconify';
 import { Label } from '../../../components/Label';
@@ -41,9 +40,9 @@ const RootStyle = styled(AppBar, {
   }),
   [theme.breakpoints.up('md')]: {
     height: HEADER.DASHBOARD_DESKTOP_HEIGHT,
-    width: `calc(100% - ${NAVBAR.DASHBOARD_WIDTH + 1}px)`,
+    width: `calc(100% - ${(NAVBAR.DASHBOARD_WIDTH + 1).toString()}px)`,
     ...(isCollapse && {
-      width: `calc(100% - ${NAVBAR.DASHBOARD_COLLAPSE_WIDTH}px)`,
+      width: `calc(100% - ${NAVBAR.DASHBOARD_COLLAPSE_WIDTH.toString()}px)`,
     }),
     ...(isOffset && {
       height: HEADER.DASHBOARD_DESKTOP_OFFSET_HEIGHT,
@@ -83,7 +82,7 @@ export function DashboardHeader({
       >
         {isDesktop && verticalLayout ? <><Logo sx={{ mr: 2.5 }} />
           <Label color="info" sx={{ ml: 1 }}>
-            {`v${PACKAGE.version}`}
+            {`v${__APP_VERSION__}`}
           </Label>
         </> : ""}
 

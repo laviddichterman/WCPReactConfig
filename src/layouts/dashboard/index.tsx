@@ -9,8 +9,6 @@ import { styled } from '@mui/material/styles';
 // hooks
 import { IsSocketDataLoaded } from '@wcp/wario-ux-shared';
 
-// config
-import PACKAGE from '../../../package.json';
 //
 import { Label } from '../../components/Label';
 import { LoadingScreen } from '../../components/LoadingScreen';
@@ -86,21 +84,21 @@ function DashboardLayout() {
           sx={{
             px: { md: 2 },
             pt: {
-              xs: `${HEADER.MOBILE_HEIGHT + 24}px`,
-              md: `${HEADER.DASHBOARD_DESKTOP_HEIGHT + 80}px`,
+              xs: `${(HEADER.MOBILE_HEIGHT + 24).toString()}px`,
+              md: `${(HEADER.DASHBOARD_DESKTOP_HEIGHT + 80).toString()}px`,
             },
             pb: {
-              xs: `${HEADER.MOBILE_HEIGHT + 24}px`,
-              md: `${HEADER.DASHBOARD_DESKTOP_HEIGHT + 24}px`,
+              xs: `${(HEADER.MOBILE_HEIGHT + 24).toString()}px`,
+              md: `${(HEADER.DASHBOARD_DESKTOP_HEIGHT + 24).toString()}px`,
             },
           }}
         >
           <Outlet />
         </Box>
         <Container>
-          <Stack><Typography variant="caption" component="p">WARIO Dashboard Version: <Label>v{PACKAGE.version}</Label></Typography></Stack>
-          {catalog ? <Stack><Typography variant="caption" component="p">WARIO Backend Server Version: <Label>{`v${catalog.api.major}.${catalog.api.minor}.${catalog.api.patch}`}</Label></Typography></Stack> : ""}
+          <Stack><Typography variant="caption" component="p">WARIO Dashboard Version: <Label>v{__APP_VERSION__}</Label></Typography></Stack>
         </Container>
+        {catalog ? <Stack><Typography variant="caption" component="p">WARIO Backend Server Version: <Label>{`v${catalog.api.major.toString()}.${catalog.api.minor.toString()}.${catalog.api.patch.toString()}`}</Label></Typography></Stack> : ""}
       </>
     );
   }
